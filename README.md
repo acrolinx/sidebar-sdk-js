@@ -42,6 +42,12 @@ Now you can start the development server by typing:
 
 Now open [http://localhost:9002](http://localhost:9002) in your web-browser.
 
+If you modify the server/cloud/config.js file, you need to restart the application.
+
+## Sidebar API Documentation
+
+You can find the Sidebar API description as a TypeScript .d.ts file here:  
+https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/docs/index.html  
 
 ## License
 
