@@ -4,9 +4,9 @@ Demo code for an integration of the Acrolinx sidebar into a web application
 
 ## Prerequisites
 
-Please contact your technical Acrolinx contact to get initial consulting.... 
-(TODO: Write nice text)
-You will get all required configuration settings after that meeting.
+Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for initial consulting. 
+We like to schedule a kickoff meeting to answer any questions about your integration project. 
+After the meeting, we provide you with test server credentials and configuration settings you need to get started.
 
 ## Configuration of the sidebar cloud example
 
@@ -25,9 +25,7 @@ Before you can run this example you need to configure some settings in these fil
 Before you can run this example you need to configure some settings in these files:
   * client/on-premise/example.js
     * clientSignature
-
-    You can change the default Acrolinx server address.
-
+    * serverAddress
 
 ## How to start
 First make sure, that you have installed nodejs (which includes npm) and grunt-cli.
