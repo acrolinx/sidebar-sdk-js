@@ -103,35 +103,6 @@
             token: accessToken,
             contentPieceUuid: config.documentId,
             integrationFacadeBaseUrl: config.integrationFacadeBaseUrl
-
-            // These settings are currently only supported by the sidebar on premise (and disabled checking profiles).
-            //checkSettings: {
-            //  'language': 'en',
-            //  'ruleSetName': 'Plain English',
-            //  'termSets': ['Medical'],
-            //  'checkSpelling': true,
-            //  'checkGrammar': true,
-            //  'checkStyle': true,
-            //  'checkReuse': false,
-            //  'harvestTerms': false,
-            //  'checkSeo': false,
-            //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
-            //}
-
-            // These settings are currently only supported by the sidebar on premise (and disabled checking profiles).
-            //defaultCheckSettings: {
-            //  'language': 'en',
-            //  'ruleSetName': 'Plain English',
-            //  'termSets': ['Medical'],
-            //  'checkSpelling': true,
-            //  'checkGrammar': true,
-            //  'checkStyle': true,
-            //  'checkReuse': false,
-            //  'harvestTerms': false,
-            //  'checkSeo': false,
-            //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
-            //}
-
           });
         });
       }
@@ -142,6 +113,35 @@
           clientSignature: config.clientSignature,
           showServerSelector: true,
           serverAddress: config.serverAddress
+
+          // These settings are only effective on servers with disabled checking profiles.
+          //checkSettings: {
+          //  'language': 'en',
+          //  'ruleSetName': 'Plain English',
+          //  'termSets': ['Medical'],
+          //  'checkSpelling': true,
+          //  'checkGrammar': true,
+          //  'checkStyle': true,
+          //  'checkReuse': false,
+          //  'harvestTerms': false,
+          //  'checkSeo': false,
+          //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
+          //}
+
+          // These settings are only effective on servers with disabled checking profiles.
+          //defaultCheckSettings: {
+          //  'language': 'en',
+          //  'ruleSetName': 'Plain English',
+          //  'termSets': ['Medical'],
+          //  'checkSpelling': true,
+          //  'checkGrammar': true,
+          //  'checkStyle': true,
+          //  'checkReuse': false,
+          //  'harvestTerms': false,
+          //  'checkSeo': false,
+          //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
+          //}
+
         });
       }
 
