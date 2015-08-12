@@ -104,6 +104,7 @@
             contentPieceUuid: config.documentId,
             integrationFacadeBaseUrl: config.integrationFacadeBaseUrl
 
+            // These settings are currently only supported by the sidebar on premise (and disabled checking profiles).
             //checkSettings: {
             //  'language': 'en',
             //  'ruleSetName': 'Plain English',
@@ -117,6 +118,7 @@
             //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
             //}
 
+            // These settings are currently only supported by the sidebar on premise (and disabled checking profiles).
             //defaultCheckSettings: {
             //  'language': 'en',
             //  'ruleSetName': 'Plain English',
