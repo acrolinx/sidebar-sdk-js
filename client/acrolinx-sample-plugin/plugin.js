@@ -102,7 +102,34 @@
             clientComponents: CLIENT_COMPONENTS,
             token: accessToken,
             contentPieceUuid: config.documentId,
-            integrationFacadeBaseUrl: config.integrationFacadeBaseUrl,
+            integrationFacadeBaseUrl: config.integrationFacadeBaseUrl
+
+            //checkSettings: {
+            //  'language': 'en',
+            //  'ruleSetName': 'Plain English',
+            //  'termSets': ['Medical'],
+            //  'checkSpelling': true,
+            //  'checkGrammar': true,
+            //  'checkStyle': true,
+            //  'checkReuse': false,
+            //  'harvestTerms': false,
+            //  'checkSeo': false,
+            //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
+            //}
+
+            //defaultCheckSettings: {
+            //  'language': 'en',
+            //  'ruleSetName': 'Plain English',
+            //  'termSets': ['Medical'],
+            //  'checkSpelling': true,
+            //  'checkGrammar': true,
+            //  'checkStyle': true,
+            //  'checkReuse': false,
+            //  'harvestTerms': false,
+            //  'checkSeo': false,
+            //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
+            //}
+
           });
         });
       }
