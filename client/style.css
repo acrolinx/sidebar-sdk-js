@@ -55,10 +55,11 @@ h1 {
   display: none;
 }
 
-#editor {
+div[contenteditable=true] {
   border: 1px solid #ddd;
   padding: 0.5em;
   width: 50%;
-  min-height: 20em;
+  min-height: 5em;
   background: #f8f8f8;
+
 }

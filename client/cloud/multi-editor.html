@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="/bower_components/ckeditor/ckeditor.js"></script>
+
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+    <script src="/bower_components/rangy/rangy-core.js"></script>
+    <script src="/bower_components/rangy/rangy-textrange.js"></script>
+
+    <script src="../acrolinx-sample-plugin/multi_plugin.js"></script>
+    <script src="../acrolinx-sample-plugin/adapters/simpleTextAdapter.js"></script>
+    <script src="../acrolinx-sample-plugin/adapters/CKEditorAdapter.js"></script>
+    <script src="../acrolinx-sample-plugin/adapters/MultiEditorAdapter.js"></script>
+    <link rel="stylesheet" href="../../style.css"/>
+</head>
+<body onload="initAcrolinx()">
+<div id="sidebarContainer"></div>
+<div id="app" style="width: 800px">
+    <h1>Acrolinx Sidebar Example Cloud</h1>
+
+    <pre id="errorMessage"></pre>
+    <form>
+        <p>Normal Text (Editable div)</p>
+        <div id="EditableDiv1" contenteditable="true" spellcheck="false">Hellow world!</div>
+        <p>Another Normal Text (Editable div)</p>
+        <div id="EditableDiv2" contenteditable="true" spellcheck="false">Tjis migt be another source of mistakes!</div>
+        <p>CK Editor</p>
+        <textarea name="CkEditor" id="editor_ck" rows="10" cols="80">
+            This textt has more then a errorr.
+        </textarea>
+        <script>
+            CKEDITOR.disableAutoInline = true;
+            // Replace the <textarea id="editor1"> with a CKEditor
+            // instance, using default configuration.
+        </script>
+    </form>
+</div>
+
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript">
+    'use strict';
+
+    function requestAccessToken(documentId) {
+        return $.ajax({
+            url: '/token/' + documentId,
+            method: 'POST'
+        }).fail(function (error) {
+            $('#errorMessage').show().text(JSON.stringify(error.responseJSON, null, 2));
+        });
+    }
+
+    function initAcrolinx() {
+        var basicConf = {
+            sidebarType: 'CLOUD',
+            sidebarContainerId: 'sidebarContainer',
+            documentId: acrolinxExampleConfig.documentId,
+            integrationFacadeBaseUrl: 'https://acrolinx-integrations.acrolinx-cloud.com/api/v1/integration',
+            requestAccessTokenCallback: function (onGotAccessToken) {
+                requestAccessToken(acrolinxExampleConfig.documentId).done(onGotAccessToken);
+            }
+
+        };
+
+        //Init the main Acrolinx Plugin
+        var acrolinx = new AcrolinxPlugin(basicConf);
+
+        //A simple Adapter for a Editable Div
+        var simpleAdapter1 = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv1'}));
+        var simpleAdapter2 = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv2'}));
+        //A CK Editor Adapter - for CK Editor fields
+        var ckEditorAdapter = new CKEditorAdapter(basicConf);
+
+        //An adaptor that can watch over multiple single-element adapters
+        var multiAdapter = new MultiEditorAdapter(basicConf);
+
+        multiAdapter.addSingleAdapter(simpleAdapter1,'EditableDiv1');
+        multiAdapter.addSingleAdapter(simpleAdapter2,'EditableDiv2');
+        multiAdapter.addSingleAdapter(ckEditorAdapter,'editor_ck');
+
+        //Register one Element-Adapter to the main Acrolinx PLugin
+        acrolinx.registerAdapter(multiAdapter);
+
+
+        //Init Acrolinx Plugin.
+        acrolinx.init();
+
+
+        CKEDITOR.replace('editor_ck',{
+            extraPlugins: 'acrolinx'
+        });
+    }
+
+</script>
+
+</body>
+</html>
