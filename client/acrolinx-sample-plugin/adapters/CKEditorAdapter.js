@@ -35,6 +35,10 @@ var CKEditorAdapter = (function () {
       }
     },
 
+    getEditableElement: function () {
+      return this.editor.editable().$;
+    },
+
     getCurrentText: function () {
       try {
         return rangy.innerText(this.getEditorDocument());
@@ -47,8 +51,61 @@ var CKEditorAdapter = (function () {
       return this.getEditor().getData();
     },
 
+    createRange: function (begin, length) {
+      var editableElement = this.getEditableElement();
+      var range = rangy.createRange(this.getEditorDocument());
+      range.setStart(editableElement, 0);
+      range.setEnd(editableElement, 0);
+      range.moveStart('character', begin);
+      range.moveEnd('character', length);
+      return range;
+    },
 
-    extractHTMLForCheck : function () {
+    selectText: function (begin, length) {
+      var range = this.createRange(begin, length);
+      var selection = rangy.getSelection(this.getEditorDocument());
+      selection.setSingleRange(range);
+      return range;
+    },
+
+    replaceRangeContent: function (range, replacementText) {
+      range.deleteContents();
+      range.insertNode(range.createContextualFragment(replacementText));
+    },
+
+    scrollAndSelect: function (matches) {
+      var newBegin,
+        matchLength,
+        selection1,
+        selection2,
+        range1,
+        range2,
+        doc;
+
+      newBegin = matches[0].foundOffset;
+      matchLength = matches[0].flagLength + 1;
+      range1 = this.selectText(newBegin, matchLength);
+      selection1 = this.getEditor().getSelection();
+
+      if (selection1) {
+        try {
+          selection1.scrollIntoView();
+        } catch (error) {
+
+        }
+      }
+
+      // scrollIntoView need to set it again
+      doc = this.getEditorDocument();
+      selection2 = rangy.getSelection(doc);
+      range2 = rangy.createRange(doc);
+      range2.setStart(range1.startContainer, range1.startOffset);
+      range2.setEnd(range1.endContainer, range1.endOffset);
+      selection2.setSingleRange(range2);
+      return range2;
+    },
+
+    extractHTMLForCheck: function () {
       //var checkCallResult,
       //  startTime = new Date().getTime();
 
@@ -65,7 +122,7 @@ var CKEditorAdapter = (function () {
         if (this.isCheckingNow) {
           this.isCheckingNow = false;
         } else {
-          return {error:"Action is not permitted in Source mode."};
+          return {error: "Action is not permitted in Source mode."};
         }
       }
 
@@ -73,38 +130,9 @@ var CKEditorAdapter = (function () {
 
     },
 
-    registerCheckCall : function (checkInfo) {
+    registerCheckCall: function (checkInfo) {
 
     },
-
-    //requestGlobalCheck: function (acrolinxSidebar) {
-    //  var checkCallResult,
-    //    startTime = new Date().getTime();
-    //
-    //  this.html = this.getHTML();
-    //  this.currentHtmlChecking = this.html;
-    //  if (this.editor.mode === 'wysiwyg') {
-    //    this.checkStartTime = Date.now();
-    //    //TODO: remove it after server side implementation. This is a workaround
-    //    if (this.html == '') {
-    //      this.html = '<span> </span>';
-    //    }
-    //
-    //    checkCallResult = acrolinxSidebar.checkGlobal(this.html, {
-    //      inputFormat: 'HTML',
-    //      requestDescription: {
-    //        documentReference: 'filename.html'
-    //      }
-    //    });
-    //  } else {
-    //    if (this.isCheckingNow) {
-    //      this.isCheckingNow = false;
-    //    } else {
-    //      window.alert('Action is not permitted in Source mode.');
-    //    }
-    //  }
-    //
-    //},
 
 
     registerCheckResult: function (checkResult) {
@@ -164,47 +192,6 @@ var CKEditorAdapter = (function () {
     },
 
 
-    selectText: function (begin, length) {
-      var doc = this.getEditorDocument();
-      var selection = rangy.getSelection(doc);
-      var range = rangy.createRange(doc);
-
-      range.moveStart('character', begin);
-      range.moveEnd('character', length);
-      selection.setSingleRange(range);
-      return range;
-    },
-
-    scrollAndSelect: function (matches) {
-      var newBegin,
-        matchLength,
-        selection1,
-        selection2,
-        range1,
-        range2,
-        doc;
-
-      newBegin = matches[0].foundOffset;
-      matchLength = matches[0].flagLength + 1;
-      range1 = this.selectText(newBegin, matchLength);
-      selection1 = this.getEditor().getSelection();
-
-      if (selection1) {
-        try {
-          selection1.scrollIntoView();
-        } catch (error) {
-
-        }
-      }
-
-      // scrollIntoView need to set it again
-      doc = this.getEditorDocument();
-      selection2 = rangy.getSelection(doc);
-      range2 = rangy.createRange(doc);
-      range2.setStart(range1.startContainer, range1.startOffset);
-      range2.setEnd(range1.endContainer, range1.endOffset);
-      selection2.setSingleRange(range2);
-    },
 
 
     addPropertiesToMatches: function (matches) {
@@ -367,8 +354,9 @@ var CKEditorAdapter = (function () {
       return false;
     },
 
-    replaceRanges:function (checkId, matchesWithReplacement) {
+    replaceRanges: function (checkId, matchesWithReplacement) {
       var replacementText,
+        selectedRange,
         selectionFromCharPos = 1;
 
       if (this.editor.mode === 'wysiwyg') {
@@ -390,7 +378,7 @@ var CKEditorAdapter = (function () {
           }
 
           // Select the replacement, as replacement of selected flag will be done
-          this.scrollAndSelect(matchesWithReplacement);
+          selectedRange = this.scrollAndSelect(matchesWithReplacement);
         } catch (error) {
           console.log(error);
           return;
@@ -398,7 +386,8 @@ var CKEditorAdapter = (function () {
 
         // Replace the selected text
         replacementText = _.map(matchesWithReplacement, 'replacement').join('');
-        this.editor.insertText(replacementText);
+        // using editor.insertText(replacementText) caused bugs in inline mode
+        this.replaceRangeContent(selectedRange, replacementText);
 
         if ((matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength) < this.getCurrentText().length) {
           if (selectionFromCharPos > 0) {
@@ -417,8 +406,6 @@ var CKEditorAdapter = (function () {
         window.alert('Action is not permitted in Source mode.');
       }
     },
-
-
 
 
   };
