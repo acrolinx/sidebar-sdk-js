@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title></title>
     <script src="/bower_components/ckeditor/ckeditor.js"></script>
+    <script src="/bower_components/tinymce/tinymce.js"></script>
 
     <script src="/bower_components/underscore/underscore.js"></script>
     <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
@@ -14,7 +15,11 @@
     <script src="../acrolinx-sample-plugin/adapters/simpleTextAdapter.js"></script>
     <script src="../acrolinx-sample-plugin/adapters/CKEditorAdapter.js"></script>
     <script src="../acrolinx-sample-plugin/adapters/MultiEditorAdapter.js"></script>
+    <script src="../acrolinx-sample-plugin/adapters/TinyMCEAdapter.js"></script>
     <link rel="stylesheet" href="../../style.css"/>
+    <script>
+
+    </script>
 </head>
 <body onload="initAcrolinx()">
 <div id="sidebarContainer"></div>
@@ -24,11 +29,15 @@
     <pre id="errorMessage"></pre>
     <form>
         <p>Normal Text (Editable div)</p>
-        <div id="EditableDiv1" contenteditable="true" spellcheck="false">Hellow world!</div>
+        <div id="EditableDiv" contenteditable="true" spellcheck="false">Hellow world!</div>
         <p>Another Normal Text (Editable div)</p>
         <div id="EditableDiv2" contenteditable="true" spellcheck="false">Tjis migt be another source of mistakes!</div>
         <p>CK Editor</p>
         <textarea name="CkEditor" id="editor_ck" rows="10" cols="80">
+            This textt has more then a errorr.
+        </textarea>
+        <p>TinyMCE Editor</p>
+        <textarea name="TinyEditor" id="editor_tinymce" rows="10" cols="80">
             This textt has more then a errorr.
         </textarea>
         <script>
@@ -68,17 +77,15 @@
         var acrolinx = new AcrolinxPlugin(basicConf);
 
         //A simple Adapter for a Editable Div
-        var simpleAdapter1 = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv1'}));
+        var simpleAdapter = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv'}));
         var simpleAdapter2 = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv2'}));
-        //A CK Editor Adapter - for CK Editor fields
-        var ckEditorAdapter = new CKEditorAdapter(basicConf);
-
-        //An adaptor that can watch over multiple single-element adapters
+        var ckEditapter = new CKEditorAdapter(basicConf);
+        var mceAdapter = new TinyMCEAdapter(basicConf);
         var multiAdapter = new MultiEditorAdapter(basicConf);
-
-        multiAdapter.addSingleAdapter(simpleAdapter1,'EditableDiv1');
-        multiAdapter.addSingleAdapter(simpleAdapter2,'EditableDiv2');
-        multiAdapter.addSingleAdapter(ckEditorAdapter,'editor_ck');
+//        multiAdapter.addSingleAdapter(simpleAdapter,'id1');
+//        multiAdapter.addSingleAdapter(simpleAdapter2,'id2');
+        multiAdapter.addSingleAdapter(ckEditapter,'id3');
+        multiAdapter.addSingleAdapter(mceAdapter,'id4');
 
         //Register one Element-Adapter to the main Acrolinx PLugin
         acrolinx.registerAdapter(multiAdapter);
@@ -91,6 +98,11 @@
         CKEDITOR.replace('editor_ck',{
             extraPlugins: 'acrolinx'
         });
+
+        tinymce.init({selector:"#editor_tinymce",plugins:"acrolinx"});
+
+
+
     }
 
 </script>
