@@ -68,10 +68,6 @@ var CKEditorAdapter = (function () {
       return range;
     },
 
-    replaceRangeContent: function (range, replacementText) {
-      range.deleteContents();
-      range.insertNode(range.createContextualFragment(replacementText));
-    },
 
     scrollAndSelect: function (matches) {
       var newBegin,
@@ -166,10 +162,10 @@ var CKEditorAdapter = (function () {
 
       var rangyText = this.getCurrentText();
 
-      matches = this.addPropertiesToMatches(matches);
+      matches = AcrSelectionUtils.addPropertiesToMatches(matches,this.currentHtmlChecking);
 
-      rangyFlagOffsets = this.findAllFlagOffsets(rangyText, matches[0].searchPattern);
-      index = this.findBestMatchOffset(rangyFlagOffsets, matches);
+      rangyFlagOffsets = AcrSelectionUtils.findAllFlagOffsets(rangyText, matches[0].searchPattern);
+      index = AcrSelectionUtils.findBestMatchOffset(rangyFlagOffsets, matches);
 
       offset = rangyFlagOffsets[index];
       matches[0].foundOffset = offset;
@@ -191,168 +187,6 @@ var CKEditorAdapter = (function () {
       }
     },
 
-
-
-
-    addPropertiesToMatches: function (matches) {
-      var textContent,
-        htmlContentBeforeFlag,
-        textContentBeforeFlag,
-        regexForHTMLTag,
-        match,
-        startOffset = matches[0].range[0],
-        endOffset = matches[matches.length - 1].range[1];
-
-      // Convert html offset to text offset
-      htmlContentBeforeFlag = this.getFlagContents(0, startOffset);
-      textContentBeforeFlag = this.getTextContent(htmlContentBeforeFlag);
-      matches[0].textOffset = textContentBeforeFlag.length;
-      if (matches[0].textOffset === 0) {
-        //pattern to get html tags
-        regexForHTMLTag = /<([a-zA-Z][a-zA-Z0-9]*)\b[^>]*/gm;
-
-        while ((match = regexForHTMLTag.exec(htmlContentBeforeFlag)) !== null) {
-          break;
-        }
-
-        startOffset = matches[0].textOffset + match.input.length;
-      }
-      matches[0].htmlContent = this.getFlagContents(startOffset, endOffset);
-
-      // Convert Flag HTML into inner Text
-      textContent = this.getTextContent(matches[0].htmlContent);
-      textContent = this.escapeRegExp(textContent);
-      matches[0].textContent = textContent;
-      matches[0].searchPattern = this.createSearchPattern(matches);
-      return matches;
-    },
-
-    getFlagContents: function (begin, end) {
-      return this.currentHtmlChecking.substr(begin, end - begin);
-    },
-
-    findAllFlagOffsets: function (paragraph, stringToPattern) {
-      var matchedWords,
-        pattern,
-        flagOffsets = [];
-
-      pattern = new RegExp(stringToPattern, 'gm');
-      var lastIndex = null;
-      while ((matchedWords = pattern.exec(paragraph)) !== null) {
-        var index = matchedWords.index;
-        if (lastIndex === index) {
-          break;
-        }
-        lastIndex = index;
-        flagOffsets.push(index);
-      }
-
-      return flagOffsets;
-    },
-
-
-    findBestMatchOffset: function (flagHtmlOffsets, matches) {
-      var minOffsetIndex = -1,
-        originalFlagOffset = matches[0].textOffset;
-
-      if (flagHtmlOffsets.length > 0) {
-        minOffsetIndex = 0;
-        var minOffset = Math.abs(flagHtmlOffsets[minOffsetIndex] - originalFlagOffset);
-
-        for (var i = 0; i < flagHtmlOffsets.length; i++) {
-          if (Math.abs(flagHtmlOffsets[i] - originalFlagOffset) < minOffset) {
-            minOffsetIndex = i;
-            minOffset = Math.abs(flagHtmlOffsets[minOffsetIndex] - originalFlagOffset);
-          }
-        }
-      }
-      return minOffsetIndex;
-    },
-    getTextContent: function (html) {
-      var tmpHTMLElement = $('<div/>').html(html);
-      return tmpHTMLElement.text().replace(/\t+/g, '');
-    },
-
-
-    escapeRegExp: function (string) {
-      return string.replace(/([\".*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
-    },
-
-    isFlagContainsOnlySpecialChar: function (flaggedContent) {
-      var pattern = /\w/g;
-      return !pattern.test(flaggedContent);
-    },
-
-    /* Add word boundary only in following three cases
-     * 1. The very next character of the match is also valid word character
-     * 2. When the last character of the match is not hyphen (45)
-     * 3. When atleast one character of flagged word is a 'word' character
-     * (#3) is used to handle flags containing only punctuations
-     */
-    createSearchPattern: function (matches) {
-      var searchPattern = matches[0].textContent,
-        wordBoundary = '\\b';
-
-      if (this.shouldApplyWordBoundary(matches) === true) {
-        searchPattern = wordBoundary + searchPattern + wordBoundary;
-      }
-      return searchPattern;
-    },
-
-    shouldApplyWordBoundary: function (matches) {
-      var offset = matches[matches.length - 1].range[1],
-        lastChar,
-        nextChar,
-        firstChar,
-        flaggedWords,
-        firstFlaggedWord,
-        lastFlaggedWord;
-
-      nextChar = this.getFlagContents(offset, offset + 1);
-      flaggedWords = matches[0].content.split(/\\s+/);
-      firstFlaggedWord = flaggedWords[0];
-      firstChar = firstFlaggedWord.substr(0, 1);
-      lastFlaggedWord = firstFlaggedWord;
-
-      if (flaggedWords.length > 1) {
-        lastFlaggedWord = flaggedWords[1];
-      }
-
-      lastChar = lastFlaggedWord.substr(lastFlaggedWord.length - 1, 1);
-
-      // Single flagged word and if word contains apostrophe within, then don't use word boundary
-      // as the suggestion for "dan't" is coming as "da", which is part of word :/
-      /*
-       if(flaggedWords.length ==1){
-       if(firstFlaggedWord.indexOf('\'') < firstFlaggedWord.length){
-       return false;
-       }
-       }
-       */
-
-      if ((lastFlaggedWord.indexOf('&') > -1) && (lastFlaggedWord.indexOf(';') > -1) && (lastFlaggedWord.indexOf(';') > lastFlaggedWord.indexOf('&'))) {
-        return false;
-      }
-
-      if ((firstFlaggedWord.indexOf('&') > -1) && (firstFlaggedWord.indexOf(';') > -1) && (firstFlaggedWord.indexOf(';') > firstFlaggedWord.indexOf('&'))) {
-        return false;
-      }
-
-      if ((this.isAlphaNumeral(firstChar) && this.isAlphaNumeral(lastChar) && this.isAlphaNumeral(nextChar)) &&
-        lastChar.charCodeAt(0) !== 45 && !this.isFlagContainsOnlySpecialChar(matches[0].htmlContent)) {
-        return true;
-      }
-      return false;
-    },
-
-    isAlphaNumeral: function (character) {
-
-      if ((character.charCodeAt(0) >= 48 && character.charCodeAt(0) <= 90 ) ||
-        (character.charCodeAt(0) >= 97 && character.charCodeAt(0) <= 126)) {
-        return true;
-      }
-      return false;
-    },
 
     replaceRanges: function (checkId, matchesWithReplacement) {
       var replacementText,
@@ -387,7 +221,7 @@ var CKEditorAdapter = (function () {
         // Replace the selected text
         replacementText = _.map(matchesWithReplacement, 'replacement').join('');
         // using editor.insertText(replacementText) caused bugs in inline mode
-        this.replaceRangeContent(selectedRange, replacementText);
+        AcrSelectionUtils.replaceRangeContent(selectedRange, replacementText);
 
         if ((matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength) < this.getCurrentText().length) {
           if (selectionFromCharPos > 0) {
