@@ -3,6 +3,7 @@
  */
 'use strict';
 
+
 var MultiEditorAdapter = (function () {
   var cls = function (conf) {
     this.config = conf;
@@ -12,8 +13,19 @@ var MultiEditorAdapter = (function () {
 
 
   cls.prototype = {
-    addSingleAdapter: function (singleAdapter, id) {
-      this.adapters.push({id: id, adapter: singleAdapter});
+    addSingleAdapter: function (singleAdapter, wrapper,id) {
+      if (wrapper === undefined) {
+        wrapper = 'div';
+      }
+      if (id === undefined) {
+        id = 'acrolinx_integration' + this.adapters.length;
+      }
+      this.adapters.push({id: id, adapter: singleAdapter,wrapper:wrapper});
+    },
+
+    getWrapperTag: function (wrapper) {
+      var tag = wrapper.split(" ")[0];
+      return tag;
     },
 
     extractHTMLForCheck: function () {
@@ -21,9 +33,10 @@ var MultiEditorAdapter = (function () {
       var html = '';
       for (var i = 0; i < this.adapters.length; i++) {
         var el = this.adapters[i];
-        var startText = '<div id="' + el.id + '">';
+        var tag = this.getWrapperTag(el.wrapper);
+        var startText = '<' + el.wrapper +  ' id="' + el.id + '">';
         var elHtml = el.adapter.extractHTMLForCheck().html;
-        var newTag = startText + elHtml + '</div>';
+        var newTag = startText + elHtml + '</' + tag + '>';
         el.start = html.length + startText.length;
         el.end = html.length + startText.length + elHtml.length;
         html += newTag;
