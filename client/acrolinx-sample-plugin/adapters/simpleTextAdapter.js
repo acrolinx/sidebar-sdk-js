@@ -71,18 +71,6 @@ var SimpleTextAdapter = (function () {
 
 
 
-    //requestGlobalCheck: function(acrolinxSidebar) {
-    //  var html = this.getHTML();//getHTML().trim();
-    //  var checkInfo = acrolinxSidebar.checkGlobal(html, {
-    //    inputFormat: 'HTML',
-    //    requestDescription: {
-    //      documentReference: 'filename.html'
-    //    }
-    //  });
-    //  console.log('Got checkId:', checkInfo.checkId);
-    //
-    //},
-
     registerCheckCall : function (checkInfo) {
 
     },

@@ -167,19 +167,10 @@ var TinyMCEAdapter = (function () {
       var replacementText,
         selectionFromCharPos = 1;
 
-      //if (editor.mode === 'wysiwyg') {
       try {
         // this is the selection on which replacement happens
         this.selectMatches(checkId, matchesWithReplacement);
 
-        /*
-         CKEDITOR & RANGY DEFECT: Replacement of first word of document or table cell
-         (after selection) throws an error
-         SOLUTION:
-         1. Select from the second character of the word
-         2. Replace the selection
-         3. Delete the first character
-         */
         if (matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength < this.getCurrentText().length) {
           matchesWithReplacement[0].foundOffset += selectionFromCharPos;
           matchesWithReplacement[0].flagLength -= selectionFromCharPos;
@@ -210,9 +201,6 @@ var TinyMCEAdapter = (function () {
       // Select the replaced flag
       this.selectText(matchesWithReplacement[0].foundOffset, replacementText.length);
 
-      //} else {
-      //  window.alert('Action is not permitted in Source mode.');
-      //}
     },
 
 

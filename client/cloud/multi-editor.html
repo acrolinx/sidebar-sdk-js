@@ -79,17 +79,17 @@
 
         //A simple Adapter for a Editable Div
         var simpleAdapter = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv'}));
-        var simpleAdapter2 = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv2'}));
-        var ckEditapter = new CKEditorAdapter(basicConf);
-        var mceAdapter = new TinyMCEAdapter(basicConf);
-        var multiAdapter = new MultiEditorAdapter(basicConf);
-//        multiAdapter.addSingleAdapter(simpleAdapter,'id1');
+        //var simpleAdapter2 = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv2'}));
+//        var ckEditapter = new CKEditorAdapter(basicConf);
+//        var mceAdapter = new TinyMCEAdapter(basicConf);
+//        var multiAdapter = new MultiEditorAdapter(basicConf);
+//        multiAdapter.addSingleAdapter(simpleAdapter);
 //        multiAdapter.addSingleAdapter(simpleAdapter2,'id2');
-        multiAdapter.addSingleAdapter(ckEditapter);
-        multiAdapter.addSingleAdapter(mceAdapter,'span class="hello"');
+//        multiAdapter.addSingleAdapter(ckEditapter,'span class="hello"');
+//        multiAdapter.addSingleAdapter(mceAdapter,'span class="hello"');
 
         //Register one Element-Adapter to the main Acrolinx PLugin
-        acrolinx.registerAdapter(multiAdapter);
+        acrolinx.registerAdapter(simpleAdapter);
 
 
         //Init Acrolinx Plugin.
