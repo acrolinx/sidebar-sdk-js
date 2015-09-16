@@ -24,7 +24,7 @@
 </head>
 <body onload="initAcrolinx()">
 <p>
-    <a href="index.html">Simple Sidebar Cloud</a> | <a href="../../on-premise/index.html">Sidebar on Premise</a> | <a href="https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/docs/index.html" target="_blank">Open Acrolinx Sidebar API Documentation</a>
+    <a href="index.html">Simple Sidebar On Premise</a> | <a href="https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/docs/index.html" target="_blank">Open Acrolinx Sidebar API Documentation</a>
 </p>
 <div id="sidebarContainer"></div>
 <div id="app" style="width: 800px">
@@ -50,22 +50,12 @@
     </form>
 </div>
 
-<script type="text/javascript" src="config.js"></script>
+<script src="example.js"></script>
 <script type="text/javascript">
     'use strict';
 
 
     function initAcrolinx() {
-        var basicConf = {
-            sidebarType: 'CLOUD',
-            sidebarContainerId: 'sidebarContainer',
-            documentId: acrolinxExampleConfig.documentId,
-            integrationFacadeBaseUrl: 'https://acrolinx-integrations.acrolinx-cloud.com/api/v1/integration',
-            requestAccessTokenCallback: function (onGotAccessToken) {
-                requestAccessToken(acrolinxExampleConfig.documentId).done(onGotAccessToken);
-            }
-
-        };
 
         //Init the main Acrolinx Plugin
         var acrolinx = new AcrolinxPlugin(basicConf);

@@ -22,12 +22,13 @@
 
 'use strict';
 
-initAcrolinxSamplePlugin({
+var basicConf = {
   sidebarType: 'ON_PREMISE',
   sidebarContainerId: 'sidebarContainer',
   editorId: 'editor',
-  serverAddress: 'http://<SERVER_ADDRESS>:8031',
-  clientSignature: '<SIGNATURE_PROVIDED_BY_ACROLINX>'
-});
+  serverAddress: 'http://<SERVER NAME>:8031',
+  clientSignature: '<CLIENT SIGNATURE>'
+};
+
 
 

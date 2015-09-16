@@ -22,7 +22,7 @@ For more information visit: http://www.acrolinx.com
   <title>Acrolinx Sidebar Example</title>
   <link rel="stylesheet" href="../../style.css"/>
 </head>
-<body>
+<body onload="initAcrolinx()">
 <div id="sidebarContainer"></div>
 
 <div id="app">
@@ -31,7 +31,7 @@ For more information visit: http://www.acrolinx.com
   <pre id="errorMessage"></pre>
 
   <p>
-    <a href="../../on-premise/index.html">Sidebar on Premise</a> | <a href="https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/docs/index.html" target="_blank">Open Acrolinx Sidebar API Documentation</a>
+    <a href="multi-editor.html">Multi-Editor Sidebar Cloud</a> | <a href="../../on-premise/index.html">Sidebar on Premise</a> | <a href="https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/docs/index.html" target="_blank">Open Acrolinx Sidebar API Documentation</a>
   </p>
 
   <div id="editor" contenteditable="true" spellcheck="false">This textt has more then a errorr.</div>
@@ -43,8 +43,36 @@ For more information visit: http://www.acrolinx.com
 <script src="/bower_components/rangy/rangy-textrange.js"></script>
 
 <script type="text/javascript" src="config.js"></script>
-<script type="text/javascript" src="../acrolinx-sample-plugin/plugin.js"></script>
-<script type="text/javascript" src="example.js"></script>
+<script src="../acrolinx-sample-plugin/multi_plugin.js"></script>
+<script src="../acrolinx-sample-plugin/adapters/simpleTextAdapter.js"></script>
 
+<script>
+  function initAcrolinx() {
+    var basicConf = {
+      sidebarType: 'CLOUD',
+      sidebarContainerId: 'sidebarContainer',
+      editorId: 'editor',
+      documentId: acrolinxExampleConfig.documentId,
+      integrationFacadeBaseUrl: 'https://acrolinx-integrations.acrolinx-cloud.com/api/v1/integration',
+      requestAccessTokenCallback: function (onGotAccessToken) {
+        requestAccessToken(acrolinxExampleConfig.documentId).done(onGotAccessToken);
+      }
+
+    };
+
+    //Init the main Acrolinx Plugin
+    var acrolinx = new AcrolinxPlugin(basicConf);
+
+    //A simple Adapter for a Editable Div
+    var simpleAdapter = new SimpleTextAdapter(basicConf);
+    //Register one Element-Adapter to the main Acrolinx PLugin
+    acrolinx.registerAdapter(simpleAdapter);
+
+
+    //Init Acrolinx Plugin.
+    acrolinx.init();
+  }
+
+</script>
 </body>
 </html>

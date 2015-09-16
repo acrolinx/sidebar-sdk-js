@@ -22,14 +22,14 @@ For more information visit: http://www.acrolinx.com
   <title>Acrolinx Sidebar Example On Premise</title>
   <link rel="stylesheet" href="../style.css"/>
 </head>
-<body>
+<body onload="initAcrolinx()">
 <div id="sidebarContainer"></div>
 
 <div id="app">
   <h1>Acrolinx Sidebar Example On Premise</h1>
 
   <p>
-    <a href="../cloud/index.html">Sidebar Cloud</a> | <a href="https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/docs/index.html" target="_blank">Open Acrolinx Sidebar API Documentation</a>
+    <a href="multi-editor.html">Multi-Editor Sidebar On Premise</a> | <a href="../cloud/index.html">Sidebar Cloud</a> | <a href="https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/docs/index.html" target="_blank">Open Acrolinx Sidebar API Documentation</a>
   </p>
 
   <div id="editor" contenteditable="true" spellcheck="false">This textt has more then a errorr.</div>
@@ -39,9 +39,27 @@ For more information visit: http://www.acrolinx.com
 <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/rangy/rangy-core.js"></script>
 <script src="/bower_components/rangy/rangy-textrange.js"></script>
+<script src="../acrolinx-sample-plugin/multi_plugin.js"></script>
+<script src="../acrolinx-sample-plugin/adapters/simpleTextAdapter.js"></script>
+<script src="example.js"></script>
 
-<script type="text/javascript" src="../acrolinx-sample-plugin/plugin.js"></script>
-<script type="text/javascript" src="example.js"></script>
 
+<script>
+  function initAcrolinx() {
+
+    //Init the main Acrolinx Plugin
+    var acrolinx = new AcrolinxPlugin(basicConf);
+
+    //A simple Adapter for a Editable Div
+    var simpleAdapter = new SimpleTextAdapter(basicConf);
+    //Register one Element-Adapter to the main Acrolinx PLugin
+    acrolinx.registerAdapter(simpleAdapter);
+
+
+    //Init Acrolinx Plugin.
+    acrolinx.init();
+  }
+
+</script>
 </body>
 </html>
