@@ -1,5 +1,21 @@
-/**
- * Created by pricope on 8/31/2015.
+/*
+ *
+ * * Copyright 2015 Acrolinx GmbH
+ * *
+ * * Licensed under the Apache License, Version 2.0 (the "License");
+ * * you may not use this file except in compliance with the License.
+ * * You may obtain a copy of the License at
+ * *
+ * * http://www.apache.org/licenses/LICENSE-2.0
+ * *
+ * * Unless required by applicable law or agreed to in writing, software
+ * * distributed under the License is distributed on an "AS IS" BASIS,
+ * * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * * See the License for the specific language governing permissions and
+ * * limitations under the License.
+ * *
+ * * For more information visit: http://www.acrolinx.com
+ *
  */
 /*global AcrSelectionUtils */
 'use strict';
@@ -7,32 +23,38 @@
 
 var CKEditorAdapter = (function () {
 
-  window.acrolinxCKRegistry = {};
+  //window.acrolinxCKRegistry = {};
 
   var cls = function (conf) {
     this.config = conf;
     this.editorId = conf.editorId;
-    window.acrolinxCKRegistry[conf.editorId] = this;
-
-    if (CKEDITOR.plugins.get('acrolinx') === null) {
-      CKEDITOR.plugins.add('acrolinx', {
-        icons: 'acrolinx',
-        init: onCkInit
-      });
-    }
+    this.editor = null;
+    //window.acrolinxCKRegistry[conf.editorId] = this;
+    //
+    //if (CKEDITOR.plugins.get('acrolinx') === null) {
+    //  CKEDITOR.plugins.add('acrolinx', {
+    //    icons: 'acrolinx',
+    //    init: onCkInit
+    //  });
+    //}
 
 
   };
 
-  var onCkInit = function (editor) {
-    window.acrolinxCKRegistry[editor.name].editor = editor;
-  };
+  //var onCkInit = function (editor) {
+  //  window.acrolinxCKRegistry[editor.name].editor = editor;
+  //};
 
 
   cls.prototype = {
 
 
     getEditor: function () {
+      if (this.editor === null) {
+        if (CKEDITOR.instances.hasOwnProperty(this.editorId)) {
+          this.editor = CKEDITOR.instances[this.editorId];
+        }
+      }
       return this.editor;
     },
 

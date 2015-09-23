@@ -73,7 +73,7 @@
         //A simple Adapter for a Editable Div
         var simpleAdapter = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv'}));
         var ckEditapter = new CKEditorAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_ck'}));
-        var mceAdapter = new TinyMCEAdapter(basicConf);
+        var mceAdapter = new TinyMCEAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_tinymce'}));
         var multiAdapter = new MultiEditorAdapter(basicConf);
         multiAdapter.addSingleAdapter(simpleAdapter);
         multiAdapter.addSingleAdapter(ckEditapter,'span class="hello"');
@@ -88,11 +88,9 @@
 
 
         CKEDITOR.replace('editor_ck',{
-            extraPlugins: 'acrolinx',
             height:50
         });
-
-        tinymce.init({selector:"#editor_tinymce",plugins:"acrolinx",height:50});
+        tinymce.init({selector:"#editor_tinymce",height:50});
 
 
 
