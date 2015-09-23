@@ -1,22 +1,31 @@
 /**
  * Created by pricope on 8/31/2015.
  */
-
+/*global AcrSelectionUtils */
 'use strict';
+
+
 var CKEditorAdapter = (function () {
+
+  window.acrolinxCKRegistry = {};
+
   var cls = function (conf) {
     this.config = conf;
+    this.editorId = conf.editorId;
+    window.acrolinxCKRegistry[conf.editorId] = this;
 
-    CKEDITOR.plugins.add('acrolinx', {
-      icons: 'acrolinx',
-      init: _.bind(onCkInit, this)
-    });
+    if (CKEDITOR.plugins.get('acrolinx') === null) {
+      CKEDITOR.plugins.add('acrolinx', {
+        icons: 'acrolinx',
+        init: onCkInit
+      });
+    }
 
 
   };
 
   var onCkInit = function (editor) {
-    this.editor = editor;
+    window.acrolinxCKRegistry[editor.name].editor = editor;
   };
 
 

@@ -1,6 +1,7 @@
 /**
  * Created by pricope on 9/8/2015.
  */
+ 'use strict';
 var AcrSelectionUtils = {
   isFlagContainsOnlySpecialChar: function (flaggedContent) {
     var pattern = /\w/g;

@@ -1,6 +1,9 @@
 /**
  * Created by pricope on 9/7/2015.
  */
+/*global AcrSelectionUtils */
+/*global tinymce */
+
 'use strict';
 var TinyMCEAdapter = (function () {
   var cls = function (conf) {
