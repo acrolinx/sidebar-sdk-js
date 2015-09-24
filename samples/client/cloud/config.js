@@ -21,7 +21,7 @@
 'use strict';
 
 var acrolinxExampleConfig = {
-  documentId: '
+  documentId: ''
 };
 
 function requestAccessToken(documentId) {
