@@ -23,27 +23,13 @@
 
 var CKEditorAdapter = (function () {
 
-  //window.acrolinxCKRegistry = {};
-
   var cls = function (conf) {
     this.config = conf;
     this.editorId = conf.editorId;
     this.editor = null;
-    //window.acrolinxCKRegistry[conf.editorId] = this;
-    //
-    //if (CKEDITOR.plugins.get('acrolinx') === null) {
-    //  CKEDITOR.plugins.add('acrolinx', {
-    //    icons: 'acrolinx',
-    //    init: onCkInit
-    //  });
-    //}
-
 
   };
 
-  //var onCkInit = function (editor) {
-  //  window.acrolinxCKRegistry[editor.name].editor = editor;
-  //};
 
 
   cls.prototype = {
@@ -133,8 +119,6 @@ var CKEditorAdapter = (function () {
     },
 
     extractHTMLForCheck: function () {
-      //var checkCallResult,
-      //  startTime = new Date().getTime();
 
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
@@ -172,14 +156,7 @@ var CKEditorAdapter = (function () {
     selectRanges: function (checkId, matches) {
       if (this.editor.mode === 'wysiwyg') {
 
-        //try {
         this.selectMatches(checkId, matches);
-        //} catch (error) {
-        //
-        //  //window.alert(error);
-        //  console.log(error);
-        //  return;
-        //}
 
       } else {
         window.alert('Action is not permitted in Source mode.');

@@ -18,6 +18,17 @@
  *
  */
 
+'use strict';
+
 var acrolinxExampleConfig = {
-  documentId: 'b26ef877-8595-4dc5-89b1-94792e9c3201'
+  documentId: '
 };
+
+function requestAccessToken(documentId) {
+  return $.ajax({
+    url: '/token/' + documentId,
+    method: 'POST'
+  }).fail(function (error) {
+    $('#errorMessage').show().text(JSON.stringify(error.responseJSON, null, 2));
+  });
+}

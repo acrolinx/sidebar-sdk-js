@@ -19,7 +19,8 @@
  */
 
 module.exports = function (grunt) {
-  var exampleAuthServer = require('./server/cloud/example-auth-server');
+  var exampleAuthServer = require('./samples/server/cloud/example-auth-server');
+  var name = 'acrolinx-sidebar-integration';
 
   var grunt_config = {
     watch: {
@@ -28,14 +29,14 @@ module.exports = function (grunt) {
           livereload: '<%= connect.options.livereload %>'
         },
         files: [
-          'client/**/*'
+          'src/**/*','distrib/**/*'
         ]
       },
       jshint: {
         options: {
           atBegin: true
         },
-        files: ['client/**/*.js'],
+        files: ['src/**/*.js'],
         tasks: ['jshint']
       }
     },
@@ -53,7 +54,8 @@ module.exports = function (grunt) {
           middleware: function (connect) {
             var proxy = require('grunt-connect-proxy/lib/utils').proxyRequest;
             return [
-              connect.static('client'),
+              connect().use('/', connect.static('./samples/client')),
+              connect().use('/distrib', connect.static('./distrib')),
               connect().use('/bower_components', connect.static('./bower_components')),
               connect().use('/token', exampleAuthServer.newTokenHandler),
               proxy
@@ -65,11 +67,37 @@ module.exports = function (grunt) {
     },
 
     jshint: {
-      myFiles: ['client/**/*.js', 'server/**/*.js'],
+      myFiles: ['src/**/*.js', 'samples/**/*.js'],
       options: {
         jshintrc: ".jshintrc"
       }
     },
+
+
+    concat: {
+      options: {
+        stripBanners:true
+      },
+      target : {
+        src : ['src/**/*.js'],
+        dest : 'distrib/' + name +'.js'
+      }
+    },
+
+    uglify: {
+      options: {
+
+        sourceMapRoot: '../',
+        sourceMap: 'distrib/'+name+'.min.js.map',
+        sourceMapUrl: name+'.min.js.map'
+      },
+      target : {
+        src : ['src/**/*.js'],
+        dest : 'distrib/' + name + '.min.js'
+      }
+    },
+
+    clean: ["distrib/*"],
 
     bower: {
       options: {
@@ -91,7 +119,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', ['build', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
-  grunt.registerTask('build', ['bower:install']);
+  grunt.registerTask('build', ['bower:install','distrib']);
+  grunt.registerTask('distrib', ['clean','concat','uglify']);
 
 
 };

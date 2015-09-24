@@ -136,14 +136,9 @@ var AcrolinxPlugin = (function () {
             });
             adapter.registerCheckCall(checkInfo);
           }
-          //adapter.requestGlobalCheck(sidebarContentWindow.acrolinxSidebar);
-          //currentHtmlChecking = html;
         },
 
         onCheckResult: function (checkResult) {
-          //console.log('onCheckResult: ', checkResult);
-          //lastCheckedHtml = currentHtmlChecking;
-          //return [];
           return adapter.registerCheckResult(checkResult);
         },
 
@@ -208,9 +203,6 @@ var AcrolinxPlugin = (function () {
   };
 
   cls.prototype = {
-    //registerEditor: function (editorId,editorType) {
-    //  this.config.editorId = editorId;
-    //},
 
     registerAdapter: function (adapter) {
       this.adapter = adapter;

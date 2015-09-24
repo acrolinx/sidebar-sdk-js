@@ -12,18 +12,18 @@ After the meeting, we provide you with test server credentials and configuration
 
 Before you can run this example you need to configure some settings in these files:
 
-  * server/cloud/config.js
+  * samples/server/cloud/config.js
     * username
     * password
     * clientId
     * clientSecret
-  * client/cloud/config.js
+  * samples/client/cloud/config.js
     * documentId
 
 ## Configuration of the sidebar on premise example
 
 Before you can run this example you need to configure some settings in these files:
-  * client/on-premise/example.js
+  * samples/client/on-premise/example.js
     * clientSignature
     * serverAddress
 
@@ -42,7 +42,7 @@ Now you can start the development server by typing:
 
 Now open [http://localhost:9002](http://localhost:9002) in your web-browser.
 
-If you modify the server/cloud/config.js file, you need to restart the application.
+If you modify the samples/server/cloud/config.js file, you need to restart the application.
 
 ## Sidebar API Documentation
 

@@ -80,11 +80,6 @@ var TinyMCEAdapter = (function () {
       text.scrollIntoView();
       text.remove();
 
-      //var content = sel.getContent();
-      //sel.setContent("<span id='acrolinx_hack'>&nbsp;</span>" + content);
-      //var ref = $(getEditor().getBody()).find('#acrolinx_hack').get(0);
-      //ref.scrollIntoView();
-      //ref.remove();
 
     },
 
@@ -200,7 +195,6 @@ var TinyMCEAdapter = (function () {
 
       // Replace the selected text
       replacementText = _.map(matchesWithReplacement, 'replacement').join('');
-      //editor.insertText(replacementText);
       this.editor.selection.setContent(replacementText);
 
       if ((matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength) < this.getCurrentText().length) {
@@ -217,9 +211,6 @@ var TinyMCEAdapter = (function () {
       this.selectText(matchesWithReplacement[0].foundOffset, replacementText.length);
 
     },
-
-
-
 
   };
 
