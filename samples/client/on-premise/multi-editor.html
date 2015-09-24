@@ -23,7 +23,7 @@
 </p>
 <div id="sidebarContainer"></div>
 <div id="app" style="width: 800px">
-    <h1>Acrolinx Sidebar Example Cloud</h1>
+    <h1>Acrolinx Sidebar Example On-Premise</h1>
 
     <pre id="errorMessage"></pre>
     <form>
@@ -57,8 +57,8 @@
 
         //A simple Adapter for a Editable Div
         var simpleAdapter = new SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv'}));
-        var ckEditapter = new CKEditorAdapter(basicConf);
-        var mceAdapter = new TinyMCEAdapter(basicConf);
+        var ckEditapter = new CKEditorAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_ck'}));
+        var mceAdapter = new TinyMCEAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_tinymce'}));
         var multiAdapter = new MultiEditorAdapter(basicConf);
         multiAdapter.addSingleAdapter(simpleAdapter);
         multiAdapter.addSingleAdapter(ckEditapter,'span class="hello"');
