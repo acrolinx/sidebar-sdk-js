@@ -1,8 +1,8 @@
 {
-  "name": "sidebar-example",
-  "description": "Acrolinx sidebar example",
+  "name": "acrolinx-sidebar-integration",
+  "description": "Acrolinx Sidebar Integration (with Samples)",
   "private": true,
-  "version": "13.0.0",
+  "version": "0.2.0",
   "license": "Apache-2.0",
   "dependencies": {
     "jquery": "~1.11.0",
