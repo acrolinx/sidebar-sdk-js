@@ -122,9 +122,8 @@ var AcrolinxPlugin = (function () {
           }
         },
 
-        requestGlobalCheck: function () {
-          console.log('requestGlobalCheck');
-          var html = adapter.extractHTMLForCheck();
+
+        requestGlobalCheckSync: function (html) {
           if (html.hasOwnProperty("error")) {
             window.alert(html.error);
           } else {
@@ -135,6 +134,21 @@ var AcrolinxPlugin = (function () {
               }
             });
             adapter.registerCheckCall(checkInfo);
+          }
+
+        },
+
+        requestGlobalCheck: function () {
+          console.log('requestGlobalCheck');
+          var phtml = adapter.extractHTMLForCheck();
+          if (phtml.hasOwnProperty("then")) {
+            phtml.then(function (html) {
+              this.requestGlobalCheckSync(html);
+
+            });
+          } else {
+            this.requestGlobalCheckSync(phtml);
+
           }
         },
 
