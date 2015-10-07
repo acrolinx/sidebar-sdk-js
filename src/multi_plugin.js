@@ -142,8 +142,9 @@ var AcrolinxPlugin = (function () {
           console.log('requestGlobalCheck');
           var phtml = adapter.extractHTMLForCheck();
           if (phtml.then !== undefined) {
+            var self = this;
             phtml.then(function (html) {
-              this.requestGlobalCheckSync(html);
+              self.requestGlobalCheckSync(html);
 
             });
           } else {
