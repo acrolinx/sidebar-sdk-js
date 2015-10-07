@@ -141,7 +141,7 @@ var AcrolinxPlugin = (function () {
         requestGlobalCheck: function () {
           console.log('requestGlobalCheck');
           var phtml = adapter.extractHTMLForCheck();
-          if (phtml.hasOwnProperty("then")) {
+          if (phtml.then !== undefined) {
             phtml.then(function (html) {
               this.requestGlobalCheckSync(html);
 
