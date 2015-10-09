@@ -131,11 +131,12 @@ var AcrSelectionUtils = {
       //pattern to get html tags
       regexForHTMLTag = /<([a-zA-Z][a-zA-Z0-9]*)\b[^>]*/gm;
 
-      while ((match = regexForHTMLTag.exec(htmlContentBeforeFlag)) !== null) {
-        break;
+
+      if ((match = regexForHTMLTag.exec(htmlContentBeforeFlag)) !== null) {
+        startOffset = matches[0].textOffset + match.input.length;
       }
 
-      startOffset = matches[0].textOffset + match.input.length;
+
     }
     matches[0].htmlContent = AcrSelectionUtils.getFlagContents(startOffset, endOffset,currentHtmlChecking);
 
