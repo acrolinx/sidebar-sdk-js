@@ -76,7 +76,12 @@ module.exports = function (grunt) {
 
     concat: {
       options: {
-        stripBanners:true
+        stripBanners:true,
+        banner: "'use strict';\n",
+        process: function(src, filepath) {
+          return '// Source: ' + filepath + '\n' +
+              src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+        }
       },
       target : {
         src : ['src/**/*.js'],
