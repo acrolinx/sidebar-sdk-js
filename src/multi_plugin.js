@@ -21,214 +21,213 @@
 'use strict';
 var AcrolinxPlugin = (function () {
 
-  var CLIENT_COMPONENTS = [
-    {
-      id: 'com.acrolinx.sidebarexample',
-      name: 'Acrolinx Sidebar Example Client',
-      version: '1.2.3.999',
-      category: 'MAIN'
-    }
-  ];
-
-  function initAcrolinxSamplePlugin(config,editorAdapter) {
-    var currentHtmlChecking;
-    var lastCheckedHtml;
-    var $sidebarContainer = $('#' + config.sidebarContainerId);
-    var $sidebar = $('<iframe></iframe>');
-    $sidebarContainer.append($sidebar);
-    var sidebarContentWindow = $sidebar.get(0).contentWindow;
-
-    var adapter = editorAdapter;
-
-    function onSidebarLoaded () {
-      function initSidebarCloud() {
-        config.requestAccessTokenCallback(function (accessToken) {
-          sidebarContentWindow.acrolinxSidebar.init({
-            clientComponents: CLIENT_COMPONENTS,
-            token: accessToken,
-            contentPieceUuid: config.documentId,
-            integrationFacadeBaseUrl: config.integrationFacadeBaseUrl
-          });
-        });
-      }
-
-      function initSidebarOnPremise() {
-        sidebarContentWindow.acrolinxSidebar.init({
-          clientComponents: CLIENT_COMPONENTS,
-          clientSignature: config.clientSignature,
-          showServerSelector: true,
-          serverAddress: config.serverAddress
-
-          // These settings are only effective on servers with disabled checking profiles.
-          //checkSettings: {
-          //  'language': 'en',
-          //  'ruleSetName': 'Plain English',
-          //  'termSets': ['Medical'],
-          //  'checkSpelling': true,
-          //  'checkGrammar': true,
-          //  'checkStyle': true,
-          //  'checkReuse': false,
-          //  'harvestTerms': false,
-          //  'checkSeo': false,
-          //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
-          //}
-
-          // These settings are only effective on servers with disabled checking profiles.
-          //defaultCheckSettings: {
-          //  'language': 'en',
-          //  'ruleSetName': 'Plain English',
-          //  'termSets': ['Medical'],
-          //  'checkSpelling': true,
-          //  'checkGrammar': true,
-          //  'checkStyle': true,
-          //  'checkReuse': false,
-          //  'harvestTerms': false,
-          //  'checkSeo': false,
-          //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
-          //}
-
-        });
-      }
-
-      console.log('Install acrolinxPlugin in sidebar.');
-      sidebarContentWindow.acrolinxPlugin = {
-
-        requestInit: function () {
-          console.log('requestInit');
-          if (config.sidebarType === 'CLOUD') {
-            initSidebarCloud();
-          } else {
-            initSidebarOnPremise();
-          }
-        },
-
-        onInitFinished: function (initFinishedResult) {
-          console.log('onInitFinished: ', initFinishedResult);
-          if (initFinishedResult.error) {
-            window.alert(initFinishedResult.error.message);
-          }
-        },
-
-        configure: function (configuration) {
-          console.log('configure: ', configuration);
-        },
-
-        requestAccessToken: function () {
-          var requestAccessTokenCallback = config.requestAccessTokenCallback;
-          if (requestAccessTokenCallback) {
-            requestAccessTokenCallback(function (accessToken) {
-              sidebarContentWindow.acrolinxSidebar.setAccessToken(accessToken);
-            });
-          }
-        },
-
-
-        requestGlobalCheckSync: function (html) {
-          if (html.hasOwnProperty("error")) {
-            window.alert(html.error);
-          } else {
-            var checkInfo = sidebarContentWindow.acrolinxSidebar.checkGlobal(html.html, {
-              inputFormat: 'HTML',
-              requestDescription: {
-                documentReference: 'filename.html'
-              }
-            });
-            adapter.registerCheckCall(checkInfo);
-          }
-
-        },
-
-        requestGlobalCheck: function () {
-          console.log('requestGlobalCheck');
-          var phtml = adapter.extractHTMLForCheck();
-          if (phtml.then !== undefined) {
-            var self = this;
-            phtml.then(function (html) {
-              self.requestGlobalCheckSync(html);
-
-            });
-          } else {
-            this.requestGlobalCheckSync(phtml);
-
-          }
-        },
-
-        onCheckResult: function (checkResult) {
-          return adapter.registerCheckResult(checkResult);
-        },
-
-        selectRanges: function (checkId, matches) {
-          console.log('selectRanges: ', checkId, matches);
-          adapter.selectRanges(checkId,matches);
-
-        },
-
-        replaceRanges: function (checkId, matchesWithReplacement) {
-          console.log('replaceRanges: ', checkId, matchesWithReplacement);
-          adapter.replaceRanges(checkId,matchesWithReplacement);
-
-        },
-
-        // only needed for local checks
-        getRangesOrder: function (checkedDocumentRanges) {
-          console.log('getRangesOrder: ', checkedDocumentRanges);
-          return [];
-        },
-
-        download: function (download) {
-          console.log('download: ', download.url, download);
-          window.open(download.url);
-        },
-
-        // only needed for local checks
-        verifyRanges: function (checkedDocumentParts) {
-          console.log('verifyRanges: ', checkedDocumentParts);
-          return [];
-        },
-
-        disposeCheck: function (checkId) {
-          console.log('disposeCheck: ', checkId);
+    var clientComponents = [
+        {
+            id: 'com.acrolinx.sidebarexample',
+            name: 'Acrolinx Sidebar Example Client',
+            version: '1.2.3.999',
+            category: 'MAIN'
         }
-      };
+    ];
 
+    function initAcrolinxSamplePlugin(config, editorAdapter) {
+        var $sidebarContainer = $('#' + config.sidebarContainerId);
+        var $sidebar = $('<iframe></iframe>');
+        $sidebarContainer.append($sidebar);
+        var sidebarContentWindow = $sidebar.get(0).contentWindow;
+
+        var adapter = editorAdapter;
+
+        function onSidebarLoaded() {
+            function initSidebarCloud() {
+                config.requestAccessTokenCallback(function (accessToken) {
+                    sidebarContentWindow.acrolinxSidebar.init({
+                        clientComponents: config.clientComponents || clientComponents,
+                        token: accessToken,
+                        contentPieceUuid: config.documentId,
+                        integrationFacadeBaseUrl: config.integrationFacadeBaseUrl
+                    });
+                });
+            }
+
+            function initSidebarOnPremise() {
+                sidebarContentWindow.acrolinxSidebar.init({
+                    clientComponents: config.clientComponents || clientComponents,
+                    clientSignature: config.clientSignature,
+                    showServerSelector: config.showServerSelector || true,
+                    serverAddress: config.serverAddress
+
+                    // These settings are only effective on servers with disabled checking profiles.
+                    //checkSettings: {
+                    //  'language': 'en',
+                    //  'ruleSetName': 'Plain English',
+                    //  'termSets': ['Medical'],
+                    //  'checkSpelling': true,
+                    //  'checkGrammar': true,
+                    //  'checkStyle': true,
+                    //  'checkReuse': false,
+                    //  'harvestTerms': false,
+                    //  'checkSeo': false,
+                    //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
+                    //}
+
+                    // These settings are only effective on servers with disabled checking profiles.
+                    //defaultCheckSettings: {
+                    //  'language': 'en',
+                    //  'ruleSetName': 'Plain English',
+                    //  'termSets': ['Medical'],
+                    //  'checkSpelling': true,
+                    //  'checkGrammar': true,
+                    //  'checkStyle': true,
+                    //  'checkReuse': false,
+                    //  'harvestTerms': false,
+                    //  'checkSeo': false,
+                    //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
+                    //}
+
+                });
+            }
+
+            console.log('Install acrolinxPlugin in sidebar.');
+            sidebarContentWindow.acrolinxPlugin = {
+
+                requestInit: function () {
+                    console.log('requestInit');
+                    if (config.sidebarType === 'CLOUD') {
+                        initSidebarCloud();
+                    } else {
+                        initSidebarOnPremise();
+                    }
+                },
+
+                onInitFinished: function (initFinishedResult) {
+                    console.log('onInitFinished: ', initFinishedResult);
+                    if (initFinishedResult.error) {
+                        window.alert(initFinishedResult.error.message);
+                    }
+                },
+
+                configure: function (configuration) {
+                    console.log('configure: ', configuration);
+                },
+
+                requestAccessToken: function () {
+                    var requestAccessTokenCallback = config.requestAccessTokenCallback;
+                    if (requestAccessTokenCallback) {
+                        requestAccessTokenCallback(function (accessToken) {
+                            sidebarContentWindow.acrolinxSidebar.setAccessToken(accessToken);
+                        });
+                    }
+                },
+
+
+                requestGlobalCheckSync: function (html, format, documentReference) {
+                    if (html.hasOwnProperty("error")) {
+                        window.alert(html.error);
+                    } else {
+                        var checkInfo = sidebarContentWindow.acrolinxSidebar.checkGlobal(html.html, {
+                            inputFormat: format || 'HTML',
+                            requestDescription: {
+                                documentReference: documentReference || 'filename.html'
+                            }
+                        });
+                        adapter.registerCheckCall(checkInfo);
+                    }
+
+                },
+
+                requestGlobalCheck: function () {
+                    console.log('requestGlobalCheck');
+                    var pHtml = adapter.extractHTMLForCheck();
+                    var pFormat = adapter.getFormat ? adapter.getFormat() : null;
+                    var pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
+                    if (pHtml.then !== undefined) {
+                        var self = this;
+                        pHtml.then(function (html, format, documentReference) {
+                            self.requestGlobalCheckSync(html, format || pFormat, documentReference || pDocumentReference);
+                        });
+                    } else {
+                        this.requestGlobalCheckSync(pHtml, pFormat, pDocumentReference);
+
+                    }
+                },
+
+                onCheckResult: function (checkResult) {
+                    return adapter.registerCheckResult(checkResult);
+                },
+
+                selectRanges: function (checkId, matches) {
+                    console.log('selectRanges: ', checkId, matches);
+                    adapter.selectRanges(checkId, matches);
+
+                },
+
+                replaceRanges: function (checkId, matchesWithReplacement) {
+                    console.log('replaceRanges: ', checkId, matchesWithReplacement);
+                    adapter.replaceRanges(checkId, matchesWithReplacement);
+
+                },
+
+                // only needed for local checks
+                getRangesOrder: function (checkedDocumentRanges) {
+                    console.log('getRangesOrder: ', checkedDocumentRanges);
+                    return [];
+                },
+
+                download: function (download) {
+                    console.log('download: ', download.url, download);
+                    window.open(download.url);
+                },
+
+                // only needed for local checks
+                verifyRanges: function (checkedDocumentParts) {
+                    console.log('verifyRanges: ', checkedDocumentParts);
+                    return [];
+                },
+
+                disposeCheck: function (checkId) {
+                    console.log('disposeCheck: ', checkId);
+                }
+            };
+
+        }
+
+        function loadSidebarIntoIFrame() {
+            var sidebarBaseUrl = config.sidebarType === 'CLOUD' ?
+                'https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/' :
+                'https://acrolinx-sidebar-classic.s3.amazonaws.com/v13/prod/';
+            return $.ajax({
+                url: sidebarBaseUrl + 'index.html'
+            }).then(function (sidebarHtml) {
+                var sidebarHtmlWithAbsoluteLinks = sidebarHtml
+                    .replace(/src="/g, 'src="' + sidebarBaseUrl)
+                    .replace(/href="/g, 'href="' + sidebarBaseUrl);
+                sidebarContentWindow.document.open();
+                sidebarContentWindow.document.write(sidebarHtmlWithAbsoluteLinks);
+                sidebarContentWindow.document.close();
+                onSidebarLoaded();
+            });
+        }
+
+        loadSidebarIntoIFrame();
     }
 
-    function loadSidebarIntoIFrame() {
-      var sidebarBaseUrl = config.sidebarType === 'CLOUD'?
-        'https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/' :
-        'https://acrolinx-sidebar-classic.s3.amazonaws.com/v13/prod/';
-      return $.ajax({
-        url: sidebarBaseUrl + 'index.html',
-      }).then(function (sidebarHtml) {
-        var sidebarHtmlWithAbsoluteLinks = sidebarHtml
-          .replace(/src="/g, 'src="' + sidebarBaseUrl)
-          .replace(/href="/g, 'href="' + sidebarBaseUrl);
-        sidebarContentWindow.document.open();
-        sidebarContentWindow.document.write(sidebarHtmlWithAbsoluteLinks);
-        sidebarContentWindow.document.close();
-        onSidebarLoaded();
-      });
-    }
+    var cls = function (conf) {
+        this.config = conf;
+    };
 
-    loadSidebarIntoIFrame();
-  }
+    cls.prototype = {
 
-  var cls = function (conf) {
-    this.config = conf;
-  };
+        registerAdapter: function (adapter) {
+            this.adapter = adapter;
+        },
 
-  cls.prototype = {
-
-    registerAdapter: function (adapter) {
-      this.adapter = adapter;
-    },
-
-    init : function () {
-      initAcrolinxSamplePlugin(this.config,this.adapter);
-    }
-  };
+        init: function () {
+            initAcrolinxSamplePlugin(this.config, this.adapter);
+        }
+    };
 
 
-  return cls;
+    return cls;
 
 })();
