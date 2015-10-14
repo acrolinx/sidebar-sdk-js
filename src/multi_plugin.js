@@ -143,8 +143,8 @@ var AcrolinxPlugin = (function () {
                     var pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
                     if (pHtml.then !== undefined) {
                         var self = this;
-                        pHtml.then(function (html, format, documentReference) {
-                            self.requestGlobalCheckSync(html, format || pFormat, documentReference || pDocumentReference);
+                        pHtml.then(function (html) {
+                            self.requestGlobalCheckSync(html, pFormat, pDocumentReference);
                         });
                     } else {
                         this.requestGlobalCheckSync(pHtml, pFormat, pDocumentReference);

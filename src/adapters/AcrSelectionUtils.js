@@ -65,7 +65,7 @@ var AcrSelectionUtils = {
       lastFlaggedWord;
 
     nextChar = AcrSelectionUtils.getFlagContents(offset, offset + 1,currentHtmlChecking);
-    flaggedWords = matches[0].content.split(/\\s+/);
+    flaggedWords = matches[0].textContent.split(/\\s+/);
     firstFlaggedWord = flaggedWords[0];
     firstChar = firstFlaggedWord.substr(0, 1);
     lastFlaggedWord = firstFlaggedWord;
