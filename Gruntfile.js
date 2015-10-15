@@ -17,10 +17,12 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
+var FS = require("q-io/fs");
 
 module.exports = function (grunt) {
   var exampleAuthServer = require('./samples/server/cloud/example-auth-server');
   var name = 'acrolinx-sidebar-integration';
+  var version = '';
 
   var grunt_config = {
     watch: {
@@ -112,13 +114,15 @@ module.exports = function (grunt) {
         //just run 'grunt bower:install' and you'll see files from your Bower packages in lib directory
       }
     }
+
   };
 
   grunt.initConfig(grunt_config);
 
   require('jit-grunt')(grunt, {
     bower: 'grunt-bower-task',
-    configureProxies: 'grunt-connect-proxy'
+    configureProxies: 'grunt-connect-proxy',
+    gitcommit : 'grunt-git'
   });
 
 
@@ -126,6 +130,56 @@ module.exports = function (grunt) {
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
   grunt.registerTask('build', ['bower:install','distrib']);
   grunt.registerTask('distrib', ['clean','concat','uglify']);
+
+  grunt.registerTask('release','Release the bower project',function () {
+    var done = this.async();
+    FS.read('bower.json').then(function (bowerData) {
+      FS.read('version').then(function (oldVersion) {
+        var bower = JSON.parse(bowerData);
+
+        if (bower.version != oldVersion) {
+          console.log('New Version!',bower.version);
+          FS.write('version',bower.version);
+          version = bower.version;
+          grunt.config('gitcommit', {
+            task: {
+              options: {
+                message: 'Releasing: ' + version,
+                  noVerify: true,
+                  noStatus: false
+              },
+              files: {
+                src: ['distrib/**','version']
+              }
+            }
+          });
+          grunt.config('gittag', {
+            addtag: {
+              options: {
+                tag: 'v' + version,
+                message: 'Releasing: ' + version
+              }
+            },
+          });
+          grunt.config('gitpush', {
+            addtag: {
+              task: {
+                tags: true
+              }
+            },
+          });
+          grunt.task.run('gitcommit','gittag','gitpush');
+          done();
+
+        } else {
+          console.log('Old Version');
+          done();
+        }
+      });
+    });
+  });
+
+  grunt.registerTask('distribRelease', ['distrib','release']);
 
 
 };
