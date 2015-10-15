@@ -939,6 +939,7 @@ var SimpleTextAdapter = (function () {
  * * For more information visit: http://www.acrolinx.com
  *
  */
+ 
 
 var AcrolinxPlugin = (function () {
 
