@@ -17,7 +17,6 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
- 
 
 'use strict';
 var AcrolinxPlugin = (function () {

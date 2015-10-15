@@ -119,7 +119,7 @@ module.exports = function (grunt) {
         stderr: false
       },
       target: {
-        command: 'git push origin master --tags'
+        command: 'git push --tags origin HEAD:master'
       }
     }
 
