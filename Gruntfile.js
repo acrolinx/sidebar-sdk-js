@@ -113,7 +113,16 @@ module.exports = function (grunt) {
       install: {
         //just run 'grunt bower:install' and you'll see files from your Bower packages in lib directory
       }
+    },
+    shell: {
+      options: {
+        stderr: false
+      },
+      target: {
+        command: 'git push origin master --tags'
+      }
     }
+
 
   };
 
@@ -122,7 +131,8 @@ module.exports = function (grunt) {
   require('jit-grunt')(grunt, {
     bower: 'grunt-bower-task',
     configureProxies: 'grunt-connect-proxy',
-    gitcommit : 'grunt-git'
+    gitcommit : 'grunt-git',
+    shell :'grunt-shell'
   });
 
 
@@ -168,7 +178,7 @@ module.exports = function (grunt) {
               }
             },
           });
-          grunt.task.run('gitcommit','gittag','gitpush');
+          grunt.task.run('gitcommit','gittag','shell');
           done();
 
         } else {
