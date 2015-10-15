@@ -939,6 +939,7 @@ var SimpleTextAdapter = (function () {
  * * For more information visit: http://www.acrolinx.com
  *
  */
+
 var AcrolinxPlugin = (function () {
 
     var clientComponents = [
@@ -974,7 +975,7 @@ var AcrolinxPlugin = (function () {
                 sidebarContentWindow.acrolinxSidebar.init({
                     clientComponents: config.clientComponents || clientComponents,
                     clientSignature: config.clientSignature,
-                    showServerSelector: config.showServerSelector || true,
+                    showServerSelector: config.showServerSelector !== null ? config.showServerSelector : true,
                     serverAddress: config.serverAddress
 
                     // These settings are only effective on servers with disabled checking profiles.
