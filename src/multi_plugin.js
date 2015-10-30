@@ -40,14 +40,20 @@ var AcrolinxPlugin = (function () {
 
         function onSidebarLoaded() {
             function initSidebarCloud() {
-                config.requestAccessTokenCallback(function (accessToken) {
-                    sidebarContentWindow.acrolinxSidebar.init({
-                        clientComponents: config.clientComponents || clientComponents,
-                        token: accessToken,
-                        contentPieceUuid: config.documentId,
-                        integrationFacadeBaseUrl: config.integrationFacadeBaseUrl
+                if (config.requestAccessTokenCallback !== undefined) {
+                    config.requestAccessTokenCallback(function (accessToken) {
+                        sidebarContentWindow.acrolinxSidebar.init(_.extend({
+                            clientComponents: config.clientComponents || clientComponents,
+                            token: accessToken,
+                            contentPieceUuid: config.documentId,
+                        },config));
                     });
-                });
+                } else {
+                    sidebarContentWindow.acrolinxSidebar.init(_.extend({
+                        clientComponents: config.clientComponents || clientComponents,
+                    },config));
+
+                }
             }
 
             function initSidebarOnPremise() {
@@ -193,9 +199,14 @@ var AcrolinxPlugin = (function () {
         }
 
         function loadSidebarIntoIFrame() {
-            var sidebarBaseUrl = config.sidebarType === 'CLOUD' ?
-                'https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/' :
-                'https://acrolinx-sidebar-classic.s3.amazonaws.com/v13/prod/';
+            var sidebarBaseUrl;
+            if (config.sidebarUrl !== undefined) {
+                sidebarBaseUrl = config.sidebarUrl;
+            } else {
+                sidebarBaseUrl = config.sidebarType === 'CLOUD' ?
+                  'https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/' :
+                  'https://acrolinx-sidebar-classic.s3.amazonaws.com/v13/prod/';
+            }
             return $.ajax({
                 url: sidebarBaseUrl + 'index.html'
             }).then(function (sidebarHtml) {
