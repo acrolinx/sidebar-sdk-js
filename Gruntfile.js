@@ -40,6 +40,11 @@ module.exports = function (grunt) {
         },
         files: ['src/**/*.js'],
         tasks: ['jshint']
+      },
+      concat: {
+        options: {},
+        files: ['src/**/*.js'],
+        tasks: ['concat']
       }
     },
 
