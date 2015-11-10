@@ -1151,7 +1151,7 @@ var AcrolinxPlugin = (function () {
                         sidebarContentWindow.acrolinxSidebar.init(_.extend({
                             clientComponents: config.clientComponents || clientComponents,
                             token: accessToken,
-                            contentPieceUuid: config.documentId,
+                            contentPieceUuid: config.documentId
                         },config));
                     });
                 } else {
@@ -1166,7 +1166,7 @@ var AcrolinxPlugin = (function () {
                 sidebarContentWindow.acrolinxSidebar.init({
                     clientComponents: config.clientComponents || clientComponents,
                     clientSignature: config.clientSignature,
-                    showServerSelector: config.showServerSelector !== null ? config.showServerSelector : true,
+                    showServerSelector: config.hasOwnProperty("showServerSelector") ? config.showServerSelector : true,
                     serverAddress: config.serverAddress
 
                     // These settings are only effective on servers with disabled checking profiles.
@@ -1310,7 +1310,7 @@ var AcrolinxPlugin = (function () {
                 sidebarBaseUrl = config.sidebarUrl;
             } else {
                 sidebarBaseUrl = config.sidebarType === 'CLOUD' ?
-                  'https://acrolinx-integrations.acrolinx-cloud.com/sidebar/v13/' :
+                  'http://localhost:9000/' :
                   'https://acrolinx-sidebar-classic.s3.amazonaws.com/v13/prod/';
             }
             return $.ajax({

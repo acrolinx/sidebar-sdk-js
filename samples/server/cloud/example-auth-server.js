@@ -23,7 +23,7 @@ var request = require('request');
 var config = require('./config').config;
 
 
-if (!config.username || !config.password || !config.clientId || !config.clientSecret) {
+if (!config.username || !config.password || !config.clientId ) {
   console.error('Please configure the cloud example in server/cloud/config.js!');
 }
 
@@ -49,7 +49,7 @@ function newTokenHandler(req, res) {
   // Let's get an access token from the acrolinx cloud server.
   var requestToAcrolinxServerOptions = {
     method: 'POST',
-    url: 'https://acrolinx-integrations.acrolinx-cloud.com/api/v1/oauth/token',
+    url: 'https://dev.acrolinx-cloud.com/api/v1/oauth/token',
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
       'accept': 'application/json'
@@ -60,13 +60,15 @@ function newTokenHandler(req, res) {
       grant_type: 'password',
       scope: 'contentpieces/' + contentPieceId + '::check',
       client_id: config.clientId,
-      client_secret: config.clientSecret,
+      //client_secret: config.clientSecret,
       expires_in: 60  // duration in seconds
     }
   };
 
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
   return request(requestToAcrolinxServerOptions, function (error, acrolinxServerResponse, body) {
     if (error) {
+      console.log("Huhu!",error ,JSON.stringify(error), acrolinxServerResponse, body);
       handleError(res, 502, "Error while connecting to the acrolinx server.", error);
       return;
     }

@@ -70,6 +70,7 @@
             sidebarContainerId: 'sidebarContainer',
             documentId: acrolinxExampleConfig.documentId,
             integrationFacadeBaseUrl: 'https://acrolinx-integrations.acrolinx-cloud.com/api/v1/integration',
+            enableAdHocChecking: acrolinxExampleConfig.enableAdHocChecking,
             requestAccessTokenCallback: function (onGotAccessToken) {
                 requestAccessToken(acrolinxExampleConfig.documentId).done(onGotAccessToken);
             }

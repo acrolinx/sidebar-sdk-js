@@ -21,7 +21,9 @@
 'use strict';
 
 var acrolinxExampleConfig = {
-  documentId: ''
+  documentId: '',
+  enableAdHocChecking: true
+  //documentId: '0f7319b0-f353-45bf-9595-963e92b5d70b'
 };
 
 function requestAccessToken(documentId) {

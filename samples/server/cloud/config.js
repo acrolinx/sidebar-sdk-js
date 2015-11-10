@@ -19,8 +19,8 @@
  */
 
 exports.config = {
-  username: '',
-  password: '',
-  clientId: '',
+  username: 'franziska.preiss@acrolinx.com',
+  password: 'ts26485-C',
+  clientId: 'V3OPFIFAFBA7J',
   clientSecret: ''
 };
