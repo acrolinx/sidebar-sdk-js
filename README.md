@@ -42,6 +42,8 @@ Now you can start the development server by typing:
 
 Now open [http://localhost:9002](http://localhost:9002) in your web-browser.
 
+![Screen Shot of On-Premise Example](/doc/screenshot.png)
+
 If you modify the samples/server/cloud/config.js file, you need to restart the application.
 
 ## Sidebar API Documentation
