@@ -17,6 +17,7 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
+ /*global Q */
 'use strict';
 
 
@@ -45,23 +46,49 @@ var MultiEditorAdapter = (function () {
     },
 
     extractHTMLForCheck: function () {
-
-      var html = '';
+      var deferred = Q.defer();
+      var htmls = [];
       for (var i = 0; i < this.adapters.length; i++) {
         var el = this.adapters[i];
-        var tag = this.getWrapperTag(el.wrapper);
-        var startText = '<' + el.wrapper +  ' id="' + el.id + '">';
-        var elHtml = el.adapter.extractHTMLForCheck().html;
-        var newTag = startText + elHtml + '</' + tag + '>';
-        el.start = html.length + startText.length;
-        el.end = html.length + startText.length + elHtml.length;
-        html += newTag;
-
+        htmls.push(el.adapter.extractHTMLForCheck());
       }
-      this.html = html;
-      console.log(this.html);
+      Q.all(htmls).then(_.bind(function (results) {
+        //console.log(results);
+        var html = '';
+        for (var i = 0; i < this.adapters.length; i++) {
+          var el = this.adapters[i];
+          var tag = this.getWrapperTag(el.wrapper);
+          var startText = '<' + el.wrapper +  ' id="' + el.id + '">';
+          var elHtml = results[i].html;//el.adapter.extractHTMLForCheck().html;
+          var newTag = startText + elHtml + '</' + tag + '>';
+          el.start = html.length + startText.length;
+          el.end = html.length + startText.length + elHtml.length;
+          html += newTag;
 
-      return {html: this.html};
+        }
+        this.html = html;
+        console.log(this.html);
+
+        deferred.resolve({html: this.html});
+      },this));
+      return deferred.promise;
+
+      //var html = '';
+      //for (var i = 0; i < this.adapters.length; i++) {
+      //  var el = this.adapters[i];
+      //  var tag = this.getWrapperTag(el.wrapper);
+      //  var startText = '<' + el.wrapper +  ' id="' + el.id + '">';
+      //  var elHtml = el.adapter.extractHTMLForCheck().html;
+      //  var newTag = startText + elHtml + '</' + tag + '>';
+      //  el.start = html.length + startText.length;
+      //  el.end = html.length + startText.length + elHtml.length;
+      //  html += newTag;
+      //
+      //}
+      //this.html = html;
+      //console.log(this.html);
+      //
+      //return {html: this.html};
     },
 
     registerCheckCall: function (checkInfo) {
