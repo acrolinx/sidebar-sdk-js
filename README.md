@@ -8,18 +8,6 @@ Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for initial consu
 We like to schedule a kickoff meeting to answer any questions about your integration project. 
 After the meeting, we provide you with test server credentials and configuration settings you need to get started.
 
-## Configuration of the sidebar cloud example
-
-Before you can run this example you need to configure some settings in these files:
-
-  * samples/server/cloud/config.js
-    * username
-    * password
-    * clientId
-    * clientSecret
-  * samples/client/cloud/config.js
-    * documentId
-
 ## Configuration of the sidebar on premise example
 
 Before you can run this example you need to configure some settings in these files:
@@ -44,7 +32,6 @@ Now open [http://localhost:9002](http://localhost:9002) in your web-browser.
 
 ![Screen Shot of On-Premise Example](/doc/screenshot.png)
 
-If you modify the samples/server/cloud/config.js file, you need to restart the application.
 
 ## Sidebar API Documentation
 

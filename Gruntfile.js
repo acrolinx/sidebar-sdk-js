@@ -20,7 +20,6 @@
 var FS = require("q-io/fs");
 
 module.exports = function (grunt) {
-  var exampleAuthServer = require('./samples/server/cloud/example-auth-server');
   var name = 'acrolinx-sidebar-integration';
   var version = '';
 

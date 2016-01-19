@@ -1172,23 +1172,6 @@ var AcrolinxPlugin = (function () {
         var adapter = editorAdapter;
 
         function onSidebarLoaded() {
-            function initSidebarCloud() {
-                if (config.requestAccessTokenCallback !== undefined) {
-                    config.requestAccessTokenCallback(function (accessToken) {
-                        debugger;
-                        sidebarContentWindow.acrolinxSidebar.init(_.extend({
-                            clientComponents: config.clientComponents || clientComponents,
-                            token: accessToken,
-                            contentPieceUuid: config.documentId
-                        },config));
-                    });
-                } else {
-                    sidebarContentWindow.acrolinxSidebar.init(_.extend({
-                        clientComponents: config.clientComponents || clientComponents,
-                    },config));
-
-                }
-            }
 
             function initSidebarOnPremise() {
                 sidebarContentWindow.acrolinxSidebar.init({
@@ -1233,11 +1216,7 @@ var AcrolinxPlugin = (function () {
 
                 requestInit: function () {
                     console.log('requestInit');
-                    if (config.sidebarType === 'CLOUD') {
-                        initSidebarCloud();
-                    } else {
                         initSidebarOnPremise();
-                    }
                 },
 
                 onInitFinished: function (initFinishedResult) {
@@ -1337,9 +1316,7 @@ var AcrolinxPlugin = (function () {
             if (config.sidebarUrl !== undefined) {
                 sidebarBaseUrl = config.sidebarUrl;
             } else {
-                sidebarBaseUrl = config.sidebarType === 'CLOUD' ?
-                  'http://localhost:9000/' :
-                  'https://acrolinx-sidebar-classic.s3.amazonaws.com/v13/prod/';
+                sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v13/prod/';
             }
             return $.ajax({
                 url: sidebarBaseUrl + 'index.html'
