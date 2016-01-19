@@ -1230,16 +1230,6 @@ var AcrolinxPlugin = (function () {
                     console.log('configure: ', configuration);
                 },
 
-                requestAccessToken: function () {
-                    var requestAccessTokenCallback = config.requestAccessTokenCallback;
-                    if (requestAccessTokenCallback) {
-                        requestAccessTokenCallback(function (accessToken) {
-                            sidebarContentWindow.acrolinxSidebar.setAccessToken(accessToken);
-                        });
-                    }
-                },
-
-
                 requestGlobalCheckSync: function (html, format, documentReference) {
                     if (html.hasOwnProperty("error")) {
                         window.alert(html.error);

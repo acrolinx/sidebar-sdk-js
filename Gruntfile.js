@@ -63,7 +63,6 @@ module.exports = function (grunt) {
               connect().use('/', connect.static('./samples/client')),
               connect().use('/distrib', connect.static('./distrib')),
               connect().use('/bower_components', connect.static('./bower_components')),
-              connect().use('/token', exampleAuthServer.newTokenHandler),
               proxy
             ];
           }
