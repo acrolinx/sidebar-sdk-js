@@ -46,7 +46,8 @@ var AcrolinxPlugin = (function () {
                     clientSignature: config.clientSignature,
                     showServerSelector: config.hasOwnProperty("showServerSelector") ? config.showServerSelector : true,
                     enableSingleSignOn: config.hasOwnProperty("enableSingleSignOn") ? config.enableSingleSignOn : false,
-                    serverAddress: config.serverAddress
+                    serverAddress: config.serverAddress,
+                    defaultCheckSettings: config.defaultCheckSettings
 
                     // These settings are only effective on servers with disabled checking profiles.
                     //checkSettings: {
