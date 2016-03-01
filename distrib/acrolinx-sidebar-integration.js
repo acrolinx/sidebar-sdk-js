@@ -1178,7 +1178,9 @@ var AcrolinxPlugin = (function () {
                     clientComponents: config.clientComponents || clientComponents,
                     clientSignature: config.clientSignature,
                     showServerSelector: config.hasOwnProperty("showServerSelector") ? config.showServerSelector : true,
-                    serverAddress: config.serverAddress
+                    enableSingleSignOn: config.hasOwnProperty("enableSingleSignOn") ? config.enableSingleSignOn : false,
+                    serverAddress: config.serverAddress,
+                    defaultCheckSettings: config.defaultCheckSettings
 
                     // These settings are only effective on servers with disabled checking profiles.
                     //checkSettings: {
@@ -1306,7 +1308,7 @@ var AcrolinxPlugin = (function () {
             if (config.sidebarUrl !== undefined) {
                 sidebarBaseUrl = config.sidebarUrl;
             } else {
-                sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v13/prod/';
+                sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
             }
             return $.ajax({
                 url: sidebarBaseUrl + 'index.html'
