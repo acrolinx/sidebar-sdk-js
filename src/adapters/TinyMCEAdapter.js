@@ -190,6 +190,7 @@ var TinyMCEAdapter = (function () {
         this.scrollAndSelect(matchesWithReplacement);
       } catch (error) {
         console.log(error);
+        throw error;
         return;
       }
 
