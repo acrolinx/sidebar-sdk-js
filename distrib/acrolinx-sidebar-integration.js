@@ -978,6 +978,7 @@ var TinyMCEAdapter = (function () {
         this.scrollAndSelect(matchesWithReplacement);
       } catch (error) {
         console.log(error);
+        throw error;
         return;
       }
 
@@ -1005,6 +1006,7 @@ var TinyMCEAdapter = (function () {
   return cls;
 
 })();
+
 // Source: src/adapters/simpleTextAdapter.js
 /*
  *
@@ -1269,14 +1271,35 @@ var AcrolinxPlugin = (function () {
 
                 selectRanges: function (checkId, matches) {
                     console.log('selectRanges: ', checkId, matches);
-                    adapter.selectRanges(checkId, matches);
+                    try{
+                        adapter.selectRanges(checkId, matches);
+                    }catch (msg){
+                        console.log(msg);
+                        sidebarContentWindow.acrolinxSidebar.invalidateRanges(matches.map(function(match){
+                            return {
+                               checkId: checkId,
+                               range: match.range
+                            };
+                        }
+                        ));
+                    }
 
                 },
 
                 replaceRanges: function (checkId, matchesWithReplacement) {
                     console.log('replaceRanges: ', checkId, matchesWithReplacement);
-                    adapter.replaceRanges(checkId, matchesWithReplacement);
-
+                    try{
+                        adapter.replaceRanges(checkId, matchesWithReplacement);
+                    }catch (msg){
+                        console.log(msg);
+                        sidebarContentWindow.acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function(match){
+                            return {
+                               checkId: checkId,
+                               range: match.range
+                            };
+                        }
+                        ));
+                    }
                 },
 
                 // only needed for local checks
@@ -1308,7 +1331,7 @@ var AcrolinxPlugin = (function () {
             if (config.sidebarUrl !== undefined) {
                 sidebarBaseUrl = config.sidebarUrl;
             } else {
-                sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
+                sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/dev/';
             }
             return $.ajax({
                 url: sidebarBaseUrl + 'index.html'
