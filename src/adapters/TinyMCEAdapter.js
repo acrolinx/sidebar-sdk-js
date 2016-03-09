@@ -17,8 +17,7 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-/*global AcrSelectionUtils */
-/*global tinymce */
+/*global AcrSelectionUtils, tinymce, acrolinxLibs */
 
 'use strict';
 var TinyMCEAdapter = (function () {
@@ -95,7 +94,6 @@ var TinyMCEAdapter = (function () {
       newBegin = matches[0].foundOffset;
       matchLength = matches[0].flagLength + 1;
       range1 = this.selectText(newBegin, matchLength);
-      //$(getEditor().getBody()).find('em').get(0).scrollIntoView();
       selection1 = this.getEditor().selection;
 
       if (selection1) {
@@ -103,7 +101,7 @@ var TinyMCEAdapter = (function () {
           //selection1.scrollIntoView();
           this.scrollIntoView2(selection1);
           //Special hack for WordPress TinyMCE
-          var wpContainer = $('#wp-content-editor-container');
+          var wpContainer = acrolinxLibs.$('#wp-content-editor-container');
           if (wpContainer.length > 0) {
             wpContainer.get(0).scrollIntoView();
           }
@@ -191,11 +189,10 @@ var TinyMCEAdapter = (function () {
       } catch (error) {
         console.log(error);
         throw error;
-        return;
       }
 
       // Replace the selected text
-      replacementText = _.map(matchesWithReplacement, 'replacement').join('');
+      replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
       this.editor.selection.setContent(replacementText);
 
       if ((matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength) < this.getCurrentText().length) {

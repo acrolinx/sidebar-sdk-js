@@ -18,6 +18,8 @@
  *
  */
 
+/*global acrolinxLibs */
+
  'use strict';
 var AcrSelectionUtils = {
   isFlagContainsOnlySpecialChar: function (flaggedContent) {
@@ -30,7 +32,7 @@ var AcrSelectionUtils = {
     range.insertNode(range.createContextualFragment(replacementText));
   },
   getTextContent: function (html) {
-    var tmpHTMLElement = $('<div/>').html(html);
+    var tmpHTMLElement = acrolinxLibs.$('<div/>').html(html);
     return tmpHTMLElement.text().replace(/\t+/g, '');
   },
 

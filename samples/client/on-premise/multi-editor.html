@@ -13,6 +13,14 @@
     <script src="/bower_components/rangy/rangy-textrange.js"></script>
     <script src="/bower_components/rangyinputs/rangyinputs-jquery.js"></script>
 
+    <script>
+      var acrolinxLibs = {
+        Q: Q.noConflict(),
+        $: $.noConflict(),
+        _: _.noConflict()
+      };
+    </script>
+
     <script src="/distrib/acrolinx-sidebar-integration.js"></script>
     <link rel="stylesheet" href="../../style.css"/>
     <script>
@@ -62,6 +70,7 @@
 
 
     function initAcrolinx() {
+        var _ = acrolinxLibs._;
 
         //Init the main Acrolinx Plugin
         var acrolinx = new AcrolinxPlugin(basicConf);

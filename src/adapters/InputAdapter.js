@@ -17,7 +17,7 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-/*global AcrSelectionUtils */
+/*global AcrSelectionUtils, acrolinxLibs */
 
 'use strict';
 var InputAdapter = (function () {
@@ -31,7 +31,7 @@ var InputAdapter = (function () {
 
   cls.prototype = {
     getHTML: function () {
-      return $(this.element).val();
+      return acrolinxLibs.$(this.element).val();
     },
 
     getEditorDocument: function () {
@@ -97,6 +97,7 @@ var InputAdapter = (function () {
         range1,
         range2,
         doc;
+      var $ = acrolinxLibs.$;
 
       newBegin = matches[0].foundOffset;
       matchLength = matches[0].flagLength + 1;
@@ -151,8 +152,7 @@ var InputAdapter = (function () {
 
     replaceSelection: function (content) {
       //$(this.element).focus();
-      $(this.element).replaceSelectedText(content,"select");
-
+      acrolinxLibs.$(this.element).replaceSelectedText(content, "select");
     },
 
     replaceRanges: function (checkId, matchesWithReplacement) {
@@ -173,7 +173,7 @@ var InputAdapter = (function () {
         console.log(error);
         return;
       }
-      replacementText = _.map(matchesWithReplacement, 'replacement').join('');
+      replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
       this.replaceSelection(replacementText);
 
     }

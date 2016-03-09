@@ -17,7 +17,7 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-/*global AcrSelectionUtils */
+/*global AcrSelectionUtils, acrolinxLibs */
 'use strict';
 
 
@@ -227,7 +227,7 @@ var CKEditorAdapter = (function () {
         }
 
         // Replace the selected text
-        replacementText = _.map(matchesWithReplacement, 'replacement').join('');
+        replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
         // using editor.insertText(replacementText) caused bugs in inline mode
         AcrSelectionUtils.replaceRangeContent(selectedRange, replacementText);
 

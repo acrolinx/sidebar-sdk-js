@@ -18,9 +18,7 @@
   "trailing": true,
   "smarttabs": true,
   "globals": {
-    "$": true,
 	"CKEDITOR":true,
-	"_":true,
 	"rangy":true
   }
 }

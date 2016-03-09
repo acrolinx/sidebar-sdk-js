@@ -17,7 +17,7 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
- /*global Q */
+ /*global acrolinxLibs */
 'use strict';
 
 
@@ -46,13 +46,14 @@ var MultiEditorAdapter = (function () {
     },
 
     extractHTMLForCheck: function () {
+      var Q = acrolinxLibs.Q;
       var deferred = Q.defer();
       var htmls = [];
       for (var i = 0; i < this.adapters.length; i++) {
         var el = this.adapters[i];
         htmls.push(el.adapter.extractHTMLForCheck());
       }
-      Q.all(htmls).then(_.bind(function (results) {
+      Q.all(htmls).then(acrolinxLibs._.bind(function (results) {
         //console.log(results);
         var html = '';
         for (var i = 0; i < this.adapters.length; i++) {
@@ -107,7 +108,6 @@ var MultiEditorAdapter = (function () {
     selectRanges: function (checkId, matches) {
       var map = this.remapMatches(matches);
       for (var id in map) {
-
         map[id].adapter.selectRanges(checkId, map[id].matches);
       }
 
@@ -117,8 +117,8 @@ var MultiEditorAdapter = (function () {
 
       var map = {};
       for (var i = 0; i < matches.length; i++) {
-        var match = _.clone(matches[i]);
-        match.range = _.clone(matches[i].range);
+        var match = acrolinxLibs._.clone(matches[i]);
+        match.range =acrolinxLibs._.clone(matches[i].range);
         var adapter = this.getAdapterForMatch(match);
         if (!map.hasOwnProperty(adapter.id)) {
           map[adapter.id] = {matches: [], adapter: adapter.adapter};

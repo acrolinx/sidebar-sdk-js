@@ -17,6 +17,7 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
+/*global acrolinxLibs */
 
 'use strict';
 var AcrolinxPlugin = (function () {
@@ -31,6 +32,7 @@ var AcrolinxPlugin = (function () {
     ];
 
     function initAcrolinxSamplePlugin(config, editorAdapter) {
+        var $ = acrolinxLibs.$;
         var $sidebarContainer = $('#' + config.sidebarContainerId);
         var $sidebar = $('<iframe></iframe>');
         $sidebarContainer.append($sidebar);
@@ -198,7 +200,7 @@ var AcrolinxPlugin = (function () {
             } else {
                 sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
             }
-            return $.ajax({
+            return acrolinxLibs.$.ajax({
                 url: sidebarBaseUrl + 'index.html'
             }).then(function (sidebarHtml) {
                 var sidebarHtmlWithAbsoluteLinks = sidebarHtml

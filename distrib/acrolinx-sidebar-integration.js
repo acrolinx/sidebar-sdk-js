@@ -1,4 +1,17 @@
 'use strict';
+// Source: src/acrolinx-libs/acrolinx-libs-defaults.js
+/*global acrolinxLibs, Q, $, _ */
+
+(function () {
+var originalAcrolinxLibs = window.acrolinxLibs || {};
+
+  window.acrolinxLibs = {
+    Q: originalAcrolinxLibs.Q || window.Q,
+    $: originalAcrolinxLibs.$ || window.$,
+    _: originalAcrolinxLibs._ || window._
+  };
+
+})();
 // Source: src/adapters/AcrSelectionUtils.js
 /*
  *
@@ -20,6 +33,8 @@
  *
  */
 
+/*global acrolinxLibs */
+
 var AcrSelectionUtils = {
   isFlagContainsOnlySpecialChar: function (flaggedContent) {
     var pattern = /\w/g;
@@ -31,7 +46,7 @@ var AcrSelectionUtils = {
     range.insertNode(range.createContextualFragment(replacementText));
   },
   getTextContent: function (html) {
-    var tmpHTMLElement = $('<div/>').html(html);
+    var tmpHTMLElement = acrolinxLibs.$('<div/>').html(html);
     return tmpHTMLElement.text().replace(/\t+/g, '');
   },
 
@@ -210,7 +225,7 @@ var AcrSelectionUtils = {
  * * For more information visit: http://www.acrolinx.com
  *
  */
-/*global AcrSelectionUtils */
+/*global AcrSelectionUtils, acrolinxLibs */
 var CKEditorAdapter = (function () {
 
   var cls = function (conf) {
@@ -417,7 +432,7 @@ var CKEditorAdapter = (function () {
         }
 
         // Replace the selected text
-        replacementText = _.map(matchesWithReplacement, 'replacement').join('');
+        replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
         // using editor.insertText(replacementText) caused bugs in inline mode
         AcrSelectionUtils.replaceRangeContent(selectedRange, replacementText);
 
@@ -465,7 +480,7 @@ var CKEditorAdapter = (function () {
  * * For more information visit: http://www.acrolinx.com
  *
  */
-/*global AcrSelectionUtils */
+/*global AcrSelectionUtils, acrolinxLibs */
 
 var InputAdapter = (function () {
   var cls = function (element) {
@@ -478,7 +493,7 @@ var InputAdapter = (function () {
 
   cls.prototype = {
     getHTML: function () {
-      return $(this.element).val();
+      return acrolinxLibs.$(this.element).val();
     },
 
     getEditorDocument: function () {
@@ -544,6 +559,7 @@ var InputAdapter = (function () {
         range1,
         range2,
         doc;
+      var $ = acrolinxLibs.$;
 
       newBegin = matches[0].foundOffset;
       matchLength = matches[0].flagLength + 1;
@@ -598,8 +614,7 @@ var InputAdapter = (function () {
 
     replaceSelection: function (content) {
       //$(this.element).focus();
-      $(this.element).replaceSelectedText(content,"select");
-
+      acrolinxLibs.$(this.element).replaceSelectedText(content, "select");
     },
 
     replaceRanges: function (checkId, matchesWithReplacement) {
@@ -620,7 +635,7 @@ var InputAdapter = (function () {
         console.log(error);
         return;
       }
-      replacementText = _.map(matchesWithReplacement, 'replacement').join('');
+      replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
       this.replaceSelection(replacementText);
 
     }
@@ -650,7 +665,7 @@ var InputAdapter = (function () {
  * * For more information visit: http://www.acrolinx.com
  *
  */
- /*global Q */
+ /*global acrolinxLibs */
 var MultiEditorAdapter = (function () {
   var cls = function (conf) {
     this.config = conf;
@@ -676,13 +691,14 @@ var MultiEditorAdapter = (function () {
     },
 
     extractHTMLForCheck: function () {
+      var Q = acrolinxLibs.Q;
       var deferred = Q.defer();
       var htmls = [];
       for (var i = 0; i < this.adapters.length; i++) {
         var el = this.adapters[i];
         htmls.push(el.adapter.extractHTMLForCheck());
       }
-      Q.all(htmls).then(_.bind(function (results) {
+      Q.all(htmls).then(acrolinxLibs._.bind(function (results) {
         //console.log(results);
         var html = '';
         for (var i = 0; i < this.adapters.length; i++) {
@@ -737,7 +753,6 @@ var MultiEditorAdapter = (function () {
     selectRanges: function (checkId, matches) {
       var map = this.remapMatches(matches);
       for (var id in map) {
-
         map[id].adapter.selectRanges(checkId, map[id].matches);
       }
 
@@ -747,8 +762,8 @@ var MultiEditorAdapter = (function () {
 
       var map = {};
       for (var i = 0; i < matches.length; i++) {
-        var match = _.clone(matches[i]);
-        match.range = _.clone(matches[i].range);
+        var match = acrolinxLibs._.clone(matches[i]);
+        match.range =acrolinxLibs._.clone(matches[i].range);
         var adapter = this.getAdapterForMatch(match);
         if (!map.hasOwnProperty(adapter.id)) {
           map[adapter.id] = {matches: [], adapter: adapter.adapter};
@@ -806,8 +821,7 @@ var MultiEditorAdapter = (function () {
  * * For more information visit: http://www.acrolinx.com
  *
  */
-/*global AcrSelectionUtils */
-/*global tinymce */
+/*global AcrSelectionUtils, tinymce, acrolinxLibs */
 
 var TinyMCEAdapter = (function () {
   var cls = function (conf) {
@@ -883,7 +897,6 @@ var TinyMCEAdapter = (function () {
       newBegin = matches[0].foundOffset;
       matchLength = matches[0].flagLength + 1;
       range1 = this.selectText(newBegin, matchLength);
-      //$(getEditor().getBody()).find('em').get(0).scrollIntoView();
       selection1 = this.getEditor().selection;
 
       if (selection1) {
@@ -891,7 +904,7 @@ var TinyMCEAdapter = (function () {
           //selection1.scrollIntoView();
           this.scrollIntoView2(selection1);
           //Special hack for WordPress TinyMCE
-          var wpContainer = $('#wp-content-editor-container');
+          var wpContainer = acrolinxLibs.$('#wp-content-editor-container');
           if (wpContainer.length > 0) {
             wpContainer.get(0).scrollIntoView();
           }
@@ -979,11 +992,10 @@ var TinyMCEAdapter = (function () {
       } catch (error) {
         console.log(error);
         throw error;
-        return;
       }
 
       // Replace the selected text
-      replacementText = _.map(matchesWithReplacement, 'replacement').join('');
+      replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
       this.editor.selection.setContent(replacementText);
 
       if ((matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength) < this.getCurrentText().length) {
@@ -1153,6 +1165,7 @@ var SimpleTextAdapter = (function () {
  * * For more information visit: http://www.acrolinx.com
  *
  */
+/*global acrolinxLibs */
 
 var AcrolinxPlugin = (function () {
 
@@ -1166,6 +1179,7 @@ var AcrolinxPlugin = (function () {
     ];
 
     function initAcrolinxSamplePlugin(config, editorAdapter) {
+        var $ = acrolinxLibs.$;
         var $sidebarContainer = $('#' + config.sidebarContainerId);
         var $sidebar = $('<iframe></iframe>');
         $sidebarContainer.append($sidebar);
@@ -1331,9 +1345,9 @@ var AcrolinxPlugin = (function () {
             if (config.sidebarUrl !== undefined) {
                 sidebarBaseUrl = config.sidebarUrl;
             } else {
-                sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/dev/';
+                sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
             }
-            return $.ajax({
+            return acrolinxLibs.$.ajax({
                 url: sidebarBaseUrl + 'index.html'
             }).then(function (sidebarHtml) {
                 var sidebarHtmlWithAbsoluteLinks = sidebarHtml
