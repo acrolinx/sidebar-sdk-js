@@ -196,7 +196,7 @@ var AcrolinxPlugin = (function () {
             if (config.sidebarUrl !== undefined) {
                 sidebarBaseUrl = config.sidebarUrl;
             } else {
-                sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/dev/';
+                sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
             }
             return $.ajax({
                 url: sidebarBaseUrl + 'index.html'
