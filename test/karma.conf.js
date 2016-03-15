@@ -16,7 +16,7 @@ module.exports = function (config) {
     files: [
       'bower_components/jquery/dist/jquery.js',
       'bower_components/underscore/underscore.js',
-      '.tmp/compiled/test.js'
+      'tmp/compiled/test.js'
     ],
 
 
@@ -27,22 +27,22 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      //'compiled/test.js': ['coverage']
+      'tmp/compiled/test.js': ['coverage']
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
 
-    /*coverageReporter: {
-      dir: 'reports/coverage/',
+    coverageReporter: {
+      dir: 'tmp/reports/coverage/',
       reporters: [
         {type: 'html'},
         {type: 'json'}
       ]
-    },*/
+    },
 
     // web server port
     port: 9876,

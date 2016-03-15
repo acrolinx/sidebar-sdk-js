@@ -6,7 +6,8 @@ node_modules
 
 npm-debug.log
 
-.tmp
 .tscache
+
+tmp
 
 distrib/acrolinx-sidebar-integration.js.map

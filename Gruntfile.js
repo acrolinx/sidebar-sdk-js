@@ -61,7 +61,7 @@ module.exports = function(grunt){
             var proxy = require('grunt-connect-proxy/lib/utils').proxyRequest;
             return [
               connect().use('/', connect.static('./samples/client')),
-              connect().use('/.tmp/compiled', connect.static('.tmp/compiled')),
+              connect().use('/tmp/compiled', connect.static('tmp/compiled')),
               connect().use('/test', connect.static('./test')),
               connect().use('/distrib', connect.static('./distrib')),
               connect().use('/bower_components', connect.static('./bower_components')),
@@ -92,7 +92,7 @@ module.exports = function(grunt){
       },
       test: {
         src: ['src/**/*.ts', 'test/**/*.ts'],
-        dest: '.tmp/compiled/test.js',
+        dest: 'tmp/compiled/test.js',
         options: {
           target: 'es5', //or es3
           sourceMap: false
@@ -114,7 +114,7 @@ module.exports = function(grunt){
 
     clean: {
       distrib: {
-        files: {src: ["distrib/*"]}
+        files: {src: ['tmp/**/*', 'distrib/**/*']}
       },
       tsSourceMap: {
         files: {src: ["distrib/acrolinx-sidebar-integration.js.map"]}
@@ -147,6 +147,15 @@ module.exports = function(grunt){
         browsers: ['PhantomJS']
       },
       dev: {}
+    },
+
+    coverage: {
+      default: {
+        options: {
+          thresholds: grunt.file.readJSON('.coverage.json'),
+          dir: 'tmp/reports/coverage'
+        }
+      }
     }
   };
 
@@ -156,13 +165,14 @@ module.exports = function(grunt){
     bower: 'grunt-bower-task',
     configureProxies: 'grunt-connect-proxy',
     gitcommit: 'grunt-git',
-    shell: 'grunt-shell'
+    shell: 'grunt-shell',
+    coverage: 'grunt-istanbul-coverage'
   });
 
   grunt.registerTask('default', ['build', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
   grunt.registerTask('build', ['bower:install', 'distrib']);
-  grunt.registerTask('distrib', ['clean:distrib', 'jshint', 'ts', 'karma:ci', 'uglify', 'clean:tsSourceMap']);
+  grunt.registerTask('distrib', ['clean:distrib', 'jshint', 'ts', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
 
   grunt.registerTask('release', 'Release the bower project', function(){
     var done = this.async();
