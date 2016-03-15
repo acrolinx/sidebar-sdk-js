@@ -8,3 +8,5 @@ npm-debug.log
 
 .tmp
 .tscache
+
+distrib/acrolinx-sidebar-integration.js.map

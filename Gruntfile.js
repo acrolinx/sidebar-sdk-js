@@ -87,7 +87,7 @@ module.exports = function(grunt){
         options: {
           noImplicitAny: false,
           target: 'es5',
-          sourceMap: true
+          sourceMap: true,
         }
       },
       test: {
@@ -112,7 +112,14 @@ module.exports = function(grunt){
       }
     },
 
-    clean: ["distrib/*"],
+    clean: {
+      distrib: {
+        files: {src: ["distrib/*"]}
+      },
+      tsSourceMap: {
+        files: {src: ["distrib/acrolinx-sidebar-integration.js.map"]}
+      }
+    },
 
     bower: {
       options: {
@@ -155,7 +162,7 @@ module.exports = function(grunt){
   grunt.registerTask('default', ['build', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
   grunt.registerTask('build', ['bower:install', 'distrib']);
-  grunt.registerTask('distrib', ['clean', 'jshint', 'ts', 'uglify']);
+  grunt.registerTask('distrib', ['clean:distrib', 'jshint', 'ts', 'karma:ci', 'uglify', 'clean:tsSourceMap']);
 
   grunt.registerTask('release', 'Release the bower project', function(){
     var done = this.async();
@@ -206,7 +213,6 @@ module.exports = function(grunt){
   });
 
   grunt.registerTask('distribRelease', ['distrib', 'release']);
-  grunt.registerTask('build:ci', ['distrib', 'karma:ci']);
   grunt.registerTask('typescript', ['ts']);
   grunt.registerTask('typescriptTest', ['ts:test']);
 
