@@ -23,7 +23,6 @@
 'use strict';
 
 var basicConf = {
-  sidebarType: 'ON_PREMISE',
   sidebarContainerId: 'sidebarContainer',
   editorId: 'editor',
   serverAddress: 'http://<SERVER NAME>:8031',

@@ -1,3 +1,6 @@
+/// <reference path="../typings/rangy.d.ts" />
+/// <reference path="../utils/selection.ts" />
+
 /*
  *
  * * Copyright 2015 Acrolinx GmbH
@@ -17,58 +20,63 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-/*global AcrSelectionUtils, acrolinxLibs */
-'use strict';
 
+namespace acrolinx.plugins.adapter {
+  'use strict';
 
-var CKEditorAdapter = (function () {
+  import AcrSelectionUtils = acrolinx.plugins.utils.selection;
 
-  var cls = function (conf) {
-    this.config = conf;
-    this.editorId = conf.editorId;
-    this.editor = null;
+  export class CKEditorAdapter implements AdapterInterface {
 
-  };
+    config:any;
+    editorId:any;
+    editor:any;
+    html:any;
+    currentHtmlChecking:any;
+    checkStartTime:any;
+    isCheckingNow:any;
+    prevCheckedHtml:any;
 
+    constructor(conf) {
+      this.config = conf;
+      this.editorId = conf.editorId;
+      this.editor = null;
+    }
 
-
-  cls.prototype = {
-
-
-    getEditor: function () {
+    getEditor() {
       if (this.editor === null) {
         if (CKEDITOR.instances.hasOwnProperty(this.editorId)) {
           this.editor = CKEDITOR.instances[this.editorId];
         }
       }
       return this.editor;
-    },
+    }
 
-    getEditorDocument: function () {
+    getEditorDocument() {
       try {
         return this.getEditor().document.$;
       } catch (error) {
         throw error;
       }
-    },
+    }
 
-    getEditableElement: function () {
+    getEditableElement() {
       return this.editor.editable().$;
-    },
+    }
 
-    getCurrentText: function () {
+    getCurrentText() {
       try {
         return rangy.innerText(this.getEditorDocument());
       } catch (error) {
         throw error;
       }
-    },
+    }
 
-    getHTML: function () {
+    getHTML() {
       return this.getEditor().getData();
-    },
+    }
 
-    createRange: function (begin, length) {
+    createRange(begin, length) {
       var editableElement = this.getEditableElement();
       var range = rangy.createRange(this.getEditorDocument());
       range.setStart(editableElement, 0);
@@ -76,17 +84,16 @@ var CKEditorAdapter = (function () {
       range.moveStart('character', begin);
       range.moveEnd('character', length);
       return range;
-    },
+    }
 
-    selectText: function (begin, length) {
+    selectText(begin, length) {
       var range = this.createRange(begin, length);
       var selection = rangy.getSelection(this.getEditorDocument());
       selection.setSingleRange(range);
       return range;
-    },
+    }
 
-
-    scrollAndSelect: function (matches) {
+    scrollAndSelect(matches) {
       var newBegin,
         matchLength,
         selection1,
@@ -116,10 +123,9 @@ var CKEditorAdapter = (function () {
       range2.setEnd(range1.endContainer, range1.endOffset);
       selection2.setSingleRange(range2);
       return range2;
-    },
+    }
 
-    extractHTMLForCheck: function () {
-
+    extractHTMLForCheck():any {
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
       if (this.editor.mode === 'wysiwyg') {
@@ -128,7 +134,6 @@ var CKEditorAdapter = (function () {
         if (this.html === '') {
           this.html = '<span> </span>';
         }
-
       } else {
         if (this.isCheckingNow) {
           this.isCheckingNow = false;
@@ -136,24 +141,21 @@ var CKEditorAdapter = (function () {
           return {error: "Action is not permitted in Source mode."};
         }
       }
-
       return {html: this.html};
+    }
 
-    },
+    registerCheckCall(checkInfo) {
 
-    registerCheckCall: function (checkInfo) {
+    }
 
-    },
-
-
-    registerCheckResult: function (checkResult) {
+    registerCheckResult(checkResult) {
       this.isCheckingNow = false;
       this.currentHtmlChecking = this.html;
       this.prevCheckedHtml = this.currentHtmlChecking;
       return [];
-    },
+    }
 
-    selectRanges: function (checkId, matches) {
+    selectRanges(checkId, matches) {
       if (this.editor.mode === 'wysiwyg') {
 
         this.selectMatches(checkId, matches);
@@ -161,16 +163,16 @@ var CKEditorAdapter = (function () {
       } else {
         window.alert('Action is not permitted in Source mode.');
       }
-    },
+    }
 
-    selectMatches: function (checkId, matches) {
+    selectMatches(checkId, matches) {
       var rangyFlagOffsets,
         index,
         offset;
 
       var rangyText = this.getCurrentText();
 
-      matches = AcrSelectionUtils.addPropertiesToMatches(matches,this.currentHtmlChecking);
+      matches = AcrSelectionUtils.addPropertiesToMatches(matches, this.currentHtmlChecking);
 
       rangyFlagOffsets = AcrSelectionUtils.findAllFlagOffsets(rangyText, matches[0].searchPattern);
       index = AcrSelectionUtils.findBestMatchOffset(rangyFlagOffsets, matches);
@@ -193,10 +195,9 @@ var CKEditorAdapter = (function () {
       } else {
         throw 'Selected flagged content is modified.';
       }
-    },
+    }
 
-
-    replaceRanges: function (checkId, matchesWithReplacement) {
+    replaceRanges(checkId, matchesWithReplacement) {
       var replacementText,
         selectedRange,
         selectionFromCharPos = 1;
@@ -247,11 +248,6 @@ var CKEditorAdapter = (function () {
       } else {
         window.alert('Action is not permitted in Source mode.');
       }
-    },
-
-
-  };
-
-  return cls;
-
-})();
+    }
+  }
+}

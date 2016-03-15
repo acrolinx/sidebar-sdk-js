@@ -55,16 +55,16 @@ For more information visit: http://www.acrolinx.com
   function initAcrolinx() {
 
     //Init the main Acrolinx Plugin
-    var acrolinx = new AcrolinxPlugin(basicConf);
+    var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
 
     //A simple Adapter for a Editable Div
-    var simpleAdapter = new SimpleTextAdapter(basicConf);
+    var simpleAdapter = new acrolinx.plugins.adapter.SimpleTextAdapter(basicConf);
     //Register one Element-Adapter to the main Acrolinx PLugin
-    acrolinx.registerAdapter(simpleAdapter);
+    acrolinxPlugin.registerAdapter(simpleAdapter);
 
 
     //Init Acrolinx Plugin.
-    acrolinx.init();
+    acrolinxPlugin.init();
   }
 
 </script>

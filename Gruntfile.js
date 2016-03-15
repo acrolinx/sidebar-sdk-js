@@ -19,7 +19,7 @@
  */
 var FS = require("q-io/fs");
 
-module.exports = function (grunt) {
+module.exports = function(grunt){
   var name = 'acrolinx-sidebar-integration';
   var version = '';
 
@@ -30,7 +30,7 @@ module.exports = function (grunt) {
           livereload: '<%= connect.options.livereload %>'
         },
         files: [
-          'src/**/*','distrib/**/*'
+          'src/**/*', 'distrib/**/*'
         ]
       },
       jshint: {
@@ -40,10 +40,10 @@ module.exports = function (grunt) {
         files: ['src/**/*.js'],
         tasks: ['jshint']
       },
-      concat: {
+      ts: {
         options: {},
-        files: ['src/**/*.js'],
-        tasks: ['concat']
+        files: ['src/**/*.ts', 'test/**/*.ts'],
+        tasks: ['ts']
       }
     },
 
@@ -57,10 +57,12 @@ module.exports = function (grunt) {
 
       livereload: {
         options: {
-          middleware: function (connect) {
+          middleware: function(connect){
             var proxy = require('grunt-connect-proxy/lib/utils').proxyRequest;
             return [
               connect().use('/', connect.static('./samples/client')),
+              connect().use('/.tmp/compiled', connect.static('.tmp/compiled')),
+              connect().use('/test', connect.static('./test')),
               connect().use('/distrib', connect.static('./distrib')),
               connect().use('/bower_components', connect.static('./bower_components')),
               proxy
@@ -72,38 +74,41 @@ module.exports = function (grunt) {
     },
 
     jshint: {
-      myFiles: ['src/**/*.js', 'samples/**/*.js'],
+      myFiles: ['samples/**/*.js'],
       options: {
         jshintrc: ".jshintrc"
       }
     },
 
-
-    concat: {
-      options: {
-        stripBanners:true,
-        banner: "'use strict';\n",
-        process: function(src, filepath) {
-          return '// Source: ' + filepath + '\n' +
-              src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+    ts: {
+      base: {
+        src: ['src/**/*.ts'],
+        dest: 'distrib/' + name + '.js',
+        options: {
+          noImplicitAny: false,
+          target: 'es5',
+          sourceMap: true
         }
       },
-      target : {
-        src : ['src/**/*.js'],
-        dest : 'distrib/' + name +'.js'
+      test: {
+        src: ['src/**/*.ts', 'test/**/*.ts'],
+        dest: '.tmp/compiled/test.js',
+        options: {
+          target: 'es5', //or es3
+          sourceMap: false
+        }
       }
     },
 
     uglify: {
       options: {
-
         sourceMapRoot: '../',
-        sourceMap: 'distrib/'+name+'.min.js.map',
-        sourceMapUrl: name+'.min.js.map'
+        sourceMap: 'distrib/' + name + '.min.js.map',
+        sourceMapUrl: name + '.min.js.map'
       },
-      target : {
-        src : ['src/**/*.js'],
-        dest : 'distrib/' + name + '.min.js'
+      target: {
+        src: ['distrib/' + name + '.js'],
+        dest: 'distrib/' + name + '.min.js'
       }
     },
 
@@ -124,9 +129,18 @@ module.exports = function (grunt) {
       target: {
         command: 'git push --tags origin HEAD:master'
       }
+    },
+
+    karma: {
+      options: {
+        configFile: 'test/karma.conf.js'
+      },
+      ci: {
+        singleRun: true,
+        browsers: ['PhantomJS']
+      },
+      dev: {}
     }
-
-
   };
 
   grunt.initConfig(grunt_config);
@@ -134,35 +148,34 @@ module.exports = function (grunt) {
   require('jit-grunt')(grunt, {
     bower: 'grunt-bower-task',
     configureProxies: 'grunt-connect-proxy',
-    gitcommit : 'grunt-git',
-    shell :'grunt-shell'
+    gitcommit: 'grunt-git',
+    shell: 'grunt-shell'
   });
-
 
   grunt.registerTask('default', ['build', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
-  grunt.registerTask('build', ['bower:install','distrib']);
-  grunt.registerTask('distrib', ['clean','jshint','concat','uglify']);
+  grunt.registerTask('build', ['bower:install', 'distrib']);
+  grunt.registerTask('distrib', ['clean', 'jshint', 'ts', 'uglify']);
 
-  grunt.registerTask('release','Release the bower project',function () {
+  grunt.registerTask('release', 'Release the bower project', function(){
     var done = this.async();
-    FS.read('bower.json').then(function (bowerData) {
-      FS.read('version').then(function (oldVersion) {
+    FS.read('bower.json').then(function(bowerData){
+      FS.read('version').then(function(oldVersion){
         var bower = JSON.parse(bowerData);
 
         if (bower.version != oldVersion) {
-          console.log('New Version!',bower.version);
-          FS.write('version',bower.version);
+          console.log('New Version!', bower.version);
+          FS.write('version', bower.version);
           version = bower.version;
           grunt.config('gitcommit', {
             task: {
               options: {
                 message: 'Releasing: ' + version,
-                  noVerify: true,
-                  noStatus: false
+                noVerify: true,
+                noStatus: false
               },
               files: {
-                src: ['distrib/**','version']
+                src: ['distrib/**', 'version']
               }
             }
           });
@@ -181,7 +194,7 @@ module.exports = function (grunt) {
               }
             },
           });
-          grunt.task.run('gitcommit','gittag','shell');
+          grunt.task.run('gitcommit', 'gittag', 'shell');
           done();
 
         } else {
@@ -192,7 +205,9 @@ module.exports = function (grunt) {
     });
   });
 
-  grunt.registerTask('distribRelease', ['distrib','release']);
-
+  grunt.registerTask('distribRelease', ['distrib', 'release']);
+  grunt.registerTask('build:ci', ['distrib', 'karma:ci']);
+  grunt.registerTask('typescript', ['ts']);
+  grunt.registerTask('typescriptTest', ['ts:test']);
 
 };

@@ -18,28 +18,27 @@
  *
  */
 
-/*global acrolinxLibs */
+namespace acrolinx.plugins.utils.selection {
+  'use strict';
 
- 'use strict';
-var AcrSelectionUtils = {
-  isFlagContainsOnlySpecialChar: function (flaggedContent) {
+  export function isFlagContainsOnlySpecialChar(flaggedContent) {
     var pattern = /\w/g;
     return !pattern.test(flaggedContent);
-  },
+  }
 
-  replaceRangeContent: function (range, replacementText) {
+  export function replaceRangeContent(range, replacementText) {
     range.deleteContents();
     range.insertNode(range.createContextualFragment(replacementText));
-  },
-  getTextContent: function (html) {
+  }
+
+  export function getTextContent(html) {
     var tmpHTMLElement = acrolinxLibs.$('<div/>').html(html);
     return tmpHTMLElement.text().replace(/\t+/g, '');
-  },
+  }
 
-
-  escapeRegExp: function (string) {
+  export function escapeRegExp(string) {
     return string.replace(/([\".*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
-  },
+  }
 
   /* Add word boundary only in following three cases
    * 1. The very next character of the match is also valid word character
@@ -47,17 +46,17 @@ var AcrSelectionUtils = {
    * 3. When atleast one character of flagged word is a 'word' character
    * (#3) is used to handle flags containing only punctuations
    */
-  createSearchPattern: function (matches,currentHtmlChecking) {
+  export function createSearchPattern(matches, currentHtmlChecking) {
     var searchPattern = matches[0].textContent,
       wordBoundary = '\\b';
 
-    if (AcrSelectionUtils.shouldApplyWordBoundary(matches,currentHtmlChecking) === true) {
+    if (shouldApplyWordBoundary(matches, currentHtmlChecking) === true) {
       searchPattern = wordBoundary + searchPattern + wordBoundary;
     }
     return searchPattern;
-  },
+  }
 
-  shouldApplyWordBoundary: function (matches,currentHtmlChecking) {
+  export function shouldApplyWordBoundary(matches, currentHtmlChecking) {
     var offset = matches[matches.length - 1].range[1],
       lastChar,
       nextChar,
@@ -66,7 +65,7 @@ var AcrSelectionUtils = {
       firstFlaggedWord,
       lastFlaggedWord;
 
-    nextChar = AcrSelectionUtils.getFlagContents(offset, offset + 1,currentHtmlChecking);
+    nextChar = getFlagContents(offset, offset + 1, currentHtmlChecking);
     flaggedWords = matches[0].textContent.split(/\\s+/);
     firstFlaggedWord = flaggedWords[0];
     firstChar = firstFlaggedWord.substr(0, 1);
@@ -96,27 +95,27 @@ var AcrSelectionUtils = {
       return false;
     }
 
-    if ((AcrSelectionUtils.isAlphaNumeral(firstChar) && AcrSelectionUtils.isAlphaNumeral(lastChar) && AcrSelectionUtils.isAlphaNumeral(nextChar)) &&
-      lastChar.charCodeAt(0) !== 45 && !AcrSelectionUtils.isFlagContainsOnlySpecialChar(matches[0].htmlContent)) {
+    if ((isAlphaNumeral(firstChar) && isAlphaNumeral(lastChar) && isAlphaNumeral(nextChar)) &&
+      lastChar.charCodeAt(0) !== 45 && !isFlagContainsOnlySpecialChar(matches[0].htmlContent)) {
       return true;
     }
     return false;
-  },
+  }
 
-  isAlphaNumeral: function (character) {
+  export function isAlphaNumeral(character) {
 
     if ((character.charCodeAt(0) >= 48 && character.charCodeAt(0) <= 90 ) ||
       (character.charCodeAt(0) >= 97 && character.charCodeAt(0) <= 126)) {
       return true;
     }
     return false;
-  },
+  }
 
-  getFlagContents: function (begin, end,currentHtmlChecking) {
+  export function getFlagContents(begin, end, currentHtmlChecking) {
     return currentHtmlChecking.substr(begin, end - begin);
-  },
+  }
 
-  addPropertiesToMatches: function (matches,currentHtmlChecking) {
+  export function addPropertiesToMatches(matches, currentHtmlChecking) {
     var textContent,
       htmlContentBeforeFlag,
       textContentBeforeFlag,
@@ -126,8 +125,8 @@ var AcrSelectionUtils = {
       endOffset = matches[matches.length - 1].range[1];
 
     // Convert html offset to text offset
-    htmlContentBeforeFlag = AcrSelectionUtils.getFlagContents(0, startOffset,currentHtmlChecking);
-    textContentBeforeFlag = AcrSelectionUtils.getTextContent(htmlContentBeforeFlag);
+    htmlContentBeforeFlag = getFlagContents(0, startOffset, currentHtmlChecking);
+    textContentBeforeFlag = getTextContent(htmlContentBeforeFlag);
     matches[0].textOffset = textContentBeforeFlag.length;
     if (matches[0].textOffset === 0) {
       //pattern to get html tags
@@ -140,17 +139,17 @@ var AcrSelectionUtils = {
 
 
     }
-    matches[0].htmlContent = AcrSelectionUtils.getFlagContents(startOffset, endOffset,currentHtmlChecking);
+    matches[0].htmlContent = getFlagContents(startOffset, endOffset, currentHtmlChecking);
 
     // Convert Flag HTML into inner Text
-    textContent = AcrSelectionUtils.getTextContent(matches[0].htmlContent);
-    textContent = AcrSelectionUtils.escapeRegExp(textContent);
+    textContent = getTextContent(matches[0].htmlContent);
+    textContent = escapeRegExp(textContent);
     matches[0].textContent = textContent;
-    matches[0].searchPattern = AcrSelectionUtils.createSearchPattern(matches,currentHtmlChecking);
+    matches[0].searchPattern = createSearchPattern(matches, currentHtmlChecking);
     return matches;
-  },
+  }
 
-  findBestMatchOffset: function (flagHtmlOffsets, matches) {
+  export function findBestMatchOffset(flagHtmlOffsets, matches) {
     var minOffsetIndex = -1,
       originalFlagOffset = matches[0].textOffset;
 
@@ -166,11 +165,10 @@ var AcrSelectionUtils = {
       }
     }
     return minOffsetIndex;
-  },
+  }
 
 
-
-  findAllFlagOffsets: function (paragraph, stringToPattern) {
+  export function findAllFlagOffsets(paragraph, stringToPattern) {
     var matchedWords,
       pattern,
       flagOffsets = [];
@@ -187,7 +185,6 @@ var AcrSelectionUtils = {
     }
 
     return flagOffsets;
-  },
+  }
 
-
-};
+}

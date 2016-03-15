@@ -17,48 +17,57 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-/*global AcrSelectionUtils, tinymce, acrolinxLibs */
 
-'use strict';
-var TinyMCEAdapter = (function () {
-  var cls = function (conf) {
-    this.config = conf;
-    this.editorId = conf.editorId;
-    this.editor = null;
+namespace acrolinx.plugins.adapter {
+  'use strict';
 
-  };
+  import AcrSelectionUtils = acrolinx.plugins.utils.selection;
 
+  export class TinyMCEAdapter implements AdapterInterface {
 
-  cls.prototype = {
-    getEditor: function () {
+    config:any;
+    editorId:any;
+    editor:any;
+    html:any;
+    isCheckingNow:any;
+    currentHtmlChecking:any;
+    prevCheckedHtml:any;
+
+    constructor(conf) {
+      this.config = conf;
+      this.editorId = conf.editorId;
+      this.editor = null;
+    }
+
+    getEditor() {
       if (this.editor === null) {
         this.editor = tinymce.get(this.editorId);
-        console.log("tinymce found",this.editor);
+        console.log("tinymce found", this.editor);
       }
       return this.editor;
-    },
+    }
 
-    getHTML: function () {
+    getHTML() {
       return this.getEditor().getContent();
-    },
+    }
 
-    getEditorDocument: function () {
+    getEditorDocument() {
       try {
         return this.editor.contentDocument;
       } catch (error) {
         throw error;
       }
-    },
+    }
 
-    getCurrentText: function () {
+    getCurrentText() {
       try {
         return rangy.innerText(this.getEditorDocument());
       } catch (error) {
         throw error;
       }
-    },
+    }
 
-    selectText: function (begin, length) {
+    selectText(begin, length) {
       var doc = this.getEditorDocument();
       var selection = rangy.getSelection(doc);
       var range = rangy.createRange(doc);
@@ -67,9 +76,9 @@ var TinyMCEAdapter = (function () {
       range.moveEnd('character', length);
       selection.setSingleRange(range);
       return range;
-    },
+    }
 
-    scrollIntoView2: function (sel) {
+    scrollIntoView2(sel) {
       var range = sel.getRng();
       var tmp = range.cloneRange();
       tmp.collapse();
@@ -78,18 +87,10 @@ var TinyMCEAdapter = (function () {
       tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
       text.scrollIntoView();
       text.remove();
+    }
 
-
-    },
-
-    scrollAndSelect: function (matches) {
-      var newBegin,
-        matchLength,
-        selection1,
-        selection2,
-        range1,
-        range2,
-        doc;
+    scrollAndSelect(matches) {
+      var newBegin, matchLength, selection1, range1, range2,
 
       newBegin = matches[0].foundOffset;
       matchLength = matches[0].flagLength + 1;
@@ -112,41 +113,41 @@ var TinyMCEAdapter = (function () {
       //
       // scrollIntoView need to set it again
       range2 = this.selectText(newBegin, matchLength);
-    },
+    }
 
-    extractHTMLForCheck: function () {
+    extractHTMLForCheck() {
       //var checkCallResult,
       //  startTime = new Date().getTime();
 
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
       return {html: this.html};
-    },
+    }
 
-    registerCheckCall: function (checkInfo) {
+    registerCheckCall(checkInfo) {
 
-    },
+    }
 
 
-    registerCheckResult: function (checkResult) {
+    registerCheckResult(checkResult) {
       this.isCheckingNow = false;
       this.currentHtmlChecking = this.html;
       this.prevCheckedHtml = this.currentHtmlChecking;
       return [];
-    },
+    }
 
-    selectRanges:function (checkId, matches) {
+    selectRanges(checkId, matches) {
       this.selectMatches(checkId, matches);
-    },
+    }
 
-    selectMatches:function (checkId, matches) {
+    selectMatches(checkId, matches) {
       var rangyFlagOffsets,
         index,
         offset;
 
       var rangyText = this.getCurrentText();
 
-      matches = AcrSelectionUtils.addPropertiesToMatches(matches,this.currentHtmlChecking);
+      matches = AcrSelectionUtils.addPropertiesToMatches(matches, this.currentHtmlChecking);
 
       rangyFlagOffsets = AcrSelectionUtils.findAllFlagOffsets(rangyText, matches[0].searchPattern);
       index = AcrSelectionUtils.findBestMatchOffset(rangyFlagOffsets, matches);
@@ -169,9 +170,9 @@ var TinyMCEAdapter = (function () {
       } else {
         throw 'Selected flagged content is modified.';
       }
-    },
+    }
 
-    replaceRanges:function (checkId, matchesWithReplacement) {
+    replaceRanges(checkId, matchesWithReplacement) {
       var replacementText,
         selectionFromCharPos = 1;
 
@@ -207,11 +208,6 @@ var TinyMCEAdapter = (function () {
 
       // Select the replaced flag
       this.selectText(matchesWithReplacement[0].foundOffset, replacementText.length);
-
-    },
-
-  };
-
-  return cls;
-
-})();
+    }
+  }
+}

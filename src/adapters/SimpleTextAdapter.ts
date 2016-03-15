@@ -18,18 +18,17 @@
  *
  */
 
-'use strict';
+namespace acrolinx.plugins.adapter {
+  'use strict';
 
-var SimpleTextAdapter = (function () {
-  var cls = function (conf) {
-    this.config = conf;
-  };
+  export class SimpleTextAdapter implements AdapterInterface {
+    config:any;
 
+    constructor(conf) {
+      this.config = conf;
+    }
 
-  cls.prototype = {
-
-
-    selectText: function (begin, length) {
+    selectText(begin, length) {
       /*
        * The DOM does not allow you to select text with offsets easily, but Rangy provides an implementation for that.
        * If you run into performance problems you should use another implementation.
@@ -42,10 +41,10 @@ var SimpleTextAdapter = (function () {
       r.moveEnd('character', length);
       var sel = rangy.getSelection();
       sel.setSingleRange(r);
-    },
+    }
 
 
-    findRangesPositionInPlainText: function (text, matches) {
+    findRangesPositionInPlainText(text, matches) {
       /*
        Be aware that matches can be discontinuous. Check if(matches[i].range[1] == matches[i+1].range[0]).
        An implementation for production use should store the last checked document content in a variable and look up the range offsets in the original document.
@@ -63,41 +62,40 @@ var SimpleTextAdapter = (function () {
       } else {
         return null;
       }
-    },
+    }
 
-    getEditor: function () {
+    getEditor() {
       return document.getElementById(this.config.editorId);
-    },
+    }
 
-    getEditorElement: function () {
+    getEditorElement() {
       return this.getEditor();
-    },
+    }
 
-    getCurrentText: function () {
+    getCurrentText() {
       return rangy.innerText(this.getEditorElement());
-    },
+    }
 
-    getHTML: function () {
+    getHTML() {
       return this.getEditor().innerHTML;
-    },
+    }
 
-    extractHTMLForCheck : function () {
-      return {html:this.getHTML()};
-    },
-
-
-
-    registerCheckCall : function (checkInfo) {
-
-    },
+    extractHTMLForCheck() {
+      return {html: this.getHTML()};
+    }
 
 
-    registerCheckResult: function (checkResult) {
+    registerCheckCall(checkInfo) {
+
+    }
+
+
+    registerCheckResult(checkResult) {
       return [];
-    },
+    }
 
 
-    selectRanges: function (checkId, matches) {
+    selectRanges(checkId, matches) {
       var positionInPlainText = this.findRangesPositionInPlainText(this.getCurrentText(), matches);
       if (positionInPlainText) {
         this.selectText(positionInPlainText.start, positionInPlainText.length);
@@ -106,9 +104,9 @@ var SimpleTextAdapter = (function () {
         window.alert('Sorry, but I can\'t select this issue.');
       }
 
-    },
+    }
 
-    replaceRanges: function (checkId, matchesWithReplacement) {
+    replaceRanges(checkId, matchesWithReplacement) {
       this.selectRanges(checkId, matchesWithReplacement);
       var replacementText = matchesWithReplacement.map(function (matcheWithReplacement) {
         return matcheWithReplacement.replacement;
@@ -121,7 +119,7 @@ var SimpleTextAdapter = (function () {
 
     }
 
-  };
+  }
 
-  return cls;
-})();
+}
+;

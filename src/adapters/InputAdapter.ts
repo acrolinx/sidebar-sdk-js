@@ -17,66 +17,74 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-/*global AcrSelectionUtils, acrolinxLibs */
 
-'use strict';
-var InputAdapter = (function () {
-  var cls = function (element) {
-    if (element.editorId !== undefined) {
-      this.element = document.getElementById(element.editorId);
-    } else {
-      this.element = element;
+namespace acrolinx.plugins.adapter {
+  'use strict';
+
+  import AcrSelectionUtils = acrolinx.plugins.utils.selection;
+
+  export class InputAdapter implements AdapterInterface {
+
+    element:any;
+    html:any;
+    currentHtmlChecking:any;
+
+    constructor(element) {
+      if (element.editorId !== undefined) {
+        this.element = document.getElementById(element.editorId);
+      } else {
+        this.element = element;
+      }
     }
-  };
 
-  cls.prototype = {
-    getHTML: function () {
+    getHTML() {
       return acrolinxLibs.$(this.element).val();
-    },
+    }
 
-    getEditorDocument: function () {
+    getEditorDocument() {
       try {
         return this.element.ownerDocument;
       } catch (error) {
         throw error;
       }
-    },
+    }
 
-    getCurrentText: function () {
+    getCurrentText() {
       try {
-          return this.getHTML();
+        return this.getHTML();
       } catch (error) {
         throw error;
       }
-    },
+    }
 
-    extractHTMLForCheck: function () {
+    extractHTMLForCheck() {
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
       return {html: this.html};
-    },
+    }
 
-    registerCheckResult: function (checkResult) {
+    registerCheckResult(checkResult) {
       return [];
-    },
-    registerCheckCall : function (checkInfo) {
+    }
 
-    },
+    registerCheckCall(checkInfo) {
+
+    }
 
 
-    selectText: function (begin, length) {
+    selectText(begin, length) {
       var doc = this.getEditorDocument();
       var selection = rangy.getSelection(doc);
       var range = rangy.createRange(doc);
 
-      range.setStart(this.element,0);
+      range.setStart(this.element, 0);
       range.moveStart('character', begin);
       range.moveEnd('character', length);
       selection.setSingleRange(range);
       return range;
-    },
+    }
 
-    scrollIntoView2: function (sel) {
+    scrollIntoView2(sel) {
       var range = sel.getRangeAt(0);
       var tmp = range.cloneRange();
       tmp.collapse();
@@ -85,40 +93,30 @@ var InputAdapter = (function () {
       tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
       text.scrollIntoView();
       text.remove();
+    }
 
-
-    },
-
-    scrollAndSelect: function (matches) {
-      var newBegin,
-        matchLength,
-        selection1,
-        selection2,
-        range1,
-        range2,
-        doc;
+    scrollAndSelect(matches) {
+      var newBegin, matchLength;
       var $ = acrolinxLibs.$;
 
       newBegin = matches[0].foundOffset;
       matchLength = matches[0].flagLength + 1;
 
       $(this.element).focus();
-      $(this.element).setSelection(newBegin,newBegin + matchLength);
+      $(this.element).setSelection(newBegin, newBegin + matchLength);
 
       $(this.element)[0].scrollIntoView();
       var wpContainer = $('#wp-content-editor-container');
       if (wpContainer.length > 0) {
-        window.scrollBy(0,-50);
-
+        window.scrollBy(0, -50);
       }
+    }
 
-    },
-
-    selectRanges: function (checkId, matches) {
+    selectRanges(checkId, matches) {
       this.selectMatches(checkId, matches);
-    },
+    }
 
-    selectMatches: function (checkId, matches) {
+    selectMatches(checkId, matches) {
       var rangyFlagOffsets,
         index,
         offset;
@@ -148,14 +146,14 @@ var InputAdapter = (function () {
       } else {
         throw 'Selected flagged content is modified.';
       }
-    },
+    }
 
-    replaceSelection: function (content) {
+    replaceSelection(content) {
       //$(this.element).focus();
       acrolinxLibs.$(this.element).replaceSelectedText(content, "select");
-    },
+    }
 
-    replaceRanges: function (checkId, matchesWithReplacement) {
+    replaceRanges(checkId, matchesWithReplacement) {
       var replacementText,
         selectionFromCharPos = 0;
       try {
@@ -175,11 +173,6 @@ var InputAdapter = (function () {
       }
       replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
       this.replaceSelection(replacementText);
-
     }
-
-
-  };
-
-  return cls;
-})();
+  }
+}
