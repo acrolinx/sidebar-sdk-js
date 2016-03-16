@@ -1,4 +1,5 @@
 namespace acrolinx.plugins.adapter {
+  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
   export interface AdapterInterface {
     selectText(begin: number, length: number);
     findRangesPositionInPlainText?(text, matches);
@@ -10,7 +11,7 @@ namespace acrolinx.plugins.adapter {
     registerCheckCall(checkInfo);
     registerCheckResult(checkResult)
     selectRanges(checkId, matches);
-    replaceRanges(checkId, matchesWithReplacement);
+    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]);
   }
 }
 

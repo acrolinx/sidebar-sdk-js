@@ -18,6 +18,12 @@
  *
  */
 
+
+/**
+ * This is a very incomplete simple example.
+ * In production you should use ContentEditableAdapter.
+ * @deprecated
+ */
 namespace acrolinx.plugins.adapter {
   'use strict';
 

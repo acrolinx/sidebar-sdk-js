@@ -15,7 +15,12 @@ module.exports = function (config) {
     // (If you change this, you might want to change test/index.html too.)
     files: [
       'bower_components/jquery/dist/jquery.js',
-      'bower_components/underscore/underscore.js',
+      'bower_components/lodash/lodash.js',
+      'bower_components/rangy/rangy-core.js',
+      'bower_components/q/q.js',
+      'bower_components/rangy/rangy-textrange.js',
+      'bower_components/rangyinputs/rangyinputs-jquery.js',
+      'bower_components/ckeditor/ckeditor.js',
       'tmp/compiled/test.js'
     ],
 

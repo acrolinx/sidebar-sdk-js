@@ -39,6 +39,7 @@ For more information visit: http://www.acrolinx.com
 <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/rangy/rangy-core.js"></script>
 
+<script src="/bower_components/lodash/lodash.js"></script>
 <script src="/bower_components/q/q.js"></script>
 <script src="/bower_components/rangy/rangy-textrange.js"></script>
 <script>
@@ -58,7 +59,7 @@ For more information visit: http://www.acrolinx.com
     var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
 
     //A simple Adapter for a Editable Div
-    var simpleAdapter = new acrolinx.plugins.adapter.SimpleTextAdapter(basicConf);
+    var simpleAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter(basicConf);
     //Register one Element-Adapter to the main Acrolinx PLugin
     acrolinxPlugin.registerAdapter(simpleAdapter);
 

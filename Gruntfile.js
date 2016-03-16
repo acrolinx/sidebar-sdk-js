@@ -171,7 +171,7 @@ module.exports = function(grunt){
 
   grunt.registerTask('default', ['build', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
-  grunt.registerTask('build', ['bower:install', 'distrib']);
+  grunt.registerTask('build', ['bower:install', 'clean:distrib', 'jshint', 'ts']);
   grunt.registerTask('distrib', ['clean:distrib', 'jshint', 'ts', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
 
   grunt.registerTask('release', 'Release the bower project', function(){
@@ -223,7 +223,6 @@ module.exports = function(grunt){
   });
 
   grunt.registerTask('distribRelease', ['distrib', 'release']);
-  grunt.registerTask('typescript', ['ts']);
-  grunt.registerTask('typescriptTest', ['ts:test']);
+  grunt.registerTask('karmaLocal', ['karma:ci', 'coverage']);
 
 };
