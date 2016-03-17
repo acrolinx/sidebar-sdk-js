@@ -15,6 +15,7 @@ describe('adapter test', function () {
     editorElement: string;
     setHtml: Function;
     init?: Function;
+    remove: Function;
   }
 
   const adapters:AdapterSpec[] = [
@@ -23,6 +24,9 @@ describe('adapter test', function () {
       editorElement: '<div id="editorId" contenteditable="true">initial text</div>',
       setHtml: (html:string) => {
         $('#editorId').html(html);
+      },
+      remove: () => {
+        $('#editorId').remove();
       }
     },
     {
@@ -30,19 +34,51 @@ describe('adapter test', function () {
       editorElement: '<textarea id="editorId">initial text</textarea>',
       setHtml: (html:string) => {
         $('#editorId').val(html);
+      },
+      remove: () => {
+        $('#editorId').remove();
       }
-    }
-    /*{
+    }/*,
+    {
       name: 'CKEditorAdapter',
       editorElement: '<textarea name="editorId" id="editorId" rows="10" cols="40">initial text</textarea>',
       setHtml: (html:string) => {
         CKEDITOR.instances['editorId'].setData(html);
       },
       init: (done) => {
-        CKEDITOR.replace('editorId');
+        CKEDITOR.disableAutoInline = true;
+        CKEDITOR.replace('editorId', {customConfig: ''});
         CKEDITOR.instances['editorId'].on("instanceReady", () => {
           done();
+        })
+      },
+      remove: () => {
+        // TODO: The following line causes errors!
+        // Might be fixed with next release of CKEDITOR See(http://stackoverflow.com/questions/25034150/ck-editor-uncaught-typeerror-cannot-read-property-clearcustomdata-of-null-i)
+        CKEDITOR.instances['editorId'].destroy(true);
+        $('#editorId').remove();
+      }
+    },
+    {
+      name: 'TinyMCEAdapter',
+      editorElement: '<textarea id="editorId" rows="10" cols="40">initial text</textarea>',
+      setHtml: (html:string) => {
+        tinymce.get("editorId").setContent(html);
+      },
+      init: (done) => {
+        tinymce.init({
+          selector: "#editorId",
+          height: 50,
+          init_instance_callback: (editor) => {
+            done();
+          }
         });
+      },
+      remove: () => {
+        if(tinymce){
+        tinymce.get('editorId').remove();
+        }
+        $('#editorId').remove();
       }
     }*/
   ];
@@ -53,7 +89,7 @@ describe('adapter test', function () {
     const adapterName = adapterSpec.name;
     describe('adapter ' + adapterName, function () {
 
-      beforeEach( (done) => {
+      beforeEach((done) => {
         $('body').append(adapterSpec.editorElement);
         adapter = new acrolinx.plugins.adapter[adapterName]({editorId: 'editorId'});
         if (adapterSpec.init) {
@@ -64,16 +100,15 @@ describe('adapter test', function () {
       });
 
       afterEach(() => {
-        if (adapterSpec.name === 'CKEditorAdapter') {
-          CKEDITOR.instances['editorId'].destroy();
-        }
-        $('#editorId').remove();
+        adapterSpec.remove();
       });
 
       const setHtml = adapterSpec.setHtml;
 
       it('Get initial text from editor element', function () {
         assert.equal(adapter.getCurrentText(), 'initial text');
+        setHtml('current text');
+        assert.equal(adapter.getCurrentText(), 'current text');
       });
 
       it('Get current text from editor element', function () {
@@ -82,7 +117,11 @@ describe('adapter test', function () {
       });
 
       it('Extract initial HTML from editor element', function () {
-        assert.equal(adapter.extractHTMLForCheck().html, 'initial text');
+        if (adapterSpec.name === 'CKEditorAdapter' || adapterSpec.name === 'TinyMCEAdapter') {
+          assert.isTrue(adapter.extractHTMLForCheck().html.toString().indexOf('initial text') > 0);
+        }
+        else
+          assert.equal(adapter.extractHTMLForCheck().html, 'initial text');
       });
 
       describe('lookup', () => {
@@ -110,8 +149,10 @@ describe('adapter test', function () {
 
         function givenAText(completeString:string) {
           setHtml(completeString);
-          adapter.extractHTMLForCheck();
-          return completeString;
+          adapter.registerCheckCall(dummyCheckId);
+          var html = adapter.extractHTMLForCheck();
+          adapter.registerCheckResult(dummyCheckId);
+          return html.html;
         }
 
         it('Don\'t change surrounding words when replacing', function () {
@@ -247,11 +288,7 @@ describe('adapter test', function () {
 
           assert.equal(adapter.getCurrentText(), 'Inside12345Word');
         });
-
-
       })
-
     })
   })
-
 });

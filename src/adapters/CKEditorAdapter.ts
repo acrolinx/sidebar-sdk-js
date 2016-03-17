@@ -60,10 +60,6 @@ namespace acrolinx.plugins.adapter {
       }
     }
 
-    getEditableElement() {
-      return this.editor.editable().$;
-    }
-
     getCurrentText() {
       try {
         return rangy.innerText(this.getEditorDocument());
@@ -77,10 +73,10 @@ namespace acrolinx.plugins.adapter {
     }
 
     createRange(begin, length) {
-      var editableElement = this.getEditableElement();
-      var range = rangy.createRange(this.getEditorDocument());
-      range.setStart(editableElement, 0);
-      range.setEnd(editableElement, 0);
+      var editorDocument = this.getEditorDocument();
+      var range = rangy.createRange(editorDocument);
+      range.setStart(editorDocument, 0);
+      range.setEnd(editorDocument, 0);
       range.moveStart('character', begin);
       range.moveEnd('character', length);
       return range;
@@ -101,12 +97,10 @@ namespace acrolinx.plugins.adapter {
         range1,
         range2,
         doc;
-
       newBegin = matches[0].foundOffset;
       matchLength = matches[0].flagLength + 1;
       range1 = this.selectText(newBegin, matchLength);
       selection1 = this.getEditor().getSelection();
-
       if (selection1) {
         try {
           selection1.scrollIntoView();

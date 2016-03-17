@@ -28,7 +28,9 @@ namespace acrolinx.plugins.utils.selection {
 
   export function replaceRangeContent(range, replacementText) {
     range.deleteContents();
-    range.insertNode(range.createContextualFragment(replacementText));
+    if (replacementText) {
+      range.insertNode(range.createContextualFragment(replacementText));
+    }
   }
 
   export function getTextContent(html) {

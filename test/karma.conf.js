@@ -21,6 +21,7 @@ module.exports = function (config) {
       'bower_components/rangy/rangy-textrange.js',
       'bower_components/rangyinputs/rangyinputs-jquery.js',
       'bower_components/ckeditor/ckeditor.js',
+      'bower_components/tinymce/tinymce.js',
       'tmp/compiled/test.js'
     ],
 

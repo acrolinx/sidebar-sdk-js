@@ -42,7 +42,6 @@ namespace acrolinx.plugins.adapter {
     getEditor() {
       if (this.editor === null) {
         this.editor = tinymce.get(this.editorId);
-        console.log("tinymce found", this.editor);
       }
       return this.editor;
     }
@@ -53,7 +52,7 @@ namespace acrolinx.plugins.adapter {
 
     getEditorDocument() {
       try {
-        return this.editor.contentDocument;
+        return this.getEditor().contentDocument;
       } catch (error) {
         throw error;
       }
@@ -92,7 +91,7 @@ namespace acrolinx.plugins.adapter {
     scrollAndSelect(matches) {
       var newBegin, matchLength, selection1, range1, range2,
 
-      newBegin = matches[0].foundOffset;
+        newBegin = matches[0].foundOffset;
       matchLength = matches[0].flagLength + 1;
       range1 = this.selectText(newBegin, matchLength);
       selection1 = this.getEditor().selection;
