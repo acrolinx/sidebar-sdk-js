@@ -21,7 +21,13 @@ module.exports = function (config) {
       'bower_components/rangy/rangy-textrange.js',
       'bower_components/rangyinputs/rangyinputs-jquery.js',
       'bower_components/ckeditor/ckeditor.js',
+      'bower_components/ckeditor/lang/en.js',
+      'bower_components/ckeditor/styles.js',
+      'bower_components/ckeditor/contents.css',
+      'bower_components/ckeditor/skins/moono/editor.css',
+      {pattern: 'bower_components/ckeditor/skins/moono/icons.png', included: false},
       'bower_components/tinymce/tinymce.js',
+      'bower_components/tinymce/themes/modern/theme.js',
       'tmp/compiled/test.js'
     ],
 

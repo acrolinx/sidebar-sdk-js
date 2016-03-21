@@ -70,7 +70,6 @@ namespace acrolinx.plugins.adapter {
     }
 
     selectText(begin, length) {
-      console.log("Selecting Text:", begin, length);
       var doc = this.getEditorDocument();
       var selection = rangy.getSelection(doc);
       var range = rangy.createRange(doc);
@@ -171,8 +170,6 @@ namespace acrolinx.plugins.adapter {
     }
 
     replaceSelection(content) {
-
-      console.log(content);
       var doc = this.getEditorDocument();
       var selection = rangy.getSelection(doc);
       var rng = selection.getRangeAt(0);

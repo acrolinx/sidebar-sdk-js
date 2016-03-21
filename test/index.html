@@ -36,6 +36,12 @@
 </script>
 <script src="../tmp/compiled/test.js"></script>
 <script>
-  mocha.run();</script>
+  // I seems that rangy needs some time to load (e.g. in firefox).
+  // So we need to postpone test execution a little bit.
+  var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+  setTimeout(function () {
+    mocha.run()
+  }, isFirefox ? 1000 : 100);
+</script>
 </body>
 </html>
