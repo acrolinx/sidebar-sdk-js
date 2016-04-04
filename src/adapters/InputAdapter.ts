@@ -21,19 +21,26 @@
 namespace acrolinx.plugins.adapter {
   'use strict';
 
-  import AcrSelectionUtils = acrolinx.plugins.utils.selection;
+  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
+  import lookupMatchesStandard = acrolinx.plugins.lookup.standard.lookupMatches;
+  import _ = acrolinxLibs._;
 
   export class InputAdapter implements AdapterInterface {
+    element: any;
+    html: any;
+    currentHtmlChecking: any;
+    lookupMatches = lookupMatchesStandard;
 
-    element:any;
-    html:any;
-    currentHtmlChecking:any;
-
-    constructor(element) {
-      if (element.editorId !== undefined) {
-        this.element = document.getElementById(element.editorId);
+    constructor(elementOrConf: Element | AdapterConf) {
+      if (elementOrConf instanceof Element) {
+        this.element = elementOrConf;
       } else {
-        this.element = element;
+        const conf = elementOrConf as AdapterConf;
+        this.element = document.getElementById(conf.editorId);
+        if (conf.lookupMatches) {
+          this.lookupMatches = conf.lookupMatches;
+        }
       }
     }
 
@@ -116,36 +123,15 @@ namespace acrolinx.plugins.adapter {
       this.selectMatches(checkId, matches);
     }
 
-    selectMatches(checkId, matches) {
-      var rangyFlagOffsets,
-        index,
-        offset;
+    selectMatches(checkId, matches: MatchWithReplacement[]) : AlignedMatch[] {
+      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
 
-      var rangyText = this.getCurrentText();
-
-      matches = AcrSelectionUtils.addPropertiesToMatches(matches, this.currentHtmlChecking);
-
-      rangyFlagOffsets = AcrSelectionUtils.findAllFlagOffsets(rangyText, matches[0].searchPattern);
-      index = AcrSelectionUtils.findBestMatchOffset(rangyFlagOffsets, matches);
-
-      offset = rangyFlagOffsets[index];
-      matches[0].foundOffset = offset;
-
-      //Remove escaped backslash in the text content. Escaped backslash can only present
-      //for multiple punctuation cases. For long sentence, backslashes may present which
-      //must not be removed as they are part of the original text
-      if (matches[0].content.length >= matches[0].range[1] - matches[0].range[0]) {
-        matches[0].textContent = matches[0].textContent.replace(/\\/g, '');
-      } else {
-        matches[0].textContent = matches[0].textContent.replace(/\\\\/g, '\\');
-      }
-      matches[0].flagLength = matches[0].textContent.length - 1;
-
-      if (offset >= 0) {
-        this.scrollAndSelect(matches);
-      } else {
+      if (_.isEmpty(alignedMatches)) {
         throw 'Selected flagged content is modified.';
       }
+
+      this.scrollAndSelect(alignedMatches);
+      return alignedMatches;
     }
 
     replaceSelection(content) {
@@ -153,26 +139,20 @@ namespace acrolinx.plugins.adapter {
       acrolinxLibs.$(this.element).replaceSelectedText(content, "select");
     }
 
-    replaceRanges(checkId, matchesWithReplacement) {
-      var replacementText,
-        selectionFromCharPos = 0;
+    replaceRanges(checkId, matchesWithReplacement: MatchWithReplacement[]) {
       try {
         // this is the selection on which replacement happens
-        this.selectMatches(checkId, matchesWithReplacement);
-
-        if (matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength < this.getCurrentText().length) {
-          matchesWithReplacement[0].foundOffset += selectionFromCharPos;
-          matchesWithReplacement[0].flagLength -= selectionFromCharPos;
-        }
+        const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
 
         // Select the replacement, as replacement of selected flag will be done
-        this.scrollAndSelect(matchesWithReplacement);
+        this.scrollAndSelect(alignedMatches);
+
+        const replacementText = _.map(alignedMatches, 'replacement').join('');
+        this.replaceSelection(replacementText);
       } catch (error) {
         console.log(error);
         return;
       }
-      replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
-      this.replaceSelection(replacementText);
     }
   }
 }

@@ -21,22 +21,26 @@
 namespace acrolinx.plugins.adapter {
   'use strict';
 
-  import AcrSelectionUtils = acrolinx.plugins.utils.selection;
+  import lookupMatchesStandard = acrolinx.plugins.lookup.standard.lookupMatches;
+  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
+  import _ = acrolinxLibs._;
 
   export class TinyMCEAdapter implements AdapterInterface {
+    editorId: any;
+    editor: any;
+    html: any;
+    isCheckingNow: any;
+    currentHtmlChecking: any;
+    prevCheckedHtml: any;
+    lookupMatches = lookupMatchesStandard;
 
-    config:any;
-    editorId:any;
-    editor:any;
-    html:any;
-    isCheckingNow:any;
-    currentHtmlChecking:any;
-    prevCheckedHtml:any;
-
-    constructor(conf) {
-      this.config = conf;
+    constructor(conf: AdapterConf) {
       this.editorId = conf.editorId;
       this.editor = null;
+      if (conf.lookupMatches) {
+        this.lookupMatches = conf.lookupMatches;
+      }
     }
 
     getEditor() {
@@ -139,74 +143,54 @@ namespace acrolinx.plugins.adapter {
       this.selectMatches(checkId, matches);
     }
 
-    selectMatches(checkId, matches) {
-      var rangyFlagOffsets,
-        index,
-        offset;
+    selectMatches(checkId, matches: MatchWithReplacement[]): AlignedMatch[] {
+      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
 
-      var rangyText = this.getCurrentText();
-
-      matches = AcrSelectionUtils.addPropertiesToMatches(matches, this.currentHtmlChecking);
-
-      rangyFlagOffsets = AcrSelectionUtils.findAllFlagOffsets(rangyText, matches[0].searchPattern);
-      index = AcrSelectionUtils.findBestMatchOffset(rangyFlagOffsets, matches);
-
-      offset = rangyFlagOffsets[index];
-      matches[0].foundOffset = offset;
-
-      //Remove escaped backslash in the text content. Escaped backslash can only present
-      //for multiple punctuation cases. For long sentence, backslashes may present which
-      //must not be removed as they are part of the original text
-      if (matches[0].content.length >= matches[0].range[1] - matches[0].range[0]) {
-        matches[0].textContent = matches[0].textContent.replace(/\\/g, '');
-      } else {
-        matches[0].textContent = matches[0].textContent.replace(/\\\\/g, '\\');
-      }
-      matches[0].flagLength = matches[0].textContent.length - 1;
-
-      if (offset >= 0) {
-        this.scrollAndSelect(matches);
-      } else {
+      if (_.isEmpty(alignedMatches)) {
         throw 'Selected flagged content is modified.';
       }
+
+      this.scrollAndSelect(alignedMatches);
+
+      return alignedMatches;
     }
 
-    replaceRanges(checkId, matchesWithReplacement) {
-      var replacementText,
-        selectionFromCharPos = 1;
+    replaceRanges(checkId, matchesWithReplacement: MatchWithReplacement[]) {
+      const selectionFromCharPos = 1;
 
       try {
         // this is the selection on which replacement happens
-        this.selectMatches(checkId, matchesWithReplacement);
+        const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
 
-        if (matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength < this.getCurrentText().length) {
-          matchesWithReplacement[0].foundOffset += selectionFromCharPos;
-          matchesWithReplacement[0].flagLength -= selectionFromCharPos;
+        if (alignedMatches[0].foundOffset + alignedMatches[0].flagLength < this.getCurrentText().length) {
+          alignedMatches[0].foundOffset += selectionFromCharPos;
+          alignedMatches[0].flagLength -= selectionFromCharPos;
         }
 
         // Select the replacement, as replacement of selected flag will be done
-        this.scrollAndSelect(matchesWithReplacement);
+        this.scrollAndSelect(alignedMatches);
+
+        // Replace the selected text
+        const replacementText = _.map(alignedMatches, 'replacement').join('');
+        this.editor.selection.setContent(replacementText);
+
+        if ((alignedMatches[0].foundOffset + alignedMatches[0].flagLength) < this.getCurrentText().length) {
+          if (selectionFromCharPos > 0) {
+            // Select & delete characters which were not replaced above
+            this.selectText(alignedMatches[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
+            rangy.getSelection(this.getEditorDocument()).nativeSelection.deleteFromDocument();
+          }
+          alignedMatches[0].foundOffset -= selectionFromCharPos;
+          alignedMatches[0].flagLength += selectionFromCharPos;
+        }
+
+        // Select the replaced flag
+        this.selectText(alignedMatches[0].foundOffset, replacementText.length);
+
       } catch (error) {
         console.log(error);
         throw error;
       }
-
-      // Replace the selected text
-      replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
-      this.editor.selection.setContent(replacementText);
-
-      if ((matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength) < this.getCurrentText().length) {
-        if (selectionFromCharPos > 0) {
-          // Select & delete characters which were not replaced above
-          this.selectText(matchesWithReplacement[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
-          rangy.getSelection(this.getEditorDocument()).nativeSelection.deleteFromDocument();
-        }
-        matchesWithReplacement[0].foundOffset -= selectionFromCharPos;
-        matchesWithReplacement[0].flagLength += selectionFromCharPos;
-      }
-
-      // Select the replaced flag
-      this.selectText(matchesWithReplacement[0].foundOffset, replacementText.length);
     }
   }
 }

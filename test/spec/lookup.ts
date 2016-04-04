@@ -1,10 +1,13 @@
 import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
 import Match = acrolinx.sidebar.Match;
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+import AdapterConf = acrolinx.plugins.adapter.AdapterConf;
+import LookupMatchesFunction = acrolinx.plugins.lookup.LookupMatchesFunction;
 var assert = chai.assert;
 var expect = chai.expect;
 
 describe('adapter test', function () {
+  const lookupMatches : LookupMatchesFunction = acrolinx.plugins.lookup.standard.lookupMatches;
 
   let adapter: AdapterInterface;
 
@@ -115,7 +118,8 @@ describe('adapter test', function () {
 
       beforeEach((done) => {
         $('body').append(adapterSpec.editorElement);
-        adapter = new acrolinx.plugins.adapter[adapterName]({editorId: 'editorId'});
+        var adapterConf : AdapterConf = {editorId: 'editorId', lookupMatches};
+        adapter = new acrolinx.plugins.adapter[adapterName](adapterConf);
         if (adapterSpec.init) {
           adapterSpec.init(done);
         } else {
@@ -400,6 +404,7 @@ describe('adapter test', function () {
           const strangeChars = "[]()/&%$§\"!'*+~öäü:,;-<>|^°´`òê€@ß?={}µコンピュータ";
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', strangeChars));
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'c'));
+          // TODO: Depending on the document type, we should test for correct escaping.
           assertEditorText(`wordOne ${strangeChars} c wordFour`);
           done();
         });
@@ -418,6 +423,16 @@ describe('adapter test', function () {
         givenAText('wordOne wordTwo wordThree', text => {
           const replacement = "<tagish>";
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', replacement));
+          assertEditorText(`wordOne ${replacement} wordThree`);
+          done();
+        });
+      });
+
+      it.skip('Replace word containing entity', function (done) {
+        givenAText('wordOne D&amp;D wordThree', text => {
+          const replacement = 'Dungeons and Dragons';
+          console.log(text);
+          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'D&amp;D', replacement));
           assertEditorText(`wordOne ${replacement} wordThree`);
           done();
         });

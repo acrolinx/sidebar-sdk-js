@@ -1,5 +1,5 @@
 /// <reference path="../typings/rangy.d.ts" />
-/// <reference path="../utils/selection.ts" />
+/// <reference path="../lookup/standard.ts" />
 
 /*
  *
@@ -24,23 +24,35 @@
 namespace acrolinx.plugins.adapter {
   'use strict';
 
-  import AcrSelectionUtils = acrolinx.plugins.utils.selection;
+  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
+  import lookupMatchesStandard = acrolinx.plugins.lookup.standard.lookupMatches;
+  import _ = acrolinxLibs._;
+
+  function replaceRangeContent(range, replacementText) {
+    range.deleteContents();
+    if (replacementText) {
+      range.insertNode(range.createContextualFragment(replacementText));
+    }
+  }
 
   export class CKEditorAdapter implements AdapterInterface {
+    editorId: any;
+    editor: any;
+    html: any;
+    currentHtmlChecking: any;
+    checkStartTime: any;
+    isCheckingNow: any;
+    prevCheckedHtml: any;
+    lookupMatches = lookupMatchesStandard;
 
-    config:any;
-    editorId:any;
-    editor:any;
-    html:any;
-    currentHtmlChecking:any;
-    checkStartTime:any;
-    isCheckingNow:any;
-    prevCheckedHtml:any;
 
-    constructor(conf) {
-      this.config = conf;
+    constructor(conf: AdapterConf) {
       this.editorId = conf.editorId;
       this.editor = null;
+      if (conf.lookupMatches) {
+        this.lookupMatches = conf.lookupMatches;
+      }
     }
 
     getEditor() {
@@ -119,7 +131,7 @@ namespace acrolinx.plugins.adapter {
       return range2;
     }
 
-    extractHTMLForCheck():any {
+    extractHTMLForCheck(): any {
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
       if (this.editor.mode === 'wysiwyg') {
@@ -159,47 +171,26 @@ namespace acrolinx.plugins.adapter {
       }
     }
 
-    selectMatches(checkId, matches) {
-      var rangyFlagOffsets,
-        index,
-        offset;
+    selectMatches(checkId, matches: MatchWithReplacement[]): AlignedMatch[] {
+      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
 
-      var rangyText = this.getCurrentText();
-
-      matches = AcrSelectionUtils.addPropertiesToMatches(matches, this.currentHtmlChecking);
-
-      rangyFlagOffsets = AcrSelectionUtils.findAllFlagOffsets(rangyText, matches[0].searchPattern);
-      index = AcrSelectionUtils.findBestMatchOffset(rangyFlagOffsets, matches);
-
-      offset = rangyFlagOffsets[index];
-      matches[0].foundOffset = offset;
-
-      //Remove escaped backslash in the text content. Escaped backslash can only present
-      //for multiple punctuation cases. For long sentence, backslashes may present which
-      //must not be removed as they are part of the original text
-      if (matches[0].content.length >= matches[0].range[1] - matches[0].range[0]) {
-        matches[0].textContent = matches[0].textContent.replace(/\\/g, '');
-      } else {
-        matches[0].textContent = matches[0].textContent.replace(/\\\\/g, '\\');
-      }
-      matches[0].flagLength = matches[0].textContent.length - 1;
-
-      if (offset >= 0) {
-        this.scrollAndSelect(matches);
-      } else {
+      if (_.isEmpty(alignedMatches)) {
         throw 'Selected flagged content is modified.';
       }
+
+      this.scrollAndSelect(alignedMatches);
+
+      return alignedMatches;
     }
 
-    replaceRanges(checkId, matchesWithReplacement) {
-      var replacementText,
-        selectedRange,
-        selectionFromCharPos = 1;
+    replaceRanges(checkId, matchesWithReplacementArg: MatchWithReplacement[]) {
+      const selectionFromCharPos = 1;
 
       if (this.editor.mode === 'wysiwyg') {
         try {
           // this is the selection on which replacement happens
-          this.selectMatches(checkId, matchesWithReplacement);
+          const alignedMatches = this.selectMatches(checkId, matchesWithReplacementArg);
+          this.selectMatches(checkId, alignedMatches);
 
           /*
            CKEDITOR & RANGY DEFECT: Replacement of first word of document or table cell
@@ -209,35 +200,36 @@ namespace acrolinx.plugins.adapter {
            2. Replace the selection
            3. Delete the first character
            */
-          if (matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength < this.getCurrentText().length) {
-            matchesWithReplacement[0].foundOffset += selectionFromCharPos;
-            matchesWithReplacement[0].flagLength -= selectionFromCharPos;
+          if (alignedMatches[0].foundOffset + alignedMatches[0].flagLength < this.getCurrentText().length) {
+            alignedMatches[0].foundOffset += selectionFromCharPos;
+            alignedMatches[0].flagLength -= selectionFromCharPos;
           }
 
           // Select the replacement, as replacement of selected flag will be done
-          selectedRange = this.scrollAndSelect(matchesWithReplacement);
+          const selectedRange = this.scrollAndSelect(alignedMatches);
+
+
+          // Replace the selected text
+          const replacementText = _.map(alignedMatches, 'replacement').join('');
+          // using editor.insertText(replacementText) caused bugs in inline mode
+          replaceRangeContent(selectedRange, replacementText);
+
+          if ((alignedMatches[0].foundOffset + alignedMatches[0].flagLength) < this.getCurrentText().length) {
+            if (selectionFromCharPos > 0) {
+              // Select & delete characters which were not replaced above
+              this.selectText(alignedMatches[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
+              rangy.getSelection(this.getEditorDocument()).nativeSelection.deleteFromDocument();
+            }
+            alignedMatches[0].foundOffset -= selectionFromCharPos;
+            alignedMatches[0].flagLength += selectionFromCharPos;
+          }
+
+          // Select the replaced flag
+          this.selectText(alignedMatches[0].foundOffset, replacementText.length);
         } catch (error) {
           console.log(error);
           return;
         }
-
-        // Replace the selected text
-        replacementText = acrolinxLibs._.map(matchesWithReplacement, 'replacement').join('');
-        // using editor.insertText(replacementText) caused bugs in inline mode
-        AcrSelectionUtils.replaceRangeContent(selectedRange, replacementText);
-
-        if ((matchesWithReplacement[0].foundOffset + matchesWithReplacement[0].flagLength) < this.getCurrentText().length) {
-          if (selectionFromCharPos > 0) {
-            // Select & delete characters which were not replaced above
-            this.selectText(matchesWithReplacement[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
-            rangy.getSelection(this.getEditorDocument()).nativeSelection.deleteFromDocument();
-          }
-          matchesWithReplacement[0].foundOffset -= selectionFromCharPos;
-          matchesWithReplacement[0].flagLength += selectionFromCharPos;
-        }
-
-        // Select the replaced flag
-        this.selectText(matchesWithReplacement[0].foundOffset, replacementText.length);
 
       } else {
         window.alert('Action is not permitted in Source mode.');

@@ -18,27 +18,24 @@
  *
  */
 
-namespace acrolinx.plugins.utils.selection {
+namespace acrolinx.plugins.lookup.standard {
   'use strict';
 
-  export function isFlagContainsOnlySpecialChar(flaggedContent) {
+  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
+  import _ = acrolinxLibs._;
+
+  function isFlagContainsOnlySpecialChar(flaggedContent) {
     var pattern = /\w/g;
     return !pattern.test(flaggedContent);
   }
 
-  export function replaceRangeContent(range, replacementText) {
-    range.deleteContents();
-    if (replacementText) {
-      range.insertNode(range.createContextualFragment(replacementText));
-    }
-  }
-
-  export function getTextContent(html) {
+  function getTextContent(html) {
     var tmpHTMLElement = acrolinxLibs.$('<div/>').html(html);
     return tmpHTMLElement.text().replace(/\t+/g, '');
   }
 
-  export function escapeRegExp(string) {
+  function escapeRegExp(string) {
     return string.replace(/([\".*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
   }
 
@@ -48,7 +45,7 @@ namespace acrolinx.plugins.utils.selection {
    * 3. When atleast one character of flagged word is a 'word' character
    * (#3) is used to handle flags containing only punctuations
    */
-  export function createSearchPattern(matches, currentHtmlChecking) {
+  function createSearchPattern(matches, currentHtmlChecking) {
     var searchPattern = matches[0].textContent,
       wordBoundary = '\\b';
 
@@ -58,7 +55,7 @@ namespace acrolinx.plugins.utils.selection {
     return searchPattern;
   }
 
-  export function shouldApplyWordBoundary(matches, currentHtmlChecking) {
+  function shouldApplyWordBoundary(matches, currentHtmlChecking) {
     var offset = matches[matches.length - 1].range[1],
       lastChar,
       nextChar,
@@ -88,7 +85,6 @@ namespace acrolinx.plugins.utils.selection {
      }
      }
      */
-
     if ((lastFlaggedWord.indexOf('&') > -1) && (lastFlaggedWord.indexOf(';') > -1) && (lastFlaggedWord.indexOf(';') > lastFlaggedWord.indexOf('&'))) {
       return false;
     }
@@ -104,7 +100,7 @@ namespace acrolinx.plugins.utils.selection {
     return false;
   }
 
-  export function isAlphaNumeral(character) {
+  function isAlphaNumeral(character) {
 
     if ((character.charCodeAt(0) >= 48 && character.charCodeAt(0) <= 90 ) ||
       (character.charCodeAt(0) >= 97 && character.charCodeAt(0) <= 126)) {
@@ -113,11 +109,11 @@ namespace acrolinx.plugins.utils.selection {
     return false;
   }
 
-  export function getFlagContents(begin, end, currentHtmlChecking) {
+  function getFlagContents(begin, end, currentHtmlChecking) {
     return currentHtmlChecking.substr(begin, end - begin);
   }
 
-  export function addPropertiesToMatches(matches, currentHtmlChecking) {
+  function addPropertiesToMatches(matches, currentHtmlChecking) {
     var textContent,
       htmlContentBeforeFlag,
       textContentBeforeFlag,
@@ -143,7 +139,7 @@ namespace acrolinx.plugins.utils.selection {
     }
     matches[0].htmlContent = getFlagContents(startOffset, endOffset, currentHtmlChecking);
 
-    // Convert Flag HTML into inner Text
+    // Convert Flag HTML into inner Text 
     textContent = getTextContent(matches[0].htmlContent);
     textContent = escapeRegExp(textContent);
     matches[0].textContent = textContent;
@@ -151,7 +147,7 @@ namespace acrolinx.plugins.utils.selection {
     return matches;
   }
 
-  export function findBestMatchOffset(flagHtmlOffsets, matches) {
+  function findBestMatchOffset(flagHtmlOffsets, matches) {
     var minOffsetIndex = -1,
       originalFlagOffset = matches[0].textOffset;
 
@@ -170,7 +166,7 @@ namespace acrolinx.plugins.utils.selection {
   }
 
 
-  export function findAllFlagOffsets(paragraph, stringToPattern) {
+  function findAllFlagOffsets(paragraph, stringToPattern) {
     var matchedWords,
       pattern,
       flagOffsets = [];
@@ -187,6 +183,32 @@ namespace acrolinx.plugins.utils.selection {
     }
 
     return flagOffsets;
+  }
+
+  export function lookupMatches(checkedDocument: string, currentDocument: string, matches: MatchWithReplacement[]): AlignedMatch[] {
+    const extendedMatches = addPropertiesToMatches(_.cloneDeep(matches), checkedDocument);
+    const currentFlagOffsets = findAllFlagOffsets(currentDocument, extendedMatches[0].searchPattern);
+    const index = findBestMatchOffset(currentFlagOffsets, extendedMatches);
+
+    const offset = currentFlagOffsets[index];
+
+    if (!(offset >= 0)) {
+      return [];
+    }
+
+    extendedMatches[0].foundOffset = offset;
+
+    //Remove escaped backslash in the text content. Escaped backslash can only present
+    //for multiple punctuation cases. For long sentence, backslashes may present which
+    //must not be removed as they are part of the original text
+    if (extendedMatches[0].content.length >= extendedMatches[0].range[1] - extendedMatches[0].range[0]) {
+      extendedMatches[0].textContent = extendedMatches[0].textContent.replace(/\\/g, '');
+    } else {
+      extendedMatches[0].textContent = extendedMatches[0].textContent.replace(/\\\\/g, '\\');
+    }
+    extendedMatches[0].flagLength = extendedMatches[0].textContent.length - 1;
+
+    return extendedMatches;
   }
 
 }
