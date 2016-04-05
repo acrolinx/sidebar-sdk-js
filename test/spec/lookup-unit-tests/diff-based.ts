@@ -6,15 +6,7 @@ namespace acrolinx.test {
   import  lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
   import  createOffsetMappingArray = acrolinx.plugins.lookup.diffbased.createOffsetMappingArray;
 
-
-  class OffSetAlign {
-    oldPosition:number;
-    diffOffset:number;
-  }
-
   describe('lookup/diff-based', function () {
-
-
     it('createOffsetMappingArray', function () {
       const diffs = JsDiff.diffChars('abcde', 'zabxcye');
       // console.log(diffs);
@@ -31,10 +23,9 @@ namespace acrolinx.test {
 
       // console.log(JSON.stringify(offsetMapping));
       assert.deepEqual(offsetMapping, expected);
-
     });
 
-    it('lookupMatches returns empty array for emty input array', function () {
+    it('lookupMatches returns empty array for empty input array', function () {
       lookupMatches('abcd', 'zabxcy', []);
     });
 
