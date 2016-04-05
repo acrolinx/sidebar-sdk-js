@@ -26,7 +26,7 @@ namespace acrolinx.test {
 
 
   describe('lookup/diff-based-performance', function () {
-    it('is fast', function () {
+    it.skip('is fast', function () {
       const startTime = Date.now();
 
       const text1 = generateText(100000);
