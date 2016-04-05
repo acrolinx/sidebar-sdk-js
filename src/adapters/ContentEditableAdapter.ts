@@ -22,7 +22,7 @@ namespace acrolinx.plugins.adapter {
   import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
-  import lookupMatchesStandard = acrolinx.plugins.lookup.standard.lookupMatches;
+  import lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
   import $ = acrolinxLibs.$;
   import _ = acrolinxLibs._;
 
@@ -112,7 +112,7 @@ namespace acrolinx.plugins.adapter {
         doc;
 
       newBegin = matches[0].foundOffset;
-      matchLength = matches[0].flagLength + 1;
+      matchLength = matches[0].flagLength;
       range1 = this.selectText(newBegin, matchLength);
       //$(getEditor().getBody()).find('em').get(0).scrollIntoView();
       //selection1 = this.getEditor().selection;
@@ -179,16 +179,9 @@ namespace acrolinx.plugins.adapter {
     }
 
     replaceRanges(checkId, matchesWithReplacement: MatchWithReplacement[]) {
-      const selectionFromCharPos = 1;
-
       try {
         // this is the selection on which replacement happens
         const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
-
-        if (alignedMatches[0].foundOffset + alignedMatches[0].flagLength < this.getCurrentText().length) {
-          alignedMatches[0].foundOffset += selectionFromCharPos;
-          alignedMatches[0].flagLength -= selectionFromCharPos;
-        }
 
         // Select the replacement, as replacement of selected flag will be done
         this.scrollAndSelect(alignedMatches);
@@ -197,16 +190,6 @@ namespace acrolinx.plugins.adapter {
         const replacementText = _.map(alignedMatches, 'replacement').join('');
         //this.editor.selection.setContent(replacementText);
         this.replaceSelection(replacementText);
-
-        if ((alignedMatches[0].foundOffset + alignedMatches[0].flagLength) < this.getCurrentText().length) {
-          if (selectionFromCharPos > 0) {
-            // Select & delete characters which were not replaced above
-            this.selectText(alignedMatches[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
-            rangy.getSelection(this.getEditorDocument()).nativeSelection.deleteFromDocument();
-          }
-          alignedMatches[0].foundOffset -= selectionFromCharPos;
-          alignedMatches[0].flagLength += selectionFromCharPos;
-        }
 
         // Select the replaced flag
         this.selectText(alignedMatches[0].foundOffset, replacementText.length);

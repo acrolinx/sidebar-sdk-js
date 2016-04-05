@@ -1,5 +1,5 @@
 /// <reference path="../typings/rangy.d.ts" />
-/// <reference path="../lookup/standard.ts" />
+/// <reference path="../lookup/diff-based.ts" />
 
 /*
  *
@@ -26,7 +26,7 @@ namespace acrolinx.plugins.adapter {
 
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
-  import lookupMatchesStandard = acrolinx.plugins.lookup.standard.lookupMatches;
+  import lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
   import _ = acrolinxLibs._;
 
   function replaceRangeContent(range, replacementText) {
@@ -37,17 +37,17 @@ namespace acrolinx.plugins.adapter {
   }
 
   export class CKEditorAdapter implements AdapterInterface {
-    editorId: any;
-    editor: any;
-    html: any;
-    currentHtmlChecking: any;
-    checkStartTime: any;
-    isCheckingNow: any;
-    prevCheckedHtml: any;
+    editorId:any;
+    editor:any;
+    html:any;
+    currentHtmlChecking:any;
+    checkStartTime:any;
+    isCheckingNow:any;
+    prevCheckedHtml:any;
     lookupMatches = lookupMatchesStandard;
 
 
-    constructor(conf: AdapterConf) {
+    constructor(conf:AdapterConf) {
       this.editorId = conf.editorId;
       this.editor = null;
       if (conf.lookupMatches) {
@@ -110,7 +110,7 @@ namespace acrolinx.plugins.adapter {
         range2,
         doc;
       newBegin = matches[0].foundOffset;
-      matchLength = matches[0].flagLength + 1;
+      matchLength = matches[0].flagLength;
       range1 = this.selectText(newBegin, matchLength);
       selection1 = this.getEditor().getSelection();
       if (selection1) {
@@ -131,7 +131,7 @@ namespace acrolinx.plugins.adapter {
       return range2;
     }
 
-    extractHTMLForCheck(): any {
+    extractHTMLForCheck():any {
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
       if (this.editor.mode === 'wysiwyg') {
@@ -171,7 +171,7 @@ namespace acrolinx.plugins.adapter {
       }
     }
 
-    selectMatches(checkId, matches: MatchWithReplacement[]): AlignedMatch[] {
+    selectMatches(checkId, matches:MatchWithReplacement[]):AlignedMatch[] {
       const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
 
       if (_.isEmpty(alignedMatches)) {
@@ -183,7 +183,7 @@ namespace acrolinx.plugins.adapter {
       return alignedMatches;
     }
 
-    replaceRanges(checkId, matchesWithReplacementArg: MatchWithReplacement[]) {
+    replaceRanges(checkId, matchesWithReplacementArg:MatchWithReplacement[]) {
       const selectionFromCharPos = 1;
 
       if (this.editor.mode === 'wysiwyg') {
@@ -192,15 +192,18 @@ namespace acrolinx.plugins.adapter {
           const alignedMatches = this.selectMatches(checkId, matchesWithReplacementArg);
           this.selectMatches(checkId, alignedMatches);
 
-          /*
-           CKEDITOR & RANGY DEFECT: Replacement of first word of document or table cell
-           (after selection) throws an error
-           SOLUTION:
-           1. Select from the second character of the word
-           2. Replace the selection
-           3. Delete the first character
-           */
-          if (alignedMatches[0].foundOffset + alignedMatches[0].flagLength < this.getCurrentText().length) {
+
+          /*+
+           * CKEDITOR & RANGY DEFECT: Replacement of first word of document or table cell
+           * (after selection) throws an error
+           * WorkAround:
+           * 1. Select from the second character of the word
+           * 2. Replace the selection
+           * 3. Delete the first character
+           **/
+          const useWorkAround = alignedMatches[0].foundOffset + alignedMatches[0].flagLength - 1 < this.getCurrentText().length;
+
+          if (useWorkAround) {
             alignedMatches[0].foundOffset += selectionFromCharPos;
             alignedMatches[0].flagLength -= selectionFromCharPos;
           }
@@ -214,7 +217,7 @@ namespace acrolinx.plugins.adapter {
           // using editor.insertText(replacementText) caused bugs in inline mode
           replaceRangeContent(selectedRange, replacementText);
 
-          if ((alignedMatches[0].foundOffset + alignedMatches[0].flagLength) < this.getCurrentText().length) {
+          if (useWorkAround) {
             if (selectionFromCharPos > 0) {
               // Select & delete characters which were not replaced above
               this.selectText(alignedMatches[0].foundOffset - selectionFromCharPos, selectionFromCharPos);

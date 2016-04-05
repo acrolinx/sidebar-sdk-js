@@ -28,20 +28,17 @@ namespace acrolinx.plugins.lookup.diffbased {
   import _ = acrolinxLibs._;
 
   class OffSetAlign {
-    oldPosition: number
-    diffOffset: number
+    oldPosition:number
+    diffOffset:number
   }
-  /**
-   */
-  export function lookupMatches(checkedDocument: string, currentDocument: string, matches: MatchWithReplacement[]): AlignedMatch[] {
-    console.log(JsDiff.diffChars(checkedDocument, currentDocument));
-    const diffs = JsDiff.diffChars(checkedDocument, currentDocument);
+
+
+  export function createOffsetMappingArray(diffs:JsDiff.IDiffResult[]):OffSetAlign[] {
+    let offsetMappingArray:OffSetAlign[] = [];
     let offsetCountOld = 0;
     let diff = 0;
-    //TODO: cannot define this as array OffSetAlign[]
-    let offsetMappingArray: any = new Array();
-    diffs.forEach(function(object){
-      if(!object.added && !object.removed){
+    diffs.forEach(function (object) {
+      if (!object.added && !object.removed) {
         offsetCountOld += object.count;
       }
       else if (object.removed) {
@@ -51,44 +48,55 @@ namespace acrolinx.plugins.lookup.diffbased {
       else if (object.added) {
         diff += object.count;
       }
-      console.log(offsetCountOld);
-      console.log(diff);
-        offsetMappingArray.push({
-          oldPosition: offsetCountOld,
-          diffOffset: diff
-        })
+      offsetMappingArray.push({
+        oldPosition: offsetCountOld,
+        diffOffset: diff
+      })
     });
-    console.log(offsetMappingArray);
+    return offsetMappingArray;
+  }
 
-    function findNewOffset(oldOffset: number){
-        let index = offsetMappingArray.findIndex(function(element, index, array){
-        console.log(element.oldPosition, oldOffset);
+
+  /**
+   */
+  export function lookupMatches(checkedDocument:string, currentDocument:string, matches:MatchWithReplacement[]):AlignedMatch[] {
+    if (_.isEmpty(matches)) {
+      return [];
+    }
+
+    const diffs = JsDiff.diffChars(checkedDocument, currentDocument);
+
+    let offsetMappingArray = createOffsetMappingArray(diffs);
+
+    function findNewOffset(oldOffset:number) {
+      let index = _.findIndex(offsetMappingArray, (element) => {
         return element.oldPosition > oldOffset
       });
-      if(index > 0){
-        console.log('foundOffsetDiffIndex', index);
-        return offsetMappingArray[index-1].diffOffset;
+      if (index > 0) {
+        return offsetMappingArray[index - 1].diffOffset;
       }
-      else if(offsetMappingArray.length > 1 && index === -1) {
-        if(!diffs[offsetMappingArray.length -1].added && !diffs[offsetMappingArray.length-1].removed){
-          return offsetMappingArray[offsetMappingArray.length -1].diffOffset;
+      else if (offsetMappingArray.length > 1 && index === -1) {
+        if (!diffs[offsetMappingArray.length - 1].added && !diffs[offsetMappingArray.length - 1].removed) {
+          return offsetMappingArray[offsetMappingArray.length - 1].diffOffset;
         }
-        return offsetMappingArray[offsetMappingArray.length -2].diffOffset;
+        return offsetMappingArray[offsetMappingArray.length - 2].diffOffset;
       }
-      else if(index === 0){
+      else if (index === 0) {
         return offsetMappingArray[0].diffOffset;
       }
       else return 0;
     }
 
-    return matches.map(match => ({
+    const result = matches.map(match => ({
       replacement: match.replacement,
       range: match.range,
       content: match.content,
       foundOffset: match.range[0] + findNewOffset(match.range[0]),
-      // This -1 seems to be wrong, but the current code in the adapters want it this way.
-      flagLength: match.range[1] - match.range[0] - 1,
+      flagLength: match.range[1] - match.range[0],
     }));
+
+    result[0].flagLength = matches[matches.length - 1].range[1] - matches[0].range[0];
+    return result;
   }
 
 }

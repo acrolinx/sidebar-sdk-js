@@ -12,6 +12,7 @@
     <script src="/bower_components/rangy/rangy-core.js"></script>
     <script src="/bower_components/rangy/rangy-textrange.js"></script>
     <script src="/bower_components/rangyinputs/rangyinputs-jquery.js"></script>
+    <script src="/bower_components/jsdiff/diff.js"></script>
 
     <script>
       var acrolinxLibs = {
@@ -76,7 +77,7 @@
         var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
 
         //A simple Adapter for a Editable Div
-        var simpleAdapter = new acrolinx.plugins.adapter.SimpleTextAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv'}));
+        var simpleAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv'}));
         var simpleTxtAdapter = new acrolinx.plugins.adapter.InputAdapter(_.extend(_.clone(basicConf), {editorId: 'textarea'}));
         var ckEditapter = new acrolinx.plugins.adapter.CKEditorAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_ck'}));
         var mceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_tinymce'}));

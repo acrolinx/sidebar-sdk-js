@@ -7,7 +7,7 @@ var assert = chai.assert;
 var expect = chai.expect;
 
 describe('adapter test', function () {
-  const lookupMatches : LookupMatchesFunction = acrolinx.plugins.lookup.standard.lookupMatches;
+  const lookupMatches : LookupMatchesFunction = acrolinx.plugins.lookup.diffbased.lookupMatches;
 
   let adapter: AdapterInterface;
 
@@ -265,7 +265,7 @@ describe('adapter test', function () {
       })
 
 
-      it.skip('Replace the same word two times with different replacements, where the first replacement is kinda long', function (done) {
+      it('Replace the same word two times with different replacements, where the first replacement is kinda long', function (done) {
         givenAText('wordOne wordSame wordSame wordThree', text => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSamelonglonglonglong1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
@@ -321,7 +321,7 @@ describe('adapter test', function () {
         });
       });
 
-      it.skip('Replace continues multi range with number in words', function (done) {
+      it('Replace continues multi range with number in words', function (done) {
         givenAText('word0 blub1 mist2 word3', text => {
 
           const word1 = getMatchesWithReplacement(text, 'blub1', "a")[0];
@@ -338,21 +338,52 @@ describe('adapter test', function () {
         });
       });
 
-      // This fails currently in firefox and IE.
+      it('Replace first and only char', function (done) {
+        givenAText('x', text => {
+          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
+          assertEditorText('aa');
+          done();
+        });
+      });
+
+      it('Replace first and only word', function (done) {
+        givenAText('xyz', text => {
+          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
+          assertEditorText('aa');
+          done();
+        });
+      });
+
+      it('Replace first char', function (done) {
+        givenAText('x after', text => {
+          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
+          assertEditorText('aa after');
+          done();
+        });
+      });
+
+      it('Replace first word', function (done) {
+        givenAText('xyz after', text => {
+          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
+          assertEditorText('aa after');
+          done();
+        });
+      });
+
       it('Replace single chars', function (done) {
-        givenAText('x f z u', text => {
+        givenAText('y x f z u', text => {
 
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'f', 'bb'));
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'z', 'cc'));
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'u', 'dd'));
 
-          assertEditorText('aa bb cc dd');
+          assertEditorText('y aa bb cc dd');
           done();
         });
       });
 
-      it.skip('Replace inside a word', function (done) {
+      it('Replace inside a word', function (done) {
         givenAText('InsideAllWord', text => {
 
           const matchWithReplacement = getMatchesWithReplacement(text, 'All', '12345');
@@ -374,7 +405,7 @@ describe('adapter test', function () {
         });
       });
 
-      it.skip('Replace last word with short word', function (done) {
+      it('Replace last word with short word', function (done) {
         givenAText('wordOne wordTwo', text => {
 
           const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'beer');
@@ -438,7 +469,7 @@ describe('adapter test', function () {
         });
       });
 
-      it.skip('Replace same word in correct order', function (done) {
+      it('Replace same word in correct order', function (done) {
         givenAText('before wordSame wordSame wordSame wordSame wordSame after', text => {
           const replacements = ["a", "b", "c", "d", "e"];
 
@@ -452,7 +483,7 @@ describe('adapter test', function () {
           replace(3);
           replace(1);
 
-          assertEditorText(`before ${replacements.join(' ')} more`);
+          assertEditorText(`before ${replacements.join(' ')} after`);
           done();
         });
       });

@@ -23,7 +23,7 @@ namespace acrolinx.plugins.adapter {
 
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
-  import lookupMatchesStandard = acrolinx.plugins.lookup.standard.lookupMatches;
+  import lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
   import _ = acrolinxLibs._;
 
   export class InputAdapter implements AdapterInterface {
@@ -107,7 +107,7 @@ namespace acrolinx.plugins.adapter {
       var $ = acrolinxLibs.$;
 
       newBegin = matches[0].foundOffset;
-      matchLength = matches[0].flagLength + 1;
+      matchLength = matches[0].flagLength;
 
       $(this.element).focus();
       $(this.element).setSelection(newBegin, newBegin + matchLength);

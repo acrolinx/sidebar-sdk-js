@@ -4,10 +4,37 @@ var expect = chai.expect;
 namespace acrolinx.test {
 
   import  lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
+  import  createOffsetMappingArray = acrolinx.plugins.lookup.diffbased.createOffsetMappingArray;
+
+
+  class OffSetAlign {
+    oldPosition:number;
+    diffOffset:number;
+  }
 
   describe('lookup/diff-based', function () {
 
-    it('lookupMatches', function () {
+
+    it('createOffsetMappingArray', function () {
+      const diffs = JsDiff.diffChars('abcde', 'zabxcye');
+      // console.log(diffs);
+      const offsetMapping = createOffsetMappingArray(diffs);
+      const expected = [
+        {"oldPosition": 0, "diffOffset": 1},
+        {"oldPosition": 2, "diffOffset": 1},
+        {"oldPosition": 2, "diffOffset": 2},
+        {"oldPosition": 3, "diffOffset": 2},
+        {"oldPosition": 4, "diffOffset": 1},
+        {"oldPosition": 4, "diffOffset": 2},
+        {"oldPosition": 5, "diffOffset": 2}
+      ];
+
+      // console.log(JSON.stringify(offsetMapping));
+      assert.deepEqual(offsetMapping, expected);
+
+    });
+
+    it('lookupMatches returns empty array for emty input array', function () {
       lookupMatches('abcd', 'zabxcy', []);
     });
 

@@ -18,7 +18,7 @@
  *
  */
 
-namespace acrolinx.plugins.lookup.standard {
+namespace acrolinx.plugins.lookup.old {
   'use strict';
 
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
@@ -207,6 +207,8 @@ namespace acrolinx.plugins.lookup.standard {
       extendedMatches[0].textContent = extendedMatches[0].textContent.replace(/\\\\/g, '\\');
     }
     extendedMatches[0].flagLength = extendedMatches[0].textContent.length - 1;
+
+    console.log(JSON.stringify(extendedMatches));
 
     return extendedMatches;
   }

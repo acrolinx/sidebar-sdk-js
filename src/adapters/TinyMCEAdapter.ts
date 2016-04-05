@@ -21,7 +21,7 @@
 namespace acrolinx.plugins.adapter {
   'use strict';
 
-  import lookupMatchesStandard = acrolinx.plugins.lookup.standard.lookupMatches;
+  import lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import _ = acrolinxLibs._;
@@ -96,7 +96,7 @@ namespace acrolinx.plugins.adapter {
       var newBegin, matchLength, selection1, range1, range2,
 
         newBegin = matches[0].foundOffset;
-      matchLength = matches[0].flagLength + 1;
+      matchLength = matches[0].flagLength;
       range1 = this.selectText(newBegin, matchLength);
       selection1 = this.getEditor().selection;
 
@@ -162,7 +162,17 @@ namespace acrolinx.plugins.adapter {
         // this is the selection on which replacement happens
         const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
 
-        if (alignedMatches[0].foundOffset + alignedMatches[0].flagLength < this.getCurrentText().length) {
+        /*+
+         * CKEDITOR & RANGY DEFECT: Replacement of first word of document or table cell
+         * (after selection) throws an error
+         * WorkAround:
+         * 1. Select from the second character of the word
+         * 2. Replace the selection
+         * 3. Delete the first character
+         **/
+        const useWorkAround = alignedMatches[0].foundOffset + alignedMatches[0].flagLength - 1 < this.getCurrentText().length;
+
+        if (useWorkAround) {
           alignedMatches[0].foundOffset += selectionFromCharPos;
           alignedMatches[0].flagLength -= selectionFromCharPos;
         }
@@ -174,7 +184,7 @@ namespace acrolinx.plugins.adapter {
         const replacementText = _.map(alignedMatches, 'replacement').join('');
         this.editor.selection.setContent(replacementText);
 
-        if ((alignedMatches[0].foundOffset + alignedMatches[0].flagLength) < this.getCurrentText().length) {
+        if (useWorkAround) {
           if (selectionFromCharPos > 0) {
             // Select & delete characters which were not replaced above
             this.selectText(alignedMatches[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
