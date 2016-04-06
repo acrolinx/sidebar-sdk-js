@@ -19,7 +19,7 @@ module.exports = function (config) {
       'bower_components/rangy/rangy-core.js',
       'bower_components/q/q.js',
       'bower_components/rangy/rangy-textrange.js',
-      'bower_components/jsdiff/diff.js',
+      'bower_components/google-diff-match-patch-js/diff_match_patch_uncompressed.js',
       'bower_components/rangyinputs/rangyinputs-jquery.js',
       'bower_components/ckeditor/ckeditor.js',
       {pattern: 'bower_components/ckeditor/**/*', included: false},

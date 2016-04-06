@@ -18,7 +18,7 @@
  *
  */
 
-/// <reference path="../typings/diff.d.ts" />
+/// <reference path="../typings/diff-match-patch.d.ts" />
 
 namespace acrolinx.plugins.lookup.diffbased {
   'use strict';
@@ -27,48 +27,51 @@ namespace acrolinx.plugins.lookup.diffbased {
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import _ = acrolinxLibs._;
 
+  const dmp = new diff_match_patch();
+
   class OffSetAlign {
-    oldPosition:number
-    diffOffset:number
+    oldPosition: number
+    diffOffset: number
   }
 
-
-  export function createOffsetMappingArray(diffs:JsDiff.IDiffResult[]):OffSetAlign[] {
-    let offsetMappingArray:OffSetAlign[] = [];
+  export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
+    let offsetMappingArray: OffSetAlign[] = [];
     let offsetCountOld = 0;
     let diff = 0;
-    diffs.forEach(function (object) {
-      if (!object.added && !object.removed) {
-        offsetCountOld += object.count;
-      }
-      else if (object.removed) {
-        offsetCountOld += object.count;
-        diff -= object.count;
-      }
-      else if (object.added) {
-        diff += object.count;
+    diffs.forEach(([action, value]) => {
+      switch (action){
+        case DIFF_EQUAL:
+          offsetCountOld += value.length;
+          break;
+        case DIFF_DELETE:
+          offsetCountOld += value.length;
+          diff -= value.length;
+          break;
+        case DIFF_INSERT:
+          diff += value.length;
+          break;
+        default:
+          throw new Error('Illegal Diff Action: ' + action);
       }
       offsetMappingArray.push({
         oldPosition: offsetCountOld,
         diffOffset: diff
-      })
+      });
     });
     return offsetMappingArray;
   }
 
 
-  /**
-   */
-  export function lookupMatches(checkedDocument:string, currentDocument:string, matches:MatchWithReplacement[]):AlignedMatch[] {
+  export function lookupMatches(checkedDocument: string, currentDocument: string, matches: MatchWithReplacement[]): AlignedMatch[] {
     if (_.isEmpty(matches)) {
       return [];
     }
 
-    const diffs = JsDiff.diffChars(checkedDocument, currentDocument);
+    const diffs: Diff[] = dmp.diff_main(checkedDocument, currentDocument);
 
     let offsetMappingArray = createOffsetMappingArray(diffs);
 
-    function findNewOffset(oldOffset:number) {
+    function findNewOffset(oldOffset: number) {
       let index = _.findIndex(offsetMappingArray, (element) => {
         return element.oldPosition > oldOffset
       });
@@ -76,7 +79,7 @@ namespace acrolinx.plugins.lookup.diffbased {
         return offsetMappingArray[index - 1].diffOffset;
       }
       else if (offsetMappingArray.length > 1 && index === -1) {
-        if (!diffs[offsetMappingArray.length - 1].added && !diffs[offsetMappingArray.length - 1].removed) {
+        if (diffs[offsetMappingArray.length - 1][0] === DIFF_EQUAL) {
           return offsetMappingArray[offsetMappingArray.length - 1].diffOffset;
         }
         return offsetMappingArray[offsetMappingArray.length - 2].diffOffset;
@@ -98,5 +101,6 @@ namespace acrolinx.plugins.lookup.diffbased {
     result[0].flagLength = matches[matches.length - 1].range[1] - matches[0].range[0];
     return result;
   }
+
 
 }
