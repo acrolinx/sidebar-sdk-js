@@ -31,54 +31,22 @@ namespace acrolinx.plugins {
   ];
 
   function initAcrolinxSamplePlugin(config, editorAdapter) {
-    var $ = acrolinxLibs.$;
-    var $sidebarContainer = $('#' + config.sidebarContainerId);
-    var $sidebar = $('<iframe></iframe>');
+    const $ = acrolinxLibs.$;
+    const _ = acrolinxLibs._;
+    const $sidebarContainer = $('#' + config.sidebarContainerId);
+    const $sidebar = $('<iframe></iframe>');
     $sidebarContainer.append($sidebar);
-    var sidebarContentWindow = $sidebar.get(0).contentWindow;
+    const sidebarContentWindow = $sidebar.get(0).contentWindow;
 
-    var adapter = editorAdapter;
+    const adapter = editorAdapter;
 
     function onSidebarLoaded() {
 
       function initSidebarOnPremise() {
-        sidebarContentWindow.acrolinxSidebar.init({
-          clientComponents: config.clientComponents || clientComponents,
-          clientSignature: config.clientSignature,
-          showServerSelector: config.hasOwnProperty("showServerSelector") ? config.showServerSelector : true,
-          enableSingleSignOn: config.hasOwnProperty("enableSingleSignOn") ? config.enableSingleSignOn : false,
-          serverAddress: config.serverAddress,
-          defaultCheckSettings: config.defaultCheckSettings
-
-          // These settings are only effective on servers with disabled checking profiles.
-          //checkSettings: {
-          //  'language': 'en',
-          //  'ruleSetName': 'Plain English',
-          //  'termSets': ['Medical'],
-          //  'checkSpelling': true,
-          //  'checkGrammar': true,
-          //  'checkStyle': true,
-          //  'checkReuse': false,
-          //  'harvestTerms': false,
-          //  'checkSeo': false,
-          //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
-          //}
-
-          // These settings are only effective on servers with disabled checking profiles.
-          //defaultCheckSettings: {
-          //  'language': 'en',
-          //  'ruleSetName': 'Plain English',
-          //  'termSets': ['Medical'],
-          //  'checkSpelling': true,
-          //  'checkGrammar': true,
-          //  'checkStyle': true,
-          //  'checkReuse': false,
-          //  'harvestTerms': false,
-          //  'checkSeo': false,
-          //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
-          //}
-
-        });
+        sidebarContentWindow.acrolinxSidebar.init(_.assign({}, {
+          showServerSelector: true,
+          clientComponents: clientComponents
+        }, config));
       }
 
       console.log('Install acrolinxPlugin in sidebar.');
