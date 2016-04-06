@@ -26,23 +26,7 @@ namespace acrolinx.plugins.adapter {
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import _ = acrolinxLibs._;
 
-  export class TinyMCEAdapter implements AdapterInterface {
-    editorId: any;
-    editor: any;
-    html: any;
-    isCheckingNow: any;
-    currentHtmlChecking: any;
-    prevCheckedHtml: any;
-    lookupMatches = lookupMatchesStandard;
-
-    constructor(conf: AdapterConf) {
-      this.editorId = conf.editorId;
-      this.editor = null;
-      if (conf.lookupMatches) {
-        this.lookupMatches = conf.lookupMatches;
-      }
-    }
-
+  export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
     getEditor() {
       if (this.editor === null) {
         this.editor = tinymce.get(this.editorId);
@@ -55,19 +39,7 @@ namespace acrolinx.plugins.adapter {
     }
 
     getEditorDocument() {
-      try {
-        return this.getEditor().contentDocument;
-      } catch (error) {
-        throw error;
-      }
-    }
-
-    getCurrentText() {
-      try {
-        return rangy.innerText(this.getEditorDocument());
-      } catch (error) {
-        throw error;
-      }
+      return this.getEditor().contentDocument;
     }
 
     selectText(begin, length) {
@@ -116,91 +88,18 @@ namespace acrolinx.plugins.adapter {
       //
       // scrollIntoView need to set it again
       range2 = this.selectText(newBegin, matchLength);
+      return range2;
     }
 
     extractHTMLForCheck() {
-      //var checkCallResult,
-      //  startTime = new Date().getTime();
-
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
       return {html: this.html};
-    }
-
-    registerCheckCall(checkInfo) {
-
-    }
-
-
-    registerCheckResult(checkResult) {
-      this.isCheckingNow = false;
-      this.currentHtmlChecking = this.html;
-      this.prevCheckedHtml = this.currentHtmlChecking;
-      return [];
     }
 
     selectRanges(checkId, matches) {
       this.selectMatches(checkId, matches);
     }
 
-    selectMatches(checkId, matches: MatchWithReplacement[]): AlignedMatch[] {
-      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
-
-      if (_.isEmpty(alignedMatches)) {
-        throw 'Selected flagged content is modified.';
-      }
-
-      this.scrollAndSelect(alignedMatches);
-
-      return alignedMatches;
-    }
-
-    replaceRanges(checkId, matchesWithReplacement: MatchWithReplacement[]) {
-      const selectionFromCharPos = 1;
-
-      try {
-        // this is the selection on which replacement happens
-        const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
-
-        /*+
-         * CKEDITOR & RANGY DEFECT: Replacement of first word of document or table cell
-         * (after selection) throws an error
-         * WorkAround:
-         * 1. Select from the second character of the word
-         * 2. Replace the selection
-         * 3. Delete the first character
-         **/
-        const useWorkAround = alignedMatches[0].foundOffset + alignedMatches[0].flagLength - 1 < this.getCurrentText().length;
-
-        if (useWorkAround) {
-          alignedMatches[0].foundOffset += selectionFromCharPos;
-          alignedMatches[0].flagLength -= selectionFromCharPos;
-        }
-
-        // Select the replacement, as replacement of selected flag will be done
-        this.scrollAndSelect(alignedMatches);
-
-        // Replace the selected text
-        const replacementText = _.map(alignedMatches, 'replacement').join('');
-        this.editor.selection.setContent(replacementText);
-
-        if (useWorkAround) {
-          if (selectionFromCharPos > 0) {
-            // Select & delete characters which were not replaced above
-            this.selectText(alignedMatches[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
-            rangy.getSelection(this.getEditorDocument()).nativeSelection.deleteFromDocument();
-          }
-          alignedMatches[0].foundOffset -= selectionFromCharPos;
-          alignedMatches[0].flagLength += selectionFromCharPos;
-        }
-
-        // Select the replaced flag
-        this.selectText(alignedMatches[0].foundOffset, replacementText.length);
-
-      } catch (error) {
-        console.log(error);
-        throw error;
-      }
-    }
   }
 }

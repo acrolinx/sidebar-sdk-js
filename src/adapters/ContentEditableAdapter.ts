@@ -55,7 +55,7 @@ namespace acrolinx.plugins.adapter {
       return this.element.innerHTML;
     }
 
-    getEditorDocument() {
+    getEditorDocument() : Document {
       try {
         return this.element.ownerDocument;
       } catch (error) {
@@ -157,25 +157,12 @@ namespace acrolinx.plugins.adapter {
       return alignedMatches;
     }
 
-    replaceSelection(content) {
-      var doc = this.getEditorDocument();
-      var selection = rangy.getSelection(doc);
-      var rng = selection.getRangeAt(0);
-      content += '<span id="__caret">_</span>';
+    replaceSelection(content: string) {
+      const doc = this.getEditorDocument();
+      const selection = rangy.getSelection(doc);
+      const rng = selection.getRangeAt(0);
       rng.deleteContents();
-      var frag = rng.createContextualFragment(content);
-      rng.insertNode(frag);
-
-      var caretNode = doc.getElementById('__caret');
-
-      // Make sure we wrap it compleatly, Opera fails with a simple select call
-      rng = rangy.createRange();
-      rng.setStartBefore(caretNode);
-      rng.setEndBefore(caretNode);
-      rangy.getSelection().setSingleRange(rng as RangyRange);
-
-
-      caretNode.parentNode.removeChild(caretNode);
+      rng.insertNode(doc.createTextNode(content));
     }
 
     replaceRanges(checkId, matchesWithReplacement: MatchWithReplacement[]) {

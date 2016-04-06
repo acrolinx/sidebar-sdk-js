@@ -124,7 +124,7 @@ namespace acrolinx.plugins.adapter {
     }
 
     selectMatches(checkId, matches: MatchWithReplacement[]) : AlignedMatch[] {
-      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
+      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
 
       if (_.isEmpty(alignedMatches)) {
         throw 'Selected flagged content is modified.';

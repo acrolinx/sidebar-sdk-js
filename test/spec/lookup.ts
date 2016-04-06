@@ -19,6 +19,7 @@ describe('adapter test', function () {
   interface AdapterSpec {
     name: string;
     editorElement: string;
+    inputFormat: string;
     setEditorContent: (text: string, done: DoneCallback) => void;
     init?: (done: DoneCallback) => void;
     remove: () => void;
@@ -27,6 +28,7 @@ describe('adapter test', function () {
   const adapters: AdapterSpec[] = [
     {
       name: 'ContentEditableAdapter',
+      inputFormat: 'HTML',
       editorElement: '<div id="editorId" contenteditable="true">initial text</div>',
       setEditorContent: (html: string, done: DoneCallback) => {
         $('#editorId').html(html);
@@ -38,6 +40,7 @@ describe('adapter test', function () {
     },
     {
       name: 'InputAdapter',
+      inputFormat: 'TEXT',
       editorElement: '<textarea id="editorId">initial text</textarea>',
       setEditorContent: (html: string, done: DoneCallback) => {
         $('#editorId').val(html);
@@ -49,6 +52,7 @@ describe('adapter test', function () {
     },
     {
       name: 'CKEditorAdapter',
+      inputFormat: 'HTML',
       editorElement: '<textarea name="editorId" id="editorId" rows="10" cols="40">initial text</textarea>',
       setEditorContent: (html: string, done: DoneCallback) => {
         CKEDITOR.instances['editorId'].setData(html, () => {
@@ -86,6 +90,7 @@ describe('adapter test', function () {
     },
     {
       name: 'TinyMCEAdapter',
+      inputFormat: 'HTML',
       editorElement: '<textarea id="editorId" rows="10" cols="40">initial text</textarea>',
       setEditorContent: (html: string, done) => {
         tinymce.get("editorId").setContent(html);
@@ -441,7 +446,7 @@ describe('adapter test', function () {
         });
       });
 
-      it.skip('Replace with text looking like entities', function (done) {
+      it('Replace with text looking like entities', function (done) {
         givenAText('wordOne wordTwo wordThree', text => {
           const entities = "&uuml;";
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', entities));
@@ -450,7 +455,7 @@ describe('adapter test', function () {
         });
       });
 
-      it.skip('Replace with text looking like html tags', function (done) {
+      it('Replace with text looking like html tags', function (done) {
         givenAText('wordOne wordTwo wordThree', text => {
           const replacement = "<tagish>";
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', replacement));
@@ -459,15 +464,30 @@ describe('adapter test', function () {
         });
       });
 
-      it.skip('Replace word containing entity', function (done) {
+      if (adapterSpec.inputFormat === 'TEXT') {
+        it('Replace text inside tags', function (done) {
+          givenAText('wordOne <part1 part2 part3/> wordThree', text => {
+            const replacement = "replacement";
+            adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'part3', replacement));
+            assertEditorText(`wordOne <part1 part2 ${replacement}/> wordThree`);
+            done();
+          });
+        });
+      }
+
+
+
+      it('Replace word containing entity', function (done) {
         givenAText('wordOne D&amp;D wordThree', text => {
           const replacement = 'Dungeons and Dragons';
-          console.log(text);
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'D&amp;D', replacement));
+          const matchesWithReplacement = getMatchesWithReplacement(text, 'D&amp;D', replacement);
+          adapter.selectRanges(dummyCheckId, matchesWithReplacement)
+          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
           assertEditorText(`wordOne ${replacement} wordThree`);
           done();
         });
       });
+
 
       it('Replace same word in correct order', function (done) {
         givenAText('before wordSame wordSame wordSame wordSame wordSame after', text => {

@@ -39,7 +39,7 @@ namespace acrolinx.plugins.lookup.diffbased {
     let offsetCountOld = 0;
     let diff = 0;
     diffs.forEach(([action, value]) => {
-      switch (action){
+      switch (action) {
         case DIFF_EQUAL:
           offsetCountOld += value.length;
           break;
@@ -61,13 +61,20 @@ namespace acrolinx.plugins.lookup.diffbased {
     return offsetMappingArray;
   }
 
+  function replaceTags(s: string) {
+    return s.replace(/(<([^>]+)>|&.*?;)/ig, tag => _.repeat(' ', tag.length));
+  }
 
-  export function lookupMatches(checkedDocument: string, currentDocument: string, matches: MatchWithReplacement[]): AlignedMatch[] {
+  type InputFormat = 'HTML' | 'TEXT';
+
+  export function lookupMatches(checkedDocument: string, currentDocument: string,
+                                matches: MatchWithReplacement[], inputFormat: InputFormat = 'HTML'): AlignedMatch[] {
     if (_.isEmpty(matches)) {
       return [];
     }
 
-    const diffs: Diff[] = dmp.diff_main(checkedDocument, currentDocument);
+    const cleanedCheckedDocument = inputFormat === 'HTML' ? replaceTags(checkedDocument) : checkedDocument;
+    const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
 
     let offsetMappingArray = createOffsetMappingArray(diffs);
 
@@ -90,15 +97,21 @@ namespace acrolinx.plugins.lookup.diffbased {
       else return 0;
     }
 
-    const result = matches.map(match => ({
-      replacement: match.replacement,
-      range: match.range,
-      content: match.content,
-      foundOffset: match.range[0] + findNewOffset(match.range[0]),
-      flagLength: match.range[1] - match.range[0],
-    }));
+    const result = matches.map(match => {
 
-    result[0].flagLength = matches[matches.length - 1].range[1] - matches[0].range[0];
+      const foundOffset = match.range[0] + findNewOffset(match.range[0]);
+      const foundEnd = match.range[1] + findNewOffset(match.range[1]);
+      return {
+        replacement: match.replacement,
+        range: match.range,
+        content: match.content,
+        foundOffset,
+        foundEnd,
+        flagLength: foundEnd - foundOffset,
+      }
+    });
+
+    result[0].flagLength = result[matches.length - 1].foundEnd - result[0].foundOffset;
     return result;
   }
 

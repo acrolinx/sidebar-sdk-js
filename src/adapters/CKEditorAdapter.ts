@@ -1,6 +1,3 @@
-/// <reference path="../typings/rangy.d.ts" />
-/// <reference path="../lookup/diff-based.ts" />
-
 /*
  *
  * * Copyright 2015 Acrolinx GmbH
@@ -21,6 +18,10 @@
  *
  */
 
+/// <reference path="../typings/rangy.d.ts" />
+/// <reference path="../lookup/diff-based.ts" />
+/// <reference path="AbstractRichtextEditorAdapter.ts" />
+
 namespace acrolinx.plugins.adapter {
   'use strict';
 
@@ -29,32 +30,8 @@ namespace acrolinx.plugins.adapter {
   import lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
   import _ = acrolinxLibs._;
 
-  function replaceRangeContent(range, replacementText) {
-    range.deleteContents();
-    if (replacementText) {
-      range.insertNode(range.createContextualFragment(replacementText));
-    }
-  }
 
-  export class CKEditorAdapter implements AdapterInterface {
-    editorId:any;
-    editor:any;
-    html:any;
-    currentHtmlChecking:any;
-    checkStartTime:any;
-    isCheckingNow:any;
-    prevCheckedHtml:any;
-    lookupMatches = lookupMatchesStandard;
-
-
-    constructor(conf:AdapterConf) {
-      this.editorId = conf.editorId;
-      this.editor = null;
-      if (conf.lookupMatches) {
-        this.lookupMatches = conf.lookupMatches;
-      }
-    }
-
+  export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
     getEditor() {
       if (this.editor === null) {
         if (CKEDITOR.instances.hasOwnProperty(this.editorId)) {
@@ -65,40 +42,11 @@ namespace acrolinx.plugins.adapter {
     }
 
     getEditorDocument() {
-      try {
-        return this.getEditor().document.$;
-      } catch (error) {
-        throw error;
-      }
-    }
-
-    getCurrentText() {
-      try {
-        return rangy.innerText(this.getEditorDocument());
-      } catch (error) {
-        throw error;
-      }
+      return this.getEditor().document.$;
     }
 
     getHTML() {
       return this.getEditor().getData();
-    }
-
-    createRange(begin, length) {
-      var editorDocument = this.getEditorDocument();
-      var range = rangy.createRange(editorDocument);
-      range.setStart(editorDocument, 0);
-      range.setEnd(editorDocument, 0);
-      range.moveStart('character', begin);
-      range.moveEnd('character', length);
-      return range;
-    }
-
-    selectText(begin, length) {
-      var range = this.createRange(begin, length);
-      var selection = rangy.getSelection(this.getEditorDocument());
-      selection.setSingleRange(range);
-      return range;
     }
 
     scrollAndSelect(matches) {
@@ -131,11 +79,10 @@ namespace acrolinx.plugins.adapter {
       return range2;
     }
 
-    extractHTMLForCheck():any {
+    extractHTMLForCheck(): any {
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
       if (this.editor.mode === 'wysiwyg') {
-        this.checkStartTime = Date.now();
         //TODO: remove it after server side implementation. This is a workaround
         if (this.html === '') {
           this.html = '<span> </span>';
@@ -150,90 +97,17 @@ namespace acrolinx.plugins.adapter {
       return {html: this.html};
     }
 
-    registerCheckCall(checkInfo) {
-
-    }
-
-    registerCheckResult(checkResult) {
-      this.isCheckingNow = false;
-      this.currentHtmlChecking = this.html;
-      this.prevCheckedHtml = this.currentHtmlChecking;
-      return [];
-    }
-
     selectRanges(checkId, matches) {
       if (this.editor.mode === 'wysiwyg') {
-
         this.selectMatches(checkId, matches);
-
       } else {
         window.alert('Action is not permitted in Source mode.');
       }
     }
 
-    selectMatches(checkId, matches:MatchWithReplacement[]):AlignedMatch[] {
-      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
-
-      if (_.isEmpty(alignedMatches)) {
-        throw 'Selected flagged content is modified.';
-      }
-
-      this.scrollAndSelect(alignedMatches);
-
-      return alignedMatches;
-    }
-
-    replaceRanges(checkId, matchesWithReplacementArg:MatchWithReplacement[]) {
-      const selectionFromCharPos = 1;
-
+    replaceRanges(checkId, matchesWithReplacementArg: MatchWithReplacement[]) {
       if (this.editor.mode === 'wysiwyg') {
-        try {
-          // this is the selection on which replacement happens
-          const alignedMatches = this.selectMatches(checkId, matchesWithReplacementArg);
-          this.selectMatches(checkId, alignedMatches);
-
-
-          /*+
-           * CKEDITOR & RANGY DEFECT: Replacement of first word of document or table cell
-           * (after selection) throws an error
-           * WorkAround:
-           * 1. Select from the second character of the word
-           * 2. Replace the selection
-           * 3. Delete the first character
-           **/
-          const useWorkAround = alignedMatches[0].foundOffset + alignedMatches[0].flagLength - 1 < this.getCurrentText().length;
-
-          if (useWorkAround) {
-            alignedMatches[0].foundOffset += selectionFromCharPos;
-            alignedMatches[0].flagLength -= selectionFromCharPos;
-          }
-
-          // Select the replacement, as replacement of selected flag will be done
-          const selectedRange = this.scrollAndSelect(alignedMatches);
-
-
-          // Replace the selected text
-          const replacementText = _.map(alignedMatches, 'replacement').join('');
-          // using editor.insertText(replacementText) caused bugs in inline mode
-          replaceRangeContent(selectedRange, replacementText);
-
-          if (useWorkAround) {
-            if (selectionFromCharPos > 0) {
-              // Select & delete characters which were not replaced above
-              this.selectText(alignedMatches[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
-              rangy.getSelection(this.getEditorDocument()).nativeSelection.deleteFromDocument();
-            }
-            alignedMatches[0].foundOffset -= selectionFromCharPos;
-            alignedMatches[0].flagLength += selectionFromCharPos;
-          }
-
-          // Select the replaced flag
-          this.selectText(alignedMatches[0].foundOffset, replacementText.length);
-        } catch (error) {
-          console.log(error);
-          return;
-        }
-
+        super.replaceRanges(checkId, matchesWithReplacementArg);
       } else {
         window.alert('Action is not permitted in Source mode.');
       }
