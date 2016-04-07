@@ -61,5 +61,10 @@ div[contenteditable=true] {
   width: 50%;
   min-height: 5em;
   background: #f8f8f8;
+  max-height: 40em;
+  overflow: auto;
+}
 
+::selection {
+  background: #ff0000;
 }

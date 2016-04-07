@@ -77,15 +77,15 @@
         var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
 
         //A simple Adapter for a Editable Div
-        var simpleAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv'}));
-        var simpleTxtAdapter = new acrolinx.plugins.adapter.InputAdapter(_.extend(_.clone(basicConf), {editorId: 'textarea'}));
-        var ckEditapter = new acrolinx.plugins.adapter.CKEditorAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_ck'}));
-        var mceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_tinymce'}));
+        var contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv'}));
+        var inputAdapter = new acrolinx.plugins.adapter.InputAdapter(_.extend(_.clone(basicConf), {editorId: 'textarea'}));
+        var ckEditorAdapter = new acrolinx.plugins.adapter.CKEditorAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_ck'}));
+        var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_tinymce'}));
         var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(basicConf);
-        multiAdapter.addSingleAdapter(simpleAdapter);
-        multiAdapter.addSingleAdapter(simpleTxtAdapter);
-        multiAdapter.addSingleAdapter(ckEditapter,'span class="hello"');
-        multiAdapter.addSingleAdapter(mceAdapter,'span class="hello"');
+        multiAdapter.addSingleAdapter(contentEditableAdapter);
+        multiAdapter.addSingleAdapter(inputAdapter);
+        multiAdapter.addSingleAdapter(ckEditorAdapter,'span class="hello"');
+        multiAdapter.addSingleAdapter(tinyMceAdapter,'span class="hello"');
 
         //Register one Element-Adapter to the main Acrolinx PLugin
         acrolinxPlugin.registerAdapter(multiAdapter);

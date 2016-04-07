@@ -29,7 +29,7 @@ namespace acrolinx.plugins.lookup.diffbased {
 
   const dmp = new diff_match_patch();
 
-  class OffSetAlign {
+  interface OffSetAlign {
     oldPosition: number
     diffOffset: number
   }
@@ -37,25 +37,26 @@ namespace acrolinx.plugins.lookup.diffbased {
   export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
     let offsetMappingArray: OffSetAlign[] = [];
     let offsetCountOld = 0;
-    let diff = 0;
-    diffs.forEach(([action, value]) => {
+    let currentDiffOffset = 0;
+    diffs.forEach((diff: Diff) => {
+      const [action, value] = diff;
       switch (action) {
         case DIFF_EQUAL:
           offsetCountOld += value.length;
           break;
         case DIFF_DELETE:
           offsetCountOld += value.length;
-          diff -= value.length;
+          currentDiffOffset -= value.length;
           break;
         case DIFF_INSERT:
-          diff += value.length;
+          currentDiffOffset += value.length;
           break;
         default:
           throw new Error('Illegal Diff Action: ' + action);
       }
       offsetMappingArray.push({
         oldPosition: offsetCountOld,
-        diffOffset: diff
+        diffOffset: currentDiffOffset
       });
     });
     return offsetMappingArray;
@@ -72,9 +73,11 @@ namespace acrolinx.plugins.lookup.diffbased {
     if (_.isEmpty(matches)) {
       return [];
     }
-
+    // const start = Date.now();
     const cleanedCheckedDocument = inputFormat === 'HTML' ? replaceTags(checkedDocument) : checkedDocument;
     const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
+
+    // console.log(diffs);
 
     let offsetMappingArray = createOffsetMappingArray(diffs);
 
@@ -110,6 +113,8 @@ namespace acrolinx.plugins.lookup.diffbased {
         flagLength: foundEnd - foundOffset,
       }
     });
+
+    // console.log('Time for Diffing: ', Date.now() - start);
 
     result[0].flagLength = result[matches.length - 1].foundEnd - result[0].foundOffset;
     return result;

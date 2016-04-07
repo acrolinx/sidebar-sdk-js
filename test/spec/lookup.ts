@@ -182,12 +182,12 @@ describe('adapter test', function () {
       }
 
       it('Get initial text from editor element', function () {
-        assert.equal(adapter.getCurrentText(), 'initial text');
+        assertEditorText('initial text');
       });
 
       it('Get current text from editor element', function (done) {
         givenAText('current text', (text) => {
-          assert.equal(adapter.getCurrentText(), 'current text');
+          assertEditorText('current text');
           done();
         });
       });

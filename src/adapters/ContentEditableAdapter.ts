@@ -27,12 +27,15 @@ namespace acrolinx.plugins.adapter {
   import _ = acrolinxLibs._;
 
   'use strict';
+  import TextMapping = acrolinx.plugins.utils.TextDomMapping;
+  import DomPosition = acrolinx.plugins.utils.DomPosition;
+  import TextDomMapping = acrolinx.plugins.utils.TextDomMapping;
 
   export class ContentEditableAdapter implements AdapterInterface {
     config: AdapterConf;
-    element:any;
-    html:any;
-    currentHtmlChecking:any;
+    element: Element;
+    html: string;
+    currentHtmlChecking: string;
     lookupMatches = lookupMatchesStandard;
 
     constructor(conf: AdapterConf) {
@@ -43,7 +46,7 @@ namespace acrolinx.plugins.adapter {
       }
     }
 
-    registerCheckCall(checkInfo){
+    registerCheckCall(checkInfo) {
 
     }
 
@@ -55,20 +58,8 @@ namespace acrolinx.plugins.adapter {
       return this.element.innerHTML;
     }
 
-    getEditorDocument() : Document {
-      try {
-        return this.element.ownerDocument;
-      } catch (error) {
-        throw error;
-      }
-    }
-
-    getCurrentText() {
-      try {
-        return rangy.innerText(this.element);
-      } catch (error) {
-        throw error;
-      }
+    getEditorDocument(): Document {
+      return this.element.ownerDocument;
     }
 
     extractHTMLForCheck() {
@@ -77,115 +68,87 @@ namespace acrolinx.plugins.adapter {
       return {html: this.html};
     }
 
-    selectText(begin, length) {
-      var doc = this.getEditorDocument();
-      var selection = rangy.getSelection(doc);
-      var range = rangy.createRange(doc);
+    private selectText(begin: number, length: number, textMapping: TextMapping) {
+      const doc = this.getEditorDocument();
+      const selection = doc.getSelection();
+      const range = doc.createRange();
 
-      range.setStart(this.element, 0);
-      range.moveStart('character', begin);
-      range.moveEnd('character', length);
-      selection.setSingleRange(range);
-      return range;
+      const beginDomPosition = textMapping.domPositions[begin];
+      const endDomPosition = utils.getEndDomPos(begin + length, textMapping.domPositions);
+      range.setStart(beginDomPosition.node, beginDomPosition.offset);
+      range.setEnd(endDomPosition.node, endDomPosition.offset);
+      selection.removeAllRanges();
+      selection.addRange(range);
     }
 
-    scrollIntoView2(sel) {
-      var range = sel.getRangeAt(0);
-      var tmp = range.cloneRange();
-      tmp.collapse();
+    private scrollIntoView(sel: Selection) {
+      const range = sel.getRangeAt(0);
+      const tmp = range.cloneRange();
+      tmp.collapse(false);
 
-      var text = document.createElement('span');
+      const text = document.createElement('span');
       tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
       text.scrollIntoView();
       text.remove();
-
-
     }
 
-    scrollAndSelect(matches) {
-      var newBegin,
-        matchLength,
-        selection1,
-        selection2,
-        range1,
-        range2,
-        doc;
-
-      newBegin = matches[0].foundOffset;
-      matchLength = matches[0].flagLength;
-      range1 = this.selectText(newBegin, matchLength);
-      //$(getEditor().getBody()).find('em').get(0).scrollIntoView();
-      //selection1 = this.getEditor().selection;
-      selection1 = rangy.getSelection(this.getEditorDocument());
+    private scrollToCurrentSelection() {
+      const selection1 = this.getEditorDocument().getSelection();
 
       if (selection1) {
         try {
-          //selection1.scrollIntoView();
-          this.scrollIntoView2(selection1);
-          //Special hack for WordPress TinyMCE
-          var wpContainer = $('#wp-content-editor-container');
-          if (wpContainer.length > 0) {
-            window.scrollBy(0, -50);
-
-          }
-          //var wpContainer = $('#wp-content-editor-container');
-          //if (wpContainer.length > 0) {
-          //  wpContainer.get(0).scrollIntoView();
-          //}
+          this.scrollIntoView(selection1);
         } catch (error) {
-          console.log("Scrolling Error!");
+          console.log("Scrolling Error: ", error);
         }
       }
-      //
-      // scrollIntoView need to set it again
-      range2 = this.selectText(newBegin, matchLength);
     }
 
-    selectRanges(checkId, matches) {
+    selectRanges(checkId: string, matches: MatchWithReplacement[]) {
       this.selectMatches(checkId, matches);
+      this.scrollToCurrentSelection();
     }
 
-    selectMatches(checkId, matches: MatchWithReplacement[]) : AlignedMatch[] {
-      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
+    private selectMatches(checkId: string, matches: MatchWithReplacement[]): AlignedMatch[] {
+      const textMapping: TextMapping = this.getTextDomMapping();
+      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, textMapping.text, matches);
 
       if (_.isEmpty(alignedMatches)) {
-        throw 'Selected flagged content is modified.';
+        throw new Error('Selected flagged content is modified.');
       }
 
-      this.scrollAndSelect(alignedMatches);
-
+      this.selectAlignedMatches(alignedMatches, textMapping);
       return alignedMatches;
     }
 
-    replaceSelection(content: string) {
+    private selectAlignedMatches(matches: AlignedMatch[], textMapping: TextMapping) {
+      const newBegin = matches[0].foundOffset;
+      const matchLength = matches[0].flagLength;
+      this.selectText(newBegin, matchLength, textMapping);
+    }
+
+    private replaceSelection(content: string) {
       const doc = this.getEditorDocument();
-      const selection = rangy.getSelection(doc);
+      const selection = doc.getSelection();
       const rng = selection.getRangeAt(0);
       rng.deleteContents();
       rng.insertNode(doc.createTextNode(content));
     }
 
     replaceRanges(checkId, matchesWithReplacement: MatchWithReplacement[]) {
-      try {
-        // this is the selection on which replacement happens
-        const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
+      const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
+      this.replaceSelection(_.map(alignedMatches, 'replacement').join(''));
 
-        // Select the replacement, as replacement of selected flag will be done
-        this.scrollAndSelect(alignedMatches);
-
-        // Replace the selected text
-        const replacementText = _.map(alignedMatches, 'replacement').join('');
-        //this.editor.selection.setContent(replacementText);
-        this.replaceSelection(replacementText);
-
-        // Select the replaced flag
-        this.selectText(alignedMatches[0].foundOffset, replacementText.length);
-      } catch (error) {
-        console.log(error);
-        return;
-      }
-
+      // Replacement will remove the selection, so we need to restore it again.
+      const selectionLength = _.map(alignedMatches, 'replacement').join('').length;
+      this.selectText(alignedMatches[0].foundOffset, selectionLength, this.getTextDomMapping());
+      this.scrollToCurrentSelection();
     }
+
+    private getTextDomMapping() {
+      return utils.extractTextDomMapping(this.element);
+    }
+
   }
 }
 

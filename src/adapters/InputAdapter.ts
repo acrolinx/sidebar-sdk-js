@@ -49,19 +49,11 @@ namespace acrolinx.plugins.adapter {
     }
 
     getEditorDocument() {
-      try {
-        return this.element.ownerDocument;
-      } catch (error) {
-        throw error;
-      }
+      return this.element.ownerDocument;
     }
 
     getCurrentText() {
-      try {
-        return this.getHTML();
-      } catch (error) {
-        throw error;
-      }
+      return this.getHTML();
     }
 
     extractHTMLForCheck() {
@@ -76,30 +68,6 @@ namespace acrolinx.plugins.adapter {
 
     registerCheckCall(checkInfo) {
 
-    }
-
-
-    selectText(begin, length) {
-      var doc = this.getEditorDocument();
-      var selection = rangy.getSelection(doc);
-      var range = rangy.createRange(doc);
-
-      range.setStart(this.element, 0);
-      range.moveStart('character', begin);
-      range.moveEnd('character', length);
-      selection.setSingleRange(range);
-      return range;
-    }
-
-    scrollIntoView2(sel) {
-      var range = sel.getRangeAt(0);
-      var tmp = range.cloneRange();
-      tmp.collapse();
-
-      var text = document.createElement('span');
-      tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
-      text.scrollIntoView();
-      text.remove();
     }
 
     scrollAndSelect(matches) {
@@ -123,7 +91,7 @@ namespace acrolinx.plugins.adapter {
       this.selectMatches(checkId, matches);
     }
 
-    selectMatches(checkId, matches: MatchWithReplacement[]) : AlignedMatch[] {
+    selectMatches(checkId, matches: MatchWithReplacement[]): AlignedMatch[] {
       const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
 
       if (_.isEmpty(alignedMatches)) {
