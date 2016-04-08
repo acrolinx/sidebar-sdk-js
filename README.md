@@ -8,14 +8,14 @@ Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for initial consu
 We like to schedule a kickoff meeting to answer any questions about your integration project. 
 After the meeting, we provide you with test server credentials and configuration settings you need to get started.
 
-## Configuration of the sidebar on premise example
+## Configuration of the Sidebar Example
 
 Before you can run this example you need to configure some settings in these files:
   * samples/client/on-premise/example.js
     * clientSignature
     * serverAddress
 
-## How to start
+## How to Start
 First make sure, that you have installed nodejs (which includes npm) and grunt-cli.
 
 Then you need to install all required node modules:
