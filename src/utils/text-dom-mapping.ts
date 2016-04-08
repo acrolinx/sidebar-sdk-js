@@ -2,13 +2,6 @@ namespace acrolinx.plugins.utils {
 
   import _ = acrolinxLibs._;
 
-  export function logTime(text: string, f: Function) {
-    const startTime = Date.now();
-    const result = f();
-    console.log(`Duration of "${text}:"`, Date.now() - startTime);
-    return result;
-  }
-
   export interface TextDomMapping {
     text: string
     domPositions: DomPosition[]
@@ -54,14 +47,14 @@ namespace acrolinx.plugins.utils {
   }
 
   export function getEndDomPos(index: number, domPositions: DomPosition[]): DomPosition {
-    if (index < domPositions.length) {
-      return domPositions[index];
-    } else {
-      const lastDOMPos = _.last(domPositions);
+    if (index > 0) {
+      const prevPos = domPositions[Math.min(index, domPositions.length) - 1];
       return {
-        node: lastDOMPos.node,
-        offset: lastDOMPos.offset + 1
+        node: prevPos.node,
+        offset: prevPos.offset + 1
       };
+    } else {
+      return domPositions[index];
     }
   }
 

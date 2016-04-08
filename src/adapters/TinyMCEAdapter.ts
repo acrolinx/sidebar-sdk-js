@@ -21,11 +21,6 @@
 namespace acrolinx.plugins.adapter {
   'use strict';
 
-  import lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
-  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-  import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
-  import _ = acrolinxLibs._;
-
   export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
     getEditor() {
       if (this.editor === null) {
@@ -42,64 +37,32 @@ namespace acrolinx.plugins.adapter {
       return this.getEditor().contentDocument;
     }
 
-    selectText(begin, length) {
-      var doc = this.getEditorDocument();
-      var selection = rangy.getSelection(doc);
-      var range = rangy.createRange(doc);
-
-      range.moveStart('character', begin);
-      range.moveEnd('character', length);
-      selection.setSingleRange(range);
-      return range;
-    }
-
-    scrollIntoView2(sel) {
-      var range = sel.getRng();
-      var tmp = range.cloneRange();
-      tmp.collapse();
-
-      var text = document.createElement('span');
-      tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
-      text.scrollIntoView();
-      text.remove();
-    }
-
-    scrollAndSelect(matches) {
-      var newBegin, matchLength, selection1, range1, range2,
-
-        newBegin = matches[0].foundOffset;
-      matchLength = matches[0].flagLength;
-      range1 = this.selectText(newBegin, matchLength);
-      selection1 = this.getEditor().selection;
-
-      if (selection1) {
-        try {
-          //selection1.scrollIntoView();
-          this.scrollIntoView2(selection1);
-          //Special hack for WordPress TinyMCE
-          var wpContainer = acrolinxLibs.$('#wp-content-editor-container');
-          if (wpContainer.length > 0) {
-            wpContainer.get(0).scrollIntoView();
-          }
-        } catch (error) {
-          console.log("Scrolling Error!");
-        }
-      }
-      //
-      // scrollIntoView need to set it again
-      range2 = this.selectText(newBegin, matchLength);
-      return range2;
-    }
-
-    extractHTMLForCheck() {
-      this.html = this.getHTML();
-      this.currentHtmlChecking = this.html;
-      return {html: this.html};
-    }
-
-    selectRanges(checkId, matches) {
-      this.selectMatches(checkId, matches);
-    }
+    // scrollAndSelect(matches) {
+    //   var newBegin, matchLength, selection1, range1, range2,
+    //
+    //     newBegin = matches[0].foundOffset;
+    //   matchLength = matches[0].flagLength;
+    //   range1 = this.selectText(newBegin, matchLength);
+    //   selection1 = this.getEditor().selection;
+    //
+    //   if (selection1) {
+    //     try {
+    //       //selection1.scrollIntoView();
+    //       this.scrollIntoView2(selection1);
+    //       //Special hack for WordPress TinyMCE
+    //       var wpContainer = acrolinxLibs.$('#wp-content-editor-container');
+    //       if (wpContainer.length > 0) {
+    //         wpContainer.get(0).scrollIntoView();
+    //       }
+    //     } catch (error) {
+    //       console.log("Scrolling Error!");
+    //     }
+    //   }
+    //   //
+    //   // scrollIntoView need to set it again
+    //   range2 = this.selectText(newBegin, matchLength);
+    //   return range2;
+    // }
 
   }
 }

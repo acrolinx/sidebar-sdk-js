@@ -7,7 +7,7 @@ var assert = chai.assert;
 var expect = chai.expect;
 
 describe('adapter test', function () {
-  const lookupMatches : LookupMatchesFunction = acrolinx.plugins.lookup.diffbased.lookupMatches;
+  const lookupMatches: LookupMatchesFunction = acrolinx.plugins.lookup.diffbased.lookupMatches;
 
   let adapter: AdapterInterface;
 
@@ -123,7 +123,7 @@ describe('adapter test', function () {
 
       beforeEach((done) => {
         $('body').append(adapterSpec.editorElement);
-        var adapterConf : AdapterConf = {editorId: 'editorId', lookupMatches};
+        var adapterConf: AdapterConf = {editorId: 'editorId', lookupMatches};
         adapter = new acrolinx.plugins.adapter[adapterName](adapterConf);
         if (adapterSpec.init) {
           adapterSpec.init(done);
@@ -476,7 +476,6 @@ describe('adapter test', function () {
       }
 
 
-
       it('Replace word containing entity', function (done) {
         givenAText('wordOne D&amp;D wordThree', text => {
           const replacement = 'Dungeons and Dragons';
@@ -533,6 +532,33 @@ describe('adapter test', function () {
         });
       });
 
-    })
-  })
+      if (adapterSpec.inputFormat === 'HTML') {
+        it('Missing space within divs', function (done) {
+          givenAText('<div>a b ?</div><div>c</div>', text => {
+            const matchesWithReplacement: MatchWithReplacement[] = [
+              {"content": "b", "range": [7, 8], "replacement": "b?"},
+              {"content": " ", "range": [8, 9], "replacement": ""},
+              {"content": "?", "range": [9, 10], "replacement": ""}];
+            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            assert.equal(adapter.getHTML().replace(/\n/g, ''), '<div>a b?</div><div>c</div>')
+            done();
+          });
+        });
+
+        it.skip('Replace partially tagged text', function (done) {
+          givenAText('<p><strong>a b</strong> .</p>', text => {
+            const matchesWithReplacement: MatchWithReplacement[] = [
+              {"content":"b","range":[13,14],"replacement":"b."},
+              {"content":" ","range":[23,24],"replacement":""},
+              {"content":".","range":[24,25],"replacement":""}
+            ];
+            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            assert.equal(adapter.getHTML().replace(/\n/g, ''), '<p><strong>a b</strong>.</p>')
+            done();
+          });
+        });
+      }
+
+    });
+  });
 });

@@ -48,10 +48,6 @@ namespace acrolinx.plugins.adapter {
       return acrolinxLibs.$(this.element).val();
     }
 
-    getEditorDocument() {
-      return this.element.ownerDocument;
-    }
-
     getCurrentText() {
       return this.getHTML();
     }
@@ -102,25 +98,16 @@ namespace acrolinx.plugins.adapter {
       return alignedMatches;
     }
 
-    replaceSelection(content) {
+    replaceSelection(content: string) {
       //$(this.element).focus();
       acrolinxLibs.$(this.element).replaceSelectedText(content, "select");
     }
 
-    replaceRanges(checkId, matchesWithReplacement: MatchWithReplacement[]) {
-      try {
-        // this is the selection on which replacement happens
-        const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
-
-        // Select the replacement, as replacement of selected flag will be done
-        this.scrollAndSelect(alignedMatches);
-
-        const replacementText = _.map(alignedMatches, 'replacement').join('');
-        this.replaceSelection(replacementText);
-      } catch (error) {
-        console.log(error);
-        return;
-      }
+    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
+      const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
+      this.scrollAndSelect(alignedMatches);
+      const replacementText = _.map(alignedMatches, 'replacement').join('');
+      this.replaceSelection(replacementText);
     }
   }
 }

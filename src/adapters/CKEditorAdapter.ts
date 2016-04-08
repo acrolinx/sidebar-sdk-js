@@ -18,7 +18,6 @@
  *
  */
 
-/// <reference path="../typings/rangy.d.ts" />
 /// <reference path="../lookup/diff-based.ts" />
 /// <reference path="AbstractRichtextEditorAdapter.ts" />
 
@@ -26,10 +25,6 @@ namespace acrolinx.plugins.adapter {
   'use strict';
 
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-  import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
-  import lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
-  import _ = acrolinxLibs._;
-
 
   export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
     getEditor() {
@@ -41,42 +36,12 @@ namespace acrolinx.plugins.adapter {
       return this.editor;
     }
 
-    getEditorDocument() {
+    getEditorDocument() : Document {
       return this.getEditor().document.$;
     }
 
     getHTML() {
       return this.getEditor().getData();
-    }
-
-    scrollAndSelect(matches) {
-      var newBegin,
-        matchLength,
-        selection1,
-        selection2,
-        range1,
-        range2,
-        doc;
-      newBegin = matches[0].foundOffset;
-      matchLength = matches[0].flagLength;
-      range1 = this.selectText(newBegin, matchLength);
-      selection1 = this.getEditor().getSelection();
-      if (selection1) {
-        try {
-          selection1.scrollIntoView();
-        } catch (error) {
-
-        }
-      }
-
-      // scrollIntoView need to set it again
-      doc = this.getEditorDocument();
-      selection2 = rangy.getSelection(doc);
-      range2 = rangy.createRange(doc);
-      range2.setStart(range1.startContainer, range1.startOffset);
-      range2.setEnd(range1.endContainer, range1.endOffset);
-      selection2.setSingleRange(range2);
-      return range2;
     }
 
     extractHTMLForCheck(): any {
@@ -99,7 +64,7 @@ namespace acrolinx.plugins.adapter {
 
     selectRanges(checkId, matches) {
       if (this.editor.mode === 'wysiwyg') {
-        this.selectMatches(checkId, matches);
+        super.selectRanges(checkId, matches);
       } else {
         window.alert('Action is not permitted in Source mode.');
       }

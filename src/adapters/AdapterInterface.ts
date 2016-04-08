@@ -10,7 +10,6 @@ namespace acrolinx.plugins.adapter {
   export interface AdapterInterface {
     findRangesPositionInPlainText?(text, matches);
     getEditor?();
-    getEditorElement?();
     getHTML() : string;
     extractHTMLForCheck();
     registerCheckCall(checkInfo);
