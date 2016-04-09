@@ -26,6 +26,8 @@ namespace acrolinx.plugins.adapter {
   import CheckResult = acrolinx.sidebar.CheckResult;
   import Check = acrolinx.sidebar.Check;
 
+  import _ = acrolinxLibs._;
+
 
   interface RemappedMatches {
     matches: MatchWithReplacement[];
@@ -61,8 +63,8 @@ namespace acrolinx.plugins.adapter {
     extractHTMLForCheck() {
       const Q = acrolinxLibs.Q;
       const deferred = Q.defer();
-      const htmls = this.adapters.map(adapter => adapter.adapter.extractHTMLForCheck());
-      Q.all(htmls).then(acrolinxLibs._.bind(function (results: HtmlResult[]) {
+      const htmlResults = this.adapters.map(adapter => adapter.adapter.extractHTMLForCheck());
+      Q.all(htmlResults).then((results: HtmlResult[]) => {
         let html = '';
         for (let i = 0; i < this.adapters.length; i++) {
           const el = this.adapters[i];
@@ -73,17 +75,13 @@ namespace acrolinx.plugins.adapter {
           el.start = html.length + startText.length;
           el.end = html.length + startText.length + elHtml.length;
           html += newTag;
-
         }
-        this.html = html;
-        console.log(this.html);
-        deferred.resolve({html: this.html});
-      }, this));
+        deferred.resolve({html});
+      });
       return deferred.promise;
     }
 
     registerCheckCall(checkInfo: Check) {
-
     }
 
     registerCheckResult(checkResult: CheckResult): void {
@@ -98,36 +96,25 @@ namespace acrolinx.plugins.adapter {
       for (let id in map) {
         map[id].adapter.selectRanges(checkId, map[id].matches);
       }
-
     }
 
     remapMatches<T extends Match>(matches: T[]) {
       const map: {[id: string]: RemappedMatches } = {};
-      for (let i = 0; i < matches.length; i++) {
-        const match = acrolinxLibs._.clone(matches[i]);
-        match.range = acrolinxLibs._.clone(matches[i].range);
+      for (const match of matches) {
         const adapter = this.getAdapterForMatch(match);
         if (!map.hasOwnProperty(adapter.id)) {
           map[adapter.id] = {matches: [], adapter: adapter.adapter};
         }
-
-        match.range[0] -= adapter.start;
-        match.range[1] -= adapter.start;
-        map[adapter.id].matches.push(match);
+        const remappedMatch = _.clone(match);
+        remappedMatch.range = match.range.map(x => x - adapter.start);
+        map[adapter.id].matches.push(remappedMatch);
       }
-
       return map;
     }
 
     getAdapterForMatch(match: Match) {
-      for (let i = 0; i < this.adapters.length; i++) {
-        const el = this.adapters[i];
-        if ((match.range[0] >= el.start) && (match.range[1] <= el.end)) {
-          return el;
-        }
-      }
-      return null;
-
+      return _.find(this.adapters,
+        (adapter: RegisteredAdapter) => (match.range[0] >= adapter.start) && (match.range[1] <= adapter.end));
     }
 
     replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
