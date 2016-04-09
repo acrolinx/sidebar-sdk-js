@@ -25,6 +25,7 @@ module.exports = function (config) {
       {pattern: 'bower_components/ckeditor/**/*', included: false},
       'bower_components/tinymce/tinymce.js',
       {pattern: 'bower_components/tinymce/**/*', included: false},
+      {pattern: 'test/dummy-sidebar/**/*', included: false},
       'tmp/compiled/test.js'
     ],
 

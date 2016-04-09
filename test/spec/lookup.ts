@@ -1,9 +1,12 @@
+/// <reference path="../utils/test-utils.ts" />
+
 import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
 import Match = acrolinx.sidebar.Match;
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import AdapterConf = acrolinx.plugins.adapter.AdapterConf;
 import HtmlResult = acrolinx.plugins.HtmlResult;
 import editor = CKEDITOR.editor;
+import getMatchesWithReplacement = acrolinx.test.utils.getMatchesWithReplacement;
 var assert = chai.assert;
 var expect = chai.expect;
 
@@ -138,29 +141,6 @@ describe('adapter test', function () {
           assert.equal(actualText, expectedText);
         }
       }
-
-      function getMatchesWithReplacement(completeString: string, partialString: string, replacement: string): MatchWithReplacement[] {
-        const matches: MatchWithReplacement[] = [];
-        let offsetStart: number;
-        let offsetEnd = 0;
-        while (true) {
-          offsetStart = completeString.indexOf(partialString, offsetEnd);
-
-          if (offsetStart == -1) {
-            break;
-          }
-
-          offsetEnd = offsetStart + partialString.length;
-
-          matches.push({
-            content: partialString,
-            replacement: replacement,
-            range: [offsetStart, offsetEnd]
-          });
-        }
-        return matches;
-      }
-
 
       function givenAText(text: string, callback: (text: string) => void) {
         setEditorContent(text, () => {

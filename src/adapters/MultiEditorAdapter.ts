@@ -50,13 +50,7 @@ namespace acrolinx.plugins.adapter {
       this.adapters = [];
     }
 
-    addSingleAdapter(singleAdapter: AdapterInterface, wrapper: string, id: string) {
-      if (wrapper === undefined) {
-        wrapper = 'div';
-      }
-      if (id === undefined) {
-        id = 'acrolinx_integration' + this.adapters.length;
-      }
+    addSingleAdapter(singleAdapter: AdapterInterface, wrapper = 'div', id = 'acrolinx_integration' + this.adapters.length) {
       this.adapters.push({id: id, adapter: singleAdapter, wrapper: wrapper});
     }
 
