@@ -21,6 +21,7 @@
     "grunt-karma": "^0.12.1",
     "grunt-shell": "^1.1.2",
     "grunt-ts": "^5.3.2",
+    "grunt-tslint": "^3.0.3",
     "jit-grunt": "^0.9.1",
     "karma": "^0.13.22",
     "karma-chai": "^0.1.0",
@@ -31,6 +32,7 @@
     "phantomjs-prebuilt": "^2.1.5",
     "q-io": "^1.13.1",
     "request": "^2.58.0",
+    "tslint": "^3.7.1",
     "typescript": "^1.8.7"
   },
   "scripts": {}

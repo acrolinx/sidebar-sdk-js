@@ -21,17 +21,36 @@
 namespace acrolinx.plugins.adapter {
   'use strict';
 
-  export class MultiEditorAdapter {
-    config:any;
-    adapters:any;
-    checkResult:any;
+  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import Match = acrolinx.sidebar.Match;
+  import CheckResult = acrolinx.sidebar.CheckResult;
+  import Check = acrolinx.sidebar.Check;
 
-    constructor(conf) {
+
+  interface RemappedMatches {
+    matches: MatchWithReplacement[];
+    adapter: AdapterInterface;
+  }
+
+  interface RegisteredAdapter {
+    id: string;
+    adapter: AdapterInterface;
+    wrapper: string;
+    start?: number;
+    end?: number;
+  }
+
+  export class MultiEditorAdapter implements AdapterInterface {
+    config: AcrolinxPluginConfig;
+    adapters: RegisteredAdapter[];
+    checkResult: CheckResult;
+
+    constructor(conf: AcrolinxPluginConfig) {
       this.config = conf;
       this.adapters = [];
     }
 
-    addSingleAdapter(singleAdapter, wrapper, id) {
+    addSingleAdapter(singleAdapter: AdapterInterface, wrapper: string, id: string) {
       if (wrapper === undefined) {
         wrapper = 'div';
       }
@@ -41,28 +60,22 @@ namespace acrolinx.plugins.adapter {
       this.adapters.push({id: id, adapter: singleAdapter, wrapper: wrapper});
     }
 
-    getWrapperTag(wrapper) {
-      var tag = wrapper.split(" ")[0];
-      return tag;
+    getWrapperTag(wrapper: string) {
+      return wrapper.split(' ')[0];
     }
 
     extractHTMLForCheck() {
-      var Q = acrolinxLibs.Q;
-      var deferred = Q.defer();
-      var htmls = [];
-      for (var i = 0; i < this.adapters.length; i++) {
-        var el = this.adapters[i];
-        htmls.push(el.adapter.extractHTMLForCheck());
-      }
-      Q.all(htmls).then(acrolinxLibs._.bind(function (results) {
-        //console.log(results);
-        var html = '';
-        for (var i = 0; i < this.adapters.length; i++) {
-          var el = this.adapters[i];
-          var tag = this.getWrapperTag(el.wrapper);
-          var startText = '<' + el.wrapper + ' id="' + el.id + '">';
-          var elHtml = results[i].html;//el.adapter.extractHTMLForCheck().html;
-          var newTag = startText + elHtml + '</' + tag + '>';
+      const Q = acrolinxLibs.Q;
+      const deferred = Q.defer();
+      const htmls = this.adapters.map(adapter => adapter.adapter.extractHTMLForCheck());
+      Q.all(htmls).then(acrolinxLibs._.bind(function (results: HtmlResult[]) {
+        let html = '';
+        for (let i = 0; i < this.adapters.length; i++) {
+          const el = this.adapters[i];
+          const tag = this.getWrapperTag(el.wrapper);
+          const startText = '<' + el.wrapper + ' id="' + el.id + '">';
+          const elHtml = results[i].html;
+          const newTag = startText + elHtml + '</' + tag + '>';
           el.start = html.length + startText.length;
           el.end = html.length + startText.length + elHtml.length;
           html += newTag;
@@ -70,56 +83,36 @@ namespace acrolinx.plugins.adapter {
         }
         this.html = html;
         console.log(this.html);
-
         deferred.resolve({html: this.html});
       }, this));
       return deferred.promise;
-
-      //var html = '';
-      //for (var i = 0; i < this.adapters.length; i++) {
-      //  var el = this.adapters[i];
-      //  var tag = this.getWrapperTag(el.wrapper);
-      //  var startText = '<' + el.wrapper +  ' id="' + el.id + '">';
-      //  var elHtml = el.adapter.extractHTMLForCheck().html;
-      //  var newTag = startText + elHtml + '</' + tag + '>';
-      //  el.start = html.length + startText.length;
-      //  el.end = html.length + startText.length + elHtml.length;
-      //  html += newTag;
-      //
-      //}
-      //this.html = html;
-      //console.log(this.html);
-      //
-      //return {html: this.html};
     }
 
-    registerCheckCall(checkInfo) {
+    registerCheckCall(checkInfo: Check) {
 
     }
 
-    registerCheckResult(checkResult) {
+    registerCheckResult(checkResult: CheckResult): void {
       this.checkResult = checkResult;
-      this.adapters.forEach(function (entry) {
+      this.adapters.forEach(entry => {
         entry.adapter.registerCheckResult(checkResult);
       });
-      return [];
     }
 
-    selectRanges(checkId, matches) {
-      var map = this.remapMatches(matches);
-      for (var id in map) {
+    selectRanges(checkId: string, matches: Match[]) {
+      const map = this.remapMatches(matches);
+      for (let id in map) {
         map[id].adapter.selectRanges(checkId, map[id].matches);
       }
 
     }
 
-    remapMatches(matches) {
-
-      var map = {};
-      for (var i = 0; i < matches.length; i++) {
-        var match = acrolinxLibs._.clone(matches[i]);
+    remapMatches<T extends Match>(matches: T[]) {
+      const map: {[id: string]: RemappedMatches } = {};
+      for (let i = 0; i < matches.length; i++) {
+        const match = acrolinxLibs._.clone(matches[i]);
         match.range = acrolinxLibs._.clone(matches[i].range);
-        var adapter = this.getAdapterForMatch(match);
+        const adapter = this.getAdapterForMatch(match);
         if (!map.hasOwnProperty(adapter.id)) {
           map[adapter.id] = {matches: [], adapter: adapter.adapter};
         }
@@ -127,15 +120,14 @@ namespace acrolinx.plugins.adapter {
         match.range[0] -= adapter.start;
         match.range[1] -= adapter.start;
         map[adapter.id].matches.push(match);
-
       }
 
       return map;
     }
 
-    getAdapterForMatch(match) {
-      for (var i = 0; i < this.adapters.length; i++) {
-        var el = this.adapters[i];
+    getAdapterForMatch(match: Match) {
+      for (let i = 0; i < this.adapters.length; i++) {
+        const el = this.adapters[i];
         if ((match.range[0] >= el.start) && (match.range[1] <= el.end)) {
           return el;
         }
@@ -144,10 +136,9 @@ namespace acrolinx.plugins.adapter {
 
     }
 
-    replaceRanges(checkId, matchesWithReplacement) {
-      var map = this.remapMatches(matchesWithReplacement);
-      for (var id in map) {
-
+    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
+      const map = this.remapMatches(matchesWithReplacement);
+      for (let id in map) {
         map[id].adapter.replaceRanges(checkId, map[id].matches);
       }
     }

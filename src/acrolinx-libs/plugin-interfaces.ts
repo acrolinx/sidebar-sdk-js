@@ -39,7 +39,7 @@ namespace acrolinx.sidebar {
     /**
      * Should be equal to or start with "en" or "de".
      */
-    clientLocale?: string
+    clientLocale?: string;
 
     /**
      *  The integration specific clientSignature. To get one, ask your Acrolinx contact.
@@ -79,16 +79,16 @@ namespace acrolinx.sidebar {
   }
 
   interface CheckSettings {
-    language: string,
-    ruleSetName: string,
-    termSets: string[],
-    checkSpelling: boolean,
-    checkGrammar: boolean,
-    checkStyle: boolean,
-    checkReuse: boolean,
-    harvestTerms: boolean,
-    checkSeo: boolean,
-    termStatuses: string[]
+    language: string;
+    ruleSetName: string;
+    termSets: string[];
+    checkSpelling: boolean;
+    checkGrammar: boolean;
+    checkStyle: boolean;
+    checkReuse: boolean;
+    harvestTerms: boolean;
+    checkSeo: boolean;
+    termStatuses: string[];
   }
 
   /**
@@ -270,7 +270,7 @@ namespace acrolinx.sidebar {
    * The result of the AcrolinxSidebar.init(), which can contain an error.
    */
   export interface InitResult {
-    error?: SidebarError
+    error?: SidebarError;
   }
 
 
@@ -466,7 +466,7 @@ namespace acrolinx.sidebar {
     sidebarNotReadyForCheck: 'sidebarNotReadyForCheck',
     checkCanceledByUser: 'checkCanceledByUser',
     base64EncodedGzippedUnsupported: 'base64EncodedGzippedUnsupported'
-  }
+  };
 
 
 }

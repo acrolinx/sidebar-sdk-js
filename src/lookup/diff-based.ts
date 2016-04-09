@@ -23,15 +23,15 @@
 namespace acrolinx.plugins.lookup.diffbased {
   'use strict';
 
-  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import Match = acrolinx.sidebar.Match;
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import _ = acrolinxLibs._;
 
   const dmp = new diff_match_patch();
 
   interface OffSetAlign {
-    oldPosition: number
-    diffOffset: number
+    oldPosition: number;
+    diffOffset: number;
   }
 
   export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
@@ -68,8 +68,8 @@ namespace acrolinx.plugins.lookup.diffbased {
 
   type InputFormat = 'HTML' | 'TEXT';
 
-  export function lookupMatches(checkedDocument: string, currentDocument: string,
-                                matches: MatchWithReplacement[], inputFormat: InputFormat = 'HTML'): AlignedMatch[] {
+  export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string,
+                                                 matches: T[], inputFormat: InputFormat = 'HTML'): AlignedMatch<T>[] {
     if (_.isEmpty(matches)) {
       return [];
     }
@@ -82,8 +82,8 @@ namespace acrolinx.plugins.lookup.diffbased {
     let offsetMappingArray = createOffsetMappingArray(diffs);
 
     function findNewOffset(oldOffset: number) {
-      let index = _.findIndex(offsetMappingArray, (element) => {
-        return element.oldPosition > oldOffset
+      let index = _.findIndex(offsetMappingArray, (offSetAlign: OffSetAlign) => {
+        return offSetAlign.oldPosition > oldOffset;
       });
       if (index > 0) {
         return offsetMappingArray[index - 1].diffOffset;
@@ -101,17 +101,14 @@ namespace acrolinx.plugins.lookup.diffbased {
     }
 
     const result = matches.map(match => {
-
       const foundOffset = match.range[0] + findNewOffset(match.range[0]);
       const foundEnd = match.range[1] + findNewOffset(match.range[1]);
       return {
-        replacement: match.replacement,
-        range: match.range,
-        content: match.content,
+        originalMatch: match,
         foundOffset,
         foundEnd,
         flagLength: foundEnd - foundOffset,
-      }
+      };
     });
 
     // console.log('Time for Diffing: ', Date.now() - start);

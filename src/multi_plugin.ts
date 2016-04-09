@@ -21,6 +21,23 @@
 namespace acrolinx.plugins {
   'use strict';
 
+  import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
+  import DownloadInfo = acrolinx.sidebar.DownloadInfo;
+  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import InitResult = acrolinx.sidebar.InitResult;
+  import AcrolinxPluginConfiguration = acrolinx.sidebar.AcrolinxPluginConfiguration;
+  import CheckResult = acrolinx.sidebar.CheckResult;
+
+  export interface  AcrolinxPluginConfig {
+    sidebarContainerId?: string;
+    sidebarUrl?: string;
+  }
+
+  export interface HtmlResult {
+    html?: string;
+    error?: any;
+  }
+
   const clientComponents = [
     {
       id: 'com.acrolinx.sidebarexample',
@@ -30,7 +47,11 @@ namespace acrolinx.plugins {
     }
   ];
 
-  function initAcrolinxSamplePlugin(config, editorAdapter) {
+  function isPromise(result: HtmlResult | Promise<HtmlResult>): result is Promise<HtmlResult> {
+    return (<Promise<HtmlResult>>result).then !== undefined;
+  }
+
+  function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface) {
     const $ = acrolinxLibs.$;
     const _ = acrolinxLibs._;
     const $sidebarContainer = $('#' + config.sidebarContainerId);
@@ -49,61 +70,56 @@ namespace acrolinx.plugins {
         }, config));
       }
 
-      console.log('Install acrolinxPlugin in sidebar.');
-      sidebarContentWindow.acrolinxPlugin = {
+      function requestGlobalCheckSync(html: HtmlResult, format: string, documentReference: string) {
+        if (html.hasOwnProperty('error')) {
+          window.alert(html.error);
+        } else {
+          const checkInfo = sidebarContentWindow.acrolinxSidebar.checkGlobal(html.html, {
+            inputFormat: format || 'HTML',
+            requestDescription: {
+              documentReference: documentReference || 'filename.html'
+            }
+          });
+          adapter.registerCheckCall(checkInfo);
+        }
+      }
 
-        requestInit: function () {
+      const acrolinxSidebarPlugin: acrolinx.sidebar.AcrolinxPlugin = {
+        requestInit () {
           console.log('requestInit');
           initSidebarOnPremise();
         },
 
-        onInitFinished: function (initFinishedResult) {
+        onInitFinished (initFinishedResult: InitResult) {
           console.log('onInitFinished: ', initFinishedResult);
           if (initFinishedResult.error) {
             window.alert(initFinishedResult.error.message);
           }
         },
 
-        configure: function (configuration) {
+        configure (configuration: AcrolinxPluginConfiguration) {
           console.log('configure: ', configuration);
         },
 
-        requestGlobalCheckSync: function (html, format, documentReference) {
-          if (html.hasOwnProperty("error")) {
-            window.alert(html.error);
-          } else {
-            var checkInfo = sidebarContentWindow.acrolinxSidebar.checkGlobal(html.html, {
-              inputFormat: format || 'HTML',
-              requestDescription: {
-                documentReference: documentReference || 'filename.html'
-              }
-            });
-            adapter.registerCheckCall(checkInfo);
-          }
-
-        },
-
-        requestGlobalCheck: function () {
+        requestGlobalCheck () {
           console.log('requestGlobalCheck');
-          var pHtml = adapter.extractHTMLForCheck();
-          var pFormat = adapter.getFormat ? adapter.getFormat() : null;
-          var pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
-          if (pHtml.then !== undefined) {
-            var self = this;
-            pHtml.then(function (html) {
-              self.requestGlobalCheckSync(html, pFormat, pDocumentReference);
+          const pHtml = adapter.extractHTMLForCheck();
+          const pFormat = adapter.getFormat ? adapter.getFormat() : null;
+          const pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
+          if (isPromise(pHtml)) {
+            pHtml.then((html: HtmlResult) => {
+              requestGlobalCheckSync(html, pFormat, pDocumentReference);
             });
           } else {
-            this.requestGlobalCheckSync(pHtml, pFormat, pDocumentReference);
-
+            requestGlobalCheckSync(pHtml, pFormat, pDocumentReference);
           }
         },
 
-        onCheckResult: function (checkResult) {
+        onCheckResult(checkResult: CheckResult) {
           return adapter.registerCheckResult(checkResult);
         },
 
-        selectRanges: function (checkId, matches) {
+        selectRanges(checkId: string, matches: MatchWithReplacement[]) {
           console.log('selectRanges: ', checkId, matches);
           try {
             adapter.selectRanges(checkId, matches);
@@ -120,7 +136,7 @@ namespace acrolinx.plugins {
 
         },
 
-        replaceRanges: function (checkId, matchesWithReplacement) {
+        replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
           console.log('replaceRanges: ', checkId, matchesWithReplacement);
           try {
             adapter.replaceRanges(checkId, matchesWithReplacement);
@@ -136,41 +152,28 @@ namespace acrolinx.plugins {
           }
         },
 
-        // only needed for local checks
-        getRangesOrder: function (checkedDocumentRanges) {
-          console.log('getRangesOrder: ', checkedDocumentRanges);
-          return [];
-        },
-
-        download: function (download) {
+        download(download: DownloadInfo) {
           console.log('download: ', download.url, download);
           window.open(download.url);
         },
 
-        // only needed for local checks
-        verifyRanges: function (checkedDocumentParts) {
-          console.log('verifyRanges: ', checkedDocumentParts);
-          return [];
-        },
-
-        disposeCheck: function (checkId) {
-          console.log('disposeCheck: ', checkId);
+        openWindow({url}) {
+          window.open(url);
         }
+
       };
 
+      console.log('Install acrolinxPlugin in sidebar.');
+      sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
     }
 
+
     function loadSidebarIntoIFrame() {
-      var sidebarBaseUrl;
-      if (config.sidebarUrl !== undefined) {
-        sidebarBaseUrl = config.sidebarUrl;
-      } else {
-        sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
-      }
+      const sidebarBaseUrl = config.sidebarUrl || 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
       return acrolinxLibs.$.ajax({
         url: sidebarBaseUrl + 'index.html'
-      }).then(function (sidebarHtml) {
-        var sidebarHtmlWithAbsoluteLinks = sidebarHtml
+      }).then((sidebarHtml: string) => {
+        const sidebarHtmlWithAbsoluteLinks = sidebarHtml
           .replace(/src="/g, 'src="' + sidebarBaseUrl)
           .replace(/href="/g, 'href="' + sidebarBaseUrl);
         sidebarContentWindow.document.open();
@@ -184,23 +187,19 @@ namespace acrolinx.plugins {
   }
 
 
-  interface Adapter {
-
-  }
-
   export class AcrolinxPlugin {
-    config: any;
-    adapter: Adapter;
+    config: AcrolinxPluginConfig;
+    adapter: AdapterInterface;
 
-    constructor(conf) {
+    constructor(conf: AcrolinxPluginConfig) {
       this.config = conf;
     }
 
-    registerAdapter(adapter) {
+    registerAdapter(adapter: AdapterInterface) {
       this.adapter = adapter;
     }
 
-    init () {
+    init() {
       initAcrolinxSamplePlugin(this.config, this.adapter);
     }
   }

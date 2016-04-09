@@ -22,11 +22,9 @@ namespace acrolinx.plugins.adapter {
   'use strict';
 
   export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
+
     getEditor() {
-      if (this.editor === null) {
-        this.editor = tinymce.get(this.editorId);
-      }
-      return this.editor;
+        return tinymce.get(this.editorId);
     }
 
     getHTML() {
@@ -34,7 +32,7 @@ namespace acrolinx.plugins.adapter {
     }
 
     getEditorDocument() {
-      return this.getEditor().contentDocument;
+      return this.getEditor().getDoc();
     }
 
     // scrollAndSelect(matches) {

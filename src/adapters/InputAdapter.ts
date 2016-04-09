@@ -22,25 +22,27 @@ namespace acrolinx.plugins.adapter {
   'use strict';
 
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import Match = acrolinx.sidebar.Match;
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
-  import lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
+  import lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
+  import $ = acrolinxLibs.$;
   import _ = acrolinxLibs._;
+  import Check = acrolinx.sidebar.Check;
+  import CheckResult = acrolinx.sidebar.CheckResult;
+
+  type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
   export class InputAdapter implements AdapterInterface {
-    element: any;
-    html: any;
-    currentHtmlChecking: any;
-    lookupMatches = lookupMatchesStandard;
+    element: ValidInputElement;
+    html: string;
+    currentHtmlChecking: string;
 
-    constructor(elementOrConf: Element | AdapterConf) {
+    constructor(elementOrConf: ValidInputElement | AdapterConf) {
       if (elementOrConf instanceof Element) {
         this.element = elementOrConf;
       } else {
         const conf = elementOrConf as AdapterConf;
-        this.element = document.getElementById(conf.editorId);
-        if (conf.lookupMatches) {
-          this.lookupMatches = conf.lookupMatches;
-        }
+        this.element = document.getElementById(conf.editorId) as ValidInputElement;
       }
     }
 
@@ -55,40 +57,36 @@ namespace acrolinx.plugins.adapter {
     extractHTMLForCheck() {
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
-      return {html: this.html};
+      return {html: this.html} as HtmlResult;
     }
 
-    registerCheckResult(checkResult) {
-      return [];
+    registerCheckResult(checkResult: CheckResult) : void {
     }
 
-    registerCheckCall(checkInfo) {
-
+    registerCheckCall(checkInfo: Check) {
     }
 
-    scrollAndSelect(matches) {
-      var newBegin, matchLength;
-      var $ = acrolinxLibs.$;
-
-      newBegin = matches[0].foundOffset;
-      matchLength = matches[0].flagLength;
+    scrollAndSelect(matches: AlignedMatch<Match>[]) {
+      const newBegin = matches[0].foundOffset;
+      const matchLength = matches[0].flagLength;
 
       $(this.element).focus();
       $(this.element).setSelection(newBegin, newBegin + matchLength);
 
       $(this.element)[0].scrollIntoView();
-      var wpContainer = $('#wp-content-editor-container');
+      // TODO: Do we need this special workaround for wordpress? Here?
+      const wpContainer = $('#wp-content-editor-container');
       if (wpContainer.length > 0) {
         window.scrollBy(0, -50);
       }
     }
 
-    selectRanges(checkId, matches) {
+    selectRanges(checkId: string, matches: Match[]) {
       this.selectMatches(checkId, matches);
     }
 
-    selectMatches(checkId, matches: MatchWithReplacement[]): AlignedMatch[] {
-      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
+    selectMatches<T extends Match>(checkId: string, matches: T[]): AlignedMatch<T>[] {
+      const alignedMatches = lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
 
       if (_.isEmpty(alignedMatches)) {
         throw 'Selected flagged content is modified.';
@@ -99,15 +97,14 @@ namespace acrolinx.plugins.adapter {
     }
 
     replaceSelection(content: string) {
-      //$(this.element).focus();
-      acrolinxLibs.$(this.element).replaceSelectedText(content, "select");
+      acrolinxLibs.$(this.element).replaceSelectedText(content, 'select');
     }
 
     replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
       const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
       this.scrollAndSelect(alignedMatches);
-      const replacementText = _.map(alignedMatches, 'replacement').join('');
-      this.replaceSelection(replacementText);
+      const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
+      this.replaceSelection(replacement);
     }
   }
 }

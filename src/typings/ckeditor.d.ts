@@ -57,7 +57,7 @@ declare module CKEDITOR {
     var basePath: string;
     var currentInstance: editor;
     var document: dom.document;
-    var instances: editor[];
+    var instances: { [id: string] : editor};
     var loadFullCoreTimeout: number;
     var revision: string;
     var rnd: number;

@@ -1,0 +1,37 @@
+{
+    "rules": {
+        "class-name": true,
+        "comment-format": [true,
+            "check-space"
+        ],
+        "indent": [true,
+            "spaces"
+        ],
+        "one-line": [true,
+            "check-open-brace",
+            "check-whitespace"
+        ],
+        "no-var-keyword": true,
+        "quotemark": [true,
+            "single",
+            "avoid-escape"
+        ],
+        "semicolon": true,
+        "whitespace": [true,
+            "check-branch",
+            "check-operator",
+            "check-separator",
+            "check-type",
+            "check-module"
+        ],
+        "typedef-whitespace": [true, {
+            "index-signature": "nospace",
+            "parameter": "nospace",
+            "property-declaration": "nospace"
+        }],
+        "no-internal-module": true,
+        "no-trailing-whitespace": true,
+        "no-inferrable-types": true,
+        "no-unused-variable": true
+  }
+}

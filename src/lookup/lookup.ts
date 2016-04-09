@@ -1,11 +1,11 @@
 namespace acrolinx.plugins.lookup {
-  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import Match = acrolinx.sidebar.Match;
 
-  export interface AlignedMatch extends MatchWithReplacement {
+  export interface AlignedMatch<T extends Match> {
+    originalMatch: T;
     foundOffset: number;
     foundEnd: number;
     flagLength: number;
   }
 
-  export type LookupMatchesFunction =  (checkedDocument: string, currentDocument: string, matches: MatchWithReplacement[]) => AlignedMatch[];
 }

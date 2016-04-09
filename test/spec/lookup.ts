@@ -2,13 +2,12 @@ import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
 import Match = acrolinx.sidebar.Match;
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import AdapterConf = acrolinx.plugins.adapter.AdapterConf;
-import LookupMatchesFunction = acrolinx.plugins.lookup.LookupMatchesFunction;
+import HtmlResult = acrolinx.plugins.HtmlResult;
+import editor = CKEDITOR.editor;
 var assert = chai.assert;
 var expect = chai.expect;
 
 describe('adapter test', function () {
-  const lookupMatches: LookupMatchesFunction = acrolinx.plugins.lookup.diffbased.lookupMatches;
-
   let adapter: AdapterInterface;
 
   const dummyCheckId = 'dummyCheckId';
@@ -23,6 +22,10 @@ describe('adapter test', function () {
     setEditorContent: (text: string, done: DoneCallback) => void;
     init?: (done: DoneCallback) => void;
     remove: () => void;
+  }
+
+  function getCkEditorInstance(id: string): editor {
+    return CKEDITOR.instances[id];
   }
 
   const adapters: AdapterSpec[] = [
@@ -55,27 +58,14 @@ describe('adapter test', function () {
       inputFormat: 'HTML',
       editorElement: '<textarea name="editorId" id="editorId" rows="10" cols="40">initial text</textarea>',
       setEditorContent: (html: string, done: DoneCallback) => {
-        CKEDITOR.instances['editorId'].setData(html, () => {
+        getCkEditorInstance('editorId').setData(html, () => {
           done();
         });
       },
       init: (done: DoneCallback) => {
-        this.orginialRangyGetSelection = rangy.getSelection;
-        /**
-         * Simple replacement for rangy.getSelection that avoids caching.
-         * Fixes testing problem in IE.
-         */
-        function getSelection(doc) {
-          const win: Window = rangy['dom'].getWindow(doc);
-          const nativeSel = win.getSelection();
-          return new rangy['Selection'](nativeSel, doc, win);
-        };
-
-        rangy.getSelection = getSelection;
-
         CKEDITOR.disableAutoInline = true;
         CKEDITOR.replace('editorId', {customConfig: ''});
-        CKEDITOR.instances['editorId'].on("instanceReady", () => {
+        getCkEditorInstance('editorId').on("instanceReady", () => {
           // Timeout is needed for IE
           setTimeout(() => {
             done();
@@ -83,16 +73,15 @@ describe('adapter test', function () {
         });
       },
       remove: () => {
-        CKEDITOR.instances['editorId'].destroy(true);
+        getCkEditorInstance('editorId').destroy(true);
         $('#editorId').remove();
-        rangy.getSelection = this.orginialRangyGetSelection;
       }
     },
     {
       name: 'TinyMCEAdapter',
       inputFormat: 'HTML',
       editorElement: '<textarea id="editorId" rows="10" cols="40">initial text</textarea>',
-      setEditorContent: (html: string, done) => {
+      setEditorContent: (html: string, done: () => void) => {
         tinymce.get("editorId").setContent(html);
         done();
       },
@@ -100,7 +89,7 @@ describe('adapter test', function () {
         tinymce.init({
           selector: "#editorId",
           height: 50,
-          init_instance_callback: (editor) => {
+          init_instance_callback: () => {
             done();
           }
         });
@@ -123,8 +112,9 @@ describe('adapter test', function () {
 
       beforeEach((done) => {
         $('body').append(adapterSpec.editorElement);
-        var adapterConf: AdapterConf = {editorId: 'editorId', lookupMatches};
-        adapter = new acrolinx.plugins.adapter[adapterName](adapterConf);
+        const adapterConf: AdapterConf = {editorId: 'editorId'};
+        var adapterNameSpace = acrolinx.plugins.adapter as any;
+        adapter = new adapterNameSpace[adapterName](adapterConf);
         if (adapterSpec.init) {
           adapterSpec.init(done);
         } else {
@@ -139,7 +129,7 @@ describe('adapter test', function () {
       const setEditorContent = adapterSpec.setEditorContent;
 
       function assertEditorText(expectedText: string) {
-        const editorContent = adapter.extractHTMLForCheck().html;
+        const editorContent = (adapter.extractHTMLForCheck() as HtmlResult).html;
         if (adapterSpec.name === 'InputAdapter') {
           assert.equal(editorContent, expectedText);
         }
@@ -174,10 +164,15 @@ describe('adapter test', function () {
 
       function givenAText(text: string, callback: (text: string) => void) {
         setEditorContent(text, () => {
-          adapter.registerCheckCall(dummyCheckId);
-          var html = adapter.extractHTMLForCheck();
-          adapter.registerCheckResult(dummyCheckId);
-          callback(html.html);
+          adapter.registerCheckCall({checkId: dummyCheckId});
+          const htmlResult = adapter.extractHTMLForCheck() as HtmlResult;
+          adapter.registerCheckResult({
+            checkedPart: {
+              checkId: dummyCheckId,
+              range: [0, text.length]
+            }
+          });
+          callback(htmlResult.html);
         });
       }
 
@@ -492,7 +487,7 @@ describe('adapter test', function () {
         givenAText('before wordSame wordSame wordSame wordSame wordSame after', text => {
           const replacements = ["a", "b", "c", "d", "e"];
 
-          function replace(i) {
+          function replace(i: number) {
             adapter.replaceRanges(dummyCheckId, [getMatchesWithReplacement(text, 'wordSame', replacements[i])[i]]);
           }
 
@@ -548,9 +543,9 @@ describe('adapter test', function () {
         it.skip('Replace partially tagged text', function (done) {
           givenAText('<p><strong>a b</strong> .</p>', text => {
             const matchesWithReplacement: MatchWithReplacement[] = [
-              {"content":"b","range":[13,14],"replacement":"b."},
-              {"content":" ","range":[23,24],"replacement":""},
-              {"content":".","range":[24,25],"replacement":""}
+              {"content": "b", "range": [13, 14], "replacement": "b."},
+              {"content": " ", "range": [23, 24], "replacement": ""},
+              {"content": ".", "range": [24, 25], "replacement": ""}
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
             assert.equal(adapter.getHTML().replace(/\n/g, ''), '<p><strong>a b</strong>.</p>')

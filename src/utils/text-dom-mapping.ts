@@ -3,13 +3,13 @@ namespace acrolinx.plugins.utils {
   import _ = acrolinxLibs._;
 
   export interface TextDomMapping {
-    text: string
-    domPositions: DomPosition[]
+    text: string;
+    domPositions: DomPosition[];
   }
 
   export interface DomPosition {
-    node: Node
-    offset: number
+    node: Node;
+    offset: number;
   }
 
 
@@ -35,13 +35,13 @@ namespace acrolinx.plugins.utils {
   }
 
   export function extractTextDomMapping(node: Node): TextDomMapping {
-    return concatTextMappings(_.map(node.childNodes, child=> {
+    return concatTextMappings(_.map(node.childNodes, (child: Node) => {
       switch (child.nodeType) {
         case Node.ELEMENT_NODE:
           return extractTextDomMapping(<HTMLElement> child);
         case Node.TEXT_NODE:
         default:
-          return textMapping(child.textContent, _.times(child.textContent.length, i => domPosition(child, i)));
+          return textMapping(child.textContent, _.times(child.textContent.length, (i: number) => domPosition(child, i)));
       }
     }));
   }

@@ -1,12 +1,14 @@
 /*global acrolinxLibs, Q, $, _ */
 
 
-namespace acrolinxLibs{
+namespace acrolinxLibs {
   'use strict';
-  var originalAcrolinxLibs = window['acrolinxLibs'] || {};
-  export const Q = originalAcrolinxLibs.Q || window['Q'];
-  export  const $ = originalAcrolinxLibs.$ || window['$'];
-  export const _ =  originalAcrolinxLibs._ || window['_'];
+
+  const windowWithLibs: any = window;
+  const originalAcrolinxLibs = windowWithLibs['acrolinxLibs'] || {};
+  export const Q = originalAcrolinxLibs.Q || windowWithLibs['Q'];
+  export  const $ = originalAcrolinxLibs.$ || windowWithLibs['$'];
+  export const _ =  originalAcrolinxLibs._ || windowWithLibs['_'];
 }
 
 

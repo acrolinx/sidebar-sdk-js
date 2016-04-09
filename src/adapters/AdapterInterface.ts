@@ -1,21 +1,22 @@
 namespace acrolinx.plugins.adapter {
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-  import LookupMatchesFunction = acrolinx.plugins.lookup.LookupMatchesFunction;
+  import Check = acrolinx.sidebar.Check;
+  import CheckResult = acrolinx.sidebar.CheckResult;
 
   export interface AdapterConf {
     editorId: string;
-    lookupMatches?: LookupMatchesFunction;
   }
 
   export interface AdapterInterface {
-    findRangesPositionInPlainText?(text, matches);
-    getEditor?();
-    getHTML() : string;
-    extractHTMLForCheck();
-    registerCheckCall(checkInfo);
-    registerCheckResult(checkResult)
-    selectRanges(checkId: string, matches: MatchWithReplacement[]);
-    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]);
+    getEditor?() : any;
+    getFormat?(): string;
+    getDocumentReference?(): string;
+    getHTML?(): string;
+    extractHTMLForCheck() : HtmlResult | Promise<HtmlResult>;
+    registerCheckCall(checkInfo: Check) : void;
+    registerCheckResult(checkResult: CheckResult): void;
+    selectRanges(checkId: string, matches: MatchWithReplacement[]) : void;
+    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) : void;
   }
 }
 

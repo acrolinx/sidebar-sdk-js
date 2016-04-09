@@ -23,55 +23,49 @@
 namespace acrolinx.plugins.adapter {
   'use strict';
 
-  import lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
+  import lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import Match = acrolinx.sidebar.Match;
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
 
   import TextMapping = acrolinx.plugins.utils.TextDomMapping;
-  import DomPosition = acrolinx.plugins.utils.DomPosition;
-  import TextDomMapping = acrolinx.plugins.utils.TextDomMapping;
 
   import _ = acrolinxLibs._;
+  import CheckResult = acrolinx.sidebar.CheckResult;
+  import Check = acrolinx.sidebar.Check;
 
   export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
     editorId: string;
-    editor: any;
     html: string;
     currentHtmlChecking: string;
     isCheckingNow: boolean;
     prevCheckedHtml: string;
-    lookupMatches = lookupMatchesStandard;
 
     constructor(conf: AdapterConf) {
       this.editorId = conf.editorId;
-      this.editor = null;
-      if (conf.lookupMatches) {
-        this.lookupMatches = conf.lookupMatches;
-      }
     }
 
     abstract getEditorDocument(): Document;
 
-    abstract getHTML();
+    abstract getHTML() : string;
 
     protected getEditorElement(): Element {
       return this.getEditorDocument().querySelector('body');
     }
 
-    registerCheckCall(checkInfo) {
+    registerCheckCall(checkInfo: Check) {
     }
 
-    registerCheckResult(checkResult) {
+    registerCheckResult(checkResult: CheckResult) : void {
       this.isCheckingNow = false;
       this.currentHtmlChecking = this.html;
       this.prevCheckedHtml = this.currentHtmlChecking;
-      return [];
     }
 
     extractHTMLForCheck() {
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
-      return {html: this.html};
+      return {html: this.html} as HtmlResult;
     }
 
 
@@ -93,20 +87,20 @@ namespace acrolinx.plugins.adapter {
         try {
           this.scrollIntoView(selection1);
         } catch (error) {
-          console.log("Scrolling Error: ", error);
+          console.log('Scrolling Error: ', error);
         }
       }
     }
 
-    selectRanges(checkId: string, matches: MatchWithReplacement[]) {
+    selectRanges(checkId: string, matches: Match[]) {
       this.selectMatches(checkId, matches);
       this.scrollToCurrentSelection();
     }
 
 
-    private selectMatches(checkId: string, matches: MatchWithReplacement[]): [AlignedMatch[], TextMapping] {
+    private selectMatches<T extends Match>(checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
       const textMapping: TextMapping = this.getTextDomMapping();
-      const alignedMatches = this.lookupMatches(this.currentHtmlChecking, textMapping.text, matches);
+      const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.currentHtmlChecking, textMapping.text, matches);
 
       if (_.isEmpty(alignedMatches)) {
         throw new Error('Selected flagged content is modified.');
@@ -116,7 +110,7 @@ namespace acrolinx.plugins.adapter {
       return [alignedMatches, textMapping];
     }
 
-    private selectAlignedMatches(matches: AlignedMatch[], textMapping: TextMapping) {
+    private selectAlignedMatches(matches: AlignedMatch<Match>[], textMapping: TextMapping) {
       const newBegin = matches[0].foundOffset;
       const matchLength = matches[0].flagLength;
       this.selectText(newBegin, matchLength, textMapping);
@@ -143,9 +137,9 @@ namespace acrolinx.plugins.adapter {
       rng.insertNode(doc.createTextNode(content));
     }
 
-    replaceRanges(checkId, matchesWithReplacement: MatchWithReplacement[]) {
+    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
       const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
-      var replacement = _.map(alignedMatches, 'replacement').join('');
+      const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
       this.replaceSelection(replacement);
 
       // Replacement will remove the selection, so we need to restore it again.

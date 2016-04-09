@@ -25,30 +25,26 @@ namespace acrolinx.plugins.adapter {
   'use strict';
 
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+  import Match = acrolinx.sidebar.Match;
 
   export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
     getEditor() {
-      if (this.editor === null) {
-        if (CKEDITOR.instances.hasOwnProperty(this.editorId)) {
-          this.editor = CKEDITOR.instances[this.editorId];
-        }
-      }
-      return this.editor;
+      return CKEDITOR.instances[this.editorId];
     }
 
     getEditorDocument() : Document {
-      return this.getEditor().document.$;
+      return this.getEditor().document.$ as any;
     }
 
     getHTML() {
       return this.getEditor().getData();
     }
 
-    extractHTMLForCheck(): any {
+    extractHTMLForCheck(): HtmlResult | Promise<HtmlResult> {
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
-      if (this.editor.mode === 'wysiwyg') {
-        //TODO: remove it after server side implementation. This is a workaround
+      if (this.isInWysiwygMode()) {
+        // TODO: remove it after server side implementation. This is a workaround
         if (this.html === '') {
           this.html = '<span> </span>';
         }
@@ -56,26 +52,30 @@ namespace acrolinx.plugins.adapter {
         if (this.isCheckingNow) {
           this.isCheckingNow = false;
         } else {
-          return {error: "Action is not permitted in Source mode."};
+          return {error: 'Action is not permitted in Source mode.'};
         }
       }
       return {html: this.html};
     }
 
-    selectRanges(checkId, matches) {
-      if (this.editor.mode === 'wysiwyg') {
+    selectRanges(checkId: string, matches: Match[]) {
+      if (this.isInWysiwygMode()) {
         super.selectRanges(checkId, matches);
       } else {
         window.alert('Action is not permitted in Source mode.');
       }
     }
 
-    replaceRanges(checkId, matchesWithReplacementArg: MatchWithReplacement[]) {
-      if (this.editor.mode === 'wysiwyg') {
+    replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
+      if (this.isInWysiwygMode()) {
         super.replaceRanges(checkId, matchesWithReplacementArg);
       } else {
         window.alert('Action is not permitted in Source mode.');
       }
+    }
+
+    isInWysiwygMode () {
+      return this.getEditor().mode === 'wysiwyg';
     }
   }
 }

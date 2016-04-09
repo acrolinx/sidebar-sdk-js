@@ -33,15 +33,15 @@ module.exports = function(grunt){
           'src/**/*', 'distrib/**/*'
         ]
       },
-      jshint: {
+      tslint: {
         options: {
           atBegin: true
         },
-        files: ['src/**/*.js'],
-        tasks: ['jshint']
+        files: ['src/**/*.ts', 'tslint.json'],
+        tasks: ['tslint']
       },
       ts: {
-        options: {},
+        options: {atBegin: true},
         files: ['src/**/*.ts', 'test/**/*.ts'],
         tasks: ['ts']
       }
@@ -85,7 +85,7 @@ module.exports = function(grunt){
         src: ['src/**/*.ts'],
         dest: 'distrib/' + name + '.js',
         options: {
-          noImplicitAny: false,
+          noImplicitAny: true,
           target: 'es5',
           sourceMap: true,
         }
@@ -94,9 +94,22 @@ module.exports = function(grunt){
         src: ['src/**/*.ts', 'test/**/*.ts'],
         dest: 'tmp/compiled/test.js',
         options: {
+          noImplicitAny: true,
           target: 'es5', //or es3
           sourceMap: false
         }
+      }
+    },
+
+    tslint: {
+      options: {
+        // can be a configuration object or a filepath to tslint.json
+        configuration: "tslint.json"
+      },
+      files: {
+        src: [
+          "src/**/*.ts","!src/typings/**/*.ts"
+        ]
       }
     },
 
@@ -171,8 +184,8 @@ module.exports = function(grunt){
 
   grunt.registerTask('default', ['build', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
-  grunt.registerTask('build', ['bower:install', 'clean:distrib', 'jshint', 'ts']);
-  grunt.registerTask('distrib', ['bower:install', 'clean:distrib', 'jshint', 'ts', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
+  grunt.registerTask('build', ['bower:install', 'clean:distrib', 'tslint', 'ts']);
+  grunt.registerTask('distrib', ['bower:install', 'clean:distrib', 'tslint', 'ts', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
 
   grunt.registerTask('release', 'Release the bower project', function(){
     var done = this.async();
