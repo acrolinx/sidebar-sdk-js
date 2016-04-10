@@ -12,4 +12,24 @@ namespace acrolinx.plugins.utils {
   export function getCompleteFlagLength<T extends Match>(matches: AlignedMatch<T>[]) {
     return matches[matches.length - 1].range[1] - matches[0].range[0];
   }
+
+  export function fetch(url: string, callback: (s: string) => void) {
+    const request = new XMLHttpRequest();
+    request.open('GET', url, true);
+
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        callback(request.responseText);
+      } else {
+        throw new Error(`Error while loading ${url}.`);
+      }
+    };
+
+    request.onerror = function() {
+      throw new Error(`Error while loading ${url}.`);
+    };
+
+    request.send();
+  }
+
 }

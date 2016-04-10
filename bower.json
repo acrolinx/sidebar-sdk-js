@@ -5,12 +5,12 @@
   "version": "0.3.2",
   "license": "Apache-2.0",
   "dependencies": {
-    "jquery": "~1.11.0",
     "q": "~1.4.1",
     "lodash": "^4.6.1",
     "google-diff-match-patch-js": "1.0.0"
   },
   "devDependencies": {
+    "jquery": "~1.11.0",
     "ckeditor": "4.5.7",
     "sinon": "http://sinonjs.org/releases/sinon-1.9.0.js",
     "tinymce": "~4.2.5",

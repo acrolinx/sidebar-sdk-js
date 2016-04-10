@@ -18,6 +18,9 @@
  *
  */
 
+/// <reference path="utils/utils.ts" />
+
+
 namespace acrolinx.plugins {
   'use strict';
 
@@ -29,6 +32,8 @@ namespace acrolinx.plugins {
   import CheckResult = acrolinx.sidebar.CheckResult;
   import AcrolinxSidebar = acrolinx.sidebar.AcrolinxSidebar;
   import AcrolinxSidebarPlugin = acrolinx.sidebar.AcrolinxPlugin;
+
+  import _ = acrolinxLibs._;
 
   export interface  AcrolinxPluginConfig {
     sidebarContainerId?: string;
@@ -59,12 +64,10 @@ namespace acrolinx.plugins {
   }
 
   function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface) {
-    const $ = acrolinxLibs.$;
-    const _ = acrolinxLibs._;
-    const $sidebarContainer = $('#' + config.sidebarContainerId);
-    const $sidebar = $('<iframe></iframe>');
-    $sidebarContainer.append($sidebar);
-    const sidebarContentWindow = ($sidebar.get(0) as HTMLIFrameElement).contentWindow as IFrameWindowOfSidebar;
+    const sidebarContainer = document.getElementById(config.sidebarContainerId);
+    const sidebarIFrameElement = document.createElement('iframe') as HTMLIFrameElement;
+    sidebarContainer.appendChild(sidebarIFrameElement);
+    const sidebarContentWindow = sidebarIFrameElement.contentWindow as IFrameWindowOfSidebar;
 
     const adapter = editorAdapter;
 
@@ -177,9 +180,7 @@ namespace acrolinx.plugins {
 
     function loadSidebarIntoIFrame() {
       const sidebarBaseUrl = config.sidebarUrl || 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
-      return acrolinxLibs.$.ajax({
-        url: sidebarBaseUrl + 'index.html'
-      }).then((sidebarHtml: string) => {
+      utils.fetch(sidebarBaseUrl + 'index.html', sidebarHtml => {
         const sidebarHtmlWithAbsoluteLinks = sidebarHtml
           .replace(/src="/g, 'src="' + sidebarBaseUrl)
           .replace(/href="/g, 'href="' + sidebarBaseUrl);

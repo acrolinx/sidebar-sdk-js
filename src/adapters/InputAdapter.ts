@@ -27,7 +27,6 @@ namespace acrolinx.plugins.adapter {
   import Match = acrolinx.sidebar.Match;
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
-  import $ = acrolinxLibs.$;
   import _ = acrolinxLibs._;
   import Check = acrolinx.sidebar.Check;
   import CheckResult = acrolinx.sidebar.CheckResult;
@@ -50,7 +49,7 @@ namespace acrolinx.plugins.adapter {
     }
 
     getHTML() {
-      return acrolinxLibs.$(this.element).val();
+      return this.element.value;
     }
 
     getCurrentText() {
@@ -76,10 +75,10 @@ namespace acrolinx.plugins.adapter {
       this.element.focus();
       this.element.setSelectionRange(newBegin, newBegin + matchLength);
 
-      $(this.element)[0].scrollIntoView();
+      this.element.scrollIntoView();
       // TODO: Do we need this special workaround for wordpress? Here?
-      const wpContainer = $('#wp-content-editor-container');
-      if (wpContainer.length > 0) {
+      const wpContainer = document.getElementById('wp-content-editor-container');
+      if (wpContainer) {
         window.scrollBy(0, -50);
       }
     }
