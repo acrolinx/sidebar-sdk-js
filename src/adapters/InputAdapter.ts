@@ -18,6 +18,8 @@
  *
  */
 
+/// <reference path="../utils/utils.ts" />
+
 namespace acrolinx.plugins.adapter {
   'use strict';
 
@@ -29,6 +31,7 @@ namespace acrolinx.plugins.adapter {
   import _ = acrolinxLibs._;
   import Check = acrolinx.sidebar.Check;
   import CheckResult = acrolinx.sidebar.CheckResult;
+  import getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
 
   type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
@@ -67,8 +70,8 @@ namespace acrolinx.plugins.adapter {
     }
 
     scrollAndSelect(matches: AlignedMatch<Match>[]) {
-      const newBegin = matches[0].foundOffset;
-      const matchLength = matches[0].flagLength;
+      const newBegin = matches[0].range[0];
+      const matchLength = getCompleteFlagLength(matches);
 
       $(this.element).focus();
       $(this.element).setSelection(newBegin, newBegin + matchLength);

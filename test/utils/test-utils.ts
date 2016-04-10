@@ -1,5 +1,5 @@
 namespace  acrolinx.test.utils {
-  export function getMatchesWithReplacement(completeString: string, partialString: string, replacement: string): MatchWithReplacement[] {
+  export function getMatchesWithReplacement(completeString: string, partialString: string, replacement = ''): MatchWithReplacement[] {
     const matches: MatchWithReplacement[] = [];
     let offsetStart: number;
     let offsetEnd = 0;

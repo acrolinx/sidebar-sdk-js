@@ -3,9 +3,7 @@ namespace acrolinx.plugins.lookup {
 
   export interface AlignedMatch<T extends Match> {
     originalMatch: T;
-    foundOffset: number;
-    foundEnd: number;
-    flagLength: number;
+    range: [number, number];
   }
 
 }

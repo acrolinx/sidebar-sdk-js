@@ -19,6 +19,7 @@
  */
 
 /// <reference path="../lookup/diff-based.ts" />
+/// <reference path="../utils/utils.ts" />
 
 namespace acrolinx.plugins.adapter {
   'use strict';
@@ -33,6 +34,7 @@ namespace acrolinx.plugins.adapter {
   import _ = acrolinxLibs._;
   import CheckResult = acrolinx.sidebar.CheckResult;
   import Check = acrolinx.sidebar.Check;
+  import getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
 
   export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
     editorId: string;
@@ -111,8 +113,8 @@ namespace acrolinx.plugins.adapter {
     }
 
     private selectAlignedMatches(matches: AlignedMatch<Match>[], textMapping: TextMapping) {
-      const newBegin = matches[0].foundOffset;
-      const matchLength = matches[0].flagLength;
+      const newBegin = matches[0].range[0];
+      const matchLength =  getCompleteFlagLength(matches);
       this.selectText(newBegin, matchLength, textMapping);
     }
 
@@ -143,7 +145,7 @@ namespace acrolinx.plugins.adapter {
       this.replaceSelection(replacement);
 
       // Replacement will remove the selection, so we need to restore it again.
-      this.selectText(alignedMatches[0].foundOffset, replacement.length, this.getTextDomMapping());
+      this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
       this.scrollToCurrentSelection();
     }
 

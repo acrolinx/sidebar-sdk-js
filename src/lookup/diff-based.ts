@@ -101,19 +101,16 @@ namespace acrolinx.plugins.lookup.diffbased {
     }
 
     const result = matches.map(match => {
-      const foundOffset = match.range[0] + findNewOffset(match.range[0]);
+      const foundBegin = match.range[0] + findNewOffset(match.range[0]);
       const foundEnd = match.range[1] + findNewOffset(match.range[1]);
       return {
         originalMatch: match,
-        foundOffset,
-        foundEnd,
-        flagLength: foundEnd - foundOffset,
+        range: [foundBegin, foundEnd] as [number, number]
       };
     });
 
     // console.log('Time for Diffing: ', Date.now() - start);
 
-    result[0].flagLength = result[matches.length - 1].foundEnd - result[0].foundOffset;
     return result;
   }
 
