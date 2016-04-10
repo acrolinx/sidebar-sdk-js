@@ -26,6 +26,7 @@ namespace acrolinx.test.multiPlugin {
 
     let lastDocumentContent: string;
     let afterCheckCallback: Function;
+    let invalidatedRanges: InvalidDocumentPart[];
 
 
     beforeEach((done) => {
@@ -115,7 +116,7 @@ namespace acrolinx.test.multiPlugin {
         },
 
         invalidateRanges(invalidCheckedDocumentRanges: InvalidDocumentPart[]) {
-
+          invalidatedRanges = invalidCheckedDocumentRanges;
         },
 
         onVisibleRangesChanged(checkedDocumentRanges: CheckedDocumentRange[]) {
@@ -157,6 +158,36 @@ namespace acrolinx.test.multiPlugin {
         const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, textToReplace, replacement);
         injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
         assert.equal(document.getSelection().toString(), replacement);
+        done();
+      })
+    });
+
+    it('trying to select modified ranges invalidated them', (done) => {
+      waitForCheck(() => {
+        const selectedText = 'ContentEditableAdapter';
+        const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
+        console.log(contentEditableAdapterMatch);
+        $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
+        injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
+        assert.deepEqual(invalidatedRanges, [{
+          checkId: DUMMY_CHECK_ID,
+          range: contentEditableAdapterMatch[0].range
+        }]);
+        done();
+      })
+    });
+
+    it('trying to replace modified ranges invalidated them', (done) => {
+      waitForCheck(() => {
+        const selectedText = 'ContentEditableAdapter';
+        const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
+        console.log(contentEditableAdapterMatch);
+        $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
+        injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
+        assert.deepEqual(invalidatedRanges, [{
+          checkId: DUMMY_CHECK_ID,
+          range: contentEditableAdapterMatch[0].range
+        }]);
         done();
       })
     });

@@ -27,6 +27,8 @@ namespace acrolinx.plugins {
   import InitResult = acrolinx.sidebar.InitResult;
   import AcrolinxPluginConfiguration = acrolinx.sidebar.AcrolinxPluginConfiguration;
   import CheckResult = acrolinx.sidebar.CheckResult;
+  import AcrolinxSidebar = acrolinx.sidebar.AcrolinxSidebar;
+  import AcrolinxSidebarPlugin = acrolinx.sidebar.AcrolinxPlugin;
 
   export interface  AcrolinxPluginConfig {
     sidebarContainerId?: string;
@@ -51,13 +53,18 @@ namespace acrolinx.plugins {
     return (<Promise<HtmlResult>>result).then !== undefined;
   }
 
+  type IFrameWindowOfSidebar = Window & {
+    acrolinxSidebar: AcrolinxSidebar;
+    acrolinxPlugin: AcrolinxSidebarPlugin;
+  }
+
   function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface) {
     const $ = acrolinxLibs.$;
     const _ = acrolinxLibs._;
     const $sidebarContainer = $('#' + config.sidebarContainerId);
     const $sidebar = $('<iframe></iframe>');
     $sidebarContainer.append($sidebar);
-    const sidebarContentWindow = $sidebar.get(0).contentWindow;
+    const sidebarContentWindow = ($sidebar.get(0) as HTMLIFrameElement).contentWindow as IFrameWindowOfSidebar;
 
     const adapter = editorAdapter;
 

@@ -63,7 +63,7 @@ namespace acrolinx.plugins.adapter {
       return {html: this.html} as HtmlResult;
     }
 
-    registerCheckResult(checkResult: CheckResult) : void {
+    registerCheckResult(checkResult: CheckResult): void {
     }
 
     registerCheckCall(checkInfo: Check) {
@@ -73,8 +73,8 @@ namespace acrolinx.plugins.adapter {
       const newBegin = matches[0].range[0];
       const matchLength = getCompleteFlagLength(matches);
 
-      $(this.element).focus();
-      $(this.element).setSelection(newBegin, newBegin + matchLength);
+      this.element.focus();
+      this.element.setSelectionRange(newBegin, newBegin + matchLength);
 
       $(this.element)[0].scrollIntoView();
       // TODO: Do we need this special workaround for wordpress? Here?
@@ -100,7 +100,8 @@ namespace acrolinx.plugins.adapter {
     }
 
     replaceSelection(content: string) {
-      acrolinxLibs.$(this.element).replaceSelectedText(content, 'select');
+      const el = this.element;
+      el.value = el.value.slice(0, el.selectionStart) + content + el.value.slice(el.selectionEnd);
     }
 
     replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
@@ -108,6 +109,8 @@ namespace acrolinx.plugins.adapter {
       this.scrollAndSelect(alignedMatches);
       const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
       this.replaceSelection(replacement);
+      const startOfSelection = alignedMatches[0].range[0];
+      this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
     }
   }
 }

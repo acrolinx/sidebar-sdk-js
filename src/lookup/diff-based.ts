@@ -27,6 +27,8 @@ namespace acrolinx.plugins.lookup.diffbased {
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import _ = acrolinxLibs._;
 
+  type InputFormat = 'HTML' | 'TEXT';
+
   const dmp = new diff_match_patch();
 
   interface OffSetAlign {
@@ -66,7 +68,29 @@ namespace acrolinx.plugins.lookup.diffbased {
     return s.replace(/(<([^>]+)>|&.*?;)/ig, tag => _.repeat(' ', tag.length));
   }
 
-  type InputFormat = 'HTML' | 'TEXT';
+
+  function findNewOffset(diffs: Diff[], offsetMappingArray: OffSetAlign[], oldOffset: number) {
+    let index = _.findIndex(offsetMappingArray, (offSetAlign: OffSetAlign) => {
+      return offSetAlign.oldPosition > oldOffset;
+    });
+    if (index > 0) {
+      return offsetMappingArray[index - 1].diffOffset;
+    }
+    else if (offsetMappingArray.length > 1 && index === -1) {
+      if (diffs[offsetMappingArray.length - 1][0] === DIFF_EQUAL) {
+        return offsetMappingArray[offsetMappingArray.length - 1].diffOffset;
+      }
+      return offsetMappingArray[offsetMappingArray.length - 2].diffOffset;
+    }
+    else if (index === 0) {
+      return offsetMappingArray[0].diffOffset;
+    }
+    else return 0;
+  }
+
+  function rangeContent(content: string, m: AlignedMatch<Match>) {
+    return content.slice(m.range[0], m.range[1]);
+  }
 
   export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string,
                                                  matches: T[], inputFormat: InputFormat = 'HTML'): AlignedMatch<T>[] {
@@ -77,41 +101,26 @@ namespace acrolinx.plugins.lookup.diffbased {
     const cleanedCheckedDocument = inputFormat === 'HTML' ? replaceTags(checkedDocument) : checkedDocument;
     const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
 
-    // console.log(diffs);
+    // console.log(checkedDocument, currentDocument, diffs);
 
-    let offsetMappingArray = createOffsetMappingArray(diffs);
+    const offsetMappingArray = createOffsetMappingArray(diffs);
 
-    function findNewOffset(oldOffset: number) {
-      let index = _.findIndex(offsetMappingArray, (offSetAlign: OffSetAlign) => {
-        return offSetAlign.oldPosition > oldOffset;
-      });
-      if (index > 0) {
-        return offsetMappingArray[index - 1].diffOffset;
-      }
-      else if (offsetMappingArray.length > 1 && index === -1) {
-        if (diffs[offsetMappingArray.length - 1][0] === DIFF_EQUAL) {
-          return offsetMappingArray[offsetMappingArray.length - 1].diffOffset;
-        }
-        return offsetMappingArray[offsetMappingArray.length - 2].diffOffset;
-      }
-      else if (index === 0) {
-        return offsetMappingArray[0].diffOffset;
-      }
-      else return 0;
-    }
-
-    const result = matches.map(match => {
-      const foundBegin = match.range[0] + findNewOffset(match.range[0]);
-      const foundEnd = match.range[1] + findNewOffset(match.range[1]);
+    const alignedMatches = matches.map(match => {
+      const foundBegin = match.range[0] + findNewOffset(diffs, offsetMappingArray, match.range[0]);
+      const foundEnd = match.range[1] + findNewOffset(diffs, offsetMappingArray, match.range[1]);
       return {
         originalMatch: match,
         range: [foundBegin, foundEnd] as [number, number]
       };
     });
 
+    const containsModifiedMatches = _.some(alignedMatches, m =>
+    rangeContent(currentDocument, m) !== m.originalMatch.content);
+
     // console.log('Time for Diffing: ', Date.now() - start);
 
-    return result;
+    return containsModifiedMatches ? [] : alignedMatches;
+
   }
 
 

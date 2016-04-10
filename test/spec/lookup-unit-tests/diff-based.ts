@@ -30,5 +30,11 @@ namespace acrolinx.test {
       lookupMatches('abcd', 'zabxcy', []);
     });
 
+    it('return empty array if content at match has changed', function () {
+      const text = 'errorr';
+      const alignedMatches = lookupMatches(text, 'error', getMatchesWithReplacement(text, 'errorr'));
+      assert.deepEqual(alignedMatches, []);
+    });
+
   });
 }

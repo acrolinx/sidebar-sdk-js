@@ -29,8 +29,8 @@ namespace acrolinx.plugins.adapter {
   import _ = acrolinxLibs._;
 
 
-  interface RemappedMatches {
-    matches: MatchWithReplacement[];
+  interface RemappedMatches<T extends Match> {
+    matches: T[];
     adapter: AdapterInterface;
   }
 
@@ -99,14 +99,14 @@ namespace acrolinx.plugins.adapter {
     }
 
     remapMatches<T extends Match>(matches: T[]) {
-      const map: {[id: string]: RemappedMatches } = {};
+      const map: {[id: string]: RemappedMatches<T> } = {};
       for (const match of matches) {
         const adapter = this.getAdapterForMatch(match);
         if (!map.hasOwnProperty(adapter.id)) {
           map[adapter.id] = {matches: [], adapter: adapter.adapter};
         }
         const remappedMatch = _.clone(match);
-        remappedMatch.range = match.range.map(x => x - adapter.start);
+        remappedMatch.range = [match.range[0] - adapter.start, match.range[1] - adapter.start];
         map[adapter.id].matches.push(remappedMatch);
       }
       return map;

@@ -452,14 +452,26 @@ describe('adapter test', function () {
 
 
       it('Replace word containing entity', function (done) {
-        givenAText('wordOne D&amp;D wordThree', text => {
-          const replacement = 'Dungeons and Dragons';
-          const matchesWithReplacement = getMatchesWithReplacement(text, 'D&amp;D', replacement);
-          adapter.selectRanges(dummyCheckId, matchesWithReplacement)
-          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-          assertEditorText(`wordOne ${replacement} wordThree`);
-          done();
-        });
+        if (adapterSpec.inputFormat === 'HTML') {
+          givenAText('wordOne D&amp;D wordThree', html => {
+            const replacement = 'Dungeons and Dragons';
+            const matchesWithReplacement = getMatchesWithReplacement(html, 'D&amp;D', replacement);
+            matchesWithReplacement[0].content = 'D&D';
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            assertEditorText(`wordOne ${replacement} wordThree`);
+            done();
+          });
+        } else {
+          givenAText('wordOne D&amp;D wordThree', text => {
+            const replacement = 'Dungeons and Dragons';
+            const matchesWithReplacement = getMatchesWithReplacement(text, 'D&amp;D', replacement);
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement)
+            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            assertEditorText(`wordOne ${replacement} wordThree`);
+            done();
+          });
+        }
       });
 
 
@@ -533,6 +545,27 @@ describe('adapter test', function () {
           });
         });
       }
+
+      it('SelectRanges throws exception if matched document part has changed', function (done) {
+          givenAText('wordOne wordTwo wordThree', html => {
+            const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
+            setEditorContent('wordOne wordXTwo wordThree', () => {
+              assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
+              done();
+            });
+          });
+      });
+
+      it('ReplaceRanges throws exception if matched document part has changed', function (done) {
+        givenAText('wordOne wordTwo wordThree', html => {
+          const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo', 'replacement');
+          setEditorContent('wordOne wordXTwo wordThree', () => {
+            assert.throws(() => adapter.replaceRanges(dummyCheckId, matchesWithReplacement));
+            done();
+          });
+        });
+      });
+
 
     });
   });
