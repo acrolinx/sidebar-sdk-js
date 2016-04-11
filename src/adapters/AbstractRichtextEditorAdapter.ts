@@ -119,31 +119,32 @@ namespace acrolinx.plugins.adapter {
     }
 
     private selectText(begin: number, length: number, textMapping: TextMapping) {
+      if (!textMapping.text) {
+        return;
+      }
       const doc = this.getEditorDocument();
       const selection = doc.getSelection();
-      const range = doc.createRange();
+      selection.removeAllRanges();
+      selection.addRange(this.createRange(begin, length, textMapping));
+    }
 
+    private createRange(begin: number, length: number, textMapping: TextMapping) {
+      const doc = this.getEditorDocument();
+      const range = doc.createRange();
       const beginDomPosition = textMapping.domPositions[begin];
       const endDomPosition = utils.getEndDomPos(begin + length, textMapping.domPositions);
       range.setStart(beginDomPosition.node, beginDomPosition.offset);
       range.setEnd(endDomPosition.node, endDomPosition.offset);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-
-    private replaceSelection(content: string) {
-      const doc = this.getEditorDocument();
-      const selection = doc.getSelection();
-      const rng = selection.getRangeAt(0);
-      rng.deleteContents();
-      rng.insertNode(doc.createTextNode(content));
+      return range;
     }
 
     private replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
+      const doc = this.getEditorDocument();
       const reversedMatches = _.clone(matches).reverse();
       for (let match of reversedMatches) {
-        this.selectText(match.range[0], match.range[1] - match.range[0], this.getTextDomMapping());
-        this.replaceSelection(match.originalMatch.replacement);
+        const range = this.createRange(match.range[0], match.range[1] - match.range[0], this.getTextDomMapping());
+        range.deleteContents();
+        range.insertNode(doc.createTextNode(match.originalMatch.replacement));
       }
     }
 

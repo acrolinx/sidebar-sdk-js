@@ -46,16 +46,12 @@ namespace acrolinx.plugins.utils {
     }));
   }
 
-  export function getEndDomPos(index: number, domPositions: DomPosition[]): DomPosition {
-    if (index > 0) {
-      const prevPos = domPositions[Math.min(index, domPositions.length) - 1];
-      return {
-        node: prevPos.node,
-        offset: prevPos.offset + 1
-      };
-    } else {
-      return domPositions[index];
-    }
+  export function getEndDomPos(endIndex: number, domPositions: DomPosition[]): DomPosition {
+    const index = domPositions[Math.max(Math.min(endIndex, domPositions.length) - 1, 0)];
+    return {
+      node: index.node,
+      offset: index.offset + 1
+    };
   }
 
 }

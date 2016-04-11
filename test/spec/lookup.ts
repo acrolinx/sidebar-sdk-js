@@ -520,6 +520,20 @@ describe('adapter test', function () {
       });
 
       if (adapterSpec.inputFormat === 'HTML') {
+
+        it('Remove complete text content', function (done) {
+          givenAText('<p>a</p>', text => {
+            const matchesWithReplacement: MatchWithReplacement[] = [
+              {"content": "a", "range": [3, 4], "replacement": ""},
+            ];
+            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            assert.equal(adapter.getHTML(),
+              adapterSpec.name === 'ContentEditableAdapter' ? '<p></p>' : '');
+            done();
+          });
+        });
+
+
         it('Missing space within divs', function (done) {
           givenAText('<div>a b ?</div><div>c</div>', text => {
             const matchesWithReplacement: MatchWithReplacement[] = [
@@ -544,16 +558,17 @@ describe('adapter test', function () {
             done();
           });
         });
+
       }
 
       it('SelectRanges throws exception if matched document part has changed', function (done) {
-          givenAText('wordOne wordTwo wordThree', html => {
-            const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
-            setEditorContent('wordOne wordXTwo wordThree', () => {
-              assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
-              done();
-            });
+        givenAText('wordOne wordTwo wordThree', html => {
+          const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
+          setEditorContent('wordOne wordXTwo wordThree', () => {
+            assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
+            done();
           });
+        });
       });
 
       it('ReplaceRanges throws exception if matched document part has changed', function (done) {
