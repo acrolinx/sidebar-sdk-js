@@ -242,7 +242,7 @@ namespace acrolinx.sidebar {
    * document. Usually it is the readable version of what you submitted. For example, entities can be resolved.
    */
   export interface MatchWithReplacement extends Match {
-    replacement: String;
+    replacement: string;
   }
 
 

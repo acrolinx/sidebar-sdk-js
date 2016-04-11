@@ -98,17 +98,22 @@ namespace acrolinx.plugins.adapter {
       return alignedMatches;
     }
 
-    replaceSelection(content: string) {
+    replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
+      const reversedMatches = _.clone(matches).reverse();
       const el = this.element;
-      el.value = el.value.slice(0, el.selectionStart) + content + el.value.slice(el.selectionEnd);
+      let text = el.value;
+      for (let match of reversedMatches) {
+        text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
+      }
+      el.value = text;
     }
 
     replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
       const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
       this.scrollAndSelect(alignedMatches);
-      const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
-      this.replaceSelection(replacement);
+      this.replaceAlignedMatches(alignedMatches);
       const startOfSelection = alignedMatches[0].range[0];
+      const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
       this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
     }
   }

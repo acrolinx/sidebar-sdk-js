@@ -49,7 +49,7 @@ namespace acrolinx.plugins.adapter {
 
     abstract getEditorDocument(): Document;
 
-    abstract getHTML() : string;
+    abstract getHTML(): string;
 
     protected getEditorElement(): Element {
       return this.getEditorDocument().querySelector('body');
@@ -58,7 +58,7 @@ namespace acrolinx.plugins.adapter {
     registerCheckCall(checkInfo: Check) {
     }
 
-    registerCheckResult(checkResult: CheckResult) : void {
+    registerCheckResult(checkResult: CheckResult): void {
       this.isCheckingNow = false;
       this.currentHtmlChecking = this.html;
       this.prevCheckedHtml = this.currentHtmlChecking;
@@ -114,7 +114,7 @@ namespace acrolinx.plugins.adapter {
 
     private selectAlignedMatches(matches: AlignedMatch<Match>[], textMapping: TextMapping) {
       const newBegin = matches[0].range[0];
-      const matchLength =  getCompleteFlagLength(matches);
+      const matchLength = getCompleteFlagLength(matches);
       this.selectText(newBegin, matchLength, textMapping);
     }
 
@@ -139,10 +139,18 @@ namespace acrolinx.plugins.adapter {
       rng.insertNode(doc.createTextNode(content));
     }
 
+    private replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
+      const reversedMatches = _.clone(matches).reverse();
+      for (let match of reversedMatches) {
+        this.selectText(match.range[0], match.range[1] - match.range[0], this.getTextDomMapping());
+        this.replaceSelection(match.originalMatch.replacement);
+      }
+    }
+
     replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
       const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
       const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
-      this.replaceSelection(replacement);
+      this.replaceAlignedMatches(alignedMatches);
 
       // Replacement will remove the selection, so we need to restore it again.
       this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());

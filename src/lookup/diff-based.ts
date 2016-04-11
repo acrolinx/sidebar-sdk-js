@@ -65,7 +65,8 @@ namespace acrolinx.plugins.lookup.diffbased {
   }
 
   function replaceTags(s: string) {
-    return s.replace(/(<([^>]+)>|&.*?;)/ig, tag => _.repeat(' ', tag.length));
+    // Replace tags with a klingon "0" of the same length like the tag.
+    return s.replace(/(<([^>]+)>|&.*?;)/ig, tag => _.repeat('\uF8D0', tag.length));
   }
 
 

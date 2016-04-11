@@ -397,7 +397,7 @@ describe('adapter test', function () {
       });
 
 
-      it.skip('Replace discontinues multi range', function (done) {
+      it('Replace discontinues multi range', function (done) {
         givenAText('wordOne wordTwo wordThree wordFour', text => {
           const matchesWithReplacement = [
             getMatchesWithReplacement(text, 'wordOne', 'a')[0],
@@ -532,7 +532,7 @@ describe('adapter test', function () {
           });
         });
 
-        it.skip('Replace partially tagged text', function (done) {
+        it('Replace partially tagged text', function (done) {
           givenAText('<p><strong>a b</strong> .</p>', text => {
             const matchesWithReplacement: MatchWithReplacement[] = [
               {"content": "b", "range": [13, 14], "replacement": "b."},
@@ -540,7 +540,7 @@ describe('adapter test', function () {
               {"content": ".", "range": [24, 25], "replacement": ""}
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(adapter.getHTML().replace(/\n/g, ''), '<p><strong>a b</strong>.</p>')
+            assert.equal(adapter.getHTML().replace(/\n/g, ''), '<p><strong>a b.</strong></p>')
             done();
           });
         });
