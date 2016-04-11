@@ -30,7 +30,7 @@
             "property-declaration": "nospace"
         }],
         "no-internal-module": true,
-        "no-trailing-whitespace": true,
+        "no-trailing-whitespace": false,
         "no-inferrable-types": true,
         "no-unused-variable": true
   }
