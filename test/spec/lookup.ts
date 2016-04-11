@@ -520,6 +520,10 @@ describe('adapter test', function () {
       });
 
       if (adapterSpec.inputFormat === 'HTML') {
+        function normalizeResultHtml(html: string) {
+          return html.replace(/\n|<span><\/span>/g, '');
+        }
+
 
         it('Remove complete text content', function (done) {
           givenAText('<p>a</p>', text => {
@@ -527,7 +531,7 @@ describe('adapter test', function () {
               {"content": "a", "range": [3, 4], "replacement": ""},
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(adapter.getHTML(),
+            assert.equal(normalizeResultHtml(adapter.getHTML()),
               adapterSpec.name === 'ContentEditableAdapter' ? '<p></p>' : '');
             done();
           });
@@ -541,7 +545,7 @@ describe('adapter test', function () {
               {"content": " ", "range": [8, 9], "replacement": ""},
               {"content": "?", "range": [9, 10], "replacement": ""}];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(adapter.getHTML().replace(/\n/g, ''), '<div>a b?</div><div>c</div>')
+            assert.equal(normalizeResultHtml(adapter.getHTML()), '<div>a b?</div><div>c</div>')
             done();
           });
         });
@@ -554,7 +558,7 @@ describe('adapter test', function () {
               {"content": ".", "range": [24, 25], "replacement": ""}
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(adapter.getHTML().replace(/\n/g, ''), '<p><strong>a b.</strong></p>')
+            assert.equal(normalizeResultHtml(adapter.getHTML()), '<p><strong>a b.</strong></p>')
             done();
           });
         });
