@@ -6,6 +6,8 @@ var expect = chai.expect;
 namespace acrolinx.test {
 
   import  lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
+  import  replaceTags = acrolinx.plugins.lookup.diffbased.replaceTags;
+  import  findNewOffsetSimple = acrolinx.plugins.lookup.diffbased.findNewOffset;
   import  createOffsetMappingArray = acrolinx.plugins.lookup.diffbased.createOffsetMappingArray;
 
   describe('lookup/diff-based', function () {
@@ -36,5 +38,22 @@ namespace acrolinx.test {
       assert.deepEqual(alignedMatches, []);
     });
 
+    describe('replaceTags', () => {
+      it('2 tags', () => {
+        const html = '01<t/>67<li/>34';
+        const [text, offsetMapping] = replaceTags(html);
+
+        assert.equal(text, '016734');
+
+        assert.equal(findNewOffsetSimple(offsetMapping, 0), 0);
+        assert.equal(findNewOffsetSimple(offsetMapping, 1), 0);
+        assert.equal(findNewOffsetSimple(offsetMapping, 6), -4);
+        assert.equal(findNewOffsetSimple(offsetMapping, 7), -4);
+        assert.equal(findNewOffsetSimple(offsetMapping, 13), -9);
+        assert.equal(findNewOffsetSimple(offsetMapping, 14), -9);
+      });
+    });
   });
+
+
 }

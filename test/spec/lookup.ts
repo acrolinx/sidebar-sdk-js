@@ -477,7 +477,8 @@ describe('adapter test', function () {
 
       it('Replace same word in correct order', function (done) {
         givenAText('before wordSame wordSame wordSame wordSame wordSame after', text => {
-          const replacements = ["a", "b", "c", "d", "e"];
+          // The diff approach can not always handle ["a", "b", "c", "d", "e"] correctly.
+          const replacements = ["replacement1", "replacement2", "replacement3", "replacement4", "replacement5"];
 
           function replace(i: number) {
             adapter.replaceRanges(dummyCheckId, [getMatchesWithReplacement(text, 'wordSame', replacements[i])[i]]);

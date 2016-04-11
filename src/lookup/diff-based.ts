@@ -35,6 +35,7 @@ namespace acrolinx.plugins.lookup.diffbased {
     oldPosition: number;
     diffOffset: number;
   }
+  
 
   export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
     let offsetMappingArray: OffSetAlign[] = [];
@@ -64,64 +65,65 @@ namespace acrolinx.plugins.lookup.diffbased {
     return offsetMappingArray;
   }
 
-  function replaceTags(s: string) {
-    // Replace tags with a klingon "0" of the same length like the tag.
-    return s.replace(/(<([^>]+)>|&.*?;)/ig, tag => _.repeat('\uF8D0', tag.length));
-  }
-
-
-  function findNewOffset(diffs: Diff[], offsetMappingArray: OffSetAlign[], oldOffset: number) {
-    let index = _.findIndex(offsetMappingArray, (offSetAlign: OffSetAlign) => {
-      return offSetAlign.oldPosition > oldOffset;
+  
+  // Exported for testing
+  export function replaceTags(s: string): [string, OffSetAlign[]] {
+    const regExp = /(<([^>]+)>|&.*?;)/ig;
+    const offsetMapping: OffSetAlign[] = [];
+    let currentDiffOffset = 0;
+    const resultText = s.replace(regExp, (tag, p1, p2, offset) => {
+      currentDiffOffset -= tag.length;
+      offsetMapping.push({
+        oldPosition: offset + tag.length,
+        diffOffset: currentDiffOffset
+      });
+      return '';
     });
-    if (index > 0) {
-      return offsetMappingArray[index - 1].diffOffset;
-    }
-    else if (offsetMappingArray.length > 1 && index === -1) {
-      if (diffs[offsetMappingArray.length - 1][0] === DIFF_EQUAL) {
-        return offsetMappingArray[offsetMappingArray.length - 1].diffOffset;
-      }
-      return offsetMappingArray[offsetMappingArray.length - 2].diffOffset;
-    }
-    else if (index === 0) {
-      return offsetMappingArray[0].diffOffset;
-    }
-    else return 0;
+    return [resultText, offsetMapping];
   }
 
+  
+  export function findNewOffset(offsetMappingArray: OffSetAlign[], oldOffset: number) {
+    if (offsetMappingArray.length === 0) {
+      return 0;
+    }
+    const index = _.sortedIndexBy(offsetMappingArray,
+      {diffOffset: 0, oldPosition: oldOffset + 0.1},
+      offsetAlign => offsetAlign.oldPosition
+    );
+    return index > 0 ? offsetMappingArray[index - 1].diffOffset : 0;
+  }
+
+  
   function rangeContent(content: string, m: AlignedMatch<Match>) {
     return content.slice(m.range[0], m.range[1]);
   }
+  
 
   export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string,
                                                  matches: T[], inputFormat: InputFormat = 'HTML'): AlignedMatch<T>[] {
     if (_.isEmpty(matches)) {
       return [];
     }
-    // const start = Date.now();
-    const cleanedCheckedDocument = inputFormat === 'HTML' ? replaceTags(checkedDocument) : checkedDocument;
+    const [cleanedCheckedDocument, cleaningOffsetMappingArray] = inputFormat === 'HTML' ? replaceTags(checkedDocument) : [checkedDocument, []];
     const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
-
-    // console.log(checkedDocument, currentDocument, diffs);
-
     const offsetMappingArray = createOffsetMappingArray(diffs);
 
     const alignedMatches = matches.map(match => {
-      const foundBegin = match.range[0] + findNewOffset(diffs, offsetMappingArray, match.range[0]);
-      const foundEnd = match.range[1] + findNewOffset(diffs, offsetMappingArray, match.range[1]);
+      const beginAfterCleaning = match.range[0] + findNewOffset(cleaningOffsetMappingArray, match.range[0]);
+      const endAfterCleaning = match.range[1] + findNewOffset(cleaningOffsetMappingArray, match.range[1]);
+      const alignedBegin = beginAfterCleaning + findNewOffset(offsetMappingArray, beginAfterCleaning);
+      const alignedEnd = endAfterCleaning + findNewOffset(offsetMappingArray, endAfterCleaning);
       return {
         originalMatch: match,
-        range: [foundBegin, foundEnd] as [number, number]
+        range: [alignedBegin, alignedEnd] as [number, number]
       };
     });
 
     const containsModifiedMatches = _.some(alignedMatches, m =>
     rangeContent(currentDocument, m) !== m.originalMatch.content);
 
-    // console.log('Time for Diffing: ', Date.now() - start);
-
     return containsModifiedMatches ? [] : alignedMatches;
-
   }
 
 
