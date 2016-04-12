@@ -27,7 +27,38 @@ var basicConf = {
   editorId: 'editor',
   serverAddress: 'http://<SERVER NAME>:8031',
   clientSignature: '<CLIENT SIGNATURE>'
+
+  // These settings are only effective on servers with disabled checking profiles.
+  //checkSettings: {
+  //  'language': 'en',
+  //  'ruleSetName': 'Plain English',
+  //  'termSets': ['Medical'],
+  //  'checkSpelling': true,
+  //  'checkGrammar': true,
+  //  'checkStyle': true,
+  //  'checkReuse': false,
+  //  'harvestTerms': false,
+  //  'checkSeo': false,
+  //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
+  //}
+
+  // These settings are only effective on servers with disabled checking profiles.
+  //defaultCheckSettings: {
+  //  'language': 'en',
+  //  'ruleSetName': 'Plain English',
+  //  'termSets': ['Medical'],
+  //  'checkSpelling': true,
+  //  'checkGrammar': true,
+  //  'checkStyle': true,
+  //  'checkReuse': false,
+  //  'harvestTerms': false,
+  //  'checkSeo': false,
+  //  'termStatuses': ['TERMINOLOGY_DEPRECATED']
+  //}
+
 };
+
+
 
 
 

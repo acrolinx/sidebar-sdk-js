@@ -11,7 +11,7 @@ After the meeting, we provide you with test server credentials and configuration
 ## Configuration of the Sidebar Example
 
 Before you can run this example you need to configure some settings in these files:
-  * samples/client/on-premise/example.js
+  * samples/client/config.js
     * clientSignature
     * serverAddress
 
@@ -30,7 +30,7 @@ Now you can start the development server by typing:
 
 Now open [http://localhost:9002](http://localhost:9002) in your web-browser.
 
-![Screen Shot of On-Premise Example](/doc/screenshot.png)
+![Screen Shot of Example](/doc/screenshot.png)
 
 
 ## Sidebar API Documentation
