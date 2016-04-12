@@ -7,10 +7,13 @@ import AdapterConf = acrolinx.plugins.adapter.AdapterConf;
 import HtmlResult = acrolinx.plugins.HtmlResult;
 import editor = CKEDITOR.editor;
 import getMatchesWithReplacement = acrolinx.test.utils.getMatchesWithReplacement;
+import enableLogging = acrolinx.plugins.utils.enableLogging;
 var assert = chai.assert;
 var expect = chai.expect;
 
 describe('adapter test', function () {
+  const NON_BREAKING_SPACE = '\u00a0';
+
   let adapter: AdapterInterface;
 
   const dummyCheckId = 'dummyCheckId';
@@ -462,6 +465,8 @@ describe('adapter test', function () {
             assertEditorText(`wordOne ${replacement} wordThree`);
             done();
           });
+
+
         } else {
           givenAText('wordOne D&amp;D wordThree', text => {
             const replacement = 'Dungeons and Dragons';
@@ -473,6 +478,37 @@ describe('adapter test', function () {
           });
         }
       });
+
+      if (adapterSpec.inputFormat === 'HTML') {
+        it('Replace word before entity &nbsp;', function (done) {
+          givenAText('Southh&nbsp;is warm.', html => {
+            const replacement = 'South';
+            const matchesWithReplacement = getMatchesWithReplacement(html, 'Southh', replacement);
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
+            done();
+          });
+        });
+
+        it('Replace words containing entity &nbsp;', function (done) {
+          givenAText('South&nbsp;is warm&nbsp;.', html => {
+            const replacement = 'South';
+            // Some editors wrap the html inside e.g. <p>
+            const offset = html.indexOf('South');
+            const matchesWithReplacement = [
+              {content: 'warm', range: [14 + offset, 18 + offset], replacement: 'warm.'},
+              {content: NON_BREAKING_SPACE, range: [18 + offset, 24 + offset], replacement: ''},
+              {content: '.', range: [24 + offset, 25 + offset], replacement: ''},
+            ] as MatchWithReplacement[];
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
+            done();
+          });
+        });
+
+      }
 
 
       it('Replace same word in correct order', function (done) {

@@ -19,6 +19,7 @@
  */
 
 /// <reference path="../typings/diff-match-patch.d.ts" />
+/// <reference path="../utils/logging.ts" />
 
 namespace acrolinx.plugins.lookup.diffbased {
   'use strict';
@@ -26,6 +27,7 @@ namespace acrolinx.plugins.lookup.diffbased {
   import Match = acrolinx.sidebar.Match;
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import _ = acrolinxLibs._;
+  import log = acrolinx.plugins.utils.log;
 
   type InputFormat = 'HTML' | 'TEXT';
 
@@ -35,7 +37,7 @@ namespace acrolinx.plugins.lookup.diffbased {
     oldPosition: number;
     diffOffset: number;
   }
-  
+
 
   export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
     let offsetMappingArray: OffSetAlign[] = [];
@@ -65,24 +67,31 @@ namespace acrolinx.plugins.lookup.diffbased {
     return offsetMappingArray;
   }
 
-  
+  function decodeEntities(entity: string) {
+    const el = document.createElement('div');
+    el.innerHTML = entity;
+    return el.textContent;
+  }
+
+
   // Exported for testing
   export function replaceTags(s: string): [string, OffSetAlign[]] {
     const regExp = /(<([^>]+)>|&.*?;)/ig;
     const offsetMapping: OffSetAlign[] = [];
     let currentDiffOffset = 0;
-    const resultText = s.replace(regExp, (tag, p1, p2, offset) => {
-      currentDiffOffset -= tag.length;
+    const resultText = s.replace(regExp, (tagOrEntity, p1, p2, offset) => {
+      const rep = _.startsWith(tagOrEntity, '&') ? decodeEntities(tagOrEntity) : '';
+      currentDiffOffset -= tagOrEntity.length - rep.length;
       offsetMapping.push({
-        oldPosition: offset + tag.length,
+        oldPosition: offset + tagOrEntity.length,
         diffOffset: currentDiffOffset
       });
-      return '';
+      return rep;
     });
     return [resultText, offsetMapping];
   }
 
-  
+
   export function findNewOffset(offsetMappingArray: OffSetAlign[], oldOffset: number) {
     if (offsetMappingArray.length === 0) {
       return 0;
@@ -94,11 +103,11 @@ namespace acrolinx.plugins.lookup.diffbased {
     return index > 0 ? offsetMappingArray[index - 1].diffOffset : 0;
   }
 
-  
+
   function rangeContent(content: string, m: AlignedMatch<Match>) {
     return content.slice(m.range[0], m.range[1]);
   }
-  
+
 
   export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string,
                                                  matches: T[], inputFormat: InputFormat = 'HTML'): AlignedMatch<T>[] {
@@ -122,6 +131,16 @@ namespace acrolinx.plugins.lookup.diffbased {
 
     const containsModifiedMatches = _.some(alignedMatches, m =>
     rangeContent(currentDocument, m) !== m.originalMatch.content);
+
+    log('checkedDocument', checkedDocument);
+    log('cleanedCheckedDocument', cleanedCheckedDocument);
+    log('cleanedCheckedDocumentCodes', cleanedCheckedDocument.split('').map(c => c.charCodeAt(0)));
+    log('currentDocument', currentDocument);
+    log('currentDocumentCodes', currentDocument.split('').map(c => c.charCodeAt(0)));
+    log('matches', matches);
+    log('diffs', diffs);
+    log('alignedMatches', alignedMatches);
+    log('alignedMatchesContent', alignedMatches.map(m => rangeContent(currentDocument, m)));
 
     return containsModifiedMatches ? [] : alignedMatches;
   }

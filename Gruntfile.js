@@ -236,6 +236,6 @@ module.exports = function(grunt){
   });
 
   grunt.registerTask('distribRelease', ['distrib', 'release']);
-  grunt.registerTask('karmaLocal', ['karma:ci', 'coverage']);
+  grunt.registerTask('karmaLocal', ['tslint','karma:ci', 'coverage']);
 
 };
