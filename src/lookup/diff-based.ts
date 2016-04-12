@@ -122,7 +122,8 @@ namespace acrolinx.plugins.lookup.diffbased {
       const beginAfterCleaning = match.range[0] + findNewOffset(cleaningOffsetMappingArray, match.range[0]);
       const endAfterCleaning = match.range[1] + findNewOffset(cleaningOffsetMappingArray, match.range[1]);
       const alignedBegin = beginAfterCleaning + findNewOffset(offsetMappingArray, beginAfterCleaning);
-      const alignedEnd = endAfterCleaning + findNewOffset(offsetMappingArray, endAfterCleaning);
+      const lastCharacterPos = endAfterCleaning - 1;
+      const alignedEnd = lastCharacterPos + findNewOffset(offsetMappingArray, lastCharacterPos) + 1;
       return {
         originalMatch: match,
         range: [alignedBegin, alignedEnd] as [number, number]
