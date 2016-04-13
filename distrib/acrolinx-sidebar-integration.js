@@ -1,10 +1,15 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var acrolinxLibs;
 (function (acrolinxLibs) {
     'use strict';
-    var originalAcrolinxLibs = window['acrolinxLibs'] || {};
-    acrolinxLibs.Q = originalAcrolinxLibs.Q || window['Q'];
-    acrolinxLibs.$ = originalAcrolinxLibs.$ || window['$'];
-    acrolinxLibs._ = originalAcrolinxLibs._ || window['_'];
+    var windowWithLibs = window;
+    var originalAcrolinxLibs = windowWithLibs['acrolinxLibs'] || {};
+    acrolinxLibs.Q = originalAcrolinxLibs.Q || windowWithLibs['Q'];
+    acrolinxLibs._ = originalAcrolinxLibs._ || windowWithLibs['_'];
 })(acrolinxLibs || (acrolinxLibs = {}));
 var acrolinx;
 (function (acrolinx) {
@@ -29,80 +34,135 @@ var acrolinx;
 (function (acrolinx) {
     var plugins;
     (function (plugins) {
+        var utils;
+        (function (utils) {
+            var isEnabled = false;
+            function log(message) {
+                var args = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    args[_i - 1] = arguments[_i];
+                }
+                if (isEnabled) {
+                    console.log.apply(console, [message].concat(args));
+                }
+            }
+            utils.log = log;
+            function enableLogging() {
+                isEnabled = true;
+            }
+            utils.enableLogging = enableLogging;
+        })(utils = plugins.utils || (plugins.utils = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
         var lookup;
         (function (lookup) {
             var diffbased;
             (function (diffbased) {
                 'use strict';
                 var _ = acrolinxLibs._;
+                var log = acrolinx.plugins.utils.log;
                 var dmp = new diff_match_patch();
-                var OffSetAlign = (function () {
-                    function OffSetAlign() {
-                    }
-                    return OffSetAlign;
-                }());
                 function createOffsetMappingArray(diffs) {
                     var offsetMappingArray = [];
                     var offsetCountOld = 0;
-                    var diff = 0;
-                    diffs.forEach(function (_a) {
-                        var action = _a[0], value = _a[1];
+                    var currentDiffOffset = 0;
+                    diffs.forEach(function (diff) {
+                        var action = diff[0], value = diff[1];
                         switch (action) {
                             case DIFF_EQUAL:
                                 offsetCountOld += value.length;
                                 break;
                             case DIFF_DELETE:
                                 offsetCountOld += value.length;
-                                diff -= value.length;
+                                currentDiffOffset -= value.length;
                                 break;
                             case DIFF_INSERT:
-                                diff += value.length;
+                                currentDiffOffset += value.length;
                                 break;
                             default:
                                 throw new Error('Illegal Diff Action: ' + action);
                         }
                         offsetMappingArray.push({
                             oldPosition: offsetCountOld,
-                            diffOffset: diff
+                            diffOffset: currentDiffOffset
                         });
                     });
                     return offsetMappingArray;
                 }
                 diffbased.createOffsetMappingArray = createOffsetMappingArray;
-                function lookupMatches(checkedDocument, currentDocument, matches) {
+                function decodeEntities(entity) {
+                    var el = document.createElement('div');
+                    el.innerHTML = entity;
+                    return el.textContent;
+                }
+                function replaceTags(s) {
+                    var regExp = /(<([^>]+)>|&.*?;)/ig;
+                    var offsetMapping = [];
+                    var currentDiffOffset = 0;
+                    var resultText = s.replace(regExp, function (tagOrEntity, p1, p2, offset) {
+                        var rep = _.startsWith(tagOrEntity, '&') ? decodeEntities(tagOrEntity) : '';
+                        currentDiffOffset -= tagOrEntity.length - rep.length;
+                        offsetMapping.push({
+                            oldPosition: offset + tagOrEntity.length,
+                            diffOffset: currentDiffOffset
+                        });
+                        return rep;
+                    });
+                    return [resultText, offsetMapping];
+                }
+                diffbased.replaceTags = replaceTags;
+                function findNewOffset(offsetMappingArray, oldOffset) {
+                    if (offsetMappingArray.length === 0) {
+                        return 0;
+                    }
+                    var index = _.sortedIndexBy(offsetMappingArray, { diffOffset: 0, oldPosition: oldOffset + 0.1 }, function (offsetAlign) { return offsetAlign.oldPosition; });
+                    return index > 0 ? offsetMappingArray[index - 1].diffOffset : 0;
+                }
+                diffbased.findNewOffset = findNewOffset;
+                function hasModifiedWordBorders(offsetMappingArray, oldOffsetWord) {
+                    return false;
+                }
+                function rangeContent(content, m) {
+                    return content.slice(m.range[0], m.range[1]);
+                }
+                function lookupMatches(checkedDocument, currentDocument, matches, inputFormat) {
+                    if (inputFormat === void 0) { inputFormat = 'HTML'; }
                     if (_.isEmpty(matches)) {
                         return [];
                     }
-                    var diffs = dmp.diff_main(checkedDocument, currentDocument);
+                    var _a = inputFormat === 'HTML' ? replaceTags(checkedDocument) : [checkedDocument, []], cleanedCheckedDocument = _a[0], cleaningOffsetMappingArray = _a[1];
+                    var diffs = dmp.diff_main(cleanedCheckedDocument, currentDocument);
                     var offsetMappingArray = createOffsetMappingArray(diffs);
-                    function findNewOffset(oldOffset) {
-                        var index = _.findIndex(offsetMappingArray, function (element) {
-                            return element.oldPosition > oldOffset;
-                        });
-                        if (index > 0) {
-                            return offsetMappingArray[index - 1].diffOffset;
-                        }
-                        else if (offsetMappingArray.length > 1 && index === -1) {
-                            if (diffs[offsetMappingArray.length - 1][0] === DIFF_EQUAL) {
-                                return offsetMappingArray[offsetMappingArray.length - 1].diffOffset;
-                            }
-                            return offsetMappingArray[offsetMappingArray.length - 2].diffOffset;
-                        }
-                        else if (index === 0) {
-                            return offsetMappingArray[0].diffOffset;
-                        }
-                        else
-                            return 0;
-                    }
-                    var result = matches.map(function (match) { return ({
-                        replacement: match.replacement,
-                        range: match.range,
-                        content: match.content,
-                        foundOffset: match.range[0] + findNewOffset(match.range[0]),
-                        flagLength: match.range[1] - match.range[0],
-                    }); });
-                    result[0].flagLength = matches[matches.length - 1].range[1] - matches[0].range[0];
-                    return result;
+                    var alignedMatches = matches.map(function (match) {
+                        var beginAfterCleaning = match.range[0] + findNewOffset(cleaningOffsetMappingArray, match.range[0]);
+                        var endAfterCleaning = match.range[1] + findNewOffset(cleaningOffsetMappingArray, match.range[1]);
+                        var alignedBegin = beginAfterCleaning + findNewOffset(offsetMappingArray, beginAfterCleaning);
+                        var lastCharacterPos = endAfterCleaning - 1;
+                        var alignedEnd = lastCharacterPos + findNewOffset(offsetMappingArray, lastCharacterPos) + 1;
+                        var hasModifiedBorders = hasModifiedWordBorders(offsetMappingArray, match.range[0]) || hasModifiedWordBorders(offsetMappingArray, match.range[1]);
+                        return {
+                            originalMatch: match,
+                            range: [alignedBegin, alignedEnd],
+                            hasModifiedWordBorders: hasModifiedBorders
+                        };
+                    });
+                    var containsModifiedMatches = _.some(alignedMatches, function (m) {
+                        return rangeContent(currentDocument, m) !== m.originalMatch.content || m.hasModifiedWordBorders;
+                    });
+                    log('checkedDocument', checkedDocument);
+                    log('cleanedCheckedDocument', cleanedCheckedDocument);
+                    log('cleanedCheckedDocumentCodes', cleanedCheckedDocument.split('').map(function (c) { return c.charCodeAt(0); }));
+                    log('currentDocument', currentDocument);
+                    log('currentDocumentCodes', currentDocument.split('').map(function (c) { return c.charCodeAt(0); }));
+                    log('matches', matches);
+                    log('diffs', diffs);
+                    log('alignedMatches', alignedMatches);
+                    log('alignedMatchesContent', alignedMatches.map(function (m) { return rangeContent(currentDocument, m); }));
+                    return containsModifiedMatches ? [] : alignedMatches;
                 }
                 diffbased.lookupMatches = lookupMatches;
             })(diffbased = lookup.diffbased || (lookup.diffbased = {}));
@@ -113,94 +173,186 @@ var acrolinx;
 (function (acrolinx) {
     var plugins;
     (function (plugins) {
+        var utils;
+        (function (utils) {
+            function logTime(text, f) {
+                var startTime = Date.now();
+                var result = f();
+                console.log("Duration of \"" + text + ":\"", Date.now() - startTime);
+                return result;
+            }
+            utils.logTime = logTime;
+            function getCompleteFlagLength(matches) {
+                return matches[matches.length - 1].range[1] - matches[0].range[0];
+            }
+            utils.getCompleteFlagLength = getCompleteFlagLength;
+            function fetch(url, callback) {
+                var request = new XMLHttpRequest();
+                request.open('GET', url, true);
+                request.onload = function () {
+                    if (request.status >= 200 && request.status < 400) {
+                        callback(request.responseText);
+                    }
+                    else {
+                        throw new Error("Error while loading " + url + ".");
+                    }
+                };
+                request.onerror = function () {
+                    throw new Error("Error while loading " + url + ".");
+                };
+                request.send();
+            }
+            utils.fetch = fetch;
+        })(utils = plugins.utils || (plugins.utils = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
         var adapter;
         (function (adapter) {
             'use strict';
-            var lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
+            var lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
             var _ = acrolinxLibs._;
-            function replaceRangeContent(range, replacementText) {
-                range.deleteContents();
-                if (replacementText) {
-                    range.insertNode(range.createContextualFragment(replacementText));
-                }
-            }
-            var CKEditorAdapter = (function () {
-                function CKEditorAdapter(conf) {
-                    this.lookupMatches = lookupMatchesStandard;
+            var getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
+            var AbstractRichtextEditorAdapter = (function () {
+                function AbstractRichtextEditorAdapter(conf) {
                     this.editorId = conf.editorId;
-                    this.editor = null;
-                    if (conf.lookupMatches) {
-                        this.lookupMatches = conf.lookupMatches;
-                    }
                 }
-                CKEditorAdapter.prototype.getEditor = function () {
-                    if (this.editor === null) {
-                        if (CKEDITOR.instances.hasOwnProperty(this.editorId)) {
-                            this.editor = CKEDITOR.instances[this.editorId];
+                AbstractRichtextEditorAdapter.prototype.getEditorElement = function () {
+                    return this.getEditorDocument().querySelector('body');
+                };
+                AbstractRichtextEditorAdapter.prototype.registerCheckCall = function (checkInfo) {
+                };
+                AbstractRichtextEditorAdapter.prototype.registerCheckResult = function (checkResult) {
+                    this.isCheckingNow = false;
+                    this.currentHtmlChecking = this.html;
+                    this.prevCheckedHtml = this.currentHtmlChecking;
+                };
+                AbstractRichtextEditorAdapter.prototype.extractHTMLForCheck = function () {
+                    this.html = this.getHTML();
+                    this.currentHtmlChecking = this.html;
+                    return { html: this.html };
+                };
+                AbstractRichtextEditorAdapter.prototype.scrollIntoView = function (sel) {
+                    var range = sel.getRangeAt(0);
+                    var tmp = range.cloneRange();
+                    tmp.collapse(false);
+                    var text = document.createElement('span');
+                    tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
+                    text.scrollIntoView();
+                    text.remove();
+                };
+                AbstractRichtextEditorAdapter.prototype.scrollToCurrentSelection = function () {
+                    var selection1 = this.getEditorDocument().getSelection();
+                    if (selection1) {
+                        try {
+                            this.scrollIntoView(selection1);
+                        }
+                        catch (error) {
+                            console.log('Scrolling Error: ', error);
                         }
                     }
-                    return this.editor;
+                };
+                AbstractRichtextEditorAdapter.prototype.selectRanges = function (checkId, matches) {
+                    this.selectMatches(checkId, matches);
+                    this.scrollToCurrentSelection();
+                };
+                AbstractRichtextEditorAdapter.prototype.selectMatches = function (checkId, matches) {
+                    var textMapping = this.getTextDomMapping();
+                    var alignedMatches = lookupMatches(this.currentHtmlChecking, textMapping.text, matches);
+                    if (_.isEmpty(alignedMatches)) {
+                        throw new Error('Selected flagged content is modified.');
+                    }
+                    this.selectAlignedMatches(alignedMatches, textMapping);
+                    return [alignedMatches, textMapping];
+                };
+                AbstractRichtextEditorAdapter.prototype.selectAlignedMatches = function (matches, textMapping) {
+                    var newBegin = matches[0].range[0];
+                    var matchLength = getCompleteFlagLength(matches);
+                    this.selectText(newBegin, matchLength, textMapping);
+                };
+                AbstractRichtextEditorAdapter.prototype.selectText = function (begin, length, textMapping) {
+                    if (!textMapping.text) {
+                        return;
+                    }
+                    var doc = this.getEditorDocument();
+                    var selection = doc.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(this.createRange(begin, length, textMapping));
+                };
+                AbstractRichtextEditorAdapter.prototype.createRange = function (begin, length, textMapping) {
+                    var doc = this.getEditorDocument();
+                    var range = doc.createRange();
+                    var beginDomPosition = textMapping.domPositions[begin];
+                    var endDomPosition = plugins.utils.getEndDomPos(begin + length, textMapping.domPositions);
+                    range.setStart(beginDomPosition.node, beginDomPosition.offset);
+                    range.setEnd(endDomPosition.node, endDomPosition.offset);
+                    return range;
+                };
+                AbstractRichtextEditorAdapter.prototype.replaceAlignedMatches = function (matches) {
+                    var doc = this.getEditorDocument();
+                    var reversedMatches = _.clone(matches).reverse();
+                    for (var _i = 0, reversedMatches_1 = reversedMatches; _i < reversedMatches_1.length; _i++) {
+                        var match = reversedMatches_1[_i];
+                        var textDomMapping = this.getTextDomMapping();
+                        var rangeLength = match.range[1] - match.range[0];
+                        if (rangeLength > 1) {
+                            var tail = this.createRange(match.range[0] + 1, rangeLength - 1, textDomMapping);
+                            var head = this.createRange(match.range[0], 1, textDomMapping);
+                            tail.deleteContents();
+                            head.deleteContents();
+                            head.insertNode(doc.createTextNode(match.originalMatch.replacement));
+                        }
+                        else {
+                            var range = this.createRange(match.range[0], rangeLength, textDomMapping);
+                            range.deleteContents();
+                            range.insertNode(doc.createTextNode(match.originalMatch.replacement));
+                        }
+                    }
+                };
+                AbstractRichtextEditorAdapter.prototype.replaceRanges = function (checkId, matchesWithReplacement) {
+                    var alignedMatches = this.selectMatches(checkId, matchesWithReplacement)[0];
+                    var replacement = alignedMatches.map(function (m) { return m.originalMatch.replacement; }).join('');
+                    this.replaceAlignedMatches(alignedMatches);
+                    this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
+                    this.scrollToCurrentSelection();
+                };
+                AbstractRichtextEditorAdapter.prototype.getTextDomMapping = function () {
+                    return plugins.utils.extractTextDomMapping(this.getEditorElement());
+                };
+                return AbstractRichtextEditorAdapter;
+            }());
+            adapter.AbstractRichtextEditorAdapter = AbstractRichtextEditorAdapter;
+        })(adapter = plugins.adapter || (plugins.adapter = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
+        var adapter;
+        (function (adapter) {
+            'use strict';
+            var CKEditorAdapter = (function (_super) {
+                __extends(CKEditorAdapter, _super);
+                function CKEditorAdapter() {
+                    _super.apply(this, arguments);
+                }
+                CKEditorAdapter.prototype.getEditor = function () {
+                    return CKEDITOR.instances[this.editorId];
                 };
                 CKEditorAdapter.prototype.getEditorDocument = function () {
-                    try {
-                        return this.getEditor().document.$;
-                    }
-                    catch (error) {
-                        throw error;
-                    }
-                };
-                CKEditorAdapter.prototype.getCurrentText = function () {
-                    try {
-                        return rangy.innerText(this.getEditorDocument());
-                    }
-                    catch (error) {
-                        throw error;
-                    }
+                    return this.getEditor().document.$;
                 };
                 CKEditorAdapter.prototype.getHTML = function () {
                     return this.getEditor().getData();
                 };
-                CKEditorAdapter.prototype.createRange = function (begin, length) {
-                    var editorDocument = this.getEditorDocument();
-                    var range = rangy.createRange(editorDocument);
-                    range.setStart(editorDocument, 0);
-                    range.setEnd(editorDocument, 0);
-                    range.moveStart('character', begin);
-                    range.moveEnd('character', length);
-                    return range;
-                };
-                CKEditorAdapter.prototype.selectText = function (begin, length) {
-                    var range = this.createRange(begin, length);
-                    var selection = rangy.getSelection(this.getEditorDocument());
-                    selection.setSingleRange(range);
-                    return range;
-                };
-                CKEditorAdapter.prototype.scrollAndSelect = function (matches) {
-                    var newBegin, matchLength, selection1, selection2, range1, range2, doc;
-                    newBegin = matches[0].foundOffset;
-                    matchLength = matches[0].flagLength;
-                    range1 = this.selectText(newBegin, matchLength);
-                    selection1 = this.getEditor().getSelection();
-                    if (selection1) {
-                        try {
-                            selection1.scrollIntoView();
-                        }
-                        catch (error) {
-                        }
-                    }
-                    doc = this.getEditorDocument();
-                    selection2 = rangy.getSelection(doc);
-                    range2 = rangy.createRange(doc);
-                    range2.setStart(range1.startContainer, range1.startOffset);
-                    range2.setEnd(range1.endContainer, range1.endOffset);
-                    selection2.setSingleRange(range2);
-                    return range2;
-                };
                 CKEditorAdapter.prototype.extractHTMLForCheck = function () {
                     this.html = this.getHTML();
                     this.currentHtmlChecking = this.html;
-                    if (this.editor.mode === 'wysiwyg') {
-                        this.checkStartTime = Date.now();
+                    if (this.isInWysiwygMode()) {
                         if (this.html === '') {
                             this.html = '<span> </span>';
                         }
@@ -210,70 +362,32 @@ var acrolinx;
                             this.isCheckingNow = false;
                         }
                         else {
-                            return { error: "Action is not permitted in Source mode." };
+                            return { error: 'Action is not permitted in Source mode.' };
                         }
                     }
                     return { html: this.html };
                 };
-                CKEditorAdapter.prototype.registerCheckCall = function (checkInfo) {
-                };
-                CKEditorAdapter.prototype.registerCheckResult = function (checkResult) {
-                    this.isCheckingNow = false;
-                    this.currentHtmlChecking = this.html;
-                    this.prevCheckedHtml = this.currentHtmlChecking;
-                    return [];
-                };
                 CKEditorAdapter.prototype.selectRanges = function (checkId, matches) {
-                    if (this.editor.mode === 'wysiwyg') {
-                        this.selectMatches(checkId, matches);
+                    if (this.isInWysiwygMode()) {
+                        _super.prototype.selectRanges.call(this, checkId, matches);
                     }
                     else {
                         window.alert('Action is not permitted in Source mode.');
                     }
-                };
-                CKEditorAdapter.prototype.selectMatches = function (checkId, matches) {
-                    var alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
-                    if (_.isEmpty(alignedMatches)) {
-                        throw 'Selected flagged content is modified.';
-                    }
-                    this.scrollAndSelect(alignedMatches);
-                    return alignedMatches;
                 };
                 CKEditorAdapter.prototype.replaceRanges = function (checkId, matchesWithReplacementArg) {
-                    var selectionFromCharPos = 1;
-                    if (this.editor.mode === 'wysiwyg') {
-                        try {
-                            var alignedMatches = this.selectMatches(checkId, matchesWithReplacementArg);
-                            this.selectMatches(checkId, alignedMatches);
-                            var useWorkAround = alignedMatches[0].foundOffset + alignedMatches[0].flagLength - 1 < this.getCurrentText().length;
-                            if (useWorkAround) {
-                                alignedMatches[0].foundOffset += selectionFromCharPos;
-                                alignedMatches[0].flagLength -= selectionFromCharPos;
-                            }
-                            var selectedRange = this.scrollAndSelect(alignedMatches);
-                            var replacementText = _.map(alignedMatches, 'replacement').join('');
-                            replaceRangeContent(selectedRange, replacementText);
-                            if (useWorkAround) {
-                                if (selectionFromCharPos > 0) {
-                                    this.selectText(alignedMatches[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
-                                    rangy.getSelection(this.getEditorDocument()).nativeSelection.deleteFromDocument();
-                                }
-                                alignedMatches[0].foundOffset -= selectionFromCharPos;
-                                alignedMatches[0].flagLength += selectionFromCharPos;
-                            }
-                            this.selectText(alignedMatches[0].foundOffset, replacementText.length);
-                        }
-                        catch (error) {
-                            console.log(error);
-                            return;
-                        }
+                    if (this.isInWysiwygMode()) {
+                        _super.prototype.replaceRanges.call(this, checkId, matchesWithReplacementArg);
                     }
                     else {
                         window.alert('Action is not permitted in Source mode.');
                     }
                 };
+                CKEditorAdapter.prototype.isInWysiwygMode = function () {
+                    return this.getEditor().mode === 'wysiwyg';
+                };
                 return CKEditorAdapter;
-            }());
+            }(adapter.AbstractRichtextEditorAdapter));
             adapter.CKEditorAdapter = CKEditorAdapter;
         })(adapter = plugins.adapter || (plugins.adapter = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
@@ -284,128 +398,24 @@ var acrolinx;
     (function (plugins) {
         var adapter;
         (function (adapter) {
-            var lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
-            var $ = acrolinxLibs.$;
-            var _ = acrolinxLibs._;
             'use strict';
-            var ContentEditableAdapter = (function () {
+            var ContentEditableAdapter = (function (_super) {
+                __extends(ContentEditableAdapter, _super);
                 function ContentEditableAdapter(conf) {
-                    this.lookupMatches = lookupMatchesStandard;
-                    this.config = conf;
+                    _super.call(this, conf);
                     this.element = document.getElementById(conf.editorId);
-                    if (conf.lookupMatches) {
-                        this.lookupMatches = conf.lookupMatches;
-                    }
                 }
-                ContentEditableAdapter.prototype.registerCheckCall = function (checkInfo) {
-                };
-                ContentEditableAdapter.prototype.registerCheckResult = function (checkResult) {
-                    return [];
+                ContentEditableAdapter.prototype.getEditorElement = function () {
+                    return this.element;
                 };
                 ContentEditableAdapter.prototype.getHTML = function () {
                     return this.element.innerHTML;
                 };
                 ContentEditableAdapter.prototype.getEditorDocument = function () {
-                    try {
-                        return this.element.ownerDocument;
-                    }
-                    catch (error) {
-                        throw error;
-                    }
-                };
-                ContentEditableAdapter.prototype.getCurrentText = function () {
-                    try {
-                        return rangy.innerText(this.element);
-                    }
-                    catch (error) {
-                        throw error;
-                    }
-                };
-                ContentEditableAdapter.prototype.extractHTMLForCheck = function () {
-                    this.html = this.getHTML();
-                    this.currentHtmlChecking = this.html;
-                    return { html: this.html };
-                };
-                ContentEditableAdapter.prototype.selectText = function (begin, length) {
-                    var doc = this.getEditorDocument();
-                    var selection = rangy.getSelection(doc);
-                    var range = rangy.createRange(doc);
-                    range.setStart(this.element, 0);
-                    range.moveStart('character', begin);
-                    range.moveEnd('character', length);
-                    selection.setSingleRange(range);
-                    return range;
-                };
-                ContentEditableAdapter.prototype.scrollIntoView2 = function (sel) {
-                    var range = sel.getRangeAt(0);
-                    var tmp = range.cloneRange();
-                    tmp.collapse();
-                    var text = document.createElement('span');
-                    tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
-                    text.scrollIntoView();
-                    text.remove();
-                };
-                ContentEditableAdapter.prototype.scrollAndSelect = function (matches) {
-                    var newBegin, matchLength, selection1, selection2, range1, range2, doc;
-                    newBegin = matches[0].foundOffset;
-                    matchLength = matches[0].flagLength;
-                    range1 = this.selectText(newBegin, matchLength);
-                    selection1 = rangy.getSelection(this.getEditorDocument());
-                    if (selection1) {
-                        try {
-                            this.scrollIntoView2(selection1);
-                            var wpContainer = $('#wp-content-editor-container');
-                            if (wpContainer.length > 0) {
-                                window.scrollBy(0, -50);
-                            }
-                        }
-                        catch (error) {
-                            console.log("Scrolling Error!");
-                        }
-                    }
-                    range2 = this.selectText(newBegin, matchLength);
-                };
-                ContentEditableAdapter.prototype.selectRanges = function (checkId, matches) {
-                    this.selectMatches(checkId, matches);
-                };
-                ContentEditableAdapter.prototype.selectMatches = function (checkId, matches) {
-                    var alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
-                    if (_.isEmpty(alignedMatches)) {
-                        throw 'Selected flagged content is modified.';
-                    }
-                    this.scrollAndSelect(alignedMatches);
-                    return alignedMatches;
-                };
-                ContentEditableAdapter.prototype.replaceSelection = function (content) {
-                    var doc = this.getEditorDocument();
-                    var selection = rangy.getSelection(doc);
-                    var rng = selection.getRangeAt(0);
-                    content += '<span id="__caret">_</span>';
-                    rng.deleteContents();
-                    var frag = rng.createContextualFragment(content);
-                    rng.insertNode(frag);
-                    var caretNode = doc.getElementById('__caret');
-                    rng = rangy.createRange();
-                    rng.setStartBefore(caretNode);
-                    rng.setEndBefore(caretNode);
-                    rangy.getSelection().setSingleRange(rng);
-                    caretNode.parentNode.removeChild(caretNode);
-                };
-                ContentEditableAdapter.prototype.replaceRanges = function (checkId, matchesWithReplacement) {
-                    try {
-                        var alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
-                        this.scrollAndSelect(alignedMatches);
-                        var replacementText = _.map(alignedMatches, 'replacement').join('');
-                        this.replaceSelection(replacementText);
-                        this.selectText(alignedMatches[0].foundOffset, replacementText.length);
-                    }
-                    catch (error) {
-                        console.log(error);
-                        return;
-                    }
+                    return this.element.ownerDocument;
                 };
                 return ContentEditableAdapter;
-            }());
+            }(adapter.AbstractRichtextEditorAdapter));
             adapter.ContentEditableAdapter = ContentEditableAdapter;
         })(adapter = plugins.adapter || (plugins.adapter = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
@@ -417,40 +427,24 @@ var acrolinx;
         var adapter;
         (function (adapter) {
             'use strict';
-            var lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
+            var lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
             var _ = acrolinxLibs._;
+            var getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
             var InputAdapter = (function () {
                 function InputAdapter(elementOrConf) {
-                    this.lookupMatches = lookupMatchesStandard;
                     if (elementOrConf instanceof Element) {
                         this.element = elementOrConf;
                     }
                     else {
                         var conf = elementOrConf;
                         this.element = document.getElementById(conf.editorId);
-                        if (conf.lookupMatches) {
-                            this.lookupMatches = conf.lookupMatches;
-                        }
                     }
                 }
                 InputAdapter.prototype.getHTML = function () {
-                    return acrolinxLibs.$(this.element).val();
-                };
-                InputAdapter.prototype.getEditorDocument = function () {
-                    try {
-                        return this.element.ownerDocument;
-                    }
-                    catch (error) {
-                        throw error;
-                    }
+                    return this.element.value;
                 };
                 InputAdapter.prototype.getCurrentText = function () {
-                    try {
-                        return this.getHTML();
-                    }
-                    catch (error) {
-                        throw error;
-                    }
+                    return this.getHTML();
                 };
                 InputAdapter.prototype.extractHTMLForCheck = function () {
                     this.html = this.getHTML();
@@ -458,39 +452,17 @@ var acrolinx;
                     return { html: this.html };
                 };
                 InputAdapter.prototype.registerCheckResult = function (checkResult) {
-                    return [];
                 };
                 InputAdapter.prototype.registerCheckCall = function (checkInfo) {
                 };
-                InputAdapter.prototype.selectText = function (begin, length) {
-                    var doc = this.getEditorDocument();
-                    var selection = rangy.getSelection(doc);
-                    var range = rangy.createRange(doc);
-                    range.setStart(this.element, 0);
-                    range.moveStart('character', begin);
-                    range.moveEnd('character', length);
-                    selection.setSingleRange(range);
-                    return range;
-                };
-                InputAdapter.prototype.scrollIntoView2 = function (sel) {
-                    var range = sel.getRangeAt(0);
-                    var tmp = range.cloneRange();
-                    tmp.collapse();
-                    var text = document.createElement('span');
-                    tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
-                    text.scrollIntoView();
-                    text.remove();
-                };
                 InputAdapter.prototype.scrollAndSelect = function (matches) {
-                    var newBegin, matchLength;
-                    var $ = acrolinxLibs.$;
-                    newBegin = matches[0].foundOffset;
-                    matchLength = matches[0].flagLength;
-                    $(this.element).focus();
-                    $(this.element).setSelection(newBegin, newBegin + matchLength);
-                    $(this.element)[0].scrollIntoView();
-                    var wpContainer = $('#wp-content-editor-container');
-                    if (wpContainer.length > 0) {
+                    var newBegin = matches[0].range[0];
+                    var matchLength = getCompleteFlagLength(matches);
+                    this.element.focus();
+                    this.element.setSelectionRange(newBegin, newBegin + matchLength);
+                    this.element.scrollIntoView();
+                    var wpContainer = document.getElementById('wp-content-editor-container');
+                    if (wpContainer) {
                         window.scrollBy(0, -50);
                     }
                 };
@@ -498,27 +470,30 @@ var acrolinx;
                     this.selectMatches(checkId, matches);
                 };
                 InputAdapter.prototype.selectMatches = function (checkId, matches) {
-                    var alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
+                    var alignedMatches = lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
                     if (_.isEmpty(alignedMatches)) {
                         throw 'Selected flagged content is modified.';
                     }
                     this.scrollAndSelect(alignedMatches);
                     return alignedMatches;
                 };
-                InputAdapter.prototype.replaceSelection = function (content) {
-                    acrolinxLibs.$(this.element).replaceSelectedText(content, "select");
+                InputAdapter.prototype.replaceAlignedMatches = function (matches) {
+                    var reversedMatches = _.clone(matches).reverse();
+                    var el = this.element;
+                    var text = el.value;
+                    for (var _i = 0, reversedMatches_2 = reversedMatches; _i < reversedMatches_2.length; _i++) {
+                        var match = reversedMatches_2[_i];
+                        text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
+                    }
+                    el.value = text;
                 };
                 InputAdapter.prototype.replaceRanges = function (checkId, matchesWithReplacement) {
-                    try {
-                        var alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
-                        this.scrollAndSelect(alignedMatches);
-                        var replacementText = _.map(alignedMatches, 'replacement').join('');
-                        this.replaceSelection(replacementText);
-                    }
-                    catch (error) {
-                        console.log(error);
-                        return;
-                    }
+                    var alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
+                    this.scrollAndSelect(alignedMatches);
+                    this.replaceAlignedMatches(alignedMatches);
+                    var startOfSelection = alignedMatches[0].range[0];
+                    var replacement = alignedMatches.map(function (m) { return m.originalMatch.replacement; }).join('');
+                    this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
                 };
                 return InputAdapter;
             }());
@@ -533,37 +508,30 @@ var acrolinx;
         var adapter;
         (function (adapter_1) {
             'use strict';
+            var _ = acrolinxLibs._;
             var MultiEditorAdapter = (function () {
                 function MultiEditorAdapter(conf) {
                     this.config = conf;
                     this.adapters = [];
                 }
                 MultiEditorAdapter.prototype.addSingleAdapter = function (singleAdapter, wrapper, id) {
-                    if (wrapper === undefined) {
-                        wrapper = 'div';
-                    }
-                    if (id === undefined) {
-                        id = 'acrolinx_integration' + this.adapters.length;
-                    }
+                    if (wrapper === void 0) { wrapper = 'div'; }
+                    if (id === void 0) { id = 'acrolinx_integration' + this.adapters.length; }
                     this.adapters.push({ id: id, adapter: singleAdapter, wrapper: wrapper });
                 };
                 MultiEditorAdapter.prototype.getWrapperTag = function (wrapper) {
-                    var tag = wrapper.split(" ")[0];
-                    return tag;
+                    return wrapper.split(' ')[0];
                 };
                 MultiEditorAdapter.prototype.extractHTMLForCheck = function () {
+                    var _this = this;
                     var Q = acrolinxLibs.Q;
                     var deferred = Q.defer();
-                    var htmls = [];
-                    for (var i = 0; i < this.adapters.length; i++) {
-                        var el = this.adapters[i];
-                        htmls.push(el.adapter.extractHTMLForCheck());
-                    }
-                    Q.all(htmls).then(acrolinxLibs._.bind(function (results) {
+                    var htmlResults = this.adapters.map(function (adapter) { return adapter.adapter.extractHTMLForCheck(); });
+                    Q.all(htmlResults).then(function (results) {
                         var html = '';
-                        for (var i = 0; i < this.adapters.length; i++) {
-                            var el = this.adapters[i];
-                            var tag = this.getWrapperTag(el.wrapper);
+                        for (var i = 0; i < _this.adapters.length; i++) {
+                            var el = _this.adapters[i];
+                            var tag = _this.getWrapperTag(el.wrapper);
                             var startText = '<' + el.wrapper + ' id="' + el.id + '">';
                             var elHtml = results[i].html;
                             var newTag = startText + elHtml + '</' + tag + '>';
@@ -571,10 +539,8 @@ var acrolinx;
                             el.end = html.length + startText.length + elHtml.length;
                             html += newTag;
                         }
-                        this.html = html;
-                        console.log(this.html);
-                        deferred.resolve({ html: this.html });
-                    }, this));
+                        deferred.resolve({ html: html });
+                    });
                     return deferred.promise;
                 };
                 MultiEditorAdapter.prototype.registerCheckCall = function (checkInfo) {
@@ -584,7 +550,6 @@ var acrolinx;
                     this.adapters.forEach(function (entry) {
                         entry.adapter.registerCheckResult(checkResult);
                     });
-                    return [];
                 };
                 MultiEditorAdapter.prototype.selectRanges = function (checkId, matches) {
                     var map = this.remapMatches(matches);
@@ -594,27 +559,20 @@ var acrolinx;
                 };
                 MultiEditorAdapter.prototype.remapMatches = function (matches) {
                     var map = {};
-                    for (var i = 0; i < matches.length; i++) {
-                        var match = acrolinxLibs._.clone(matches[i]);
-                        match.range = acrolinxLibs._.clone(matches[i].range);
-                        var adapter = this.getAdapterForMatch(match);
-                        if (!map.hasOwnProperty(adapter.id)) {
-                            map[adapter.id] = { matches: [], adapter: adapter.adapter };
+                    for (var _i = 0, matches_1 = matches; _i < matches_1.length; _i++) {
+                        var match = matches_1[_i];
+                        var adapter_2 = this.getAdapterForMatch(match);
+                        if (!map.hasOwnProperty(adapter_2.id)) {
+                            map[adapter_2.id] = { matches: [], adapter: adapter_2.adapter };
                         }
-                        match.range[0] -= adapter.start;
-                        match.range[1] -= adapter.start;
-                        map[adapter.id].matches.push(match);
+                        var remappedMatch = _.clone(match);
+                        remappedMatch.range = [match.range[0] - adapter_2.start, match.range[1] - adapter_2.start];
+                        map[adapter_2.id].matches.push(remappedMatch);
                     }
                     return map;
                 };
                 MultiEditorAdapter.prototype.getAdapterForMatch = function (match) {
-                    for (var i = 0; i < this.adapters.length; i++) {
-                        var el = this.adapters[i];
-                        if ((match.range[0] >= el.start) && (match.range[1] <= el.end)) {
-                            return el;
-                        }
-                    }
-                    return null;
+                    return _.find(this.adapters, function (adapter) { return (match.range[0] >= adapter.start) && (match.range[1] <= adapter.end); });
                 };
                 MultiEditorAdapter.prototype.replaceRanges = function (checkId, matchesWithReplacement) {
                     var map = this.remapMatches(matchesWithReplacement);
@@ -635,132 +593,22 @@ var acrolinx;
         var adapter;
         (function (adapter) {
             'use strict';
-            var lookupMatchesStandard = acrolinx.plugins.lookup.diffbased.lookupMatches;
-            var _ = acrolinxLibs._;
-            var TinyMCEAdapter = (function () {
-                function TinyMCEAdapter(conf) {
-                    this.lookupMatches = lookupMatchesStandard;
-                    this.editorId = conf.editorId;
-                    this.editor = null;
-                    if (conf.lookupMatches) {
-                        this.lookupMatches = conf.lookupMatches;
-                    }
+            var TinyMCEAdapter = (function (_super) {
+                __extends(TinyMCEAdapter, _super);
+                function TinyMCEAdapter() {
+                    _super.apply(this, arguments);
                 }
                 TinyMCEAdapter.prototype.getEditor = function () {
-                    if (this.editor === null) {
-                        this.editor = tinymce.get(this.editorId);
-                    }
-                    return this.editor;
+                    return tinymce.get(this.editorId);
                 };
                 TinyMCEAdapter.prototype.getHTML = function () {
                     return this.getEditor().getContent();
                 };
                 TinyMCEAdapter.prototype.getEditorDocument = function () {
-                    try {
-                        return this.getEditor().contentDocument;
-                    }
-                    catch (error) {
-                        throw error;
-                    }
-                };
-                TinyMCEAdapter.prototype.getCurrentText = function () {
-                    try {
-                        return rangy.innerText(this.getEditorDocument());
-                    }
-                    catch (error) {
-                        throw error;
-                    }
-                };
-                TinyMCEAdapter.prototype.selectText = function (begin, length) {
-                    var doc = this.getEditorDocument();
-                    var selection = rangy.getSelection(doc);
-                    var range = rangy.createRange(doc);
-                    range.moveStart('character', begin);
-                    range.moveEnd('character', length);
-                    selection.setSingleRange(range);
-                    return range;
-                };
-                TinyMCEAdapter.prototype.scrollIntoView2 = function (sel) {
-                    var range = sel.getRng();
-                    var tmp = range.cloneRange();
-                    tmp.collapse();
-                    var text = document.createElement('span');
-                    tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
-                    text.scrollIntoView();
-                    text.remove();
-                };
-                TinyMCEAdapter.prototype.scrollAndSelect = function (matches) {
-                    var newBegin, matchLength, selection1, range1, range2, newBegin = matches[0].foundOffset;
-                    matchLength = matches[0].flagLength;
-                    range1 = this.selectText(newBegin, matchLength);
-                    selection1 = this.getEditor().selection;
-                    if (selection1) {
-                        try {
-                            this.scrollIntoView2(selection1);
-                            var wpContainer = acrolinxLibs.$('#wp-content-editor-container');
-                            if (wpContainer.length > 0) {
-                                wpContainer.get(0).scrollIntoView();
-                            }
-                        }
-                        catch (error) {
-                            console.log("Scrolling Error!");
-                        }
-                    }
-                    range2 = this.selectText(newBegin, matchLength);
-                };
-                TinyMCEAdapter.prototype.extractHTMLForCheck = function () {
-                    this.html = this.getHTML();
-                    this.currentHtmlChecking = this.html;
-                    return { html: this.html };
-                };
-                TinyMCEAdapter.prototype.registerCheckCall = function (checkInfo) {
-                };
-                TinyMCEAdapter.prototype.registerCheckResult = function (checkResult) {
-                    this.isCheckingNow = false;
-                    this.currentHtmlChecking = this.html;
-                    this.prevCheckedHtml = this.currentHtmlChecking;
-                    return [];
-                };
-                TinyMCEAdapter.prototype.selectRanges = function (checkId, matches) {
-                    this.selectMatches(checkId, matches);
-                };
-                TinyMCEAdapter.prototype.selectMatches = function (checkId, matches) {
-                    var alignedMatches = this.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches);
-                    if (_.isEmpty(alignedMatches)) {
-                        throw 'Selected flagged content is modified.';
-                    }
-                    this.scrollAndSelect(alignedMatches);
-                    return alignedMatches;
-                };
-                TinyMCEAdapter.prototype.replaceRanges = function (checkId, matchesWithReplacement) {
-                    var selectionFromCharPos = 1;
-                    try {
-                        var alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
-                        var useWorkAround = alignedMatches[0].foundOffset + alignedMatches[0].flagLength - 1 < this.getCurrentText().length;
-                        if (useWorkAround) {
-                            alignedMatches[0].foundOffset += selectionFromCharPos;
-                            alignedMatches[0].flagLength -= selectionFromCharPos;
-                        }
-                        this.scrollAndSelect(alignedMatches);
-                        var replacementText = _.map(alignedMatches, 'replacement').join('');
-                        this.editor.selection.setContent(replacementText);
-                        if (useWorkAround) {
-                            if (selectionFromCharPos > 0) {
-                                this.selectText(alignedMatches[0].foundOffset - selectionFromCharPos, selectionFromCharPos);
-                                rangy.getSelection(this.getEditorDocument()).nativeSelection.deleteFromDocument();
-                            }
-                            alignedMatches[0].foundOffset -= selectionFromCharPos;
-                            alignedMatches[0].flagLength += selectionFromCharPos;
-                        }
-                        this.selectText(alignedMatches[0].foundOffset, replacementText.length);
-                    }
-                    catch (error) {
-                        console.log(error);
-                        throw error;
-                    }
+                    return this.getEditor().getDoc();
                 };
                 return TinyMCEAdapter;
-            }());
+            }(adapter.AbstractRichtextEditorAdapter));
             adapter.TinyMCEAdapter = TinyMCEAdapter;
         })(adapter = plugins.adapter || (plugins.adapter = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
@@ -769,138 +617,8 @@ var acrolinx;
 (function (acrolinx) {
     var plugins;
     (function (plugins) {
-        var lookup;
-        (function (lookup) {
-            var old;
-            (function (old) {
-                'use strict';
-                var _ = acrolinxLibs._;
-                function isFlagContainsOnlySpecialChar(flaggedContent) {
-                    var pattern = /\w/g;
-                    return !pattern.test(flaggedContent);
-                }
-                function getTextContent(html) {
-                    var tmpHTMLElement = acrolinxLibs.$('<div/>').html(html);
-                    return tmpHTMLElement.text().replace(/\t+/g, '');
-                }
-                function escapeRegExp(string) {
-                    return string.replace(/([\".*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
-                }
-                function createSearchPattern(matches, currentHtmlChecking) {
-                    var searchPattern = matches[0].textContent, wordBoundary = '\\b';
-                    if (shouldApplyWordBoundary(matches, currentHtmlChecking) === true) {
-                        searchPattern = wordBoundary + searchPattern + wordBoundary;
-                    }
-                    return searchPattern;
-                }
-                function shouldApplyWordBoundary(matches, currentHtmlChecking) {
-                    var offset = matches[matches.length - 1].range[1], lastChar, nextChar, firstChar, flaggedWords, firstFlaggedWord, lastFlaggedWord;
-                    nextChar = getFlagContents(offset, offset + 1, currentHtmlChecking);
-                    flaggedWords = matches[0].textContent.split(/\\s+/);
-                    firstFlaggedWord = flaggedWords[0];
-                    firstChar = firstFlaggedWord.substr(0, 1);
-                    lastFlaggedWord = firstFlaggedWord;
-                    if (flaggedWords.length > 1) {
-                        lastFlaggedWord = flaggedWords[1];
-                    }
-                    lastChar = lastFlaggedWord.substr(lastFlaggedWord.length - 1, 1);
-                    if ((lastFlaggedWord.indexOf('&') > -1) && (lastFlaggedWord.indexOf(';') > -1) && (lastFlaggedWord.indexOf(';') > lastFlaggedWord.indexOf('&'))) {
-                        return false;
-                    }
-                    if ((firstFlaggedWord.indexOf('&') > -1) && (firstFlaggedWord.indexOf(';') > -1) && (firstFlaggedWord.indexOf(';') > firstFlaggedWord.indexOf('&'))) {
-                        return false;
-                    }
-                    if ((isAlphaNumeral(firstChar) && isAlphaNumeral(lastChar) && isAlphaNumeral(nextChar)) &&
-                        lastChar.charCodeAt(0) !== 45 && !isFlagContainsOnlySpecialChar(matches[0].htmlContent)) {
-                        return true;
-                    }
-                    return false;
-                }
-                function isAlphaNumeral(character) {
-                    if ((character.charCodeAt(0) >= 48 && character.charCodeAt(0) <= 90) ||
-                        (character.charCodeAt(0) >= 97 && character.charCodeAt(0) <= 126)) {
-                        return true;
-                    }
-                    return false;
-                }
-                function getFlagContents(begin, end, currentHtmlChecking) {
-                    return currentHtmlChecking.substr(begin, end - begin);
-                }
-                function addPropertiesToMatches(matches, currentHtmlChecking) {
-                    var textContent, htmlContentBeforeFlag, textContentBeforeFlag, regexForHTMLTag, match, startOffset = matches[0].range[0], endOffset = matches[matches.length - 1].range[1];
-                    htmlContentBeforeFlag = getFlagContents(0, startOffset, currentHtmlChecking);
-                    textContentBeforeFlag = getTextContent(htmlContentBeforeFlag);
-                    matches[0].textOffset = textContentBeforeFlag.length;
-                    if (matches[0].textOffset === 0) {
-                        regexForHTMLTag = /<([a-zA-Z][a-zA-Z0-9]*)\b[^>]*/gm;
-                        if ((match = regexForHTMLTag.exec(htmlContentBeforeFlag)) !== null) {
-                            startOffset = matches[0].textOffset + match.input.length;
-                        }
-                    }
-                    matches[0].htmlContent = getFlagContents(startOffset, endOffset, currentHtmlChecking);
-                    textContent = getTextContent(matches[0].htmlContent);
-                    textContent = escapeRegExp(textContent);
-                    matches[0].textContent = textContent;
-                    matches[0].searchPattern = createSearchPattern(matches, currentHtmlChecking);
-                    return matches;
-                }
-                function findBestMatchOffset(flagHtmlOffsets, matches) {
-                    var minOffsetIndex = -1, originalFlagOffset = matches[0].textOffset;
-                    if (flagHtmlOffsets.length > 0) {
-                        minOffsetIndex = 0;
-                        var minOffset = Math.abs(flagHtmlOffsets[minOffsetIndex] - originalFlagOffset);
-                        for (var i = 0; i < flagHtmlOffsets.length; i++) {
-                            if (Math.abs(flagHtmlOffsets[i] - originalFlagOffset) < minOffset) {
-                                minOffsetIndex = i;
-                                minOffset = Math.abs(flagHtmlOffsets[minOffsetIndex] - originalFlagOffset);
-                            }
-                        }
-                    }
-                    return minOffsetIndex;
-                }
-                function findAllFlagOffsets(paragraph, stringToPattern) {
-                    var matchedWords, pattern, flagOffsets = [];
-                    pattern = new RegExp(stringToPattern, 'gm');
-                    var lastIndex = null;
-                    while ((matchedWords = pattern.exec(paragraph)) !== null) {
-                        var index = matchedWords.index;
-                        if (lastIndex === index) {
-                            break;
-                        }
-                        lastIndex = index;
-                        flagOffsets.push(index);
-                    }
-                    return flagOffsets;
-                }
-                function lookupMatches(checkedDocument, currentDocument, matches) {
-                    var extendedMatches = addPropertiesToMatches(_.cloneDeep(matches), checkedDocument);
-                    var currentFlagOffsets = findAllFlagOffsets(currentDocument, extendedMatches[0].searchPattern);
-                    var index = findBestMatchOffset(currentFlagOffsets, extendedMatches);
-                    var offset = currentFlagOffsets[index];
-                    if (!(offset >= 0)) {
-                        return [];
-                    }
-                    extendedMatches[0].foundOffset = offset;
-                    if (extendedMatches[0].content.length >= extendedMatches[0].range[1] - extendedMatches[0].range[0]) {
-                        extendedMatches[0].textContent = extendedMatches[0].textContent.replace(/\\/g, '');
-                    }
-                    else {
-                        extendedMatches[0].textContent = extendedMatches[0].textContent.replace(/\\\\/g, '\\');
-                    }
-                    extendedMatches[0].flagLength = extendedMatches[0].textContent.length - 1;
-                    console.log(JSON.stringify(extendedMatches));
-                    return extendedMatches;
-                }
-                old.lookupMatches = lookupMatches;
-            })(old = lookup.old || (lookup.old = {}));
-        })(lookup = plugins.lookup || (plugins.lookup = {}));
-    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
-})(acrolinx || (acrolinx = {}));
-var acrolinx;
-(function (acrolinx) {
-    var plugins;
-    (function (plugins) {
         'use strict';
+        var _ = acrolinxLibs._;
         var clientComponents = [
             {
                 id: 'com.acrolinx.sidebarexample',
@@ -909,13 +627,14 @@ var acrolinx;
                 category: 'MAIN'
             }
         ];
+        function isPromise(result) {
+            return result.then !== undefined;
+        }
         function initAcrolinxSamplePlugin(config, editorAdapter) {
-            var $ = acrolinxLibs.$;
-            var _ = acrolinxLibs._;
-            var $sidebarContainer = $('#' + config.sidebarContainerId);
-            var $sidebar = $('<iframe></iframe>');
-            $sidebarContainer.append($sidebar);
-            var sidebarContentWindow = $sidebar.get(0).contentWindow;
+            var sidebarContainer = document.getElementById(config.sidebarContainerId);
+            var sidebarIFrameElement = document.createElement('iframe');
+            sidebarContainer.appendChild(sidebarIFrameElement);
+            var sidebarContentWindow = sidebarIFrameElement.contentWindow;
             var adapter = editorAdapter;
             function onSidebarLoaded() {
                 function initSidebarOnPremise() {
@@ -924,8 +643,21 @@ var acrolinx;
                         clientComponents: clientComponents
                     }, config));
                 }
-                console.log('Install acrolinxPlugin in sidebar.');
-                sidebarContentWindow.acrolinxPlugin = {
+                function requestGlobalCheckSync(html, format, documentReference) {
+                    if (html.hasOwnProperty('error')) {
+                        window.alert(html.error);
+                    }
+                    else {
+                        var checkInfo = sidebarContentWindow.acrolinxSidebar.checkGlobal(html.html, {
+                            inputFormat: format || 'HTML',
+                            requestDescription: {
+                                documentReference: documentReference || 'filename.html'
+                            }
+                        });
+                        adapter.registerCheckCall(checkInfo);
+                    }
+                }
+                var acrolinxSidebarPlugin = {
                     requestInit: function () {
                         console.log('requestInit');
                         initSidebarOnPremise();
@@ -939,33 +671,18 @@ var acrolinx;
                     configure: function (configuration) {
                         console.log('configure: ', configuration);
                     },
-                    requestGlobalCheckSync: function (html, format, documentReference) {
-                        if (html.hasOwnProperty("error")) {
-                            window.alert(html.error);
-                        }
-                        else {
-                            var checkInfo = sidebarContentWindow.acrolinxSidebar.checkGlobal(html.html, {
-                                inputFormat: format || 'HTML',
-                                requestDescription: {
-                                    documentReference: documentReference || 'filename.html'
-                                }
-                            });
-                            adapter.registerCheckCall(checkInfo);
-                        }
-                    },
                     requestGlobalCheck: function () {
                         console.log('requestGlobalCheck');
                         var pHtml = adapter.extractHTMLForCheck();
                         var pFormat = adapter.getFormat ? adapter.getFormat() : null;
                         var pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
-                        if (pHtml.then !== undefined) {
-                            var self = this;
+                        if (isPromise(pHtml)) {
                             pHtml.then(function (html) {
-                                self.requestGlobalCheckSync(html, pFormat, pDocumentReference);
+                                requestGlobalCheckSync(html, pFormat, pDocumentReference);
                             });
                         }
                         else {
-                            this.requestGlobalCheckSync(pHtml, pFormat, pDocumentReference);
+                            requestGlobalCheckSync(pHtml, pFormat, pDocumentReference);
                         }
                     },
                     onCheckResult: function (checkResult) {
@@ -1001,34 +718,21 @@ var acrolinx;
                             }));
                         }
                     },
-                    getRangesOrder: function (checkedDocumentRanges) {
-                        console.log('getRangesOrder: ', checkedDocumentRanges);
-                        return [];
-                    },
                     download: function (download) {
                         console.log('download: ', download.url, download);
                         window.open(download.url);
                     },
-                    verifyRanges: function (checkedDocumentParts) {
-                        console.log('verifyRanges: ', checkedDocumentParts);
-                        return [];
-                    },
-                    disposeCheck: function (checkId) {
-                        console.log('disposeCheck: ', checkId);
+                    openWindow: function (_a) {
+                        var url = _a.url;
+                        window.open(url);
                     }
                 };
+                console.log('Install acrolinxPlugin in sidebar.');
+                sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
             }
             function loadSidebarIntoIFrame() {
-                var sidebarBaseUrl;
-                if (config.sidebarUrl !== undefined) {
-                    sidebarBaseUrl = config.sidebarUrl;
-                }
-                else {
-                    sidebarBaseUrl = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
-                }
-                return acrolinxLibs.$.ajax({
-                    url: sidebarBaseUrl + 'index.html'
-                }).then(function (sidebarHtml) {
+                var sidebarBaseUrl = config.sidebarUrl || 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
+                plugins.utils.fetch(sidebarBaseUrl + 'index.html', function (sidebarHtml) {
                     var sidebarHtmlWithAbsoluteLinks = sidebarHtml
                         .replace(/src="/g, 'src="' + sidebarBaseUrl)
                         .replace(/href="/g, 'href="' + sidebarBaseUrl);
@@ -1053,6 +757,57 @@ var acrolinx;
             return AcrolinxPlugin;
         }());
         plugins.AcrolinxPlugin = AcrolinxPlugin;
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
+        var utils;
+        (function (utils) {
+            var _ = acrolinxLibs._;
+            function textMapping(text, domPositions) {
+                return {
+                    text: text,
+                    domPositions: domPositions
+                };
+            }
+            utils.textMapping = textMapping;
+            function concatTextMappings(textMappings) {
+                return {
+                    text: textMappings.map(function (tm) { return tm.text; }).join(''),
+                    domPositions: _.flatten(textMappings.map(function (tm) { return tm.domPositions; }))
+                };
+            }
+            utils.concatTextMappings = concatTextMappings;
+            function domPosition(node, offset) {
+                return {
+                    node: node,
+                    offset: offset
+                };
+            }
+            utils.domPosition = domPosition;
+            function extractTextDomMapping(node) {
+                return concatTextMappings(_.map(node.childNodes, function (child) {
+                    switch (child.nodeType) {
+                        case Node.ELEMENT_NODE:
+                            return extractTextDomMapping(child);
+                        case Node.TEXT_NODE:
+                        default:
+                            return textMapping(child.textContent, _.times(child.textContent.length, function (i) { return domPosition(child, i); }));
+                    }
+                }));
+            }
+            utils.extractTextDomMapping = extractTextDomMapping;
+            function getEndDomPos(endIndex, domPositions) {
+                var index = domPositions[Math.max(Math.min(endIndex, domPositions.length) - 1, 0)];
+                return {
+                    node: index.node,
+                    offset: index.offset + 1
+                };
+            }
+            utils.getEndDomPos = getEndDomPos;
+        })(utils = plugins.utils || (plugins.utils = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
 //# sourceMappingURL=acrolinx-sidebar-integration.js.map
