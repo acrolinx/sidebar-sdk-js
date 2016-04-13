@@ -103,6 +103,13 @@ namespace acrolinx.plugins.lookup.diffbased {
     return index > 0 ? offsetMappingArray[index - 1].diffOffset : 0;
   }
 
+  function hasModifiedWordBorders (offsetMappingArray: OffSetAlign[],  oldOffsetWord: number) {
+    // const array = _.find(offsetMappingArray, (offSetAlign) => {return offSetAlign.oldPosition === oldOffsetWord; });
+    // const result = array ? true : false;
+    // return result;
+    return false;
+  }
+
 
   function rangeContent(content: string, m: AlignedMatch<Match>) {
     return content.slice(m.range[0], m.range[1]);
@@ -124,14 +131,17 @@ namespace acrolinx.plugins.lookup.diffbased {
       const alignedBegin = beginAfterCleaning + findNewOffset(offsetMappingArray, beginAfterCleaning);
       const lastCharacterPos = endAfterCleaning - 1;
       const alignedEnd = lastCharacterPos + findNewOffset(offsetMappingArray, lastCharacterPos) + 1;
+      // This code could be used to detect if word border got modified, but should probably be language specific
+      const hasModifiedBorders = hasModifiedWordBorders(offsetMappingArray, match.range[0]) || hasModifiedWordBorders(offsetMappingArray, match.range[1]);
       return {
         originalMatch: match,
-        range: [alignedBegin, alignedEnd] as [number, number]
+        range: [alignedBegin, alignedEnd] as [number, number],
+        hasModifiedWordBorders: hasModifiedBorders
       };
     });
 
     const containsModifiedMatches = _.some(alignedMatches, m =>
-    rangeContent(currentDocument, m) !== m.originalMatch.content);
+    rangeContent(currentDocument, m) !== m.originalMatch.content || m.hasModifiedWordBorders);
 
     log('checkedDocument', checkedDocument);
     log('cleanedCheckedDocument', cleanedCheckedDocument);
