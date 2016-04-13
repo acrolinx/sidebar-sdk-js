@@ -142,9 +142,19 @@ namespace acrolinx.plugins.adapter {
       const doc = this.getEditorDocument();
       const reversedMatches = _.clone(matches).reverse();
       for (let match of reversedMatches) {
-        const range = this.createRange(match.range[0], match.range[1] - match.range[0], this.getTextDomMapping());
-        range.deleteContents();
-        range.insertNode(doc.createTextNode(match.originalMatch.replacement));
+        const textDomMapping = this.getTextDomMapping();
+        const rangeLength = match.range[1] - match.range[0];
+        if (rangeLength > 1) {
+          const tail = this.createRange(match.range[0] + 1, rangeLength - 1, textDomMapping);
+          const head = this.createRange(match.range[0], 1, textDomMapping);
+          tail.deleteContents();
+          head.deleteContents();
+          head.insertNode(doc.createTextNode(match.originalMatch.replacement));
+        } else {
+          const range = this.createRange(match.range[0], rangeLength, textDomMapping);
+          range.deleteContents();
+          range.insertNode(doc.createTextNode(match.originalMatch.replacement));
+        }
       }
     }
 
