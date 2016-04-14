@@ -24,7 +24,7 @@ namespace acrolinx.plugins.adapter {
   export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
 
     getEditor() {
-        return tinymce.get(this.editorId);
+      return tinymce.get(this.editorId);
     }
 
     getHTML() {
@@ -33,6 +33,46 @@ namespace acrolinx.plugins.adapter {
 
     getEditorDocument() {
       return this.getEditor().getDoc();
+    }
+
+    scrollToCurrentSelection3() {
+      // scroll when tiny mce has own scrollbar
+
+      const selection = this.getEditorDocument().getSelection();
+      if (selection) {
+        try {
+          const originalRange = selection.getRangeAt(0);
+          const {startContainer , startOffset, endContainer, endOffset} = originalRange;
+          selection.collapseToStart();
+
+          (this.getEditor() as any).insertContent('');
+
+          const restoredRange = this.getEditorDocument().createRange();
+          restoredRange.setStart(startContainer, startOffset);
+          restoredRange.setEnd(endContainer, endOffset);
+
+          selection.removeAllRanges();
+          selection.addRange(restoredRange);
+
+          // const wpContainer = document.getElementById('wp-content-editor-container');
+          // if (wpContainer) {
+          //  wpContainer.scrollIntoView();
+          // }
+
+        } catch (error) {
+          console.log('Scrolling Error: ', error);
+        }
+      }
+    }
+
+    scrollToCurrentSelection2() {
+      // scroll for full page view
+      // super.scrollToCurrentSelection();
+      const wpContainer = document.getElementById('wp-content-editor-container');
+      if (wpContainer) {
+        wpContainer.scrollIntoView();
+      }
+      window.scrollBy(0, -150);
     }
 
     // scrollAndSelect(matches) {
