@@ -240,7 +240,7 @@ var acrolinx;
                     var tmp = range.cloneRange();
                     tmp.collapse(false);
                     var text = document.createElement('span');
-                    tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
+                    tmp.insertNode(text);
                     text.scrollIntoView();
                     text.remove();
                 };
@@ -607,9 +607,88 @@ var acrolinx;
                 TinyMCEAdapter.prototype.getEditorDocument = function () {
                     return this.getEditor().getDoc();
                 };
+                TinyMCEAdapter.prototype.scrollToCurrentSelection = function () {
+                    var selection = this.getEditorDocument().getSelection();
+                    if (selection) {
+                        try {
+                            var originalRange = selection.getRangeAt(0);
+                            var startContainer = originalRange.startContainer, startOffset = originalRange.startOffset, endContainer = originalRange.endContainer, endOffset = originalRange.endOffset;
+                            selection.collapseToStart();
+                            this.getEditor().insertContent('');
+                            var restoredRange = this.getEditorDocument().createRange();
+                            restoredRange.setStart(startContainer, startOffset);
+                            restoredRange.setEnd(endContainer, endOffset);
+                            selection.removeAllRanges();
+                            selection.addRange(restoredRange);
+                        }
+                        catch (error) {
+                            console.log('Scrolling Error: ', error);
+                        }
+                    }
+                };
                 return TinyMCEAdapter;
             }(adapter.AbstractRichtextEditorAdapter));
             adapter.TinyMCEAdapter = TinyMCEAdapter;
+        })(adapter = plugins.adapter || (plugins.adapter = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
+        var adapter;
+        (function (adapter) {
+            'use strict';
+            var TinyMCEWordpressAdapter = (function (_super) {
+                __extends(TinyMCEWordpressAdapter, _super);
+                function TinyMCEWordpressAdapter() {
+                    _super.apply(this, arguments);
+                }
+                TinyMCEWordpressAdapter.prototype.getEditor = function () {
+                    return tinymce.get(this.editorId);
+                };
+                TinyMCEWordpressAdapter.prototype.getHTML = function () {
+                    return this.getEditor().getContent();
+                };
+                TinyMCEWordpressAdapter.prototype.getEditorDocument = function () {
+                    return this.getEditor().getDoc();
+                };
+                TinyMCEWordpressAdapter.prototype.scrollToCurrentSelection = function () {
+                    var editorBody = this.getEditor().getBody();
+                    var parentWidth = this.getEditor().getContainer().clientWidth;
+                    var bodyClientWidthWithMargin = editorBody.scrollWidth;
+                    var hasVerticalScrollbar = parentWidth > bodyClientWidthWithMargin;
+                    if (hasVerticalScrollbar) {
+                        _super.prototype.scrollToCurrentSelection.call(this);
+                    }
+                    else {
+                        this.scrollToCurrentSelectionWithGlobalScrollbar();
+                    }
+                };
+                TinyMCEWordpressAdapter.prototype.scrollToCurrentSelectionWithGlobalScrollbar = function () {
+                    var selection1 = this.getEditorDocument().getSelection();
+                    if (selection1) {
+                        try {
+                            this.scrollIntoViewWithGlobalScrollbar(selection1);
+                        }
+                        catch (error) {
+                            console.log('Scrolling Error: ', error);
+                        }
+                    }
+                };
+                TinyMCEWordpressAdapter.prototype.scrollIntoViewWithGlobalScrollbar = function (sel) {
+                    var range = sel.getRangeAt(0);
+                    var tmp = range.cloneRange();
+                    tmp.collapse(false);
+                    var text = document.createElement('span');
+                    tmp.insertNode(text);
+                    var ypos = text.getClientRects()[0].top;
+                    window.scrollTo(0, ypos);
+                    text.remove();
+                };
+                return TinyMCEWordpressAdapter;
+            }(adapter.TinyMCEAdapter));
+            adapter.TinyMCEWordpressAdapter = TinyMCEWordpressAdapter;
         })(adapter = plugins.adapter || (plugins.adapter = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
