@@ -56,6 +56,10 @@ namespace acrolinx.plugins.adapter {
       return this.getHTML();
     }
 
+    getFormat() {
+      return 'TEXT';
+    }
+
     extractHTMLForCheck() {
       this.html = this.getHTML();
       this.currentHtmlChecking = this.html;
