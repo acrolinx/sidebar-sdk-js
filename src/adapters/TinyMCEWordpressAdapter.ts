@@ -21,7 +21,7 @@
 namespace acrolinx.plugins.adapter {
   'use strict';
 
-  export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
+  export class TinyMCEWordpressAdapter extends TinyMCEAdapter {
 
     getEditor() {
       return tinymce.get(this.editorId);
@@ -36,26 +36,39 @@ namespace acrolinx.plugins.adapter {
     }
 
     scrollToCurrentSelection() {
-      const selection = this.getEditorDocument().getSelection();
-      if (selection) {
+      const editorBody = (this.getEditor() as any).getBody();
+      const parentWidth = (this.getEditor() as any).getContainer().clientWidth;
+      const bodyClientWidthWithMargin = editorBody.scrollWidth;
+      const hasVerticalScrollbar = parentWidth > bodyClientWidthWithMargin;
+      if (hasVerticalScrollbar) {
+        super.scrollToCurrentSelection();
+      } else {
+        this.scrollToCurrentSelectionWithGlobalScrollbar();
+      }
+    }
+
+    scrollToCurrentSelectionWithGlobalScrollbar() {
+      const selection1 = this.getEditorDocument().getSelection();
+
+      if (selection1) {
         try {
-          const originalRange = selection.getRangeAt(0);
-          const {startContainer , startOffset, endContainer, endOffset} = originalRange;
-          selection.collapseToStart();
-
-          (this.getEditor() as any).insertContent('');
-
-          const restoredRange = this.getEditorDocument().createRange();
-          restoredRange.setStart(startContainer, startOffset);
-          restoredRange.setEnd(endContainer, endOffset);
-
-          selection.removeAllRanges();
-          selection.addRange(restoredRange);
-
+          this.scrollIntoViewWithGlobalScrollbar(selection1);
         } catch (error) {
           console.log('Scrolling Error: ', error);
         }
       }
+    }
+
+    protected scrollIntoViewWithGlobalScrollbar(sel: Selection) {
+      const range = sel.getRangeAt(0);
+      const tmp = range.cloneRange();
+      tmp.collapse(false);
+
+      const text = document.createElement('span');
+      tmp.insertNode(text);
+      const ypos = text.getClientRects()[0].top;
+      window.scrollTo(0, ypos);
+      text.remove();
     }
 
   }

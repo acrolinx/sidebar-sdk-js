@@ -77,12 +77,12 @@ namespace acrolinx.plugins.adapter {
       tmp.collapse(false);
 
       const text = document.createElement('span');
-      tmp.startContainer.parentNode.insertBefore(text, tmp.startContainer);
+      tmp.insertNode(text);
       text.scrollIntoView();
       text.remove();
     }
 
-    private scrollToCurrentSelection() {
+    scrollToCurrentSelection() {
       const selection1 = this.getEditorDocument().getSelection();
 
       if (selection1) {
