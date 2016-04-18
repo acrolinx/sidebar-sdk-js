@@ -75,16 +75,19 @@ namespace acrolinx.plugins.adapter {
     scrollAndSelect(matches: AlignedMatch<Match>[]) {
       const newBegin = matches[0].range[0];
       const matchLength = getCompleteFlagLength(matches);
+      const el = this.element;
 
-      this.element.focus();
-      this.element.setSelectionRange(newBegin, newBegin + matchLength);
+      if (el.clientHeight < el.scrollHeight) {
+        // This funny trick causes scrolling inside of the textarea.
+        const text = this.element.value;
+        el.blur();
+        el.value = text.slice(0, newBegin);
+        el.focus();
+        el.value = text;
+      } 
 
-      this.element.scrollIntoView();
-      // TODO: Do we need this special workaround for wordpress? Here?
-      const wpContainer = document.getElementById('wp-content-editor-container');
-      if (wpContainer) {
-        window.scrollBy(0, -50);
-      }
+      el.setSelectionRange(newBegin, newBegin + matchLength);
+      el.scrollIntoView();
     }
 
     selectRanges(checkId: string, matches: Match[]) {
