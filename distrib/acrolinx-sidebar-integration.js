@@ -446,6 +446,9 @@ var acrolinx;
                 InputAdapter.prototype.getCurrentText = function () {
                     return this.getHTML();
                 };
+                InputAdapter.prototype.getFormat = function () {
+                    return 'TEXT';
+                };
                 InputAdapter.prototype.extractHTMLForCheck = function () {
                     this.html = this.getHTML();
                     this.currentHtmlChecking = this.html;
@@ -458,13 +461,16 @@ var acrolinx;
                 InputAdapter.prototype.scrollAndSelect = function (matches) {
                     var newBegin = matches[0].range[0];
                     var matchLength = getCompleteFlagLength(matches);
-                    this.element.focus();
-                    this.element.setSelectionRange(newBegin, newBegin + matchLength);
-                    this.element.scrollIntoView();
-                    var wpContainer = document.getElementById('wp-content-editor-container');
-                    if (wpContainer) {
-                        window.scrollBy(0, -50);
+                    var el = this.element;
+                    if (el.clientHeight < el.scrollHeight) {
+                        var text = this.element.value;
+                        el.blur();
+                        el.value = text.slice(0, newBegin);
+                        el.focus();
+                        el.value = text;
                     }
+                    el.setSelectionRange(newBegin, newBegin + matchLength);
+                    el.scrollIntoView();
                 };
                 InputAdapter.prototype.selectRanges = function (checkId, matches) {
                     this.selectMatches(checkId, matches);
