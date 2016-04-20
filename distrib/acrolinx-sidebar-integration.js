@@ -467,7 +467,12 @@ var acrolinx;
                         el.blur();
                         el.value = text.slice(0, newBegin);
                         el.focus();
+                        el.scrollTop = 1e9;
+                        var cursorScrollTop = el.scrollTop;
                         el.value = text;
+                        if (cursorScrollTop > 0) {
+                            el.scrollTop = cursorScrollTop + el.clientHeight / 2;
+                        }
                     }
                     el.setSelectionRange(newBegin, newBegin + matchLength);
                     el.scrollIntoView();
