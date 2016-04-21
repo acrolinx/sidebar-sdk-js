@@ -80,7 +80,6 @@ namespace acrolinx.plugins.adapter {
       if (el.clientHeight < el.scrollHeight) {
         // This funny trick causes scrolling inside of the textarea.
         const text = this.element.value;
-        el.blur();
         el.value = text.slice(0, newBegin);
         el.focus();
         el.scrollTop = 1e9; // Scroll to the end of the textarea.
@@ -92,6 +91,7 @@ namespace acrolinx.plugins.adapter {
       }
 
       el.setSelectionRange(newBegin, newBegin + matchLength);
+      el.focus();
       el.scrollIntoView();
     }
 

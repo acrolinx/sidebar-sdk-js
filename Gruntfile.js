@@ -65,6 +65,7 @@ module.exports = function(grunt){
               connect().use('/test', connect.static('./test')),
               connect().use('/distrib', connect.static('./distrib')),
               connect().use('/bower_components', connect.static('./bower_components')),
+              connect().use('/src', connect.static('./src')),
               proxy
             ];
           }
