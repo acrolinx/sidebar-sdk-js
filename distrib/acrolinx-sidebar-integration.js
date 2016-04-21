@@ -464,7 +464,6 @@ var acrolinx;
                     var el = this.element;
                     if (el.clientHeight < el.scrollHeight) {
                         var text = this.element.value;
-                        el.blur();
                         el.value = text.slice(0, newBegin);
                         el.focus();
                         el.scrollTop = 1e9;
@@ -475,6 +474,7 @@ var acrolinx;
                         }
                     }
                     el.setSelectionRange(newBegin, newBegin + matchLength);
+                    el.focus();
                     el.scrollIntoView();
                 };
                 InputAdapter.prototype.selectRanges = function (checkId, matches) {
