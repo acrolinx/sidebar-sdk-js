@@ -217,8 +217,7 @@ var acrolinx;
             var _ = acrolinxLibs._;
             var getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
             var AbstractRichtextEditorAdapter = (function () {
-                function AbstractRichtextEditorAdapter(conf) {
-                    this.editorId = conf.editorId;
+                function AbstractRichtextEditorAdapter() {
                 }
                 AbstractRichtextEditorAdapter.prototype.getEditorElement = function () {
                     return this.getEditorDocument().querySelector('body');
@@ -334,11 +333,34 @@ var acrolinx;
     (function (plugins) {
         var adapter;
         (function (adapter) {
+            function isHasEditorID(a) {
+                return !!a.editorId;
+            }
+            adapter.isHasEditorID = isHasEditorID;
+            function getElementFromAdapterConf(conf) {
+                if (isHasEditorID(conf)) {
+                    return document.getElementById(conf.editorId);
+                }
+                else {
+                    return conf.element;
+                }
+            }
+            adapter.getElementFromAdapterConf = getElementFromAdapterConf;
+        })(adapter = plugins.adapter || (plugins.adapter = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
+        var adapter;
+        (function (adapter) {
             'use strict';
             var CKEditorAdapter = (function (_super) {
                 __extends(CKEditorAdapter, _super);
-                function CKEditorAdapter() {
-                    _super.apply(this, arguments);
+                function CKEditorAdapter(conf) {
+                    _super.call(this);
+                    this.editorId = conf.editorId;
                 }
                 CKEditorAdapter.prototype.getEditor = function () {
                     return CKEDITOR.instances[this.editorId];
@@ -402,8 +424,8 @@ var acrolinx;
             var ContentEditableAdapter = (function (_super) {
                 __extends(ContentEditableAdapter, _super);
                 function ContentEditableAdapter(conf) {
-                    _super.call(this, conf);
-                    this.element = document.getElementById(conf.editorId);
+                    _super.call(this);
+                    this.element = adapter.getElementFromAdapterConf(conf);
                 }
                 ContentEditableAdapter.prototype.getEditorElement = function () {
                     return this.element;
@@ -431,14 +453,8 @@ var acrolinx;
             var _ = acrolinxLibs._;
             var getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
             var InputAdapter = (function () {
-                function InputAdapter(elementOrConf) {
-                    if (elementOrConf instanceof Element) {
-                        this.element = elementOrConf;
-                    }
-                    else {
-                        var conf = elementOrConf;
-                        this.element = document.getElementById(conf.editorId);
-                    }
+                function InputAdapter(conf) {
+                    this.element = adapter.getElementFromAdapterConf(conf);
                 }
                 InputAdapter.prototype.getHTML = function () {
                     return this.element.value;
@@ -606,8 +622,9 @@ var acrolinx;
             'use strict';
             var TinyMCEAdapter = (function (_super) {
                 __extends(TinyMCEAdapter, _super);
-                function TinyMCEAdapter() {
-                    _super.apply(this, arguments);
+                function TinyMCEAdapter(conf) {
+                    _super.call(this);
+                    this.editorId = conf.editorId;
                 }
                 TinyMCEAdapter.prototype.getEditor = function () {
                     return tinymce.get(this.editorId);
