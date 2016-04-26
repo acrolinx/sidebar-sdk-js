@@ -24,8 +24,8 @@ namespace acrolinx.plugins.adapter {
     element: Element;
 
     constructor(conf: AdapterConf) {
-      super(conf);
-      this.element = document.getElementById(conf.editorId);
+      super();
+      this.element = getElementFromAdapterConf(conf);
     }
 
     getEditorElement(): Element {

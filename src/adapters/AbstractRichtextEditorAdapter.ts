@@ -37,15 +37,10 @@ namespace acrolinx.plugins.adapter {
   import getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
 
   export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
-    editorId: string;
     html: string;
     currentHtmlChecking: string;
     isCheckingNow: boolean;
     prevCheckedHtml: string;
-
-    constructor(conf: AdapterConf) {
-      this.editorId = conf.editorId;
-    }
 
     abstract getEditorDocument(): Document;
 

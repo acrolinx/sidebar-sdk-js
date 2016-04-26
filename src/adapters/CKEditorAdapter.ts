@@ -28,6 +28,13 @@ namespace acrolinx.plugins.adapter {
   import Match = acrolinx.sidebar.Match;
 
   export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
+    editorId: string;
+
+    constructor(conf: HasEditorID) {
+      super();
+      this.editorId = conf.editorId;
+    }
+
     getEditor() {
       return CKEDITOR.instances[this.editorId];
     }

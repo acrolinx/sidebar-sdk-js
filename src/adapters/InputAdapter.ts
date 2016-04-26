@@ -39,13 +39,8 @@ namespace acrolinx.plugins.adapter {
     html: string;
     currentHtmlChecking: string;
 
-    constructor(elementOrConf: ValidInputElement | AdapterConf) {
-      if (elementOrConf instanceof Element) {
-        this.element = elementOrConf;
-      } else {
-        const conf = elementOrConf as AdapterConf;
-        this.element = document.getElementById(conf.editorId) as ValidInputElement;
-      }
+    constructor(conf:  AdapterConf) {
+      this.element = getElementFromAdapterConf(conf) as ValidInputElement;
     }
 
     getHTML() {

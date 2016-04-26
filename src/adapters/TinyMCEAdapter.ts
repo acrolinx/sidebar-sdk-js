@@ -22,6 +22,12 @@ namespace acrolinx.plugins.adapter {
   'use strict';
 
   export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
+    editorId: string;
+
+    constructor(conf: HasEditorID) {
+      super();
+      this.editorId = conf.editorId;
+    }
 
     getEditor() {
       return tinymce.get(this.editorId);

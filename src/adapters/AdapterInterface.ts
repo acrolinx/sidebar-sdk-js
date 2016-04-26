@@ -4,20 +4,40 @@ namespace acrolinx.plugins.adapter {
   import Check = acrolinx.sidebar.Check;
   import CheckResult = acrolinx.sidebar.CheckResult;
 
-  export interface AdapterConf {
+
+  export interface HasEditorID {
     editorId: string;
   }
 
+  interface HasElement {
+    element: HTMLElement;
+  }
+
+  export type AdapterConf = HasEditorID | HasElement;
+
   export interface AdapterInterface {
-    getEditor?() : any;
+    getEditor?(): any;
     getFormat?(): string;
     getDocumentReference?(): string;
     getHTML?(): string;
-    extractHTMLForCheck() : HtmlResult | Promise<HtmlResult>;
-    registerCheckCall(checkInfo: Check) : void;
+    extractHTMLForCheck(): HtmlResult | Promise<HtmlResult>;
+    registerCheckCall(checkInfo: Check): void;
     registerCheckResult(checkResult: CheckResult): void;
-    selectRanges(checkId: string, matches: Match[]) : void;
-    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) : void;
+    selectRanges(checkId: string, matches: Match[]): void;
+    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void;
   }
+
+  export function isHasEditorID(a: AdapterConf): a is HasEditorID {
+    return !!(a as HasEditorID).editorId;
+  }
+
+  export function getElementFromAdapterConf(conf: AdapterConf) {
+    if (isHasEditorID(conf)) {
+      return document.getElementById(conf.editorId) as HTMLElement;
+    } else {
+      return conf.element;
+    }
+  }
+
 }
 
