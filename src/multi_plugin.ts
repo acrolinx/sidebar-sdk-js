@@ -24,6 +24,8 @@
 namespace acrolinx.plugins {
   'use strict';
 
+  import _ = acrolinxLibs._;
+  
   import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
   import DownloadInfo = acrolinx.sidebar.DownloadInfo;
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
@@ -32,8 +34,8 @@ namespace acrolinx.plugins {
   import CheckResult = acrolinx.sidebar.CheckResult;
   import AcrolinxSidebar = acrolinx.sidebar.AcrolinxSidebar;
   import AcrolinxSidebarPlugin = acrolinx.sidebar.AcrolinxPlugin;
+  import initFloatingSidebar = acrolinx.plugins.floatingSidebar.initFloatingSidebar;
 
-  import _ = acrolinxLibs._;
 
   export interface  AcrolinxPluginConfig {
     sidebarContainerId?: string;
@@ -65,6 +67,11 @@ namespace acrolinx.plugins {
 
   function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface) {
     const sidebarContainer = document.getElementById(config.sidebarContainerId);
+
+    if (!sidebarContainer) {
+      throw new Error(`Acrolinx can't find an element with the configured sidebarContainerId "${config.sidebarContainerId}".`);
+    }
+
     const sidebarIFrameElement = document.createElement('iframe') as HTMLIFrameElement;
     sidebarContainer.appendChild(sidebarIFrameElement);
     const sidebarContentWindow = sidebarIFrameElement.contentWindow as IFrameWindowOfSidebar;
@@ -210,6 +217,25 @@ namespace acrolinx.plugins {
     init() {
       initAcrolinxSamplePlugin(this.config, this.adapter);
     }
+  }
+
+  export function autoBindFloatingSidebar(basicConf: AcrolinxPluginConfig) {
+    const conf = _.assign({}, basicConf, {
+      sidebarContainerId: floatingSidebar.SIDEBAR_CONTAINER_ID
+    });
+
+    initFloatingSidebar();
+
+    const acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
+    const adapters = acrolinx.plugins.autobind.bindAdaptersForCurrentPage();
+    const multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(conf);
+
+    adapters.forEach(function (adapter) {
+      multiAdapter.addSingleAdapter(adapter);
+    });
+
+    acrolinxPlugin.registerAdapter(multiAdapter);
+    acrolinxPlugin.init();
   }
 
 

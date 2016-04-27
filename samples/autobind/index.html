@@ -19,8 +19,9 @@
 <div>
   <h2>IFrame from different domain.</h2>
   <!-- Just an example for a page from a different domain. -->
-  <iframe src="https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/master/samples/autobind/iframe-different-domain.html"
-          frameborder="0"></iframe>
+  <iframe
+    src="https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/master/samples/autobind/iframe-different-domain.html"
+    frameborder="0"></iframe>
 </div>
 
 
@@ -34,7 +35,7 @@
 
 <script>
   window.addEventListener("load", function () {
-    console.log(acrolinx.plugins.autobind.bindAdaptersForCurrentPage());
+    acrolinx.plugins.autoBindFloatingSidebar(basicConf);
   });
 </script>
 

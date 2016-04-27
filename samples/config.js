@@ -28,7 +28,7 @@ var basicConf = {
   serverAddress: 'http://<SERVER NAME>:8031',
   clientSignature: '<CLIENT SIGNATURE>'
 
-  // These settings are only effective on servers with disabled checking profiles.
+// These settings are only effective on servers with disabled checking profiles.
   //checkSettings: {
   //  'language': 'en',
   //  'ruleSetName': 'Plain English',
