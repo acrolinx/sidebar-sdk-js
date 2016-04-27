@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Auto Bind Example</title>
+</head>
+<body>
+
+
+<div style="float: left">
+  <p><textarea name="" id="" cols="30" rows="10">Text withh a errorr.</textarea></p>
+  <p><input type="text" value="head line with problemm"/></p>
+  <div contenteditable="true">This content has an problemm.</div>
+</div>
+
+<iframe src="iframe.html" frameborder="0" height="400" style="float: left"></iframe>
+
+
+<div>
+  <h2>IFrame from different domain.</h2>
+  <!-- Just an example for a page from a different domain. -->
+  <iframe src="https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/master/samples/autobind/iframe-different-domain.html"
+          frameborder="0"></iframe>
+</div>
+
+
+<script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+<script src="/bower_components/lodash/lodash.js"></script>
+<script src="/bower_components/q/q.js"></script>
+<script src="/bower_components/google-diff-match-patch-js/diff_match_patch_uncompressed.js"></script>
+
+<script src="/distrib/acrolinx-sidebar-integration.js"></script>
+<script src="../config.js"></script>
+
+<script>
+  window.addEventListener("load", function () {
+    console.log(acrolinx.plugins.autobind.bindAdaptersForCurrentPage());
+  });
+</script>
+
+
+</body>
+</html>

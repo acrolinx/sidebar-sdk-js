@@ -21,4 +21,8 @@ namespace  acrolinx.test.utils {
     return matches;
   }
 
+  export function assertDeepEqual<T>(val: T, expected: T) {
+    assert.equal(JSON.stringify(val), JSON.stringify(expected));
+  }
+
 }

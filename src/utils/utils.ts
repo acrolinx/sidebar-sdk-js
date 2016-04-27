@@ -17,7 +17,7 @@ namespace acrolinx.plugins.utils {
     const request = new XMLHttpRequest();
     request.open('GET', url, true);
 
-    request.onload = function() {
+    request.onload = function () {
       if (request.status >= 200 && request.status < 400) {
         callback(request.responseText);
       } else {
@@ -25,11 +25,15 @@ namespace acrolinx.plugins.utils {
       }
     };
 
-    request.onerror = function() {
+    request.onerror = function () {
       throw new Error(`Error while loading ${url}.`);
     };
 
     request.send();
+  }
+
+  export function isIFrame(el: HTMLElement): el is HTMLIFrameElement {
+    return el.nodeName === 'IFRAME';
   }
 
 }

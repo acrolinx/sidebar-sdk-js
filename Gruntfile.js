@@ -30,7 +30,7 @@ module.exports = function(grunt){
           livereload: '<%= connect.options.livereload %>'
         },
         files: [
-          'src/**/*', 'distrib/**/*'
+          'src/**/*', 'distrib/**/*', 'samples/**/*'
         ]
       },
       tslint: {
@@ -60,7 +60,7 @@ module.exports = function(grunt){
           middleware: function(connect){
             var proxy = require('grunt-connect-proxy/lib/utils').proxyRequest;
             return [
-              connect().use('/', connect.static('./samples/client')),
+              connect().use('/', connect.static('./samples')),
               connect().use('/tmp/compiled', connect.static('tmp/compiled')),
               connect().use('/test', connect.static('./test')),
               connect().use('/distrib', connect.static('./distrib')),
