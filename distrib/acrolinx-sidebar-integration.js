@@ -203,6 +203,10 @@ var acrolinx;
                 request.send();
             }
             utils.fetch = fetch;
+            function isIFrame(el) {
+                return el.nodeName === 'IFRAME';
+            }
+            utils.isIFrame = isIFrame;
         })(utils = plugins.utils || (plugins.utils = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
@@ -718,6 +722,58 @@ var acrolinx;
             }(adapter.TinyMCEAdapter));
             adapter.TinyMCEWordpressAdapter = TinyMCEWordpressAdapter;
         })(adapter = plugins.adapter || (plugins.adapter = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
+        var autobind;
+        (function (autobind) {
+            'use strict';
+            var isIFrame = acrolinx.plugins.utils.isIFrame;
+            var InputAdapter = acrolinx.plugins.adapter.InputAdapter;
+            var ContentEditableAdapter = acrolinx.plugins.adapter.ContentEditableAdapter;
+            var EDITABLE_ELEMENTS_SELECTOR = [
+                'input:not([type])',
+                'input[type=""]',
+                'input[type=text]',
+                '[contenteditable="true"]',
+                'textarea',
+                'iframe'
+            ].join(', ');
+            function isVisible(el) {
+                return el.offsetHeight > 0 && el.offsetWidth > 0;
+            }
+            function getEditableElements(doc) {
+                if (doc === void 0) { doc = document; }
+                var visibleElements = _.filter(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR), isVisible);
+                return _.flatMap(visibleElements, function (el) {
+                    if (isIFrame(el)) {
+                        try {
+                            return el.contentDocument ? getEditableElements(el.contentDocument) : [];
+                        }
+                        catch (err) {
+                            return [];
+                        }
+                    }
+                    else {
+                        return [el];
+                    }
+                });
+            }
+            function bindAdaptersForCurrentPage() {
+                return getEditableElements().map(function (editable) {
+                    if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {
+                        return new InputAdapter({ element: editable });
+                    }
+                    else {
+                        return new ContentEditableAdapter({ element: editable });
+                    }
+                });
+            }
+            autobind.bindAdaptersForCurrentPage = bindAdaptersForCurrentPage;
+        })(autobind = plugins.autobind || (plugins.autobind = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
 var acrolinx;
