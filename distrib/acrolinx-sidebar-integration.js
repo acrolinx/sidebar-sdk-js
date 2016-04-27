@@ -780,8 +780,57 @@ var acrolinx;
 (function (acrolinx) {
     var plugins;
     (function (plugins) {
+        var floatingSidebar;
+        (function (floatingSidebar) {
+            'use strict';
+            floatingSidebar.SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
+            function addStyles() {
+                var styleTag = document.createElement('style');
+                var head = document.querySelector('head');
+                styleTag.innerHTML = "\n      #acrolinxFloatingSidebar {\n        top: 0;\n        left: 0;\n        position: fixed;\n        width: 300px;\n        padding-top: 20px;\n        cursor: move;\n        background: #3e96db;\n        height: 500px;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n      }\n  \n      #acrolinxFloatingSidebar #" + floatingSidebar.SIDEBAR_CONTAINER_ID + ",\n      #acrolinxFloatingSidebar #" + floatingSidebar.SIDEBAR_CONTAINER_ID + " iframe {\n        background: white;\n        height: 100%;\n        border: none;\n      }\n    ";
+                head.appendChild(styleTag);
+            }
+            function initFloatingSidebar() {
+                var floatingSidebarElement = document.createElement('div');
+                floatingSidebarElement.id = 'acrolinxFloatingSidebar';
+                var body = document.querySelector('body');
+                var isDragging = false;
+                var relativeMouseDownX = 0;
+                var relativeMouseDownY = 0;
+                function move(xpos, ypos) {
+                    floatingSidebarElement.style.left = xpos + 'px';
+                    floatingSidebarElement.style.top = ypos + 'px';
+                }
+                document.addEventListener('mousemove', function (event) {
+                    if (isDragging) {
+                        move(Math.max(event.clientX - relativeMouseDownX, 0), Math.max(event.clientY - relativeMouseDownY, 0));
+                    }
+                });
+                floatingSidebarElement.addEventListener('mousedown', function (event) {
+                    var divTop = parseInt(floatingSidebarElement.style.top.replace('px', '')) || 0;
+                    var divLeft = parseInt(floatingSidebarElement.style.left.replace('px', '')) || 0;
+                    relativeMouseDownX = event.clientX - divLeft;
+                    relativeMouseDownY = event.clientY - divTop;
+                    isDragging = true;
+                });
+                document.addEventListener('mouseup', function () {
+                    isDragging = false;
+                });
+                floatingSidebarElement.innerHTML = "<div id=\"" + floatingSidebar.SIDEBAR_CONTAINER_ID + "\"></div>";
+                addStyles();
+                body.appendChild(floatingSidebarElement);
+            }
+            floatingSidebar.initFloatingSidebar = initFloatingSidebar;
+        })(floatingSidebar = plugins.floatingSidebar || (plugins.floatingSidebar = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
         'use strict';
         var _ = acrolinxLibs._;
+        var initFloatingSidebar = acrolinx.plugins.floatingSidebar.initFloatingSidebar;
         var clientComponents = [
             {
                 id: 'com.acrolinx.sidebarexample',
@@ -795,6 +844,9 @@ var acrolinx;
         }
         function initAcrolinxSamplePlugin(config, editorAdapter) {
             var sidebarContainer = document.getElementById(config.sidebarContainerId);
+            if (!sidebarContainer) {
+                throw new Error("Acrolinx can't find an element with the configured sidebarContainerId \"" + config.sidebarContainerId + "\".");
+            }
             var sidebarIFrameElement = document.createElement('iframe');
             sidebarContainer.appendChild(sidebarIFrameElement);
             var sidebarContentWindow = sidebarIFrameElement.contentWindow;
@@ -920,6 +972,21 @@ var acrolinx;
             return AcrolinxPlugin;
         }());
         plugins.AcrolinxPlugin = AcrolinxPlugin;
+        function autoBindFloatingSidebar(basicConf) {
+            var conf = _.assign({}, basicConf, {
+                sidebarContainerId: plugins.floatingSidebar.SIDEBAR_CONTAINER_ID
+            });
+            initFloatingSidebar();
+            var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
+            var adapters = acrolinx.plugins.autobind.bindAdaptersForCurrentPage();
+            var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(conf);
+            adapters.forEach(function (adapter) {
+                multiAdapter.addSingleAdapter(adapter);
+            });
+            acrolinxPlugin.registerAdapter(multiAdapter);
+            acrolinxPlugin.init();
+        }
+        plugins.autoBindFloatingSidebar = autoBindFloatingSidebar;
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
 var acrolinx;
