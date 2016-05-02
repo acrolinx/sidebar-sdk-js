@@ -38,6 +38,7 @@ namespace acrolinx.plugins {
   import initFloatingSidebar = acrolinx.plugins.floatingSidebar.initFloatingSidebar;
   import connectAcrolinxPluginToMessages = acrolinx.plugins.messageAdapter.connectAcrolinxPluginToMessages;
   import loadSidebarIntoIFrame = acrolinx.plugins.utils.loadSidebarIntoIFrame;
+  import AutoBindAdapter = acrolinx.plugins.adapter.AutoBindAdapter;
 
 
   export interface  AcrolinxPluginConfig {
@@ -224,14 +225,7 @@ namespace acrolinx.plugins {
     initFloatingSidebar();
 
     const acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
-    const adapters = acrolinx.plugins.autobind.bindAdaptersForCurrentPage();
-    const multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(conf);
-
-    adapters.forEach(function (adapter) {
-      multiAdapter.addSingleAdapter(adapter);
-    });
-
-    acrolinxPlugin.registerAdapter(multiAdapter);
+    acrolinxPlugin.registerAdapter(new AutoBindAdapter(conf));
     acrolinxPlugin.init();
   }
 
