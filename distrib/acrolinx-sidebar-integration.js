@@ -784,10 +784,14 @@ var acrolinx;
         (function (floatingSidebar) {
             'use strict';
             floatingSidebar.SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
+            var initialPos = {
+                top: 100,
+                left: 100
+            };
             function addStyles() {
                 var styleTag = document.createElement('style');
                 var head = document.querySelector('head');
-                styleTag.innerHTML = "\n      #acrolinxFloatingSidebar {\n        top: 0;\n        left: 0;\n        position: fixed;\n        width: 300px;\n        padding-top: 20px;\n        cursor: move;\n        background: #3e96db;\n        height: 500px;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n      }\n  \n      #acrolinxFloatingSidebar #" + floatingSidebar.SIDEBAR_CONTAINER_ID + ",\n      #acrolinxFloatingSidebar #" + floatingSidebar.SIDEBAR_CONTAINER_ID + " iframe {\n        background: white;\n        height: 100%;\n        border: none;\n      }\n    ";
+                styleTag.innerHTML = "\n      #acrolinxFloatingSidebar {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 20px;\n        cursor: move;\n        background: #3e96db;\n        height: 500px;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: 10000;\n      }\n  \n      #acrolinxFloatingSidebar #" + floatingSidebar.SIDEBAR_CONTAINER_ID + ",\n      #acrolinxFloatingSidebar #" + floatingSidebar.SIDEBAR_CONTAINER_ID + " iframe {\n        background: white;\n        height: 100%;\n        border: none;\n      }\n    ";
                 head.appendChild(styleTag);
             }
             function initFloatingSidebar() {
@@ -807,8 +811,8 @@ var acrolinx;
                     }
                 });
                 floatingSidebarElement.addEventListener('mousedown', function (event) {
-                    var divTop = parseInt(floatingSidebarElement.style.top.replace('px', '')) || 0;
-                    var divLeft = parseInt(floatingSidebarElement.style.left.replace('px', '')) || 0;
+                    var divLeft = parseInt(floatingSidebarElement.style.left.replace('px', '')) || initialPos.left;
+                    var divTop = parseInt(floatingSidebarElement.style.top.replace('px', '')) || initialPos.top;
                     relativeMouseDownX = event.clientX - divLeft;
                     relativeMouseDownY = event.clientY - divTop;
                     isDragging = true;
@@ -828,9 +832,175 @@ var acrolinx;
 (function (acrolinx) {
     var plugins;
     (function (plugins) {
+        var messageAdapter;
+        (function (messageAdapter) {
+            'use strict';
+            function postCommandAsMessage(window, command) {
+                var args = [];
+                for (var _i = 2; _i < arguments.length; _i++) {
+                    args[_i - 2] = arguments[_i];
+                }
+                window.postMessage({ command: command, args: args }, '*');
+            }
+            function injectPostCommandAsMessage(window, object) {
+                var _loop_1 = function(key) {
+                    var originalMethod = object[key];
+                    object[key] = function () {
+                        var args = [];
+                        for (var _i = 0; _i < arguments.length; _i++) {
+                            args[_i - 0] = arguments[_i];
+                        }
+                        postCommandAsMessage.apply(void 0, [window, key].concat(args));
+                        return originalMethod.apply(object, args);
+                    };
+                };
+                for (var key in object) {
+                    _loop_1(key);
+                }
+            }
+            function connectAcrolinxPluginToMessages(acrolinxPlugin, sidebarWindowIframe) {
+                var acrolinxPluginAny = acrolinxPlugin;
+                var sidebar = {
+                    init: function (initParameters) {
+                    },
+                    checkGlobal: function (documentContent, options) {
+                        return { checkId: 'dummyCheckId' };
+                    },
+                    onGlobalCheckRejected: function () {
+                    },
+                    invalidateRanges: function (invalidCheckedDocumentRanges) {
+                    },
+                    onVisibleRangesChanged: function (checkedDocumentRanges) {
+                    }
+                };
+                injectPostCommandAsMessage(sidebarWindowIframe.contentWindow, sidebar);
+                function receiveMessage(event) {
+                    var _a = event.data, command = _a.command, args = _a.args;
+                    if (acrolinxPluginAny[command]) {
+                        if (command === 'requestInit') {
+                            acrolinxPluginAny.requestInit(sidebar);
+                        }
+                        else {
+                            acrolinxPluginAny[command].apply(acrolinxPluginAny, args);
+                        }
+                    }
+                }
+                addEventListener('message', receiveMessage, false);
+            }
+            messageAdapter.connectAcrolinxPluginToMessages = connectAcrolinxPluginToMessages;
+            function createPluginMessageAdapter() {
+                var windowAny = window;
+                function receiveMessage(event) {
+                    var _a = event.data, command = _a.command, args = _a.args;
+                    if (windowAny.acrolinxSidebar[command]) {
+                        windowAny.acrolinxSidebar[command].apply(windowAny.acrolinxSidebar, args);
+                    }
+                }
+                addEventListener('message', receiveMessage, false);
+                var acrolinxSidebarPlugin = {
+                    requestInit: function () {
+                    },
+                    onInitFinished: function (initFinishedResult) {
+                    },
+                    configure: function (configuration) {
+                    },
+                    requestGlobalCheck: function () {
+                    },
+                    onCheckResult: function (checkResult) {
+                    },
+                    selectRanges: function (checkId, matches) {
+                    },
+                    replaceRanges: function (checkId, matchesWithReplacement) {
+                    },
+                    download: function (download) {
+                    },
+                    openWindow: function (urlSpec) {
+                    }
+                };
+                injectPostCommandAsMessage(window.parent, acrolinxSidebarPlugin);
+                return acrolinxSidebarPlugin;
+            }
+            messageAdapter.createPluginMessageAdapter = createPluginMessageAdapter;
+        })(messageAdapter = plugins.messageAdapter || (plugins.messageAdapter = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
+        var utils;
+        (function (utils) {
+            'use strict';
+            utils.SIDEBAR_URL = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
+            function createCSSLinkElement(href) {
+                var el = document.createElement('link');
+                el.rel = 'stylesheet';
+                el.href = href;
+                return el;
+            }
+            function createScriptElement(src) {
+                var el = document.createElement('script');
+                el.src = src;
+                el.type = 'text/javascript';
+                el.async = false;
+                el.defer = false;
+                return el;
+            }
+            function loadSidebarCode(sidebarUrl) {
+                if (sidebarUrl === void 0) { sidebarUrl = utils.SIDEBAR_URL; }
+                var sidebarBaseUrl = sidebarUrl;
+                var getAbsoluteAttributeValue = function (s) { return s.replace(/^.*"(.*)".*$/g, sidebarBaseUrl + '$1'); };
+                utils.fetch(sidebarBaseUrl + 'index.html', function (sidebarHtml) {
+                    var withoutComments = sidebarHtml.replace(/<!--[\s\S]*?-->/g, '');
+                    var head = document.querySelector('head');
+                    var css = withoutComments
+                        .match(/href=".*?"/g)
+                        .map(getAbsoluteAttributeValue);
+                    css.forEach(function (ref) {
+                        head.appendChild(createCSSLinkElement(ref));
+                    });
+                    var scripts = withoutComments
+                        .match(/src=".*?"/g)
+                        .map(getAbsoluteAttributeValue);
+                    scripts.forEach(function (ref) {
+                        head.appendChild(createScriptElement(ref));
+                    });
+                });
+            }
+            utils.loadSidebarCode = loadSidebarCode;
+            function loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded) {
+                var sidebarBaseUrl = config.sidebarUrl || utils.SIDEBAR_URL;
+                var completeSidebarUrl = sidebarBaseUrl + 'index.html';
+                if (config.useMessageAdapter) {
+                    sidebarIFrameElement.addEventListener('load', onSidebarLoaded);
+                    sidebarIFrameElement.src = completeSidebarUrl;
+                }
+                else {
+                    utils.fetch(completeSidebarUrl, function (sidebarHtml) {
+                        var sidebarContentWindow = sidebarIFrameElement.contentWindow;
+                        var sidebarHtmlWithAbsoluteLinks = sidebarHtml
+                            .replace(/src="/g, 'src="' + sidebarBaseUrl)
+                            .replace(/href="/g, 'href="' + sidebarBaseUrl);
+                        sidebarContentWindow.document.open();
+                        sidebarContentWindow.document.write(sidebarHtmlWithAbsoluteLinks);
+                        sidebarContentWindow.document.close();
+                        onSidebarLoaded();
+                    });
+                }
+            }
+            utils.loadSidebarIntoIFrame = loadSidebarIntoIFrame;
+        })(utils = plugins.utils || (plugins.utils = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
         'use strict';
         var _ = acrolinxLibs._;
         var initFloatingSidebar = acrolinx.plugins.floatingSidebar.initFloatingSidebar;
+        var connectAcrolinxPluginToMessages = acrolinx.plugins.messageAdapter.connectAcrolinxPluginToMessages;
+        var loadSidebarIntoIFrame = acrolinx.plugins.utils.loadSidebarIntoIFrame;
         var clientComponents = [
             {
                 id: 'com.acrolinx.sidebarexample',
@@ -852,8 +1022,9 @@ var acrolinx;
             var sidebarContentWindow = sidebarIFrameElement.contentWindow;
             var adapter = editorAdapter;
             function onSidebarLoaded() {
+                var acrolinxSidebar;
                 function initSidebarOnPremise() {
-                    sidebarContentWindow.acrolinxSidebar.init(_.assign({}, {
+                    acrolinxSidebar.init(_.assign({}, {
                         showServerSelector: true,
                         clientComponents: clientComponents
                     }, config));
@@ -863,7 +1034,7 @@ var acrolinx;
                         window.alert(html.error);
                     }
                     else {
-                        var checkInfo = sidebarContentWindow.acrolinxSidebar.checkGlobal(html.html, {
+                        var checkInfo = acrolinxSidebar.checkGlobal(html.html, {
                             inputFormat: format || 'HTML',
                             requestDescription: {
                                 documentReference: documentReference || 'filename.html'
@@ -873,7 +1044,8 @@ var acrolinx;
                     }
                 }
                 var acrolinxSidebarPlugin = {
-                    requestInit: function () {
+                    requestInit: function (acrolinxSidebarArg) {
+                        acrolinxSidebar = acrolinxSidebarArg || sidebarContentWindow.acrolinxSidebar;
                         console.log('requestInit');
                         initSidebarOnPremise();
                     },
@@ -910,7 +1082,7 @@ var acrolinx;
                         }
                         catch (msg) {
                             console.log(msg);
-                            sidebarContentWindow.acrolinxSidebar.invalidateRanges(matches.map(function (match) {
+                            acrolinxSidebar.invalidateRanges(matches.map(function (match) {
                                 return {
                                     checkId: checkId,
                                     range: match.range
@@ -925,7 +1097,7 @@ var acrolinx;
                         }
                         catch (msg) {
                             console.log(msg);
-                            sidebarContentWindow.acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function (match) {
+                            acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function (match) {
                                 return {
                                     checkId: checkId,
                                     range: match.range
@@ -943,21 +1115,14 @@ var acrolinx;
                     }
                 };
                 console.log('Install acrolinxPlugin in sidebar.');
-                sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
+                if (config.useMessageAdapter) {
+                    connectAcrolinxPluginToMessages(acrolinxSidebarPlugin, sidebarIFrameElement);
+                }
+                else {
+                    sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
+                }
             }
-            function loadSidebarIntoIFrame() {
-                var sidebarBaseUrl = config.sidebarUrl || 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
-                plugins.utils.fetch(sidebarBaseUrl + 'index.html', function (sidebarHtml) {
-                    var sidebarHtmlWithAbsoluteLinks = sidebarHtml
-                        .replace(/src="/g, 'src="' + sidebarBaseUrl)
-                        .replace(/href="/g, 'href="' + sidebarBaseUrl);
-                    sidebarContentWindow.document.open();
-                    sidebarContentWindow.document.write(sidebarHtmlWithAbsoluteLinks);
-                    sidebarContentWindow.document.close();
-                    onSidebarLoaded();
-                });
-            }
-            loadSidebarIntoIFrame();
+            loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded);
         }
         var AcrolinxPlugin = (function () {
             function AcrolinxPlugin(conf) {
