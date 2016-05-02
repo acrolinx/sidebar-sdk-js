@@ -358,6 +358,41 @@ var acrolinx;
     var plugins;
     (function (plugins) {
         var adapter;
+        (function (adapter_1) {
+            'use strict';
+            var AutoBindAdapter = (function () {
+                function AutoBindAdapter(conf) {
+                    this.conf = conf;
+                }
+                AutoBindAdapter.prototype.extractHTMLForCheck = function () {
+                    var _this = this;
+                    this.multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(this.conf);
+                    acrolinx.plugins.autobind.bindAdaptersForCurrentPage().forEach(function (adapter) {
+                        _this.multiAdapter.addSingleAdapter(adapter);
+                    });
+                    return this.multiAdapter.extractHTMLForCheck();
+                };
+                AutoBindAdapter.prototype.registerCheckCall = function (checkInfo) {
+                };
+                AutoBindAdapter.prototype.registerCheckResult = function (checkResult) {
+                };
+                AutoBindAdapter.prototype.selectRanges = function (checkId, matches) {
+                    this.multiAdapter.selectRanges(checkId, matches);
+                };
+                AutoBindAdapter.prototype.replaceRanges = function (checkId, matchesWithReplacement) {
+                    this.multiAdapter.replaceRanges(checkId, matchesWithReplacement);
+                };
+                return AutoBindAdapter;
+            }());
+            adapter_1.AutoBindAdapter = AutoBindAdapter;
+        })(adapter = plugins.adapter || (plugins.adapter = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
+        var adapter;
         (function (adapter) {
             'use strict';
             var CKEditorAdapter = (function (_super) {
@@ -537,7 +572,7 @@ var acrolinx;
     var plugins;
     (function (plugins) {
         var adapter;
-        (function (adapter_1) {
+        (function (adapter_2) {
             'use strict';
             var _ = acrolinxLibs._;
             var MultiEditorAdapter = (function () {
@@ -592,13 +627,13 @@ var acrolinx;
                     var map = {};
                     for (var _i = 0, matches_1 = matches; _i < matches_1.length; _i++) {
                         var match = matches_1[_i];
-                        var adapter_2 = this.getAdapterForMatch(match);
-                        if (!map.hasOwnProperty(adapter_2.id)) {
-                            map[adapter_2.id] = { matches: [], adapter: adapter_2.adapter };
+                        var adapter_3 = this.getAdapterForMatch(match);
+                        if (!map.hasOwnProperty(adapter_3.id)) {
+                            map[adapter_3.id] = { matches: [], adapter: adapter_3.adapter };
                         }
                         var remappedMatch = _.clone(match);
-                        remappedMatch.range = [match.range[0] - adapter_2.start, match.range[1] - adapter_2.start];
-                        map[adapter_2.id].matches.push(remappedMatch);
+                        remappedMatch.range = [match.range[0] - adapter_3.start, match.range[1] - adapter_3.start];
+                        map[adapter_3.id].matches.push(remappedMatch);
                     }
                     return map;
                 };
@@ -613,7 +648,7 @@ var acrolinx;
                 };
                 return MultiEditorAdapter;
             }());
-            adapter_1.MultiEditorAdapter = MultiEditorAdapter;
+            adapter_2.MultiEditorAdapter = MultiEditorAdapter;
         })(adapter = plugins.adapter || (plugins.adapter = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
@@ -1001,6 +1036,7 @@ var acrolinx;
         var initFloatingSidebar = acrolinx.plugins.floatingSidebar.initFloatingSidebar;
         var connectAcrolinxPluginToMessages = acrolinx.plugins.messageAdapter.connectAcrolinxPluginToMessages;
         var loadSidebarIntoIFrame = acrolinx.plugins.utils.loadSidebarIntoIFrame;
+        var AutoBindAdapter = acrolinx.plugins.adapter.AutoBindAdapter;
         var clientComponents = [
             {
                 id: 'com.acrolinx.sidebarexample',
@@ -1143,12 +1179,7 @@ var acrolinx;
             });
             initFloatingSidebar();
             var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
-            var adapters = acrolinx.plugins.autobind.bindAdaptersForCurrentPage();
-            var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(conf);
-            adapters.forEach(function (adapter) {
-                multiAdapter.addSingleAdapter(adapter);
-            });
-            acrolinxPlugin.registerAdapter(multiAdapter);
+            acrolinxPlugin.registerAdapter(new AutoBindAdapter(conf));
             acrolinxPlugin.init();
         }
         plugins.autoBindFloatingSidebar = autoBindFloatingSidebar;
