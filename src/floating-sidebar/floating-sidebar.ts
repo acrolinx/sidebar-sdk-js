@@ -3,13 +3,18 @@ namespace acrolinx.plugins.floatingSidebar {
 
   export const SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
 
+  const initialPos = {
+    top: 100,
+    left: 100
+  };
+
   function addStyles() {
     const styleTag = document.createElement('style');
     const head = document.querySelector('head');
     styleTag.innerHTML = `
       #acrolinxFloatingSidebar {
-        top: 0;
-        left: 0;
+        top: ${initialPos.top}px;
+        left: ${initialPos.left}px;
         position: fixed;
         width: 300px;
         padding-top: 20px;
@@ -19,6 +24,7 @@ namespace acrolinx.plugins.floatingSidebar {
         box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
         border-radius: 3px;
         user-select: none;
+        z-index: 10000;
       }
   
       #acrolinxFloatingSidebar #${SIDEBAR_CONTAINER_ID},
@@ -52,8 +58,8 @@ namespace acrolinx.plugins.floatingSidebar {
 
 
     floatingSidebarElement.addEventListener('mousedown', event => {
-      const divTop = parseInt(floatingSidebarElement.style.top.replace('px', '')) || 0;
-      const divLeft = parseInt(floatingSidebarElement.style.left.replace('px', '')) || 0;
+      const divLeft = parseInt(floatingSidebarElement.style.left.replace('px', '')) || initialPos.left;
+      const divTop = parseInt(floatingSidebarElement.style.top.replace('px', '')) || initialPos.top;
       relativeMouseDownX = event.clientX - divLeft;
       relativeMouseDownY = event.clientY - divTop;
       isDragging = true;

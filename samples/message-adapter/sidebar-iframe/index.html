@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sidebar IFrame using the Message Adapter</title>
+</head>
+<body>
+
+<script src="/bower_components/lodash/lodash.js"></script>
+<script src="/bower_components/q/q.js"></script>
+<script src="/bower_components/google-diff-match-patch-js/diff_match_patch_uncompressed.js"></script>
+<script src="/distrib/acrolinx-sidebar-integration.js"></script>
+
+<div id="app">
+  <div class="showbox">
+    <img class="spinner" alt="">
+  </div>
+</div>
+<script>
+  var acrolinxPlugin = acrolinx.plugins.messageAdapter.createPluginMessageAdapter();
+  acrolinx.plugins.utils.loadSidebarCode();
+</script>
+
+</body>
+</html>

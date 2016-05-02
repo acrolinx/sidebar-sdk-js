@@ -19,13 +19,14 @@
  */
 
 /// <reference path="utils/utils.ts" />
+/// <reference path="utils/sidebar-loader.ts" />
 
 
 namespace acrolinx.plugins {
   'use strict';
 
   import _ = acrolinxLibs._;
-  
+
   import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
   import DownloadInfo = acrolinx.sidebar.DownloadInfo;
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
@@ -35,11 +36,14 @@ namespace acrolinx.plugins {
   import AcrolinxSidebar = acrolinx.sidebar.AcrolinxSidebar;
   import AcrolinxSidebarPlugin = acrolinx.sidebar.AcrolinxPlugin;
   import initFloatingSidebar = acrolinx.plugins.floatingSidebar.initFloatingSidebar;
+  import connectAcrolinxPluginToMessages = acrolinx.plugins.messageAdapter.connectAcrolinxPluginToMessages;
+  import loadSidebarIntoIFrame = acrolinx.plugins.utils.loadSidebarIntoIFrame;
 
 
   export interface  AcrolinxPluginConfig {
     sidebarContainerId?: string;
     sidebarUrl?: string;
+    useMessageAdapter?: boolean;
   }
 
   export interface HtmlResult {
@@ -79,9 +83,10 @@ namespace acrolinx.plugins {
     const adapter = editorAdapter;
 
     function onSidebarLoaded() {
+      let acrolinxSidebar: AcrolinxSidebar;
 
       function initSidebarOnPremise() {
-        sidebarContentWindow.acrolinxSidebar.init(_.assign({}, {
+        acrolinxSidebar.init(_.assign({}, {
           showServerSelector: true,
           clientComponents: clientComponents
         }, config));
@@ -91,7 +96,7 @@ namespace acrolinx.plugins {
         if (html.hasOwnProperty('error')) {
           window.alert(html.error);
         } else {
-          const checkInfo = sidebarContentWindow.acrolinxSidebar.checkGlobal(html.html, {
+          const checkInfo = acrolinxSidebar.checkGlobal(html.html, {
             inputFormat: format || 'HTML',
             requestDescription: {
               documentReference: documentReference || 'filename.html'
@@ -102,7 +107,8 @@ namespace acrolinx.plugins {
       }
 
       const acrolinxSidebarPlugin: acrolinx.sidebar.AcrolinxPlugin = {
-        requestInit () {
+        requestInit (acrolinxSidebarArg?: AcrolinxSidebar) {
+          acrolinxSidebar = acrolinxSidebarArg || sidebarContentWindow.acrolinxSidebar;
           console.log('requestInit');
           initSidebarOnPremise();
         },
@@ -142,7 +148,8 @@ namespace acrolinx.plugins {
             adapter.selectRanges(checkId, matches);
           } catch (msg) {
             console.log(msg);
-            sidebarContentWindow.acrolinxSidebar.invalidateRanges(matches.map(function (match) {
+
+            acrolinxSidebar.invalidateRanges(matches.map(function (match) {
                 return {
                   checkId: checkId,
                   range: match.range
@@ -159,7 +166,7 @@ namespace acrolinx.plugins {
             adapter.replaceRanges(checkId, matchesWithReplacement);
           } catch (msg) {
             console.log(msg);
-            sidebarContentWindow.acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function (match) {
+            acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function (match) {
                 return {
                   checkId: checkId,
                   range: match.range
@@ -181,24 +188,14 @@ namespace acrolinx.plugins {
       };
 
       console.log('Install acrolinxPlugin in sidebar.');
-      sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
+      if (config.useMessageAdapter) {
+        connectAcrolinxPluginToMessages(acrolinxSidebarPlugin, sidebarIFrameElement);
+      } else {
+        sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
+      }
     }
 
-
-    function loadSidebarIntoIFrame() {
-      const sidebarBaseUrl = config.sidebarUrl || 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
-      utils.fetch(sidebarBaseUrl + 'index.html', sidebarHtml => {
-        const sidebarHtmlWithAbsoluteLinks = sidebarHtml
-          .replace(/src="/g, 'src="' + sidebarBaseUrl)
-          .replace(/href="/g, 'href="' + sidebarBaseUrl);
-        sidebarContentWindow.document.open();
-        sidebarContentWindow.document.write(sidebarHtmlWithAbsoluteLinks);
-        sidebarContentWindow.document.close();
-        onSidebarLoaded();
-      });
-    }
-
-    loadSidebarIntoIFrame();
+    loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded);
   }
 
 
