@@ -36,4 +36,8 @@ namespace acrolinx.plugins.utils {
     return el.nodeName === 'IFRAME';
   }
 
+  export function fakeInputEvent(el: Element) {
+    el.dispatchEvent(new CustomEvent('input'));
+  }
+
 }

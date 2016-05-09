@@ -17,6 +17,7 @@ describe('adapter test', function () {
   let adapter: AdapterInterface;
 
   const dummyCheckId = 'dummyCheckId';
+  let inputEventWasTriggered = false;
 
   type DoneCallback = () => void;
 
@@ -40,7 +41,9 @@ describe('adapter test', function () {
       inputFormat: 'HTML',
       editorElement: '<div id="editorId" contenteditable="true">initial text</div>',
       setEditorContent: (html: string, done: DoneCallback) => {
-        $('#editorId').html(html);
+        $('#editorId').html(html).on('input', ()=> {
+          inputEventWasTriggered = true;
+        });
         done();
       },
       remove: () => {
@@ -52,7 +55,9 @@ describe('adapter test', function () {
       inputFormat: 'TEXT',
       editorElement: '<textarea id="editorId">initial text</textarea>',
       setEditorContent: (html: string, done: DoneCallback) => {
-        $('#editorId').val(html);
+        $('#editorId').val(html).on('input', ()=> {
+          inputEventWasTriggered = true;
+        });
         done();
       },
       remove: () => {
@@ -111,6 +116,7 @@ describe('adapter test', function () {
 
 
   adapters.forEach(adapterSpec => {
+    inputEventWasTriggered = false;
 
     const adapterName = adapterSpec.name;
     describe('adapter ' + adapterName, function () {
@@ -188,6 +194,16 @@ describe('adapter test', function () {
           done();
         });
       });
+
+      if (adapterSpec.name === 'ContentEditableAdapter' || adapterSpec.name == 'InputAdapter') {
+        it('Replacements should trigger an input event', function (done) {
+          givenAText('wordOne wordTwo wordThree', (text) => {
+            adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+            assert.isTrue(inputEventWasTriggered);
+            done();
+          });
+        });
+      }
 
       it('Replace words in reverse order', function (done) {
         givenAText('wordOne wordTwo wordThree', (text) => {

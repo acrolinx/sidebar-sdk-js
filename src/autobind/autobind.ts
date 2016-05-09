@@ -12,6 +12,7 @@ namespace acrolinx.plugins.autobind {
     'input[type=""]', // type attribute present, but empty
     'input[type=text]',
     '[contenteditable="true"]',
+    '[contenteditable="plaintext-only"]',
     'textarea',
     'iframe'
   ].join(', ');

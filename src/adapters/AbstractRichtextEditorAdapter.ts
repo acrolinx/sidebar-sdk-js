@@ -35,6 +35,7 @@ namespace acrolinx.plugins.adapter {
   import CheckResult = acrolinx.sidebar.CheckResult;
   import Check = acrolinx.sidebar.Check;
   import getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
+  import fakeInputEvent = acrolinx.plugins.utils.fakeInputEvent;
 
   export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
     html: string;
@@ -161,6 +162,7 @@ namespace acrolinx.plugins.adapter {
       // Replacement will remove the selection, so we need to restore it again.
       this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
       this.scrollToCurrentSelection();
+      fakeInputEvent(this.getEditorElement());
     }
 
     private getTextDomMapping() {

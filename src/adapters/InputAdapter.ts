@@ -31,6 +31,7 @@ namespace acrolinx.plugins.adapter {
   import Check = acrolinx.sidebar.Check;
   import CheckResult = acrolinx.sidebar.CheckResult;
   import getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
+  import fakeInputEvent = acrolinx.plugins.utils.fakeInputEvent;
 
   type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
@@ -122,6 +123,7 @@ namespace acrolinx.plugins.adapter {
       const startOfSelection = alignedMatches[0].range[0];
       const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
       this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
+      fakeInputEvent(this.element);
     }
   }
 }
