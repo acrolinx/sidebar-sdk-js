@@ -27,9 +27,6 @@ namespace acrolinx.test.multiPlugin {
     let afterCheckCallback: Function;
     let invalidatedRanges: InvalidDocumentPart[];
     
-    let foundInjectedStuff
-
-
     afterEach((done) => {
       $('#multiPluginTest').remove();
       done();
