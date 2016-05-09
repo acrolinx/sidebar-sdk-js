@@ -16,10 +16,9 @@ namespace acrolinx.test.multiPlugin {
   import Check = acrolinx.sidebar.Check;
   import CheckedDocumentRange = acrolinx.sidebar.CheckedDocumentRange;
   import InvalidDocumentPart = acrolinx.sidebar.InvalidDocumentPart;
+  import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 
   const DUMMY_CHECK_ID = 'dummyCheckId';
-
-
 
   describe('multi plugin', function () {
     let injectedPlugin: AcrolinxPlugin;
@@ -27,9 +26,16 @@ namespace acrolinx.test.multiPlugin {
     let lastDocumentContent: string;
     let afterCheckCallback: Function;
     let invalidatedRanges: InvalidDocumentPart[];
+    
+    let foundInjectedStuff
 
 
-    beforeEach((done) => {
+    afterEach((done) => {
+      $('#multiPluginTest').remove();
+      done();
+    });
+
+    function initMultiPlugin(done: Function, config: AcrolinxPluginConfig = {}) {
       injectedPlugin = null;
       lastDocumentContent = null;
 
@@ -42,10 +48,10 @@ namespace acrolinx.test.multiPlugin {
       `);
 
 
-      const conf = {
+      const conf = _.assign({}, {
         sidebarContainerId: 'sidebarContainer',
         sidebarUrl: location.pathname === '/test/' ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/'
-      };
+      }, config);
 
       const acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
       const contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter({editorId: 'ContentEditableAdapter'});
@@ -78,12 +84,7 @@ namespace acrolinx.test.multiPlugin {
       }
 
       pollForInjectedAcrolinxPlug();
-    });
-
-    afterEach((done) => {
-      $('#multiPluginTest').remove();
-      done();
-    });
+    }
 
 
     function getIFrameWindow(): any {
@@ -130,66 +131,92 @@ namespace acrolinx.test.multiPlugin {
     }
 
 
-    it('request check', (done) => {
-      waitForCheck(() => {
-        assert.equal(lastDocumentContent,
-          '<div id="acrolinx_integration0">Initial text of ContentEditableAdapter.</div>' +
-          '<div id="acrolinx_integration1">Initial text of InputAdapter.</div>'
-        );
-        done();
-      })
+    describe('normal', () => {
+      beforeEach((done) => {
+        initMultiPlugin(done);
+      });
+
+      it('request check', (done) => {
+        waitForCheck(() => {
+          assert.equal(lastDocumentContent,
+            '<div id="acrolinx_integration0">Initial text of ContentEditableAdapter.</div>' +
+            '<div id="acrolinx_integration1">Initial text of InputAdapter.</div>'
+          );
+          done();
+        })
+      });
+
+      it('selectRanges', (done) => {
+        waitForCheck(() => {
+          const selectedText = 'ContentEditableAdapter';
+          const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
+
+          injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
+          assert.equal(document.getSelection().toString(), selectedText);
+          done();
+        })
+      });
+
+      it('replaceRanges', (done) => {
+        waitForCheck(() => {
+          const textToReplace = 'ContentEditableAdapter';
+          const replacement = 'ContentEditableAdapterReplacement';
+          const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, textToReplace, replacement);
+          injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
+          assert.equal(document.getSelection().toString(), replacement);
+          done();
+        })
+      });
+
+      it('trying to select modified ranges invalidated them', (done) => {
+        waitForCheck(() => {
+          const selectedText = 'ContentEditableAdapter';
+          const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
+          console.log(contentEditableAdapterMatch);
+          $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
+          injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
+          assert.deepEqual(invalidatedRanges, [{
+            checkId: DUMMY_CHECK_ID,
+            range: contentEditableAdapterMatch[0].range
+          }]);
+          done();
+        })
+      });
+
+      it('trying to replace modified ranges invalidated them', (done) => {
+        waitForCheck(() => {
+          const selectedText = 'ContentEditableAdapter';
+          const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
+          console.log(contentEditableAdapterMatch);
+          $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
+          injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
+          assert.deepEqual(invalidatedRanges, [{
+            checkId: DUMMY_CHECK_ID,
+            range: contentEditableAdapterMatch[0].range
+          }]);
+          done();
+        })
+      });
+
     });
 
-    it('selectRanges', (done) => {
-      waitForCheck(() => {
-        const selectedText = 'ContentEditableAdapter';
-        const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
 
-        injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.equal(document.getSelection().toString(), selectedText);
-        done();
-      })
-    });
+    describe('with onSidebarWindowLoaded config', () => {
+      const injectedStuff = 'injected';
 
-    it('replaceRanges', (done) => {
-      waitForCheck(() => {
-        const textToReplace = 'ContentEditableAdapter';
-        const replacement = 'ContentEditableAdapterReplacement';
-        const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, textToReplace, replacement);
-        injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.equal(document.getSelection().toString(), replacement);
-        done();
-      })
-    });
+      beforeEach((done) => {
+        initMultiPlugin(done, {
+          onSidebarWindowLoaded: (sidebarWindow: Window) => {
+            assert.equal(sidebarWindow, getIFrameWindow());
+            (sidebarWindow as any).injectedStuff = injectedStuff;
+          }
+        });
+      });
 
-    it('trying to select modified ranges invalidated them', (done) => {
-      waitForCheck(() => {
-        const selectedText = 'ContentEditableAdapter';
-        const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
-        console.log(contentEditableAdapterMatch);
-        $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
-        injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.deepEqual(invalidatedRanges, [{
-          checkId: DUMMY_CHECK_ID,
-          range: contentEditableAdapterMatch[0].range
-        }]);
-        done();
-      })
-    });
+      it('onSidebarWindowLoaded was called on sidebar window', () => {
+        assert.equal((getIFrameWindow() as any).injectedStuff, injectedStuff);
+      });
 
-    it('trying to replace modified ranges invalidated them', (done) => {
-      waitForCheck(() => {
-        const selectedText = 'ContentEditableAdapter';
-        const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
-        console.log(contentEditableAdapterMatch);
-        $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
-        injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.deepEqual(invalidatedRanges, [{
-          checkId: DUMMY_CHECK_ID,
-          range: contentEditableAdapterMatch[0].range
-        }]);
-        done();
-      })
     });
 
   });

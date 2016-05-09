@@ -45,6 +45,7 @@ namespace acrolinx.plugins {
     sidebarContainerId?: string;
     sidebarUrl?: string;
     useMessageAdapter?: boolean;
+    onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
   }
 
   export interface HtmlResult {
@@ -187,6 +188,10 @@ namespace acrolinx.plugins {
         }
 
       };
+
+      if (config.onSidebarWindowLoaded) {
+        config.onSidebarWindowLoaded(sidebarContentWindow);
+      }
 
       console.log('Install acrolinxPlugin in sidebar.');
       if (config.useMessageAdapter) {
