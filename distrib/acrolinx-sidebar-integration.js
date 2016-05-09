@@ -1150,6 +1150,9 @@ var acrolinx;
                         window.open(url);
                     }
                 };
+                if (config.onSidebarWindowLoaded) {
+                    config.onSidebarWindowLoaded(sidebarContentWindow);
+                }
                 console.log('Install acrolinxPlugin in sidebar.');
                 if (config.useMessageAdapter) {
                     connectAcrolinxPluginToMessages(acrolinxSidebarPlugin, sidebarIFrameElement);
