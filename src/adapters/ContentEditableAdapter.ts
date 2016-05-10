@@ -17,14 +17,20 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
+
+/// <reference path="../utils/scrolling.ts" />
+
 namespace acrolinx.plugins.adapter {
   'use strict';
+
+  import scrollIntoView = acrolinx.plugins.utils.scrollIntoView;
+
 
   export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
     element: Element;
 
     constructor(conf: AdapterConf) {
-      super();
+      super(conf);
       this.element = getElementFromAdapterConf(conf);
     }
 
@@ -38,6 +44,10 @@ namespace acrolinx.plugins.adapter {
 
     getEditorDocument(): Document {
       return this.element.ownerDocument;
+    }
+
+    protected scrollElementIntoView(el: HTMLElement) {
+      scrollIntoView(el, this.config.scrollOffsetY);
     }
 
   }

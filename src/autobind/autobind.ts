@@ -6,6 +6,8 @@ namespace acrolinx.plugins.autobind {
   import InputAdapter = acrolinx.plugins.adapter.InputAdapter;
   import ContentEditableAdapter = acrolinx.plugins.adapter.ContentEditableAdapter;
   import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
+  import AdapterConf = acrolinx.plugins.adapter.AdapterConf;
+
 
   const EDITABLE_ELEMENTS_SELECTOR = [
     'input:not([type])', // type attribute not present in markup
@@ -40,12 +42,13 @@ namespace acrolinx.plugins.autobind {
   }
 
 
-  export function bindAdaptersForCurrentPage(): AdapterInterface[] {
+  export function bindAdaptersForCurrentPage(conf: AcrolinxPluginConfig = {}): AdapterInterface[] {
     return getEditableElements().map(function (editable) {
+      const adapterConf = _.assign({}, conf, {element: editable}) as AdapterConf;
       if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {
-        return new InputAdapter({element: editable});
+        return new InputAdapter(adapterConf);
       } else {
-        return new ContentEditableAdapter({element: editable});
+        return new ContentEditableAdapter(adapterConf);
       }
     });
   }

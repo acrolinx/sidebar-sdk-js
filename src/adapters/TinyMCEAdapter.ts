@@ -25,7 +25,7 @@ namespace acrolinx.plugins.adapter {
     editorId: string;
 
     constructor(conf: HasEditorID) {
-      super();
+      super(conf);
       this.editorId = conf.editorId;
     }
 

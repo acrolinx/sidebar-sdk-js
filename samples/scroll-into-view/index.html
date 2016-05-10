@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Acrolinx Scroll Into View Test Page</title>
+  <script src="/bower_components/ckeditor/ckeditor.js"></script>
+  <script src="/bower_components/tinymce/tinymce.js"></script>
+
+  <script src="/bower_components/lodash/lodash.js"></script>
+  <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/bower_components/q/q.js"></script>
+  <script src="/bower_components/google-diff-match-patch-js/diff_match_patch_uncompressed.js"></script>
+
+  <script src="/distrib/acrolinx-sidebar-integration.js"></script>
+  <link rel="stylesheet" href="../../style.css"/>
+
+  <style>
+    #sidebarContainer {
+      position: fixed;
+      height: 500px;;
+      top: 0px;
+      right: 0px;
+    }
+  </style>
+
+  <script>
+
+  </script>
+</head>
+<body onload="initAcrolinx()">
+<div id="sidebarContainer"></div>
+<div id="app" style="width: 800px">
+  <h1>Acrolinx - Scroll Into View - Test Page</h1>
+
+  <pre id="errorMessage"></pre>
+  <form>
+    <div style="display: table;width: 100%">
+      <div style="display: table-cell; width: 50%">
+        <p>Normal Text (Editable div)</p>
+
+        <div id="EditableDiv" contenteditable="true" spellcheck="false" style="max-height: 5em">
+          editable div onee
+          <br><br><br> <br><br><br>
+          Endd
+        </div>
+
+      </div>
+      <div style="display: table-cell">
+        <p>Normal Text (TextArea)</p>
+        <textarea id="textarea" style="width: 200px;height: 60px">Hellow world!</textarea>
+      </div>
+    </div>
+    <p>CK Editor</p>
+        <textarea name="CkEditor" id="editor_ck" rows="10" cols="40">
+            This textt has more then a errorr.
+        </textarea>
+    <p>TinyMCE Editor</p>
+        <textarea name="TinyEditor" id="editor_tinymce" rows="10" cols="40">
+            This textt has more then a errorr.
+        </textarea>
+    <script>
+      CKEDITOR.disableAutoInline = true;
+      // Replace the <textarea id="editor1"> with a CKEditor
+      // instance, using default configuration.
+    </script>
+
+    <div style="display: table;width: 100%">
+      <div style="display: table-cell; width: 50%">
+        <p>Normal Text (Editable div)</p>
+
+        <div id="EditableDiv2" contenteditable="true" spellcheck="false" style="max-height: 5em">
+          editable div twoo
+          <br><br><br> <br><br><br>
+          Endd
+        </div>
+      </div>
+      <div style="display: table-cell">
+        <p>Normal Text (TextArea)</p>
+        <textarea id="textarea2" style="width: 200px;height: 60px">textarea twoo!</textarea>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<script src="../config.js"></script>
+<script type="text/javascript">
+  'use strict';
+
+
+  function initAcrolinx() {
+
+    var conf = _.assign({}, basicConf, {scrollOffsetY: 30});
+
+    //Init the main Acrolinx Plugin
+    var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
+
+    //A simple Adapter for a Editable Div
+    var contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter(_.extend(_.clone(conf), {editorId: 'EditableDiv'}));
+    var inputAdapter = new acrolinx.plugins.adapter.InputAdapter(_.extend(_.clone(conf), {editorId: 'textarea'}));
+    var ckEditorAdapter = new acrolinx.plugins.adapter.CKEditorAdapter(_.extend(_.clone(conf), {editorId: 'editor_ck'}));
+    var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter(_.extend(_.clone(conf), {editorId: 'editor_tinymce'}));
+
+    var contentEditableAdapter2 = new acrolinx.plugins.adapter.ContentEditableAdapter(_.extend(_.clone(conf), {editorId: 'EditableDiv2'}));
+    var inputAdapter2 = new acrolinx.plugins.adapter.InputAdapter(_.extend(_.clone(conf), {editorId: 'textarea2'}));
+
+    var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(conf);
+    multiAdapter.addSingleAdapter(contentEditableAdapter);
+    multiAdapter.addSingleAdapter(inputAdapter);
+    multiAdapter.addSingleAdapter(ckEditorAdapter, 'span class="hello"');
+    multiAdapter.addSingleAdapter(tinyMceAdapter, 'span class="hello"');
+
+    multiAdapter.addSingleAdapter(contentEditableAdapter2);
+    multiAdapter.addSingleAdapter(inputAdapter2);
+
+    //Register one Element-Adapter to the main Acrolinx PLugin
+    acrolinxPlugin.registerAdapter(multiAdapter);
+
+
+    //Init Acrolinx Plugin.
+    acrolinxPlugin.init();
+
+
+    CKEDITOR.replace('editor_ck', {
+      height: 50
+    });
+
+    tinymce.init({selector: "#editor_tinymce", height: 50});
+
+    if (_.includes(window.location.search, 'innerScrollBar')) {
+      $('#app').css({
+        height: '400px',
+        overflow: 'auto',
+        'margin-top': '200px'
+      });
+    }
+
+  }
+
+</script>
+
+</body>
+</html>

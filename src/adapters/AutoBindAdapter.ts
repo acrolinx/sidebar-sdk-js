@@ -33,7 +33,7 @@ namespace acrolinx.plugins.adapter {
 
     extractHTMLForCheck() {
       this.multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(this.conf);
-      acrolinx.plugins.autobind.bindAdaptersForCurrentPage().forEach(adapter => {
+      acrolinx.plugins.autobind.bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
         this.multiAdapter.addSingleAdapter(adapter);
       });
       return this.multiAdapter.extractHTMLForCheck();

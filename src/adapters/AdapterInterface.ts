@@ -5,11 +5,15 @@ namespace acrolinx.plugins.adapter {
   import CheckResult = acrolinx.sidebar.CheckResult;
 
 
-  export interface HasEditorID {
+  interface CommonAdapterConf {
+    scrollOffsetY?: number;
+  }
+
+  export interface HasEditorID extends CommonAdapterConf {
     editorId: string;
   }
 
-  interface HasElement {
+  interface HasElement extends CommonAdapterConf {
     element: HTMLElement;
   }
 

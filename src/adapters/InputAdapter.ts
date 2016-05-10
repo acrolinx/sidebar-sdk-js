@@ -19,6 +19,7 @@
  */
 
 /// <reference path="../utils/utils.ts" />
+/// <reference path="../utils/scrolling.ts" />
 
 namespace acrolinx.plugins.adapter {
   'use strict';
@@ -32,16 +33,19 @@ namespace acrolinx.plugins.adapter {
   import CheckResult = acrolinx.sidebar.CheckResult;
   import getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
   import fakeInputEvent = acrolinx.plugins.utils.fakeInputEvent;
+  import scrollIntoView = acrolinx.plugins.utils.scrollIntoView;
 
   type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
   export class InputAdapter implements AdapterInterface {
     element: ValidInputElement;
+    config: AdapterConf;
     html: string;
     currentHtmlChecking: string;
 
-    constructor(conf:  AdapterConf) {
+    constructor(conf: AdapterConf) {
       this.element = getElementFromAdapterConf(conf) as ValidInputElement;
+      this.config = conf;
     }
 
     getHTML() {
@@ -88,7 +92,7 @@ namespace acrolinx.plugins.adapter {
 
       el.setSelectionRange(newBegin, newBegin + matchLength);
       el.focus();
-      el.scrollIntoView();
+      scrollIntoView(el, this.config.scrollOffsetY);
     }
 
     selectRanges(checkId: string, matches: Match[]) {

@@ -39,9 +39,14 @@ namespace acrolinx.plugins.adapter {
 
   export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
     html: string;
+    config: AdapterConf;
     currentHtmlChecking: string;
     isCheckingNow: boolean;
     prevCheckedHtml: string;
+
+    constructor(conf: AdapterConf) {
+      this.config = conf;
+    }
 
     abstract getEditorDocument(): Document;
 
@@ -75,6 +80,7 @@ namespace acrolinx.plugins.adapter {
       const text = document.createElement('span');
       tmp.insertNode(text);
       text.scrollIntoView();
+      this.scrollElementIntoView(text);
       text.remove();
     }
 
@@ -88,6 +94,10 @@ namespace acrolinx.plugins.adapter {
           console.log('Scrolling Error: ', error);
         }
       }
+    }
+
+    protected scrollElementIntoView(el: HTMLElement) {
+      el.scrollIntoView();
     }
 
     selectRanges(checkId: string, matches: Match[]) {
