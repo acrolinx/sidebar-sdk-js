@@ -207,6 +207,10 @@ var acrolinx;
                 return el.nodeName === 'IFRAME';
             }
             utils.isIFrame = isIFrame;
+            function fakeInputEvent(el) {
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+            utils.fakeInputEvent = fakeInputEvent;
         })(utils = plugins.utils || (plugins.utils = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
@@ -220,8 +224,10 @@ var acrolinx;
             var lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
             var _ = acrolinxLibs._;
             var getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
+            var fakeInputEvent = acrolinx.plugins.utils.fakeInputEvent;
             var AbstractRichtextEditorAdapter = (function () {
-                function AbstractRichtextEditorAdapter() {
+                function AbstractRichtextEditorAdapter(conf) {
+                    this.config = conf;
                 }
                 AbstractRichtextEditorAdapter.prototype.getEditorElement = function () {
                     return this.getEditorDocument().querySelector('body');
@@ -245,6 +251,7 @@ var acrolinx;
                     var text = document.createElement('span');
                     tmp.insertNode(text);
                     text.scrollIntoView();
+                    this.scrollElementIntoView(text);
                     text.remove();
                 };
                 AbstractRichtextEditorAdapter.prototype.scrollToCurrentSelection = function () {
@@ -257,6 +264,9 @@ var acrolinx;
                             console.log('Scrolling Error: ', error);
                         }
                     }
+                };
+                AbstractRichtextEditorAdapter.prototype.scrollElementIntoView = function (el) {
+                    el.scrollIntoView();
                 };
                 AbstractRichtextEditorAdapter.prototype.selectRanges = function (checkId, matches) {
                     this.selectMatches(checkId, matches);
@@ -321,6 +331,7 @@ var acrolinx;
                     this.replaceAlignedMatches(alignedMatches);
                     this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
                     this.scrollToCurrentSelection();
+                    fakeInputEvent(this.getEditorElement());
                 };
                 AbstractRichtextEditorAdapter.prototype.getTextDomMapping = function () {
                     return plugins.utils.extractTextDomMapping(this.getEditorElement());
@@ -367,7 +378,7 @@ var acrolinx;
                 AutoBindAdapter.prototype.extractHTMLForCheck = function () {
                     var _this = this;
                     this.multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(this.conf);
-                    acrolinx.plugins.autobind.bindAdaptersForCurrentPage().forEach(function (adapter) {
+                    acrolinx.plugins.autobind.bindAdaptersForCurrentPage(this.conf).forEach(function (adapter) {
                         _this.multiAdapter.addSingleAdapter(adapter);
                     });
                     return this.multiAdapter.extractHTMLForCheck();
@@ -398,7 +409,7 @@ var acrolinx;
             var CKEditorAdapter = (function (_super) {
                 __extends(CKEditorAdapter, _super);
                 function CKEditorAdapter(conf) {
-                    _super.call(this);
+                    _super.call(this, conf);
                     this.editorId = conf.editorId;
                 }
                 CKEditorAdapter.prototype.getEditor = function () {
@@ -457,13 +468,68 @@ var acrolinx;
 (function (acrolinx) {
     var plugins;
     (function (plugins) {
+        var utils;
+        (function (utils) {
+            function getRootElement(doc) {
+                return (doc.documentElement || doc.body.parentNode || doc.body);
+            }
+            function getScrollTop(win) {
+                if (win === void 0) { win = window; }
+                return (win.pageYOffset !== undefined) ? win.pageYOffset : getRootElement(win.document).scrollTop;
+            }
+            function hasScrollBar(el) {
+                return el.clientHeight !== el.scrollHeight && el.tagName !== 'BODY' && el.tagName !== 'HTML';
+            }
+            function findAncestors(startEl) {
+                var result = [];
+                var currentEl = startEl.parentElement;
+                while (currentEl) {
+                    result.push(currentEl);
+                    currentEl = currentEl.parentElement;
+                }
+                return result;
+            }
+            function findScrollableAncestors(startEl) {
+                return findAncestors(startEl).filter(hasScrollBar);
+            }
+            function scrollIntoView(targetEl, windowTopOffset, localTopOffset) {
+                if (windowTopOffset === void 0) { windowTopOffset = 0; }
+                if (localTopOffset === void 0) { localTopOffset = 0; }
+                if (!windowTopOffset) {
+                    targetEl.scrollIntoView();
+                    return;
+                }
+                var pos = targetEl.getBoundingClientRect();
+                var scrollableAncestors = findScrollableAncestors(targetEl);
+                if (scrollableAncestors.length <= 2) {
+                    scrollableAncestors.forEach(function (scrollableOuterContainer) {
+                        var containerPos = scrollableOuterContainer.getBoundingClientRect();
+                        if (pos.top < containerPos.top + localTopOffset || pos.bottom > containerPos.bottom) {
+                            scrollableOuterContainer.scrollTop = pos.top - containerPos.top - localTopOffset;
+                        }
+                    });
+                }
+                var scrollTop = getScrollTop();
+                if (pos.top < windowTopOffset || pos.bottom > window.innerHeight) {
+                    window.scrollTo(0, scrollTop + pos.top - windowTopOffset);
+                }
+            }
+            utils.scrollIntoView = scrollIntoView;
+        })(utils = plugins.utils || (plugins.utils = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
         var adapter;
         (function (adapter) {
             'use strict';
+            var scrollIntoView = acrolinx.plugins.utils.scrollIntoView;
             var ContentEditableAdapter = (function (_super) {
                 __extends(ContentEditableAdapter, _super);
                 function ContentEditableAdapter(conf) {
-                    _super.call(this);
+                    _super.call(this, conf);
                     this.element = adapter.getElementFromAdapterConf(conf);
                 }
                 ContentEditableAdapter.prototype.getEditorElement = function () {
@@ -474,6 +540,9 @@ var acrolinx;
                 };
                 ContentEditableAdapter.prototype.getEditorDocument = function () {
                     return this.element.ownerDocument;
+                };
+                ContentEditableAdapter.prototype.scrollElementIntoView = function (el) {
+                    scrollIntoView(el, this.config.scrollOffsetY);
                 };
                 return ContentEditableAdapter;
             }(adapter.AbstractRichtextEditorAdapter));
@@ -491,9 +560,12 @@ var acrolinx;
             var lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
             var _ = acrolinxLibs._;
             var getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
+            var fakeInputEvent = acrolinx.plugins.utils.fakeInputEvent;
+            var scrollIntoView = acrolinx.plugins.utils.scrollIntoView;
             var InputAdapter = (function () {
                 function InputAdapter(conf) {
                     this.element = adapter.getElementFromAdapterConf(conf);
+                    this.config = conf;
                 }
                 InputAdapter.prototype.getHTML = function () {
                     return this.element.value;
@@ -530,7 +602,7 @@ var acrolinx;
                     }
                     el.setSelectionRange(newBegin, newBegin + matchLength);
                     el.focus();
-                    el.scrollIntoView();
+                    scrollIntoView(el, this.config.scrollOffsetY);
                 };
                 InputAdapter.prototype.selectRanges = function (checkId, matches) {
                     this.selectMatches(checkId, matches);
@@ -560,6 +632,7 @@ var acrolinx;
                     var startOfSelection = alignedMatches[0].range[0];
                     var replacement = alignedMatches.map(function (m) { return m.originalMatch.replacement; }).join('');
                     this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
+                    fakeInputEvent(this.element);
                 };
                 return InputAdapter;
             }());
@@ -575,18 +648,25 @@ var acrolinx;
         (function (adapter_2) {
             'use strict';
             var _ = acrolinxLibs._;
+            function createStartTag(wrapper, id) {
+                var allAttributes = _.assign({}, wrapper.attributes, { id: id });
+                var allAttributesString = _.map(allAttributes, function (value, key) { return (key + "=\"" + _.escape(value) + "\""); }).join(' ');
+                return "<" + wrapper.tagName + " " + allAttributesString + ">";
+            }
             var MultiEditorAdapter = (function () {
                 function MultiEditorAdapter(conf) {
                     this.config = conf;
                     this.adapters = [];
                 }
-                MultiEditorAdapter.prototype.addSingleAdapter = function (singleAdapter, wrapper, id) {
-                    if (wrapper === void 0) { wrapper = 'div'; }
+                MultiEditorAdapter.prototype.addSingleAdapter = function (singleAdapter, opts, id) {
+                    if (opts === void 0) { opts = {}; }
                     if (id === void 0) { id = 'acrolinx_integration' + this.adapters.length; }
-                    this.adapters.push({ id: id, adapter: singleAdapter, wrapper: wrapper });
-                };
-                MultiEditorAdapter.prototype.getWrapperTag = function (wrapper) {
-                    return wrapper.split(' ')[0];
+                    this.adapters.push({
+                        id: id, adapter: singleAdapter, wrapper: {
+                            tagName: opts.tagName || 'div',
+                            attributes: opts.attributes || {}
+                        }
+                    });
                 };
                 MultiEditorAdapter.prototype.extractHTMLForCheck = function () {
                     var _this = this;
@@ -597,10 +677,10 @@ var acrolinx;
                         var html = '';
                         for (var i = 0; i < _this.adapters.length; i++) {
                             var el = _this.adapters[i];
-                            var tag = _this.getWrapperTag(el.wrapper);
-                            var startText = '<' + el.wrapper + ' id="' + el.id + '">';
+                            var tagName = el.wrapper.tagName;
+                            var startText = createStartTag(el.wrapper, el.id);
                             var elHtml = results[i].html;
-                            var newTag = startText + elHtml + '</' + tag + '>';
+                            var newTag = startText + elHtml + '</' + tagName + '>';
                             el.start = html.length + startText.length;
                             el.end = html.length + startText.length + elHtml.length;
                             html += newTag;
@@ -662,7 +742,7 @@ var acrolinx;
             var TinyMCEAdapter = (function (_super) {
                 __extends(TinyMCEAdapter, _super);
                 function TinyMCEAdapter(conf) {
-                    _super.call(this);
+                    _super.call(this, conf);
                     this.editorId = conf.editorId;
                 }
                 TinyMCEAdapter.prototype.getEditor = function () {
@@ -774,6 +854,7 @@ var acrolinx;
                 'input[type=""]',
                 'input[type=text]',
                 '[contenteditable="true"]',
+                '[contenteditable="plaintext-only"]',
                 'textarea',
                 'iframe'
             ].join(', ');
@@ -797,13 +878,15 @@ var acrolinx;
                     }
                 });
             }
-            function bindAdaptersForCurrentPage() {
+            function bindAdaptersForCurrentPage(conf) {
+                if (conf === void 0) { conf = {}; }
                 return getEditableElements().map(function (editable) {
+                    var adapterConf = _.assign({}, conf, { element: editable });
                     if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {
-                        return new InputAdapter({ element: editable });
+                        return new InputAdapter(adapterConf);
                     }
                     else {
-                        return new ContentEditableAdapter({ element: editable });
+                        return new ContentEditableAdapter(adapterConf);
                     }
                 });
             }
