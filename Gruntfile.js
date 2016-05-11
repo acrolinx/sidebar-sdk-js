@@ -19,7 +19,7 @@
  */
 var FS = require("q-io/fs");
 
-module.exports = function(grunt){
+module.exports = function (grunt) {
   var name = 'acrolinx-sidebar-integration';
   var version = '';
 
@@ -30,20 +30,23 @@ module.exports = function(grunt){
           livereload: '<%= connect.options.livereload %>'
         },
         files: [
-          'src/**/*', 'distrib/**/*', 'samples/**/*'
+          'src/**/*', 'distrib/**/*', 'samples/**/*', 'test/**/*'
         ]
       },
       tslint: {
-        options: {
-          atBegin: true
-        },
+        options: {atBegin: true},
         files: ['src/**/*.ts', 'tslint.json'],
         tasks: ['tslint']
       },
       ts: {
         options: {atBegin: true},
-        files: ['src/**/*.ts', 'test/**/*.ts'],
+        files: ['src/**/*.ts'],
         tasks: ['ts']
+      },
+      tsTest: {
+        options: {},
+        files: ['test/**/*.ts'],
+        tasks: ['ts:test']
       }
     },
 
@@ -57,7 +60,7 @@ module.exports = function(grunt){
 
       livereload: {
         options: {
-          middleware: function(connect){
+          middleware: function (connect) {
             var proxy = require('grunt-connect-proxy/lib/utils').proxyRequest;
             return [
               connect().use('/', connect.static('./samples')),
@@ -96,7 +99,7 @@ module.exports = function(grunt){
         dest: 'tmp/compiled/test.js',
         options: {
           noImplicitAny: true,
-          target: 'es5', //or es3
+          target: 'es5',
           sourceMap: false
         }
       }
@@ -109,7 +112,7 @@ module.exports = function(grunt){
       },
       files: {
         src: [
-          "src/**/*.ts","!src/typings/**/*.ts"
+          "src/**/*.ts", "!src/typings/**/*.ts"
         ]
       }
     },
@@ -183,15 +186,16 @@ module.exports = function(grunt){
     coverage: 'grunt-istanbul-coverage'
   });
 
-  grunt.registerTask('default', ['build', 'serve']);
+  grunt.registerTask('default', ['prepareBuild', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
-  grunt.registerTask('build', ['bower:install', 'clean:distrib', 'tslint', 'ts']);
+  grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts']);
+  grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib']);
   grunt.registerTask('distrib', ['bower:install', 'clean:distrib', 'tslint', 'ts', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
 
-  grunt.registerTask('release', 'Release the bower project', function(){
+  grunt.registerTask('release', 'Release the bower project', function () {
     var done = this.async();
-    FS.read('bower.json').then(function(bowerData){
-      FS.read('version').then(function(oldVersion){
+    FS.read('bower.json').then(function (bowerData) {
+      FS.read('version').then(function (oldVersion) {
         var bower = JSON.parse(bowerData);
 
         if (bower.version != oldVersion) {
@@ -237,6 +241,6 @@ module.exports = function(grunt){
   });
 
   grunt.registerTask('distribRelease', ['distrib', 'release']);
-  grunt.registerTask('karmaLocal', ['tslint','karma:ci', 'coverage']);
+  grunt.registerTask('karmaLocal', ['tslint', 'karma:ci', 'coverage']);
 
 };
