@@ -34,13 +34,33 @@ namespace acrolinx.plugins.adapter {
     adapter: AdapterInterface;
   }
 
+  type AttributeMap =  {[key: string]: any};
+
+  export interface AddSingleAdapterOptions {
+    tagName?: string;
+    attributes?: AttributeMap;
+  }
+
+  interface WrapperConf extends AddSingleAdapterOptions {
+    tagName: string;
+    attributes: AttributeMap;
+  }
+
   interface RegisteredAdapter {
     id: string;
     adapter: AdapterInterface;
-    wrapper: string;
+    wrapper: WrapperConf;
     start?: number;
     end?: number;
   }
+
+
+  function createStartTag(wrapper: WrapperConf, id: string) {
+    const allAttributes = _.assign({}, wrapper.attributes, {id}) as AttributeMap;
+    const allAttributesString = _.map(allAttributes, (value, key) => `${key}="${_.escape(value)}"`).join(' ');
+    return `<${wrapper.tagName} ${allAttributesString}>`;
+  }
+  
 
   export class MultiEditorAdapter implements AdapterInterface {
     config: AcrolinxPluginConfig;
@@ -52,12 +72,13 @@ namespace acrolinx.plugins.adapter {
       this.adapters = [];
     }
 
-    addSingleAdapter(singleAdapter: AdapterInterface, wrapper = 'div', id = 'acrolinx_integration' + this.adapters.length) {
-      this.adapters.push({id: id, adapter: singleAdapter, wrapper: wrapper});
-    }
-
-    getWrapperTag(wrapper: string) {
-      return wrapper.split(' ')[0];
+    addSingleAdapter(singleAdapter: AdapterInterface, opts: AddSingleAdapterOptions = {}, id = 'acrolinx_integration' + this.adapters.length) {
+      this.adapters.push({
+        id: id, adapter: singleAdapter, wrapper: {
+          tagName: opts.tagName || 'div',
+          attributes: opts.attributes || {}
+        }
+      });
     }
 
     extractHTMLForCheck() {
@@ -68,10 +89,10 @@ namespace acrolinx.plugins.adapter {
         let html = '';
         for (let i = 0; i < this.adapters.length; i++) {
           const el = this.adapters[i];
-          const tag = this.getWrapperTag(el.wrapper);
-          const startText = '<' + el.wrapper + ' id="' + el.id + '">';
+          const tagName = el.wrapper.tagName;
+          const startText = createStartTag(el.wrapper, el.id);
           const elHtml = results[i].html;
-          const newTag = startText + elHtml + '</' + tag + '>';
+          const newTag = startText + elHtml + '</' + tagName + '>';
           el.start = html.length + startText.length;
           el.end = html.length + startText.length + elHtml.length;
           html += newTag;

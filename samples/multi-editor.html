@@ -79,9 +79,17 @@
         var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_tinymce'}));
         var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(basicConf);
         multiAdapter.addSingleAdapter(contentEditableAdapter);
-        multiAdapter.addSingleAdapter(inputAdapter);
-        multiAdapter.addSingleAdapter(ckEditorAdapter,'span class="hello"');
-        multiAdapter.addSingleAdapter(tinyMceAdapter,'span class="hello"');
+
+        multiAdapter.addSingleAdapter(inputAdapter, {
+          tagName: 'h1',
+          attributes: {
+            'class': 'title',
+            'data-extra': false
+          }
+        });
+
+        multiAdapter.addSingleAdapter(ckEditorAdapter);
+        multiAdapter.addSingleAdapter(tinyMceAdapter);
 
         //Register one Element-Adapter to the main Acrolinx PLugin
         acrolinxPlugin.registerAdapter(multiAdapter);

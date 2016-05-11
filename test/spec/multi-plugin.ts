@@ -17,8 +17,14 @@ namespace acrolinx.test.multiPlugin {
   import CheckedDocumentRange = acrolinx.sidebar.CheckedDocumentRange;
   import InvalidDocumentPart = acrolinx.sidebar.InvalidDocumentPart;
   import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
+  import AddSingleAdapterOptions = acrolinx.plugins.adapter.AddSingleAdapterOptions;
 
   const DUMMY_CHECK_ID = 'dummyCheckId';
+
+  interface InitMultiPluginOpts {
+    config?: AcrolinxPluginConfig
+    addInputAdapterOptions?: AddSingleAdapterOptions
+  }
 
   describe('multi plugin', function () {
     let injectedPlugin: AcrolinxPlugin;
@@ -26,13 +32,13 @@ namespace acrolinx.test.multiPlugin {
     let lastDocumentContent: string;
     let afterCheckCallback: Function;
     let invalidatedRanges: InvalidDocumentPart[];
-    
+
     afterEach((done) => {
       $('#multiPluginTest').remove();
       done();
     });
 
-    function initMultiPlugin(done: Function, config: AcrolinxPluginConfig = {}) {
+    function initMultiPlugin(done: Function, {config = {}, addInputAdapterOptions}: InitMultiPluginOpts = {}) {
       injectedPlugin = null;
       lastDocumentContent = null;
 
@@ -54,7 +60,7 @@ namespace acrolinx.test.multiPlugin {
       const contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter({editorId: 'ContentEditableAdapter'});
       const inputAdapter = new acrolinx.plugins.adapter.InputAdapter({editorId: 'InputAdapter'});
       const multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter({});
-      multiAdapter.addSingleAdapter(contentEditableAdapter);
+      multiAdapter.addSingleAdapter(contentEditableAdapter, addInputAdapterOptions);
       multiAdapter.addSingleAdapter(inputAdapter);
 
       acrolinxPlugin.registerAdapter(multiAdapter);
@@ -203,9 +209,11 @@ namespace acrolinx.test.multiPlugin {
 
       beforeEach((done) => {
         initMultiPlugin(done, {
-          onSidebarWindowLoaded: (sidebarWindow: Window) => {
-            assert.equal(sidebarWindow, getIFrameWindow());
-            (sidebarWindow as any).injectedStuff = injectedStuff;
+          config: {
+            onSidebarWindowLoaded: (sidebarWindow: Window) => {
+              assert.equal(sidebarWindow, getIFrameWindow());
+              (sidebarWindow as any).injectedStuff = injectedStuff;
+            }
           }
         });
       });
@@ -214,6 +222,31 @@ namespace acrolinx.test.multiPlugin {
         assert.equal((getIFrameWindow() as any).injectedStuff, injectedStuff);
       });
 
+    });
+
+    describe('AddSingleAdapterOptions', () => {
+      it('extracted html contains additional attributes', (done) => {
+        initMultiPlugin(onInitDone, {
+          addInputAdapterOptions: {
+            tagName: 'h1',
+            attributes: {
+              'class': 'class',
+              'data-boolean': false,
+              'data-more': '"<tag>"'
+            }
+          }
+        });
+
+        function onInitDone() {
+          waitForCheck(() => {
+            assert.equal(lastDocumentContent,
+              '<h1 class="class" data-boolean="false" data-more="&quot;&lt;tag&gt;&quot;" id="acrolinx_integration0">Initial text of ContentEditableAdapter.</h1>' +
+              '<div id="acrolinx_integration1">Initial text of InputAdapter.</div>'
+            );
+            done();
+          })
+        }
+      });
     });
 
   });
