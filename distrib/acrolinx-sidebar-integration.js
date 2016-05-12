@@ -58,6 +58,28 @@ var acrolinx;
 (function (acrolinx) {
     var plugins;
     (function (plugins) {
+        var utils;
+        (function (utils) {
+            var _ = acrolinxLibs._;
+            function findDisplacement(offsetMappingArray, originalIndex) {
+                if (offsetMappingArray.length === 0) {
+                    return 0;
+                }
+                var index = _.sortedIndexBy(offsetMappingArray, { diffOffset: 0, oldPosition: originalIndex + 0.1 }, function (offsetAlign) { return offsetAlign.oldPosition; });
+                return index > 0 ? offsetMappingArray[index - 1].diffOffset : 0;
+            }
+            utils.findDisplacement = findDisplacement;
+            function findNewIndex(offsetMappingArray, originalIndex) {
+                return originalIndex + findDisplacement(offsetMappingArray, originalIndex);
+            }
+            utils.findNewIndex = findNewIndex;
+        })(utils = plugins.utils || (plugins.utils = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
         var lookup;
         (function (lookup) {
             var diffbased;
@@ -65,6 +87,7 @@ var acrolinx;
                 'use strict';
                 var _ = acrolinxLibs._;
                 var log = acrolinx.plugins.utils.log;
+                var findNewIndex = acrolinx.plugins.utils.findNewIndex;
                 var dmp = new diff_match_patch();
                 function createOffsetMappingArray(diffs) {
                     var offsetMappingArray = [];
@@ -115,14 +138,6 @@ var acrolinx;
                     return [resultText, offsetMapping];
                 }
                 diffbased.replaceTags = replaceTags;
-                function findNewOffset(offsetMappingArray, oldOffset) {
-                    if (offsetMappingArray.length === 0) {
-                        return 0;
-                    }
-                    var index = _.sortedIndexBy(offsetMappingArray, { diffOffset: 0, oldPosition: oldOffset + 0.1 }, function (offsetAlign) { return offsetAlign.oldPosition; });
-                    return index > 0 ? offsetMappingArray[index - 1].diffOffset : 0;
-                }
-                diffbased.findNewOffset = findNewOffset;
                 function hasModifiedWordBorders(offsetMappingArray, oldOffsetWord) {
                     return false;
                 }
@@ -138,11 +153,11 @@ var acrolinx;
                     var diffs = dmp.diff_main(cleanedCheckedDocument, currentDocument);
                     var offsetMappingArray = createOffsetMappingArray(diffs);
                     var alignedMatches = matches.map(function (match) {
-                        var beginAfterCleaning = match.range[0] + findNewOffset(cleaningOffsetMappingArray, match.range[0]);
-                        var endAfterCleaning = match.range[1] + findNewOffset(cleaningOffsetMappingArray, match.range[1]);
-                        var alignedBegin = beginAfterCleaning + findNewOffset(offsetMappingArray, beginAfterCleaning);
+                        var beginAfterCleaning = findNewIndex(cleaningOffsetMappingArray, match.range[0]);
+                        var endAfterCleaning = findNewIndex(cleaningOffsetMappingArray, match.range[1]);
+                        var alignedBegin = findNewIndex(offsetMappingArray, beginAfterCleaning);
                         var lastCharacterPos = endAfterCleaning - 1;
-                        var alignedEnd = lastCharacterPos + findNewOffset(offsetMappingArray, lastCharacterPos) + 1;
+                        var alignedEnd = findNewIndex(offsetMappingArray, lastCharacterPos) + 1;
                         var hasModifiedBorders = hasModifiedWordBorders(offsetMappingArray, match.range[0]) || hasModifiedWordBorders(offsetMappingArray, match.range[1]);
                         return {
                             originalMatch: match,
@@ -239,10 +254,10 @@ var acrolinx;
                     this.currentHtmlChecking = this.html;
                     this.prevCheckedHtml = this.currentHtmlChecking;
                 };
-                AbstractRichtextEditorAdapter.prototype.extractHTMLForCheck = function () {
-                    this.html = this.getHTML();
+                AbstractRichtextEditorAdapter.prototype.extractContentForCheck = function () {
+                    this.html = this.getContent();
                     this.currentHtmlChecking = this.html;
-                    return { html: this.html };
+                    return { content: this.html };
                 };
                 AbstractRichtextEditorAdapter.prototype.scrollIntoView = function (sel) {
                     var range = sel.getRangeAt(0);
@@ -375,13 +390,13 @@ var acrolinx;
                 function AutoBindAdapter(conf) {
                     this.conf = conf;
                 }
-                AutoBindAdapter.prototype.extractHTMLForCheck = function () {
+                AutoBindAdapter.prototype.extractContentForCheck = function () {
                     var _this = this;
                     this.multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(this.conf);
                     acrolinx.plugins.autobind.bindAdaptersForCurrentPage(this.conf).forEach(function (adapter) {
                         _this.multiAdapter.addSingleAdapter(adapter);
                     });
-                    return this.multiAdapter.extractHTMLForCheck();
+                    return this.multiAdapter.extractContentForCheck();
                 };
                 AutoBindAdapter.prototype.registerCheckCall = function (checkInfo) {
                 };
@@ -418,11 +433,11 @@ var acrolinx;
                 CKEditorAdapter.prototype.getEditorDocument = function () {
                     return this.getEditor().document.$;
                 };
-                CKEditorAdapter.prototype.getHTML = function () {
+                CKEditorAdapter.prototype.getContent = function () {
                     return this.getEditor().getData();
                 };
-                CKEditorAdapter.prototype.extractHTMLForCheck = function () {
-                    this.html = this.getHTML();
+                CKEditorAdapter.prototype.extractContentForCheck = function () {
+                    this.html = this.getContent();
                     this.currentHtmlChecking = this.html;
                     if (this.isInWysiwygMode()) {
                         if (this.html === '') {
@@ -437,7 +452,7 @@ var acrolinx;
                             return { error: 'Action is not permitted in Source mode.' };
                         }
                     }
-                    return { html: this.html };
+                    return { content: this.html };
                 };
                 CKEditorAdapter.prototype.selectRanges = function (checkId, matches) {
                     if (this.isInWysiwygMode()) {
@@ -535,7 +550,7 @@ var acrolinx;
                 ContentEditableAdapter.prototype.getEditorElement = function () {
                     return this.element;
                 };
-                ContentEditableAdapter.prototype.getHTML = function () {
+                ContentEditableAdapter.prototype.getContent = function () {
                     return this.element.innerHTML;
                 };
                 ContentEditableAdapter.prototype.getEditorDocument = function () {
@@ -567,19 +582,19 @@ var acrolinx;
                     this.element = adapter.getElementFromAdapterConf(conf);
                     this.config = conf;
                 }
-                InputAdapter.prototype.getHTML = function () {
+                InputAdapter.prototype.getContent = function () {
                     return this.element.value;
                 };
                 InputAdapter.prototype.getCurrentText = function () {
-                    return this.getHTML();
+                    return this.getContent();
                 };
                 InputAdapter.prototype.getFormat = function () {
                     return 'TEXT';
                 };
-                InputAdapter.prototype.extractHTMLForCheck = function () {
-                    this.html = this.getHTML();
+                InputAdapter.prototype.extractContentForCheck = function () {
+                    this.html = this.getContent();
                     this.currentHtmlChecking = this.html;
-                    return { html: this.html };
+                    return { content: this.html };
                 };
                 InputAdapter.prototype.registerCheckResult = function (checkResult) {
                 };
@@ -644,14 +659,59 @@ var acrolinx;
 (function (acrolinx) {
     var plugins;
     (function (plugins) {
+        var utils;
+        (function (utils) {
+            var HTML_ESCAPES = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;',
+                '`': '&#96;'
+            };
+            function escapeHtmlCharacters(text) {
+                var escapedText = '';
+                var backwardAlignment = [];
+                var currentDiffOffset = 0;
+                for (var i = 0; i < text.length; i++) {
+                    var char = text[i];
+                    var escapedChar = HTML_ESCAPES[char];
+                    if (escapedChar) {
+                        var additionalChars = escapedChar.length - 1;
+                        currentDiffOffset = currentDiffOffset - additionalChars;
+                        backwardAlignment.push({
+                            oldPosition: escapedText.length + escapedChar.length,
+                            diffOffset: currentDiffOffset
+                        });
+                    }
+                    escapedText = escapedText + (escapedChar || char);
+                }
+                return { escapedText: escapedText, backwardAlignment: backwardAlignment };
+            }
+            utils.escapeHtmlCharacters = escapeHtmlCharacters;
+        })(utils = plugins.utils || (plugins.utils = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
         var adapter;
         (function (adapter_2) {
             'use strict';
+            var escapeHtmlCharacters = acrolinx.plugins.utils.escapeHtmlCharacters;
+            var findNewIndex = acrolinx.plugins.utils.findNewIndex;
             var _ = acrolinxLibs._;
             function createStartTag(wrapper, id) {
                 var allAttributes = _.assign({}, wrapper.attributes, { id: id });
                 var allAttributesString = _.map(allAttributes, function (value, key) { return (key + "=\"" + _.escape(value) + "\""); }).join(' ');
                 return "<" + wrapper.tagName + " " + allAttributesString + ">";
+            }
+            function mapBackRangeOfEscapedText(escapeResult, range) {
+                return [
+                    findNewIndex(escapeResult.backwardAlignment, range[0]),
+                    findNewIndex(escapeResult.backwardAlignment, range[1])
+                ];
             }
             var MultiEditorAdapter = (function () {
                 function MultiEditorAdapter(conf) {
@@ -668,24 +728,34 @@ var acrolinx;
                         }
                     });
                 };
-                MultiEditorAdapter.prototype.extractHTMLForCheck = function () {
+                MultiEditorAdapter.prototype.extractContentForCheck = function () {
                     var _this = this;
                     var Q = acrolinxLibs.Q;
                     var deferred = Q.defer();
-                    var htmlResults = this.adapters.map(function (adapter) { return adapter.adapter.extractHTMLForCheck(); });
-                    Q.all(htmlResults).then(function (results) {
+                    var contentExtractionResults = this.adapters.map(function (adapter) { return adapter.adapter.extractContentForCheck(); });
+                    Q.all(contentExtractionResults).then(function (results) {
                         var html = '';
                         for (var i = 0; i < _this.adapters.length; i++) {
                             var el = _this.adapters[i];
                             var tagName = el.wrapper.tagName;
                             var startText = createStartTag(el.wrapper, el.id);
-                            var elHtml = results[i].html;
+                            var isText = el.adapter.getFormat ? el.adapter.getFormat() === 'TEXT' : false;
+                            var adapterContent = results[i].content;
+                            var elHtml = void 0;
+                            if (isText) {
+                                el.escapeResult = escapeHtmlCharacters(adapterContent);
+                                elHtml = el.escapeResult.escapedText;
+                            }
+                            else {
+                                elHtml = adapterContent;
+                            }
                             var newTag = startText + elHtml + '</' + tagName + '>';
                             el.start = html.length + startText.length;
                             el.end = html.length + startText.length + elHtml.length;
                             html += newTag;
                         }
-                        deferred.resolve({ html: html });
+                        var contentExtractionResult = { content: html };
+                        deferred.resolve(contentExtractionResult);
                     });
                     return deferred.promise;
                 };
@@ -707,13 +777,15 @@ var acrolinx;
                     var map = {};
                     for (var _i = 0, matches_1 = matches; _i < matches_1.length; _i++) {
                         var match = matches_1[_i];
-                        var adapter_3 = this.getAdapterForMatch(match);
-                        if (!map.hasOwnProperty(adapter_3.id)) {
-                            map[adapter_3.id] = { matches: [], adapter: adapter_3.adapter };
+                        var registeredAdapter = this.getAdapterForMatch(match);
+                        if (!map.hasOwnProperty(registeredAdapter.id)) {
+                            map[registeredAdapter.id] = { matches: [], adapter: registeredAdapter.adapter };
                         }
                         var remappedMatch = _.clone(match);
-                        remappedMatch.range = [match.range[0] - adapter_3.start, match.range[1] - adapter_3.start];
-                        map[adapter_3.id].matches.push(remappedMatch);
+                        var rangeInsideWrapper = [match.range[0] - registeredAdapter.start, match.range[1] - registeredAdapter.start];
+                        remappedMatch.range = registeredAdapter.escapeResult ?
+                            mapBackRangeOfEscapedText(registeredAdapter.escapeResult, rangeInsideWrapper) : rangeInsideWrapper;
+                        map[registeredAdapter.id].matches.push(remappedMatch);
                     }
                     return map;
                 };
@@ -748,7 +820,7 @@ var acrolinx;
                 TinyMCEAdapter.prototype.getEditor = function () {
                     return tinymce.get(this.editorId);
                 };
-                TinyMCEAdapter.prototype.getHTML = function () {
+                TinyMCEAdapter.prototype.getContent = function () {
                     return this.getEditor().getContent();
                 };
                 TinyMCEAdapter.prototype.getEditorDocument = function () {
@@ -794,7 +866,7 @@ var acrolinx;
                 TinyMCEWordpressAdapter.prototype.getEditor = function () {
                     return tinymce.get(this.editorId);
                 };
-                TinyMCEWordpressAdapter.prototype.getHTML = function () {
+                TinyMCEWordpressAdapter.prototype.getContent = function () {
                     return this.getEditor().getContent();
                 };
                 TinyMCEWordpressAdapter.prototype.getEditorDocument = function () {
@@ -1153,7 +1225,7 @@ var acrolinx;
                         window.alert(html.error);
                     }
                     else {
-                        var checkInfo = acrolinxSidebar.checkGlobal(html.html, {
+                        var checkInfo = acrolinxSidebar.checkGlobal(html.content, {
                             inputFormat: format || 'HTML',
                             requestDescription: {
                                 documentReference: documentReference || 'filename.html'
@@ -1179,16 +1251,16 @@ var acrolinx;
                     },
                     requestGlobalCheck: function () {
                         console.log('requestGlobalCheck');
-                        var pHtml = adapter.extractHTMLForCheck();
+                        var contentExtractionResult = adapter.extractContentForCheck();
                         var pFormat = adapter.getFormat ? adapter.getFormat() : null;
                         var pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
-                        if (isPromise(pHtml)) {
-                            pHtml.then(function (html) {
+                        if (isPromise(contentExtractionResult)) {
+                            contentExtractionResult.then(function (html) {
                                 requestGlobalCheckSync(html, pFormat, pDocumentReference);
                             });
                         }
                         else {
-                            requestGlobalCheckSync(pHtml, pFormat, pDocumentReference);
+                            requestGlobalCheckSync(contentExtractionResult, pFormat, pDocumentReference);
                         }
                     },
                     onCheckResult: function (checkResult) {
