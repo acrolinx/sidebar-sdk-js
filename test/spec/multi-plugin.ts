@@ -45,7 +45,7 @@ namespace acrolinx.test.multiPlugin {
       $('body').append(`
         <div id="multiPluginTest">
           <div id="ContentEditableAdapter" contenteditable="true">Initial text of ContentEditableAdapter.</div>
-          <textarea id="InputAdapter">Initial text of InputAdapter.</textarea>
+          <textarea id="InputAdapter">&lt;Initial text of InputAdapter.</textarea>
           <div id="sidebarContainer"></div>
         </div>
       `);
@@ -143,7 +143,7 @@ namespace acrolinx.test.multiPlugin {
         waitForCheck(() => {
           assert.equal(lastDocumentContent,
             '<div id="acrolinx_integration0">Initial text of ContentEditableAdapter.</div>' +
-            '<div id="acrolinx_integration1">Initial text of InputAdapter.</div>'
+            '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>'
           );
           done();
         })
@@ -156,6 +156,18 @@ namespace acrolinx.test.multiPlugin {
 
           injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
           assert.equal(document.getSelection().toString(), selectedText);
+          done();
+        });
+      });
+
+      it('selectRanges in InputAdapter', (done) => {
+        waitForCheck(() => {
+          const selectedText = 'InputAdapter';
+          const inputAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
+
+          injectedPlugin.selectRanges(DUMMY_CHECK_ID, inputAdapterMatch);
+          const textArea = document.getElementById('InputAdapter') as HTMLTextAreaElement;
+          assert.equal(textArea.value.slice(textArea.selectionStart, textArea.selectionEnd), selectedText);
           done();
         })
       });
@@ -241,7 +253,7 @@ namespace acrolinx.test.multiPlugin {
           waitForCheck(() => {
             assert.equal(lastDocumentContent,
               '<h1 class="class" data-boolean="false" data-more="&quot;&lt;tag&gt;&quot;" id="acrolinx_integration0">Initial text of ContentEditableAdapter.</h1>' +
-              '<div id="acrolinx_integration1">Initial text of InputAdapter.</div>'
+              '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>'
             );
             done();
           })

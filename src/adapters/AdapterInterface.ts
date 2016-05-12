@@ -23,8 +23,11 @@ namespace acrolinx.plugins.adapter {
     getEditor?(): any;
     getFormat?(): string;
     getDocumentReference?(): string;
+
+    // TODO: Should get renamed, because it's not always returning HTML.
     getHTML?(): string;
     extractHTMLForCheck(): HtmlResult | Promise<HtmlResult>;
+
     registerCheckCall(checkInfo: Check): void;
     registerCheckResult(checkResult: CheckResult): void;
     selectRanges(checkId: string, matches: Match[]): void;

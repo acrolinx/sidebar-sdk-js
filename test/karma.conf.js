@@ -23,6 +23,7 @@ module.exports = function (config) {
       'bower_components/tinymce/tinymce.js',
       {pattern: 'bower_components/tinymce/**/*', included: false},
       {pattern: 'test/dummy-sidebar/**/*', included: false},
+      'bower_components/jsverify/index.js',
       'tmp/compiled/test.js'
     ],
 

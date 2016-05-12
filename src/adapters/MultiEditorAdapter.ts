@@ -18,6 +18,9 @@
  *
  */
 
+/// <reference path="../utils/alignment.ts" />
+/// <reference path="../utils/escaping.ts" />
+
 namespace acrolinx.plugins.adapter {
   'use strict';
 
@@ -25,6 +28,9 @@ namespace acrolinx.plugins.adapter {
   import Match = acrolinx.sidebar.Match;
   import CheckResult = acrolinx.sidebar.CheckResult;
   import Check = acrolinx.sidebar.Check;
+  import escapeHtmlCharacters = acrolinx.plugins.utils.escapeHtmlCharacters;
+  import EscapeHtmlCharactersResult = acrolinx.plugins.utils.EscapeHtmlCharactersResult;
+  import findNewIndex = acrolinx.plugins.utils.findNewIndex;
 
   import _ = acrolinxLibs._;
 
@@ -52,6 +58,7 @@ namespace acrolinx.plugins.adapter {
     wrapper: WrapperConf;
     start?: number;
     end?: number;
+    escapeResult?: EscapeHtmlCharactersResult;
   }
 
 
@@ -60,7 +67,13 @@ namespace acrolinx.plugins.adapter {
     const allAttributesString = _.map(allAttributes, (value, key) => `${key}="${_.escape(value)}"`).join(' ');
     return `<${wrapper.tagName} ${allAttributesString}>`;
   }
-  
+
+  function mapBackRangeOfEscapedText(escapeResult: EscapeHtmlCharactersResult, range: [number, number]): [number, number] {
+    return [
+      findNewIndex(escapeResult.backwardAlignment, range[0]),
+      findNewIndex(escapeResult.backwardAlignment, range[1])
+    ];
+  }
 
   export class MultiEditorAdapter implements AdapterInterface {
     config: AcrolinxPluginConfig;
@@ -91,7 +104,17 @@ namespace acrolinx.plugins.adapter {
           const el = this.adapters[i];
           const tagName = el.wrapper.tagName;
           const startText = createStartTag(el.wrapper, el.id);
-          const elHtml = results[i].html;
+          const isText = el.adapter.getFormat ? el.adapter.getFormat() === 'TEXT' : false;
+          const adapterContent = results[i].html;
+
+          let elHtml: string;
+          if (isText) {
+            el.escapeResult = escapeHtmlCharacters(adapterContent);
+            elHtml = el.escapeResult.escapedText;
+          } else {
+            elHtml = adapterContent;
+          }
+
           const newTag = startText + elHtml + '</' + tagName + '>';
           el.start = html.length + startText.length;
           el.end = html.length + startText.length + elHtml.length;
@@ -122,18 +145,20 @@ namespace acrolinx.plugins.adapter {
     remapMatches<T extends Match>(matches: T[]) {
       const map: {[id: string]: RemappedMatches<T> } = {};
       for (const match of matches) {
-        const adapter = this.getAdapterForMatch(match);
-        if (!map.hasOwnProperty(adapter.id)) {
-          map[adapter.id] = {matches: [], adapter: adapter.adapter};
+        const registeredAdapter = this.getAdapterForMatch(match);
+        if (!map.hasOwnProperty(registeredAdapter.id)) {
+          map[registeredAdapter.id] = {matches: [], adapter: registeredAdapter.adapter};
         }
         const remappedMatch = _.clone(match);
-        remappedMatch.range = [match.range[0] - adapter.start, match.range[1] - adapter.start];
-        map[adapter.id].matches.push(remappedMatch);
+        const rangeInsideWrapper: [number, number] = [match.range[0] - registeredAdapter.start, match.range[1] - registeredAdapter.start];
+        remappedMatch.range = registeredAdapter.escapeResult ?
+          mapBackRangeOfEscapedText(registeredAdapter.escapeResult, rangeInsideWrapper) : rangeInsideWrapper;
+        map[registeredAdapter.id].matches.push(remappedMatch);
       }
       return map;
     }
 
-    getAdapterForMatch(match: Match) {
+    getAdapterForMatch(match: Match): RegisteredAdapter {
       return _.find(this.adapters,
         (adapter: RegisteredAdapter) => (match.range[0] >= adapter.start) && (match.range[1] <= adapter.end));
     }

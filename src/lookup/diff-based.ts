@@ -20,6 +20,7 @@
 
 /// <reference path="../typings/diff-match-patch.d.ts" />
 /// <reference path="../utils/logging.ts" />
+/// <reference path="../utils/alignment.ts" />
 
 namespace acrolinx.plugins.lookup.diffbased {
   'use strict';
@@ -28,16 +29,12 @@ namespace acrolinx.plugins.lookup.diffbased {
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import _ = acrolinxLibs._;
   import log = acrolinx.plugins.utils.log;
+  import OffSetAlign = acrolinx.plugins.utils.OffSetAlign;
+  import findNewIndex = acrolinx.plugins.utils.findNewIndex;
 
   type InputFormat = 'HTML' | 'TEXT';
 
   const dmp = new diff_match_patch();
-
-  interface OffSetAlign {
-    oldPosition: number;
-    diffOffset: number;
-  }
-
 
   export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
     let offsetMappingArray: OffSetAlign[] = [];
@@ -92,17 +89,6 @@ namespace acrolinx.plugins.lookup.diffbased {
   }
 
 
-  export function findNewOffset(offsetMappingArray: OffSetAlign[], oldOffset: number) {
-    if (offsetMappingArray.length === 0) {
-      return 0;
-    }
-    const index = _.sortedIndexBy(offsetMappingArray,
-      {diffOffset: 0, oldPosition: oldOffset + 0.1},
-      offsetAlign => offsetAlign.oldPosition
-    );
-    return index > 0 ? offsetMappingArray[index - 1].diffOffset : 0;
-  }
-
   function hasModifiedWordBorders (offsetMappingArray: OffSetAlign[],  oldOffsetWord: number) {
     // const array = _.find(offsetMappingArray, (offSetAlign) => {return offSetAlign.oldPosition === oldOffsetWord; });
     // const result = array ? true : false;
@@ -126,11 +112,11 @@ namespace acrolinx.plugins.lookup.diffbased {
     const offsetMappingArray = createOffsetMappingArray(diffs);
 
     const alignedMatches = matches.map(match => {
-      const beginAfterCleaning = match.range[0] + findNewOffset(cleaningOffsetMappingArray, match.range[0]);
-      const endAfterCleaning = match.range[1] + findNewOffset(cleaningOffsetMappingArray, match.range[1]);
-      const alignedBegin = beginAfterCleaning + findNewOffset(offsetMappingArray, beginAfterCleaning);
+      const beginAfterCleaning = findNewIndex(cleaningOffsetMappingArray, match.range[0]);
+      const endAfterCleaning =  findNewIndex(cleaningOffsetMappingArray, match.range[1]);
+      const alignedBegin = findNewIndex(offsetMappingArray, beginAfterCleaning);
       const lastCharacterPos = endAfterCleaning - 1;
-      const alignedEnd = lastCharacterPos + findNewOffset(offsetMappingArray, lastCharacterPos) + 1;
+      const alignedEnd = findNewIndex(offsetMappingArray, lastCharacterPos) + 1;
       // This code could be used to detect if word border got modified, but should probably be language specific
       const hasModifiedBorders = hasModifiedWordBorders(offsetMappingArray, match.range[0]) || hasModifiedWordBorders(offsetMappingArray, match.range[1]);
       return {

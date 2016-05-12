@@ -7,7 +7,7 @@ namespace acrolinx.test {
 
   import  lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
   import  replaceTags = acrolinx.plugins.lookup.diffbased.replaceTags;
-  import  findNewOffsetSimple = acrolinx.plugins.lookup.diffbased.findNewOffset;
+  import  findNewIndex = acrolinx.plugins.utils.findNewIndex;
   import  createOffsetMappingArray = acrolinx.plugins.lookup.diffbased.createOffsetMappingArray;
 
   describe('lookup/diff-based', function () {
@@ -45,12 +45,12 @@ namespace acrolinx.test {
 
         assert.equal(text, '016734');
 
-        assert.equal(findNewOffsetSimple(offsetMapping, 0), 0);
-        assert.equal(findNewOffsetSimple(offsetMapping, 1), 0);
-        assert.equal(findNewOffsetSimple(offsetMapping, 6), -4);
-        assert.equal(findNewOffsetSimple(offsetMapping, 7), -4);
-        assert.equal(findNewOffsetSimple(offsetMapping, 13), -9);
-        assert.equal(findNewOffsetSimple(offsetMapping, 14), -9);
+        assert.equal(findNewIndex(offsetMapping, 0), 0);
+        assert.equal(findNewIndex(offsetMapping, 1), 1);
+        assert.equal(findNewIndex(offsetMapping, 6), 6 - 4);
+        assert.equal(findNewIndex(offsetMapping, 7), 7 - 4);
+        assert.equal(findNewIndex(offsetMapping, 13), 13 - 9);
+        assert.equal(findNewIndex(offsetMapping, 14), 14 - 9);
       });
     });
   });
