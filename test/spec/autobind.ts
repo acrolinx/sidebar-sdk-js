@@ -37,7 +37,7 @@ namespace acrolinx.test.autobind {
       const adapters = acrolinx.plugins.autobind.bindAdaptersForCurrentPage();
       assert.equal(adapters.length, 6);
 
-      const adaptersContent = adapters.map(a => a.getHTML());
+      const adaptersContent = adapters.map(a => a.getContent());
       assert.equal(adaptersContent[0], 'input 1 content');
       assert.equal(adaptersContent[1], 'contentEditable content');
       assert.equal(adaptersContent[2], 'textarea content');
@@ -59,7 +59,7 @@ namespace acrolinx.test.autobind {
         const adapters = acrolinx.plugins.autobind.bindAdaptersForCurrentPage();
         assert.equal(adapters.length, 2);
 
-        const adaptersContent = adapters.map(a => a.getHTML());
+        const adaptersContent = adapters.map(a => a.getContent());
         assert.equal(adaptersContent[0], 'input 1 content');
         assert.equal(adaptersContent[1], 'input 2 content');
         done();

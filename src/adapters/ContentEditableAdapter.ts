@@ -38,7 +38,7 @@ namespace acrolinx.plugins.adapter {
       return this.element;
     }
 
-    getHTML() {
+    getContent() {
       return this.element.innerHTML;
     }
 

@@ -6,7 +6,7 @@ namespace acrolinx.test.multiPlugin {
   import Match = acrolinx.sidebar.Match;
   import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
   import AdapterConf = acrolinx.plugins.adapter.AdapterConf;
-  import HtmlResult = acrolinx.plugins.HtmlResult;
+  import ContentExtractionResult = acrolinx.plugins.ContentExtractionResult;
   import assert = chai.assert;
   import expect = chai.expect;
   import AcrolinxPlugin = acrolinx.sidebar.AcrolinxPlugin;

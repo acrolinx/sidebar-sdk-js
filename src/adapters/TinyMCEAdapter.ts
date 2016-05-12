@@ -33,7 +33,7 @@ namespace acrolinx.plugins.adapter {
       return tinymce.get(this.editorId);
     }
 
-    getHTML() {
+    getContent() {
       return this.getEditor().getContent();
     }
 

@@ -43,12 +43,12 @@ namespace acrolinx.plugins.adapter {
       return this.getEditor().document.$ as any;
     }
 
-    getHTML() {
+    getContent() {
       return this.getEditor().getData();
     }
 
-    extractHTMLForCheck(): HtmlResult | Promise<HtmlResult> {
-      this.html = this.getHTML();
+    extractContentForCheck(): ContentExtractionResult | Promise<ContentExtractionResult> {
+      this.html = this.getContent();
       this.currentHtmlChecking = this.html;
       if (this.isInWysiwygMode()) {
         // TODO: remove it after server side implementation. This is a workaround
@@ -62,7 +62,7 @@ namespace acrolinx.plugins.adapter {
           return {error: 'Action is not permitted in Source mode.'};
         }
       }
-      return {html: this.html};
+      return {content: this.html};
     }
 
     selectRanges(checkId: string, matches: Match[]) {

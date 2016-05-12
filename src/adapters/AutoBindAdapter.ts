@@ -31,12 +31,12 @@ namespace acrolinx.plugins.adapter {
       this.conf = conf;
     }
 
-    extractHTMLForCheck() {
+    extractContentForCheck() {
       this.multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(this.conf);
       acrolinx.plugins.autobind.bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
         this.multiAdapter.addSingleAdapter(adapter);
       });
-      return this.multiAdapter.extractHTMLForCheck();
+      return this.multiAdapter.extractContentForCheck();
     }
 
     registerCheckCall(checkInfo: acrolinx.sidebar.Check) {

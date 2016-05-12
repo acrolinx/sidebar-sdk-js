@@ -48,8 +48,8 @@ namespace acrolinx.plugins {
     onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
   }
 
-  export interface HtmlResult {
-    html?: string;
+  export interface ContentExtractionResult {
+    content?: string;
     error?: any;
   }
 
@@ -62,8 +62,8 @@ namespace acrolinx.plugins {
     }
   ];
 
-  function isPromise(result: HtmlResult | Promise<HtmlResult>): result is Promise<HtmlResult> {
-    return (<Promise<HtmlResult>>result).then !== undefined;
+  function isPromise(result: ContentExtractionResult | Promise<ContentExtractionResult>): result is Promise<ContentExtractionResult> {
+    return (<Promise<ContentExtractionResult>>result).then !== undefined;
   }
 
   type IFrameWindowOfSidebar = Window & {
@@ -94,11 +94,11 @@ namespace acrolinx.plugins {
         }, config));
       }
 
-      function requestGlobalCheckSync(html: HtmlResult, format: string, documentReference: string) {
+      function requestGlobalCheckSync(html: ContentExtractionResult, format: string, documentReference: string) {
         if (html.hasOwnProperty('error')) {
           window.alert(html.error);
         } else {
-          const checkInfo = acrolinxSidebar.checkGlobal(html.html, {
+          const checkInfo = acrolinxSidebar.checkGlobal(html.content, {
             inputFormat: format || 'HTML',
             requestDescription: {
               documentReference: documentReference || 'filename.html'
@@ -128,15 +128,15 @@ namespace acrolinx.plugins {
 
         requestGlobalCheck () {
           console.log('requestGlobalCheck');
-          const pHtml = adapter.extractHTMLForCheck();
+          const contentExtractionResult = adapter.extractContentForCheck();
           const pFormat = adapter.getFormat ? adapter.getFormat() : null;
           const pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
-          if (isPromise(pHtml)) {
-            pHtml.then((html: HtmlResult) => {
+          if (isPromise(contentExtractionResult)) {
+            contentExtractionResult.then((html: ContentExtractionResult) => {
               requestGlobalCheckSync(html, pFormat, pDocumentReference);
             });
           } else {
-            requestGlobalCheckSync(pHtml, pFormat, pDocumentReference);
+            requestGlobalCheckSync(contentExtractionResult, pFormat, pDocumentReference);
           }
         },
 

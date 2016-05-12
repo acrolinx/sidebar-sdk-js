@@ -94,18 +94,18 @@ namespace acrolinx.plugins.adapter {
       });
     }
 
-    extractHTMLForCheck() {
+    extractContentForCheck() {
       const Q = acrolinxLibs.Q;
       const deferred = Q.defer();
-      const htmlResults = this.adapters.map(adapter => adapter.adapter.extractHTMLForCheck());
-      Q.all(htmlResults).then((results: HtmlResult[]) => {
+      const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck());
+      Q.all(contentExtractionResults).then((results: ContentExtractionResult[]) => {
         let html = '';
         for (let i = 0; i < this.adapters.length; i++) {
           const el = this.adapters[i];
           const tagName = el.wrapper.tagName;
           const startText = createStartTag(el.wrapper, el.id);
           const isText = el.adapter.getFormat ? el.adapter.getFormat() === 'TEXT' : false;
-          const adapterContent = results[i].html;
+          const adapterContent = results[i].content;
 
           let elHtml: string;
           if (isText) {
@@ -120,7 +120,8 @@ namespace acrolinx.plugins.adapter {
           el.end = html.length + startText.length + elHtml.length;
           html += newTag;
         }
-        deferred.resolve({html});
+        const contentExtractionResult : ContentExtractionResult = {content: html};
+        deferred.resolve(contentExtractionResult);
       });
       return deferred.promise;
     }

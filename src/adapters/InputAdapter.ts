@@ -48,22 +48,22 @@ namespace acrolinx.plugins.adapter {
       this.config = conf;
     }
 
-    getHTML() {
+    getContent() {
       return this.element.value;
     }
 
     getCurrentText() {
-      return this.getHTML();
+      return this.getContent();
     }
 
     getFormat() {
       return 'TEXT';
     }
 
-    extractHTMLForCheck() {
-      this.html = this.getHTML();
+    extractContentForCheck() : ContentExtractionResult {
+      this.html = this.getContent();
       this.currentHtmlChecking = this.html;
-      return {html: this.html} as HtmlResult;
+      return {content: this.html};
     }
 
     registerCheckResult(checkResult: CheckResult): void {

@@ -4,7 +4,7 @@ import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
 import Match = acrolinx.sidebar.Match;
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import AdapterConf = acrolinx.plugins.adapter.AdapterConf;
-import HtmlResult = acrolinx.plugins.HtmlResult;
+import ContentExtractionResult = acrolinx.plugins.ContentExtractionResult;
 import editor = CKEDITOR.editor;
 import getMatchesWithReplacement = acrolinx.test.utils.getMatchesWithReplacement;
 import enableLogging = acrolinx.plugins.utils.enableLogging;
@@ -141,7 +141,7 @@ describe('adapter test', function () {
       const setEditorContent = adapterSpec.setEditorContent;
 
       function assertEditorText(expectedText: string) {
-        const editorContent = (adapter.extractHTMLForCheck() as HtmlResult).html;
+        const editorContent = (adapter.extractContentForCheck() as ContentExtractionResult).content;
         if (adapterSpec.name === 'InputAdapter') {
           assert.equal(editorContent, expectedText);
         }
@@ -154,14 +154,14 @@ describe('adapter test', function () {
       function givenAText(text: string, callback: (text: string) => void) {
         setEditorContent(text, () => {
           adapter.registerCheckCall({checkId: dummyCheckId});
-          const htmlResult = adapter.extractHTMLForCheck() as HtmlResult;
+          const ContentExtractionResult = adapter.extractContentForCheck() as ContentExtractionResult;
           adapter.registerCheckResult({
             checkedPart: {
               checkId: dummyCheckId,
               range: [0, text.length]
             }
           });
-          callback(htmlResult.html);
+          callback(ContentExtractionResult.content);
         });
       }
 
@@ -584,7 +584,7 @@ describe('adapter test', function () {
               {"content": "a", "range": [3, 4], "replacement": ""},
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getHTML()),
+            assert.equal(normalizeResultHtml(adapter.getContent()),
               adapterSpec.name === 'ContentEditableAdapter' ? '<p></p>' : '');
             done();
           });
@@ -598,7 +598,7 @@ describe('adapter test', function () {
               {"content": " ", "range": [8, 9], "replacement": ""},
               {"content": "?", "range": [9, 10], "replacement": ""}];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getHTML()), '<div>a b?</div><div>c</div>')
+            assert.equal(normalizeResultHtml(adapter.getContent()), '<div>a b?</div><div>c</div>')
             done();
           });
         });
@@ -611,7 +611,7 @@ describe('adapter test', function () {
               {"content": ".", "range": [24, 25], "replacement": ""}
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getHTML()), '<p><strong>a b.</strong></p>')
+            assert.equal(normalizeResultHtml(adapter.getContent()), '<p><strong>a b.</strong></p>')
             done();
           });
         });

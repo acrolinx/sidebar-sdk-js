@@ -50,7 +50,7 @@ namespace acrolinx.plugins.adapter {
 
     abstract getEditorDocument(): Document;
 
-    abstract getHTML(): string;
+    abstract getContent(): string;
 
     protected getEditorElement(): Element {
       return this.getEditorDocument().querySelector('body');
@@ -65,10 +65,10 @@ namespace acrolinx.plugins.adapter {
       this.prevCheckedHtml = this.currentHtmlChecking;
     }
 
-    extractHTMLForCheck() {
-      this.html = this.getHTML();
+    extractContentForCheck(): ContentExtractionResult {
+      this.html = this.getContent();
       this.currentHtmlChecking = this.html;
-      return {html: this.html} as HtmlResult;
+      return {content: this.html};
     }
 
 
