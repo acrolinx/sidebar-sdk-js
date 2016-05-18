@@ -363,16 +363,24 @@ var acrolinx;
     (function (plugins) {
         var adapter;
         (function (adapter) {
-            function isHasEditorID(a) {
+            function hasEditorID(a) {
                 return !!a.editorId;
             }
-            adapter.isHasEditorID = isHasEditorID;
+            adapter.hasEditorID = hasEditorID;
+            function hasElement(a) {
+                return !!a.element;
+            }
+            adapter.hasElement = hasElement;
             function getElementFromAdapterConf(conf) {
-                if (isHasEditorID(conf)) {
+                if (hasElement(conf)) {
+                    return conf.element;
+                }
+                else if (hasEditorID(conf)) {
                     return document.getElementById(conf.editorId);
                 }
                 else {
-                    return conf.element;
+                    console.error('Invalid AdapterConf. Missing editorId or element', conf);
+                    throw new Error('Invalid AdapterConf. Missing editorId or element');
                 }
             }
             adapter.getElementFromAdapterConf = getElementFromAdapterConf;
@@ -973,7 +981,10 @@ var acrolinx;
         var floatingSidebar;
         (function (floatingSidebar) {
             'use strict';
+            floatingSidebar.SIDEBAR_ID = 'acrolinxFloatingSidebar';
             floatingSidebar.SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
+            floatingSidebar.SIDEBAR_DRAG_OVERLAY_ID = 'acrolinxDragOverlay';
+            floatingSidebar.SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
             var initialPos = {
                 top: 100,
                 left: 100
@@ -981,12 +992,24 @@ var acrolinx;
             function addStyles() {
                 var styleTag = document.createElement('style');
                 var head = document.querySelector('head');
-                styleTag.innerHTML = "\n      #acrolinxFloatingSidebar {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 20px;\n        cursor: move;\n        background: #3e96db;\n        height: 500px;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: 10000;\n      }\n  \n      #acrolinxFloatingSidebar #" + floatingSidebar.SIDEBAR_CONTAINER_ID + ",\n      #acrolinxFloatingSidebar #" + floatingSidebar.SIDEBAR_CONTAINER_ID + " iframe {\n        background: white;\n        height: 100%;\n        border: none;\n      }\n    ";
+                styleTag.innerHTML = "\n      #" + floatingSidebar.SIDEBAR_ID + " {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 20px;\n        cursor: move;\n        background: #3e96db;\n        height: 500px;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: 10000;\n          -moz-user-select: none;\n          -webkit-user-select: none;\n          -ms-user-select: none;\n      }\n  \n      #" + floatingSidebar.SIDEBAR_ID + " #" + floatingSidebar.SIDEBAR_CONTAINER_ID + ",\n      #" + floatingSidebar.SIDEBAR_ID + " #acrolinxDragOverlay,\n      #" + floatingSidebar.SIDEBAR_ID + " #" + floatingSidebar.SIDEBAR_CONTAINER_ID + " iframe {\n        position: relative;\n        background: white;\n        height: 100%;\n        border: none;\n      }\n      \n      #" + floatingSidebar.SIDEBAR_ID + " #" + floatingSidebar.SIDEBAR_DRAG_OVERLAY_ID + " {\n        position: absolute;\n        top: 20px;\n        left: 0;\n        height: 300px;\n        width: 300px;\n        background: transparent;\n        z-index: 10001;\n      }\n       \n      #" + floatingSidebar.SIDEBAR_GLASS_PANE_ID + " {\n        position: fixed;\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        top: 0;\n        left: 0;\n        background: white;\n        opacity: 0.6;\n        z-index: 9999;\n      }\n    ";
                 head.appendChild(styleTag);
             }
+            function createDiv(id) {
+                var el = document.createElement('div');
+                el.id = id;
+                return el;
+            }
+            function hide(el) {
+                el.style.display = 'none';
+            }
+            function show(el) {
+                el.style.display = 'block';
+            }
             function initFloatingSidebar() {
-                var floatingSidebarElement = document.createElement('div');
-                floatingSidebarElement.id = 'acrolinxFloatingSidebar';
+                var floatingSidebarElement = createDiv(floatingSidebar.SIDEBAR_ID);
+                var dragOverlay = createDiv(floatingSidebar.SIDEBAR_DRAG_OVERLAY_ID);
+                var glassPane = createDiv(floatingSidebar.SIDEBAR_GLASS_PANE_ID);
                 var body = document.querySelector('body');
                 var isDragging = false;
                 var relativeMouseDownX = 0;
@@ -994,6 +1017,12 @@ var acrolinx;
                 function move(xpos, ypos) {
                     floatingSidebarElement.style.left = xpos + 'px';
                     floatingSidebarElement.style.top = ypos + 'px';
+                }
+                function onEndDrag() {
+                    console.log('End drag!!!');
+                    hide(dragOverlay);
+                    hide(glassPane);
+                    isDragging = false;
                 }
                 document.addEventListener('mousemove', function (event) {
                     if (isDragging) {
@@ -1006,13 +1035,17 @@ var acrolinx;
                     relativeMouseDownX = event.clientX - divLeft;
                     relativeMouseDownY = event.clientY - divTop;
                     isDragging = true;
+                    show(dragOverlay);
+                    show(glassPane);
                 });
-                document.addEventListener('mouseup', function () {
-                    isDragging = false;
-                });
-                floatingSidebarElement.innerHTML = "<div id=\"" + floatingSidebar.SIDEBAR_CONTAINER_ID + "\"></div>";
+                document.addEventListener('mouseup', onEndDrag);
+                floatingSidebarElement.appendChild(createDiv(floatingSidebar.SIDEBAR_CONTAINER_ID));
+                hide(dragOverlay);
+                floatingSidebarElement.appendChild(dragOverlay);
                 addStyles();
                 body.appendChild(floatingSidebarElement);
+                hide(glassPane);
+                body.appendChild(glassPane);
             }
             floatingSidebar.initFloatingSidebar = initFloatingSidebar;
         })(floatingSidebar = plugins.floatingSidebar || (plugins.floatingSidebar = {}));
