@@ -31,15 +31,22 @@ namespace acrolinx.plugins.adapter {
     replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void;
   }
 
-  export function isHasEditorID(a: AdapterConf): a is HasEditorID {
+  export function hasEditorID(a: AdapterConf): a is HasEditorID {
     return !!(a as HasEditorID).editorId;
   }
 
+  export function hasElement(a: AdapterConf): a is HasElement {
+    return !!(a as HasElement).element;
+  }
+
   export function getElementFromAdapterConf(conf: AdapterConf) {
-    if (isHasEditorID(conf)) {
+    if (hasElement(conf)) {
+      return conf.element;
+    } else if (hasEditorID(conf)) {
       return document.getElementById(conf.editorId) as HTMLElement;
     } else {
-      return conf.element;
+      console.error('Invalid AdapterConf. Missing editorId or element', conf);
+      throw new Error('Invalid AdapterConf. Missing editorId or element');
     }
   }
 
