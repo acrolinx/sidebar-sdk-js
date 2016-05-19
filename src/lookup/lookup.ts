@@ -4,7 +4,6 @@ namespace acrolinx.plugins.lookup {
   export interface AlignedMatch<T extends Match> {
     originalMatch: T;
     range: [number, number];
-    hasModifiedWordBorder?: boolean;
   }
 
 }

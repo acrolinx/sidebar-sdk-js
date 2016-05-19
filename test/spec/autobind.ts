@@ -47,7 +47,9 @@ namespace acrolinx.test.autobind {
     });
 
     // This test depends on an available internet.
-    it('ignore iframes from other domains ', (done) => {
+    it('ignore iframes from other domains ', function (done) {
+      this.timeout(5000);
+      
       setPageContent(`
           <input id="input 1" type="" value="input 1 content" />
           <!-- Just an example for a page from a different domain. -->
