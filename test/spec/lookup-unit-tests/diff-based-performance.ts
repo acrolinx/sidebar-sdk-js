@@ -34,7 +34,7 @@ namespace acrolinx.test {
 
       const startTime = Date.now();
 
-      const dmp = new diff_match_patch();
+      const dmp = new acrolinx.diffMatchPatch.DiffMatchPatch();
       const diffs = dmp.diff_main(text1, text2);
       createOffsetMappingArray(diffs);
 

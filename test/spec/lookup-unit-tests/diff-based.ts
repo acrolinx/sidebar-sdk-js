@@ -1,8 +1,6 @@
 var assert = chai.assert;
 var expect = chai.expect;
 
-/// <reference path="../../../src/typings/diff.d.ts" />
-
 namespace acrolinx.test {
 
   import  lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
@@ -12,7 +10,7 @@ namespace acrolinx.test {
 
   describe('lookup/diff-based', function () {
     it('createOffsetMappingArray', function () {
-      const dmp = new diff_match_patch();
+      const dmp = new acrolinx.diffMatchPatch.DiffMatchPatch();
       const diffs = dmp.diff_main('abcde', 'zabxcye');
       const offsetMapping = createOffsetMappingArray(diffs);
       const expected = [

@@ -31,10 +31,11 @@ namespace acrolinx.plugins.lookup.diffbased {
   import log = acrolinx.plugins.utils.log;
   import OffSetAlign = acrolinx.plugins.utils.OffSetAlign;
   import findNewIndex = acrolinx.plugins.utils.findNewIndex;
+  const {DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT} = acrolinx.diffMatchPatch;
 
   type InputFormat = 'HTML' | 'TEXT';
 
-  const dmp = new diff_match_patch();
+  const dmp = new acrolinx.diffMatchPatch.DiffMatchPatch();
 
   export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
     let offsetMappingArray: OffSetAlign[] = [];

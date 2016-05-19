@@ -17,7 +17,6 @@ module.exports = function (config) {
       'bower_components/jquery/dist/jquery.js',
       'bower_components/lodash/lodash.js',
       'bower_components/q/q.js',
-      'bower_components/google-diff-match-patch-js/diff_match_patch_uncompressed.js',
       'bower_components/ckeditor/ckeditor.js',
       {pattern: 'bower_components/ckeditor/**/*', included: false},
       'bower_components/tinymce/tinymce.js',

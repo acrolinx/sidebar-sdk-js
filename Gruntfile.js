@@ -86,21 +86,23 @@ module.exports = function (grunt) {
 
     ts: {
       base: {
-        src: ['src/**/*.ts'],
+        src: ['tmp/browserify/diff-match-patch.js', 'src/**/*.ts'],
         dest: 'distrib/' + name + '.js',
         options: {
           noImplicitAny: true,
           target: 'es5',
           sourceMap: true,
+          allowJs: true
         }
       },
       test: {
-        src: ['src/**/*.ts', 'test/**/*.ts'],
+        src: ['tmp/browserify/diff-match-patch.js', 'src/**/*.ts', 'test/**/*.ts'],
         dest: 'tmp/compiled/test.js',
         options: {
           noImplicitAny: true,
           target: 'es5',
-          sourceMap: false
+          sourceMap: false,
+          allowJs: true
         }
       }
     },
@@ -146,6 +148,14 @@ module.exports = function (grunt) {
         //just run 'grunt bower:install' and you'll see files from your Bower packages in lib directory
       }
     },
+
+    browserify: {
+      vendor: {
+        src: ['src/browserify/diff-match-patch.js'],
+        dest: 'tmp/browserify/diff-match-patch.js',
+      }
+    },
+
     shell: {
       options: {
         stderr: false
@@ -189,7 +199,7 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['prepareBuild', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
   grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts']);
-  grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib']);
+  grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib', 'browserifyVendor']);
   grunt.registerTask('distrib', ['bower:install', 'clean:distrib', 'tslint', 'ts', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
 
   grunt.registerTask('release', 'Release the bower project', function () {
@@ -242,5 +252,10 @@ module.exports = function (grunt) {
 
   grunt.registerTask('distribRelease', ['distrib', 'release']);
   grunt.registerTask('karmaLocal', ['tslint', 'karma:ci', 'coverage']);
+
+  grunt.registerTask('browserifyVendor', ['browserify:vendor']);
+  grunt.registerTask('tsBase', ['ts:base']);
+
+
 
 };
