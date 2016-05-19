@@ -4,6 +4,7 @@
 namespace acrolinx.test.autobind {
 
   import assertDeepEqual = acrolinx.test.utils.assertDeepEqual;
+
   describe('autobind', function () {
     const containerDivId = 'autoBindTest';
 
@@ -49,7 +50,7 @@ namespace acrolinx.test.autobind {
     // This test depends on an available internet.
     it('ignore iframes from other domains ', function (done) {
       this.timeout(5000);
-      
+
       setPageContent(`
           <input id="input 1" type="" value="input 1 content" />
           <!-- Just an example for a page from a different domain. -->
@@ -57,7 +58,7 @@ namespace acrolinx.test.autobind {
           <input id="input 2" type="" value="input 2 content" />
       `);
 
-      $('#iframeFromOtherDomain').on('load', () => {
+      const onLoadedOnce = _.once(() => {
         const adapters = acrolinx.plugins.autobind.bindAdaptersForCurrentPage();
         assert.equal(adapters.length, 2);
 
@@ -66,6 +67,9 @@ namespace acrolinx.test.autobind {
         assert.equal(adaptersContent[1], 'input 2 content');
         done();
       });
+
+      $('#iframeFromOtherDomain').on('load', onLoadedOnce);
+      setTimeout(onLoadedOnce, 3000);
 
     });
 
