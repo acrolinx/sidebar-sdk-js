@@ -200,7 +200,7 @@ module.exports = function (grunt) {
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
   grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts']);
   grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib', 'browserifyVendor']);
-  grunt.registerTask('distrib', ['bower:install', 'clean:distrib', 'tslint', 'ts', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
+  grunt.registerTask('distrib', ['prepareBuild', 'tslint', 'ts', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
 
   grunt.registerTask('release', 'Release the bower project', function () {
     var done = this.async();
