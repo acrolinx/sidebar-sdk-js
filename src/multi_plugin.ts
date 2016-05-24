@@ -45,6 +45,7 @@ namespace acrolinx.plugins {
     sidebarContainerId?: string;
     sidebarUrl?: string;
     useMessageAdapter?: boolean;
+    useSidebarFromSameOriginDirectly?: boolean;
     onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
   }
 

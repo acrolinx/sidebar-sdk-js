@@ -52,7 +52,7 @@ namespace acrolinx.plugins.utils {
   export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFrameElement: HTMLIFrameElement, onSidebarLoaded: () => void) {
     const sidebarBaseUrl = config.sidebarUrl || SIDEBAR_URL;
     const completeSidebarUrl = sidebarBaseUrl + 'index.html';
-    if (config.useMessageAdapter) {
+    if (config.useMessageAdapter || (config.useSidebarFromSameOriginDirectly && utils.isFromSameOrigin(sidebarBaseUrl))) {
       sidebarIFrameElement.addEventListener('load', onSidebarLoaded);
       sidebarIFrameElement.src = completeSidebarUrl;
     } else {

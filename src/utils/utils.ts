@@ -40,4 +40,20 @@ namespace acrolinx.plugins.utils {
     el.dispatchEvent(new CustomEvent('input'));
   }
 
+  export function parseUrl(href: string) {
+    const aElement: HTMLAnchorElement = document.createElement('a');
+    aElement.href = href;
+    if (aElement.host === '') {
+      // IE workaround.
+      aElement.href = aElement.href;
+    }
+    const {protocol, host, hostname, port, pathname, hash} = aElement;
+    return {protocol, host, hostname, port, pathname, hash};
+  }
+
+  export function isFromSameOrigin(url: string) {
+    const {protocol, host} = parseUrl(url);
+    return location.protocol === protocol && location.host === host;
+  }
+
 }
