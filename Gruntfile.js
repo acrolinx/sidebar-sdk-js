@@ -17,7 +17,8 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-var FS = require("q-io/fs");
+const FS = require("q-io/fs");
+const serveStatic = require('serve-static');
 
 module.exports = function (grunt) {
   var name = 'acrolinx-sidebar-integration';
@@ -63,12 +64,12 @@ module.exports = function (grunt) {
           middleware: function (connect) {
             var proxy = require('grunt-connect-proxy/lib/utils').proxyRequest;
             return [
-              connect().use('/', connect.static('./samples')),
-              connect().use('/tmp/compiled', connect.static('tmp/compiled')),
-              connect().use('/test', connect.static('./test')),
-              connect().use('/distrib', connect.static('./distrib')),
-              connect().use('/bower_components', connect.static('./bower_components')),
-              connect().use('/src', connect.static('./src')),
+              connect().use('/', serveStatic('./samples')),
+              connect().use('/tmp/compiled', serveStatic('tmp/compiled')),
+              connect().use('/test', serveStatic('./test')),
+              connect().use('/distrib', serveStatic('./distrib')),
+              connect().use('/bower_components', serveStatic('./bower_components')),
+              connect().use('/src', serveStatic('./src')),
               proxy
             ];
           }
@@ -255,7 +256,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('browserifyVendor', ['browserify:vendor']);
   grunt.registerTask('tsBase', ['ts:base']);
-
 
 
 };
