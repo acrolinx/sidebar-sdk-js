@@ -1739,6 +1739,21 @@ var acrolinx;
                 el.dispatchEvent(new CustomEvent('input'));
             }
             utils.fakeInputEvent = fakeInputEvent;
+            function parseUrl(href) {
+                var aElement = document.createElement('a');
+                aElement.href = href;
+                if (aElement.host === '') {
+                    aElement.href = aElement.href;
+                }
+                var protocol = aElement.protocol, host = aElement.host, hostname = aElement.hostname, port = aElement.port, pathname = aElement.pathname, hash = aElement.hash;
+                return { protocol: protocol, host: host, hostname: hostname, port: port, pathname: pathname, hash: hash };
+            }
+            utils.parseUrl = parseUrl;
+            function isFromSameOrigin(url) {
+                var _a = parseUrl(url), protocol = _a.protocol, host = _a.host;
+                return location.protocol === protocol && location.host === host;
+            }
+            utils.isFromSameOrigin = isFromSameOrigin;
         })(utils = plugins.utils || (plugins.utils = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
@@ -2394,11 +2409,16 @@ var acrolinx;
                     return this.getEditor().getDoc();
                 };
                 TinyMCEWordpressAdapter.prototype.scrollToCurrentSelection = function () {
+                    var isOverflow = false;
                     var editorBody = this.getEditor().getBody();
+                    var eleCss = editorBody.getAttribute('style');
+                    if (eleCss && eleCss.indexOf('overflow-y: hidden') !== -1) {
+                        isOverflow = true;
+                    }
                     var parentWidth = this.getEditor().getContainer().clientWidth;
                     var bodyClientWidthWithMargin = editorBody.scrollWidth;
                     var hasVerticalScrollbar = parentWidth > bodyClientWidthWithMargin;
-                    if (hasVerticalScrollbar) {
+                    if (hasVerticalScrollbar && !isOverflow) {
                         _super.prototype.scrollToCurrentSelection.call(this);
                     }
                     else {
@@ -2420,11 +2440,11 @@ var acrolinx;
                     var range = sel.getRangeAt(0);
                     var tmp = range.cloneRange();
                     tmp.collapse(false);
-                    var text = document.createElement('span');
+                    var text = this.getEditorDocument().createElement('span');
                     tmp.insertNode(text);
                     var ypos = text.getClientRects()[0].top;
                     window.scrollTo(0, ypos);
-                    text.remove();
+                    text.parentNode.removeChild(text);
                 };
                 return TinyMCEWordpressAdapter;
             }(adapter.TinyMCEAdapter));
@@ -2707,7 +2727,7 @@ var acrolinx;
             function loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded) {
                 var sidebarBaseUrl = config.sidebarUrl || utils.SIDEBAR_URL;
                 var completeSidebarUrl = sidebarBaseUrl + 'index.html';
-                if (config.useMessageAdapter) {
+                if (config.useMessageAdapter || (config.useSidebarFromSameOriginDirectly && utils.isFromSameOrigin(sidebarBaseUrl))) {
                     sidebarIFrameElement.addEventListener('load', onSidebarLoaded);
                     sidebarIFrameElement.src = completeSidebarUrl;
                 }
