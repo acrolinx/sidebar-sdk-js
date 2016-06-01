@@ -38,8 +38,8 @@ namespace acrolinx.plugins.adapter {
     scrollToCurrentSelection() {
       let isOverflow = false;
       const editorBody = (this.getEditor() as any).getBody();
-      const eleCss = editorBody.getAttribute("style");
-      if (eleCss && eleCss.indexOf("overflow-y: hidden") !== -1) {
+      const eleCss = editorBody.getAttribute('style');
+      if (eleCss && eleCss.indexOf('overflow-y: hidden') !== -1) {
         isOverflow = true;
       }
       const parentWidth = (this.getEditor() as any).getContainer().clientWidth;
