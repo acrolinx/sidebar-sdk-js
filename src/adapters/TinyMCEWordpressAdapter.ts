@@ -36,11 +36,16 @@ namespace acrolinx.plugins.adapter {
     }
 
     scrollToCurrentSelection() {
+      let isOverflow = false;
       const editorBody = (this.getEditor() as any).getBody();
+      const eleCss = editorBody.getAttribute("style");
+      if (eleCss && eleCss.indexOf("overflow-y: hidden") !== -1) {
+        isOverflow = true;
+      }
       const parentWidth = (this.getEditor() as any).getContainer().clientWidth;
       const bodyClientWidthWithMargin = editorBody.scrollWidth;
       const hasVerticalScrollbar = parentWidth > bodyClientWidthWithMargin;
-      if (hasVerticalScrollbar) {
+      if (hasVerticalScrollbar && !isOverflow) {
         super.scrollToCurrentSelection();
       } else {
         this.scrollToCurrentSelectionWithGlobalScrollbar();
@@ -63,13 +68,11 @@ namespace acrolinx.plugins.adapter {
       const range = sel.getRangeAt(0);
       const tmp = range.cloneRange();
       tmp.collapse(false);
-
-      const text = document.createElement('span');
+      const text = this.getEditorDocument().createElement('span');
       tmp.insertNode(text);
       const ypos = text.getClientRects()[0].top;
       window.scrollTo(0, ypos);
-      text.remove();
+      text.parentNode.removeChild(text);
     }
-
   }
 }
