@@ -29,7 +29,9 @@ For more information visit: http://www.acrolinx.com
   <h1>Acrolinx Sidebar Example On Premise</h1>
 
   <p>
-    <a href="multi-editor.html">Multi-Editor Sidebar On Premise</a> | <a href="https://support.acrolinx.com/hc/en-us/articles/205687652-Acrolinx-Sidebar-API-Reference" target="_blank">Open Acrolinx Sidebar API Documentation</a>
+    <a href="multi-editor.html">Multi-Editor Sidebar On Premise</a> | <a
+    href="https://support.acrolinx.com/hc/en-us/articles/205687652-Acrolinx-Sidebar-API-Reference" target="_blank">Open
+    Acrolinx Sidebar API Documentation</a>
   </p>
 
   <div id="editor" contenteditable="true" spellcheck="false">This textt has more then a <b>errorr</b>.</div>
@@ -52,16 +54,16 @@ For more information visit: http://www.acrolinx.com
 <script>
   function initAcrolinx() {
 
-    //Init the main Acrolinx Plugin
+    // Create the main Acrolinx plugin.
     var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
 
-    //A simple Adapter for a Editable Div
-    var simpleAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter(basicConf);
-    //Register one Element-Adapter to the main Acrolinx PLugin
-    acrolinxPlugin.registerAdapter(simpleAdapter);
+    // Create an adapter for an editable div.
+    // Alternative: new acrolinx.plugins.adapter.ContentEditableAdapter({element: document.getElementById('editor')})
+    var adapter = new acrolinx.plugins.adapter.ContentEditableAdapter({editorId: 'editor'});
 
+    // Register the single adapter to the main Acrolinx plugin.
+    acrolinxPlugin.registerAdapter(adapter);
 
-    //Init Acrolinx Plugin.
     acrolinxPlugin.init();
   }
 

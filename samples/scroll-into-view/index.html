@@ -89,21 +89,23 @@
 
   function initAcrolinx() {
 
-    var conf = _.assign({}, basicConf, {scrollOffsetY: 30});
+    function addScrollOffset(adapterConf) {
+      return _.assign({}, adapterConf, {scrollOffsetY: 30});
+    }
 
     //Init the main Acrolinx Plugin
-    var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
+    var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
 
     //A simple Adapter for a Editable Div
-    var contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter(_.extend(_.clone(conf), {editorId: 'EditableDiv'}));
-    var inputAdapter = new acrolinx.plugins.adapter.InputAdapter(_.extend(_.clone(conf), {editorId: 'textarea'}));
-    var ckEditorAdapter = new acrolinx.plugins.adapter.CKEditorAdapter(_.extend(_.clone(conf), {editorId: 'editor_ck'}));
-    var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter(_.extend(_.clone(conf), {editorId: 'editor_tinymce'}));
+    var contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter(addScrollOffset({editorId: 'EditableDiv'}));
+    var inputAdapter = new acrolinx.plugins.adapter.InputAdapter(addScrollOffset({editorId: 'textarea'}));
+    var ckEditorAdapter = new acrolinx.plugins.adapter.CKEditorAdapter(addScrollOffset({editorId: 'editor_ck'}));
+    var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter(addScrollOffset({editorId: 'editor_tinymce'}));
 
-    var contentEditableAdapter2 = new acrolinx.plugins.adapter.ContentEditableAdapter(_.extend(_.clone(conf), {editorId: 'EditableDiv2'}));
-    var inputAdapter2 = new acrolinx.plugins.adapter.InputAdapter(_.extend(_.clone(conf), {editorId: 'textarea2'}));
+    var contentEditableAdapter2 = new acrolinx.plugins.adapter.ContentEditableAdapter(addScrollOffset({editorId: 'EditableDiv2'}));
+    var inputAdapter2 = new acrolinx.plugins.adapter.InputAdapter(addScrollOffset({editorId: 'textarea2'}));
 
-    var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(conf);
+    var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter();
     multiAdapter.addSingleAdapter(contentEditableAdapter);
     multiAdapter.addSingleAdapter(inputAdapter);
     multiAdapter.addSingleAdapter(ckEditorAdapter);

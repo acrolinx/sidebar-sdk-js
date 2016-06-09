@@ -1,112 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
-    <script src="/bower_components/ckeditor/ckeditor.js"></script>
-    <script src="/bower_components/tinymce/tinymce.js"></script>
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="/bower_components/ckeditor/ckeditor.js"></script>
+  <script src="/bower_components/tinymce/tinymce.js"></script>
 
-    <script src="/bower_components/lodash/lodash.js"></script>
-    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
-  	<script src="/bower_components/q/q.js"></script>
+  <script src="/bower_components/lodash/lodash.js"></script>
+  <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/bower_components/q/q.js"></script>
 
-    <script>
-      var acrolinxLibs = {
-        Q: Q.noConflict(),
-        _: _.noConflict()
-      };
-    </script>
+  <script>
+    var acrolinxLibs = {
+      Q: Q.noConflict(),
+      _: _.noConflict()
+    };
+  </script>
 
-    <script src="/distrib/acrolinx-sidebar-integration.js"></script>
-    <link rel="stylesheet" href="../../style.css"/>
-    <script>
+  <script src="/distrib/acrolinx-sidebar-integration.js"></script>
+  <link rel="stylesheet" href="../../style.css"/>
+  <script>
 
-    </script>
+  </script>
 </head>
 <body onload="initAcrolinx()">
 <p>
-    <a href="single-editor.html">Simple Sidebar On Premise</a> | <a href="https://support.acrolinx.com/hc/en-us/articles/205687652-Acrolinx-Sidebar-API-Reference" target="_blank">Open Acrolinx Sidebar API Documentation</a>
+  <a href="single-editor.html">Simple Sidebar On Premise</a> | <a
+  href="https://support.acrolinx.com/hc/en-us/articles/205687652-Acrolinx-Sidebar-API-Reference" target="_blank">Open
+  Acrolinx Sidebar API Documentation</a>
 </p>
 <div id="sidebarContainer"></div>
 <div id="app" style="width: 800px">
-    <h1>Acrolinx Sidebar Example On-Premise</h1>
+  <h1>Acrolinx Sidebar Example On-Premise</h1>
 
-    <pre id="errorMessage"></pre>
-    <form>
-        <div style="display: table;width: 100%">
-            <div style="display: table-cell; width: 50%">
-                <p>Normal Text (Editable div)</p>
+  <pre id="errorMessage"></pre>
+  <form>
+    <div style="display: table;width: 100%">
+      <div style="display: table-cell; width: 50%">
+        <p>Normal Text (Editable div)</p>
 
-                <div id="EditableDiv" contenteditable="true" spellcheck="false">Hellow world!</div>
-            </div>
-            <div style="display: table-cell">
-                <p>Normal Text (TextArea)</p>
-                <textarea id="textarea" style="width: 200px;height: 60px">Hellow world!</textarea>
-            </div>
-        </div>
-        <p>CK Editor</p>
+        <div id="EditableDiv" contenteditable="true" spellcheck="false">Hellow world!</div>
+      </div>
+      <div style="display: table-cell">
+        <p>Normal Text (TextArea)</p>
+        <textarea id="textarea" style="width: 200px;height: 60px">Hellow world!</textarea>
+      </div>
+    </div>
+    <p>CK Editor</p>
         <textarea name="CkEditor" id="editor_ck" rows="10" cols="40">
             This textt has more then a errorr.
         </textarea>
-        <p>TinyMCE Editor</p>
+    <p>TinyMCE Editor</p>
         <textarea name="TinyEditor" id="editor_tinymce" rows="10" cols="40">
             This textt has more then a errorr.
         </textarea>
-        <script>
-            CKEDITOR.disableAutoInline = true;
-            // Replace the <textarea id="editor1"> with a CKEditor
-            // instance, using default configuration.
-        </script>
-    </form>
+    <script>
+      CKEDITOR.disableAutoInline = true;
+      // Replace the <textarea id="editor1"> with a CKEditor
+      // instance, using default configuration.
+    </script>
+  </form>
 </div>
 
 <script src="config.js"></script>
 <script type="text/javascript">
-    'use strict';
+  'use strict';
 
 
-    function initAcrolinx() {
-        var _ = acrolinxLibs._;
+  function initAcrolinx() {
+    var _ = acrolinxLibs._;
 
-        //Init the main Acrolinx Plugin
-        var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
+    // Create the main Acrolinx plugin.
+    var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
 
-        //A simple Adapter for a Editable Div
-        var contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter(_.extend(_.clone(basicConf),{editorId: 'EditableDiv'}));
-        var inputAdapter = new acrolinx.plugins.adapter.InputAdapter(_.extend(_.clone(basicConf), {editorId: 'textarea'}));
-        var ckEditorAdapter = new acrolinx.plugins.adapter.CKEditorAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_ck'}));
-        var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter(_.extend(_.clone(basicConf),{editorId: 'editor_tinymce'}));
-        var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(basicConf);
-        multiAdapter.addSingleAdapter(contentEditableAdapter);
+    // Alternative: new acrolinx.plugins.adapter.ContentEditableAdapter({element: document.getElementById('EditableDiv')});
+    var contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter({editorId: 'EditableDiv'});
 
-        multiAdapter.addSingleAdapter(inputAdapter, {
-          tagName: 'h1',
-          attributes: {
-            'class': 'title',
-            'data-extra': false
-          }
-        });
+    // Alternative: new acrolinx.plugins.adapter.InputAdapter({element: document.getElementById('textarea')});
+    var inputAdapter = new acrolinx.plugins.adapter.InputAdapter({editorId: 'textarea'});
 
-        multiAdapter.addSingleAdapter(ckEditorAdapter);
-        multiAdapter.addSingleAdapter(tinyMceAdapter);
+    var ckEditorAdapter = new acrolinx.plugins.adapter.CKEditorAdapter({editorId: 'editor_ck'});
+    var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter({editorId: 'editor_tinymce'});
 
-        //Register one Element-Adapter to the main Acrolinx PLugin
-        acrolinxPlugin.registerAdapter(multiAdapter);
+    var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(basicConf);
+    multiAdapter.addSingleAdapter(contentEditableAdapter);
 
+    multiAdapter.addSingleAdapter(inputAdapter, {
+      tagName: 'h1',
+      attributes: {
+        'class': 'title',
+        'data-extra': false
+      }
+    });
 
-        //Init Acrolinx Plugin.
-        acrolinxPlugin.init();
+    multiAdapter.addSingleAdapter(ckEditorAdapter);
+    multiAdapter.addSingleAdapter(tinyMceAdapter);
 
+    // Register multiAdapter to the main Acrolinx plugin
+    acrolinxPlugin.registerAdapter(multiAdapter);
 
-        CKEDITOR.replace('editor_ck',{
-            height:50
-        });
+    acrolinxPlugin.init();
+  }
 
-        tinymce.init({selector:"#editor_tinymce",height:50});
+  CKEDITOR.replace('editor_ck', {
+    height: 50
+  });
 
-
-
-    }
+  tinymce.init({selector: "#editor_tinymce", height: 50});
 
 </script>
 

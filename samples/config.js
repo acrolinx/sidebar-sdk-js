@@ -24,7 +24,6 @@
 
 var basicConf = {
   sidebarContainerId: 'sidebarContainer',
-  editorId: 'editor',
   serverAddress: 'http://<SERVER NAME>:8031',
   clientSignature: '<CLIENT SIGNATURE>'
 

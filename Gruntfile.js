@@ -74,7 +74,28 @@ module.exports = function (grunt) {
             ];
           }
         },
-        proxies: []
+        proxies: [
+          {
+            context: '/sidebar',
+            host: 'localhost',
+            port: 9001,
+            rewrite: {
+              '^/sidebar': ''
+            }
+          },
+          // {
+          //   context: '/',
+          //   host: 'localhost',
+          //   port: 8031,
+          //   // headers: {
+          //   //   'username': 'admin',
+          //   //   'password': 'secret'
+          //   // },
+          //   // rewrite: {
+          //   //   '^/proxy/': '/'
+          //   // }
+          // }
+        ]
       }
     },
 

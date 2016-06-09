@@ -57,9 +57,10 @@ namespace acrolinx.test.multiPlugin {
       }, config);
 
       const acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
+      
       const contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter({editorId: 'ContentEditableAdapter'});
       const inputAdapter = new acrolinx.plugins.adapter.InputAdapter({editorId: 'InputAdapter'});
-      const multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter({});
+      const multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter();
       multiAdapter.addSingleAdapter(contentEditableAdapter, addInputAdapterOptions);
       multiAdapter.addSingleAdapter(inputAdapter);
 

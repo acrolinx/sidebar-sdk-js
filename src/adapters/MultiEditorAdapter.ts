@@ -76,12 +76,10 @@ namespace acrolinx.plugins.adapter {
   }
 
   export class MultiEditorAdapter implements AdapterInterface {
-    config: AcrolinxPluginConfig;
     adapters: RegisteredAdapter[];
     checkResult: CheckResult;
 
-    constructor(conf: AcrolinxPluginConfig) {
-      this.config = conf;
+    constructor() {
       this.adapters = [];
     }
 
