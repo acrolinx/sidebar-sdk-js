@@ -82,7 +82,7 @@
     var ckEditorAdapter = new acrolinx.plugins.adapter.CKEditorAdapter({editorId: 'editor_ck'});
     var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter({editorId: 'editor_tinymce'});
 
-    var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(basicConf);
+    var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter();
     multiAdapter.addSingleAdapter(contentEditableAdapter);
 
     multiAdapter.addSingleAdapter(inputAdapter, {
