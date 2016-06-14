@@ -12,9 +12,16 @@ namespace acrolinx.plugins.messageAdapter {
   import InvalidDocumentPart = acrolinx.sidebar.InvalidDocumentPart;
   import CheckedDocumentRange = acrolinx.sidebar.CheckedDocumentRange;
 
+  // Functions are not cloneable and don't work with postMessage.
+  function removeFunctions (object: any) {
+    return JSON.parse(JSON.stringify(object));
+  }
+
 
   function postCommandAsMessage(window: Window, command: string, ...args: any[]) {
-    window.postMessage({command, args}, '*');
+    window.postMessage({command,
+      args: removeFunctions(args)
+    }, '*');
   }
 
   function injectPostCommandAsMessage(window: Window, object: any) {

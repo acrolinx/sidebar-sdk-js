@@ -47,6 +47,7 @@ namespace acrolinx.plugins {
     useMessageAdapter?: boolean;
     useSidebarFromSameOriginDirectly?: boolean;
     onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
+    getDocumentReference?: () => string;
   }
 
   export interface ContentExtractionResult {
@@ -95,6 +96,10 @@ namespace acrolinx.plugins {
         }, config));
       }
 
+      function getDefaultDocumentReference() {
+        return (config.getDocumentReference &&  config.getDocumentReference()) || window.location.href;
+      }
+
       function requestGlobalCheckSync(html: ContentExtractionResult, format: string, documentReference: string) {
         if (html.hasOwnProperty('error')) {
           window.alert(html.error);
@@ -102,7 +107,7 @@ namespace acrolinx.plugins {
           const checkInfo = acrolinxSidebar.checkGlobal(html.content, {
             inputFormat: format || 'HTML',
             requestDescription: {
-              documentReference: documentReference || 'filename.html'
+              documentReference: documentReference || getDefaultDocumentReference()
             }
           });
           adapter.registerCheckCall(checkInfo);
