@@ -1928,7 +1928,7 @@ var acrolinx;
                 }
                 AutoBindAdapter.prototype.extractContentForCheck = function () {
                     var _this = this;
-                    this.multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(this.conf);
+                    this.multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter();
                     acrolinx.plugins.autobind.bindAdaptersForCurrentPage(this.conf).forEach(function (adapter) {
                         _this.multiAdapter.addSingleAdapter(adapter);
                     });
@@ -2250,8 +2250,7 @@ var acrolinx;
                 ];
             }
             var MultiEditorAdapter = (function () {
-                function MultiEditorAdapter(conf) {
-                    this.config = conf;
+                function MultiEditorAdapter() {
                     this.adapters = [];
                 }
                 MultiEditorAdapter.prototype.addSingleAdapter = function (singleAdapter, opts, id) {
@@ -2591,12 +2590,17 @@ var acrolinx;
         var messageAdapter;
         (function (messageAdapter) {
             'use strict';
+            function removeFunctions(object) {
+                return JSON.parse(JSON.stringify(object));
+            }
             function postCommandAsMessage(window, command) {
                 var args = [];
                 for (var _i = 2; _i < arguments.length; _i++) {
                     args[_i - 2] = arguments[_i];
                 }
-                window.postMessage({ command: command, args: args }, '*');
+                window.postMessage({ command: command,
+                    args: removeFunctions(args)
+                }, '*');
             }
             function injectPostCommandAsMessage(window, object) {
                 var _loop_1 = function(key) {
@@ -2786,6 +2790,9 @@ var acrolinx;
                         clientComponents: clientComponents
                     }, config));
                 }
+                function getDefaultDocumentReference() {
+                    return (config.getDocumentReference && config.getDocumentReference()) || window.location.href;
+                }
                 function requestGlobalCheckSync(html, format, documentReference) {
                     if (html.hasOwnProperty('error')) {
                         window.alert(html.error);
@@ -2794,7 +2801,7 @@ var acrolinx;
                         var checkInfo = acrolinxSidebar.checkGlobal(html.content, {
                             inputFormat: format || 'HTML',
                             requestDescription: {
-                                documentReference: documentReference || 'filename.html'
+                                documentReference: documentReference || getDefaultDocumentReference()
                             }
                         });
                         adapter.registerCheckCall(checkInfo);
