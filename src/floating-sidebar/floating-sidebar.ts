@@ -7,11 +7,12 @@ namespace acrolinx.plugins.floatingSidebar {
   export const SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
 
   const initialPos = {
-    top: 100,
-    left: 100
+    top: 20,
+    left: 20
   };
 
   function addStyles() {
+    const height = Math.max(300, Math.min(900, window.innerHeight - initialPos.top - 40));
     const styleTag = document.createElement('style');
     const head = document.querySelector('head');
     styleTag.innerHTML = `
@@ -23,7 +24,7 @@ namespace acrolinx.plugins.floatingSidebar {
         padding-top: 20px;
         cursor: move;
         background: #3e96db;
-        height: 500px;
+        height: ${height}px;
         box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
         border-radius: 3px;
         user-select: none;
