@@ -2824,17 +2824,16 @@ var acrolinx;
                         console.log('configure: ', configuration);
                     },
                     requestGlobalCheck: function () {
-                        console.log('requestGlobalCheck');
-                        var contentExtractionResult = adapter.extractContentForCheck();
+                        var contentExtractionResultOrPromise = adapter.extractContentForCheck();
                         var pFormat = adapter.getFormat ? adapter.getFormat() : null;
                         var pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
-                        if (isPromise(contentExtractionResult)) {
-                            contentExtractionResult.then(function (html) {
-                                requestGlobalCheckSync(html, pFormat, pDocumentReference);
+                        if (isPromise(contentExtractionResultOrPromise)) {
+                            contentExtractionResultOrPromise.then(function (contentExtractionResult) {
+                                requestGlobalCheckSync(contentExtractionResult, pFormat, contentExtractionResult.documentReference || pDocumentReference);
                             });
                         }
                         else {
-                            requestGlobalCheckSync(contentExtractionResult, pFormat, pDocumentReference);
+                            requestGlobalCheckSync(contentExtractionResultOrPromise, pFormat, contentExtractionResultOrPromise.documentReference || pDocumentReference);
                         }
                     },
                     onCheckResult: function (checkResult) {
