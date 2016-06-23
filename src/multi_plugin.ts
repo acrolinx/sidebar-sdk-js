@@ -53,6 +53,7 @@ namespace acrolinx.plugins {
   export interface ContentExtractionResult {
     content?: string;
     error?: any;
+    documentReference?: string;
   }
 
   const clientComponents = [
@@ -133,16 +134,15 @@ namespace acrolinx.plugins {
         },
 
         requestGlobalCheck () {
-          console.log('requestGlobalCheck');
-          const contentExtractionResult = adapter.extractContentForCheck();
+          const contentExtractionResultOrPromise = adapter.extractContentForCheck();
           const pFormat = adapter.getFormat ? adapter.getFormat() : null;
           const pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
-          if (isPromise(contentExtractionResult)) {
-            contentExtractionResult.then((html: ContentExtractionResult) => {
-              requestGlobalCheckSync(html, pFormat, pDocumentReference);
+          if (isPromise(contentExtractionResultOrPromise)) {
+            contentExtractionResultOrPromise.then((contentExtractionResult: ContentExtractionResult) => {
+              requestGlobalCheckSync(contentExtractionResult, pFormat, contentExtractionResult.documentReference || pDocumentReference);
             });
           } else {
-            requestGlobalCheckSync(contentExtractionResult, pFormat, pDocumentReference);
+            requestGlobalCheckSync(contentExtractionResultOrPromise, pFormat, contentExtractionResultOrPromise.documentReference || pDocumentReference);
           }
         },
 

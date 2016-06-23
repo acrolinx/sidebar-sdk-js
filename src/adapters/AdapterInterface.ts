@@ -22,7 +22,12 @@ namespace acrolinx.plugins.adapter {
   export interface AdapterInterface {
     getEditor?(): any;
     getFormat?(): string;
+
+    /**
+     * @deprecated Use the attribute documentReference in ContentExtractionResult.
+     */
     getDocumentReference?(): string;
+    
     getContent?(): string;
     extractContentForCheck(): ContentExtractionResult | Promise<ContentExtractionResult>;
     registerCheckCall(checkInfo: Check): void;
