@@ -18,11 +18,13 @@ namespace acrolinx.test.multiPlugin {
   import InvalidDocumentPart = acrolinx.sidebar.InvalidDocumentPart;
   import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
   import AddSingleAdapterOptions = acrolinx.plugins.adapter.AddSingleAdapterOptions;
+  import MultiEditorAdapterConfig = acrolinx.plugins.adapter.MultiEditorAdapterConfig;
 
   const DUMMY_CHECK_ID = 'dummyCheckId';
 
   interface InitMultiPluginOpts {
     config?: AcrolinxPluginConfig
+    multiEditorAdapterConfig?: MultiEditorAdapterConfig;
     addInputAdapterOptions?: AddSingleAdapterOptions
   }
 
@@ -38,7 +40,7 @@ namespace acrolinx.test.multiPlugin {
       done();
     });
 
-    function initMultiPlugin(done: Function, {config = {}, addInputAdapterOptions}: InitMultiPluginOpts = {}) {
+    function initMultiPlugin(done: Function, {config = {}, addInputAdapterOptions, multiEditorAdapterConfig}: InitMultiPluginOpts = {}) {
       injectedPlugin = null;
       lastDocumentContent = null;
 
@@ -57,10 +59,10 @@ namespace acrolinx.test.multiPlugin {
       }, config);
 
       const acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
-      
+
       const contentEditableAdapter = new acrolinx.plugins.adapter.ContentEditableAdapter({editorId: 'ContentEditableAdapter'});
       const inputAdapter = new acrolinx.plugins.adapter.InputAdapter({editorId: 'InputAdapter'});
-      const multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter();
+      const multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter(multiEditorAdapterConfig);
       multiAdapter.addSingleAdapter(contentEditableAdapter, addInputAdapterOptions);
       multiAdapter.addSingleAdapter(inputAdapter);
 
@@ -261,6 +263,28 @@ namespace acrolinx.test.multiPlugin {
         }
       });
     });
+
+    describe('Config: documentHeader and contentElement', () => {
+      it('adds documentHeader and wraps with rootElement', (done) => {
+        initMultiPlugin(onInitDone, {
+          multiEditorAdapterConfig: {
+            documentHeader: '<!DOCTYPE html>\n',
+            rootElement: {
+              tagName: 'root',
+            }
+          }
+        });
+
+        function onInitDone() {
+          waitForCheck(() => {
+            const expectedBegin = '<!DOCTYPE html>\n<root>';
+            assert.equal(lastDocumentContent.substr(0, expectedBegin.length), expectedBegin);
+            assert.isTrue(_.endsWith(lastDocumentContent, '</root>'));
+            done();
+          })
+        }
+      });
+    })
 
   });
 }

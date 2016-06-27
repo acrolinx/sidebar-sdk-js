@@ -82,7 +82,12 @@
     var ckEditorAdapter = new acrolinx.plugins.adapter.CKEditorAdapter({editorId: 'editor_ck'});
     var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter({editorId: 'editor_tinymce'});
 
-    var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter();
+    var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter({
+      // Optional: Can be used to set the DOCTYPE
+      // documentHeader: '<!DOCTYPE html>\n',
+      // Optional: Wrapper around the complete concatenated html
+      // rootElement: {tagName: 'html'}
+    });
     multiAdapter.addSingleAdapter(contentEditableAdapter);
 
     multiAdapter.addSingleAdapter(inputAdapter, {

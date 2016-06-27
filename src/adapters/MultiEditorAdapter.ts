@@ -42,12 +42,14 @@ namespace acrolinx.plugins.adapter {
 
   type AttributeMap =  {[key: string]: any};
 
-  export interface AddSingleAdapterOptions {
+  export interface WrapperConfOptions {
     tagName?: string;
     attributes?: AttributeMap;
   }
 
-  interface WrapperConf extends AddSingleAdapterOptions {
+  export type AddSingleAdapterOptions = WrapperConfOptions;
+
+  interface WrapperConf extends WrapperConfOptions {
     tagName: string;
     attributes: AttributeMap;
   }
@@ -62,10 +64,17 @@ namespace acrolinx.plugins.adapter {
   }
 
 
-  function createStartTag(wrapper: WrapperConf, id: string) {
-    const allAttributes = _.assign({}, wrapper.attributes, {id}) as AttributeMap;
-    const allAttributesString = _.map(allAttributes, (value, key) => `${key}="${_.escape(value)}"`).join(' ');
-    return `<${wrapper.tagName} ${allAttributesString}>`;
+  function createStartTag(wrapper: WrapperConf, id?: string) {
+    const allAttributes = _.clone(wrapper.attributes);
+    if (id) {
+      _.assign(allAttributes, {id});
+    }
+    const allAttributesString = _.map(allAttributes, (value, key) => ` ${key}="${_.escape(value)}"`).join('');
+    return `<${wrapper.tagName}${allAttributesString}>`;
+  }
+
+  function createEndTag(tagName: string) {
+    return `</${tagName}>`;
   }
 
   function mapBackRangeOfEscapedText(escapeResult: EscapeHtmlCharactersResult, range: [number, number]): [number, number] {
@@ -75,21 +84,36 @@ namespace acrolinx.plugins.adapter {
     ];
   }
 
+  export interface MultiEditorAdapterConfig {
+    documentHeader?: string;
+    rootElement?: WrapperConfOptions;
+  }
+
+  function wrapperConfWithDefaults(opts: WrapperConfOptions, defaultTagName = 'div') {
+    const tagName = opts.tagName || defaultTagName;
+    if (_.includes(tagName, ' ')) {
+      console.info(`tagName "${tagName}" contains whitespaces which may lead to unexpected results.`);
+    }
+    return {tagName, attributes: opts.attributes || {}};
+  }
+
   export class MultiEditorAdapter implements AdapterInterface {
+    config: MultiEditorAdapterConfig;
+    rootElementWrapper: WrapperConf; // Optional class properties will come with ts 2.0
     adapters: RegisteredAdapter[];
     checkResult: CheckResult;
+    rootElement: string;
 
-    constructor() {
+    constructor(config: MultiEditorAdapterConfig = {}) {
+      this.config = config;
+      if (config.rootElement) {
+        this.rootElementWrapper = wrapperConfWithDefaults(config.rootElement, 'html');
+      }
       this.adapters = [];
     }
 
     addSingleAdapter(singleAdapter: AdapterInterface, opts: AddSingleAdapterOptions = {}, id = 'acrolinx_integration' + this.adapters.length) {
-      this.adapters.push({
-        id: id, adapter: singleAdapter, wrapper: {
-          tagName: opts.tagName || 'div',
-          attributes: opts.attributes || {}
-        }
-      });
+      this.adapters.push({id: id, adapter: singleAdapter, wrapper: wrapperConfWithDefaults(opts)});
     }
 
     extractContentForCheck() {
@@ -97,7 +121,10 @@ namespace acrolinx.plugins.adapter {
       const deferred = Q.defer();
       const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck());
       Q.all(contentExtractionResults).then((results: ContentExtractionResult[]) => {
-        let html = '';
+        let html = this.config.documentHeader || '';
+        if (this.rootElementWrapper) {
+          html += createStartTag(this.rootElementWrapper);
+        }
         for (let i = 0; i < this.adapters.length; i++) {
           const el = this.adapters[i];
           const tagName = el.wrapper.tagName;
@@ -113,12 +140,15 @@ namespace acrolinx.plugins.adapter {
             elHtml = adapterContent;
           }
 
-          const newTag = startText + elHtml + '</' + tagName + '>';
+          const newTag = startText + elHtml + createEndTag(tagName);
           el.start = html.length + startText.length;
           el.end = html.length + startText.length + elHtml.length;
           html += newTag;
         }
-        const contentExtractionResult : ContentExtractionResult = {content: html};
+        if (this.rootElementWrapper) {
+          html += createEndTag(this.rootElementWrapper.tagName);
+        }
+        const contentExtractionResult: ContentExtractionResult = {content: html};
         deferred.resolve(contentExtractionResult);
       });
       return deferred.promise;
