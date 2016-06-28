@@ -1601,8 +1601,75 @@ var acrolinx;
     (function (plugins) {
         var utils;
         (function (utils) {
+            'use strict';
+            var _ = acrolinxLibs._;
+            function logTime(text, f) {
+                var startTime = Date.now();
+                var result = f();
+                console.log("Duration of \"" + text + ":\"", Date.now() - startTime);
+                return result;
+            }
+            utils.logTime = logTime;
+            function getCompleteFlagLength(matches) {
+                return matches[matches.length - 1].range[1] - matches[0].range[0];
+            }
+            utils.getCompleteFlagLength = getCompleteFlagLength;
+            function fetch(url, callback) {
+                var request = new XMLHttpRequest();
+                request.open('GET', url, true);
+                request.onload = function () {
+                    if (request.status >= 200 && request.status < 400) {
+                        callback(request.responseText);
+                    }
+                    else {
+                        throw new Error("Error while loading " + url + ".");
+                    }
+                };
+                request.onerror = function () {
+                    throw new Error("Error while loading " + url + ".");
+                };
+                request.send();
+            }
+            utils.fetch = fetch;
+            function isIFrame(el) {
+                return el.nodeName === 'IFRAME';
+            }
+            utils.isIFrame = isIFrame;
+            function fakeInputEvent(el) {
+                el.dispatchEvent(new CustomEvent('input'));
+            }
+            utils.fakeInputEvent = fakeInputEvent;
+            function parseUrl(href) {
+                var aElement = document.createElement('a');
+                aElement.href = href;
+                if (aElement.host === '') {
+                    aElement.href = aElement.href;
+                }
+                var protocol = aElement.protocol, host = aElement.host, hostname = aElement.hostname, port = aElement.port, pathname = aElement.pathname, hash = aElement.hash;
+                return { protocol: protocol, host: host, hostname: hostname, port: port, pathname: pathname, hash: hash };
+            }
+            utils.parseUrl = parseUrl;
+            function isFromSameOrigin(url) {
+                var _a = parseUrl(url), protocol = _a.protocol, host = _a.host;
+                return location.protocol === protocol && location.host === host;
+            }
+            utils.isFromSameOrigin = isFromSameOrigin;
+            function toSet(keys) {
+                return Object.freeze(_.zipObject(keys, keys.map(_.constant(true))));
+            }
+            utils.toSet = toSet;
+        })(utils = plugins.utils || (plugins.utils = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
+        var utils;
+        (function (utils) {
             var textextraction;
             (function (textextraction) {
+                'use strict';
                 var _ = acrolinxLibs._;
                 var REPLACE_SCRIPTS_REGEXP = '<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\/script>';
                 var REPLACE_STYLES_REGEXP = '<style\\b[^<]*(?:(?!<\\/style>)<[^<]*)*<\/style>';
@@ -1610,12 +1677,24 @@ var acrolinx;
                 var REPLACE_ENTITY_REGEXP = '&.*?;';
                 var REPLACE_TAGS_PARTS = [REPLACE_SCRIPTS_REGEXP, REPLACE_STYLES_REGEXP, REPLACE_TAG_REGEXP, REPLACE_ENTITY_REGEXP];
                 var REPLACE_TAGS_REGEXP = '(' + REPLACE_TAGS_PARTS.join('|') + ')';
+                textextraction.NEW_LINE_TAGS = utils.toSet(['BR', 'P', 'DIV']);
+                textextraction.AUTO_SELF_CLOSING_LINE_TAGS = utils.toSet(['BR']);
+                function getTagReplacement(completeTag) {
+                    var _a = ((/^<(\/?)(\w+)/i).exec(completeTag.toUpperCase()) || []).slice(1), _b = _a[0], slash1 = _b === void 0 ? '' : _b, _c = _a[1], tagName = _c === void 0 ? '' : _c, _d = _a[2], slash2 = _d === void 0 ? '' : _d;
+                    if (tagName) {
+                        if (textextraction.AUTO_SELF_CLOSING_LINE_TAGS[tagName] ||
+                            (textextraction.NEW_LINE_TAGS[tagName] && (slash1 || slash2))) {
+                            return '\n';
+                        }
+                    }
+                    return '';
+                }
                 function extractText(s) {
                     var regExp = new RegExp(REPLACE_TAGS_REGEXP, 'ig');
                     var offsetMapping = [];
                     var currentDiffOffset = 0;
                     var resultText = s.replace(regExp, function (tagOrEntity, p1, p2, offset) {
-                        var rep = _.startsWith(tagOrEntity, '&') ? decodeEntities(tagOrEntity) : '';
+                        var rep = _.startsWith(tagOrEntity, '&') ? decodeEntities(tagOrEntity) : getTagReplacement(tagOrEntity);
                         currentDiffOffset -= tagOrEntity.length - rep.length;
                         offsetMapping.push({
                             oldPosition: offset + tagOrEntity.length,
@@ -1715,71 +1794,6 @@ var acrolinx;
                 diffbased.lookupMatches = lookupMatches;
             })(diffbased = lookup.diffbased || (lookup.diffbased = {}));
         })(lookup = plugins.lookup || (plugins.lookup = {}));
-    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
-})(acrolinx || (acrolinx = {}));
-var acrolinx;
-(function (acrolinx) {
-    var plugins;
-    (function (plugins) {
-        var utils;
-        (function (utils) {
-            var _ = acrolinxLibs._;
-            function logTime(text, f) {
-                var startTime = Date.now();
-                var result = f();
-                console.log("Duration of \"" + text + ":\"", Date.now() - startTime);
-                return result;
-            }
-            utils.logTime = logTime;
-            function getCompleteFlagLength(matches) {
-                return matches[matches.length - 1].range[1] - matches[0].range[0];
-            }
-            utils.getCompleteFlagLength = getCompleteFlagLength;
-            function fetch(url, callback) {
-                var request = new XMLHttpRequest();
-                request.open('GET', url, true);
-                request.onload = function () {
-                    if (request.status >= 200 && request.status < 400) {
-                        callback(request.responseText);
-                    }
-                    else {
-                        throw new Error("Error while loading " + url + ".");
-                    }
-                };
-                request.onerror = function () {
-                    throw new Error("Error while loading " + url + ".");
-                };
-                request.send();
-            }
-            utils.fetch = fetch;
-            function isIFrame(el) {
-                return el.nodeName === 'IFRAME';
-            }
-            utils.isIFrame = isIFrame;
-            function fakeInputEvent(el) {
-                el.dispatchEvent(new CustomEvent('input'));
-            }
-            utils.fakeInputEvent = fakeInputEvent;
-            function parseUrl(href) {
-                var aElement = document.createElement('a');
-                aElement.href = href;
-                if (aElement.host === '') {
-                    aElement.href = aElement.href;
-                }
-                var protocol = aElement.protocol, host = aElement.host, hostname = aElement.hostname, port = aElement.port, pathname = aElement.pathname, hash = aElement.hash;
-                return { protocol: protocol, host: host, hostname: hostname, port: port, pathname: pathname, hash: hash };
-            }
-            utils.parseUrl = parseUrl;
-            function isFromSameOrigin(url) {
-                var _a = parseUrl(url), protocol = _a.protocol, host = _a.host;
-                return location.protocol === protocol && location.host === host;
-            }
-            utils.isFromSameOrigin = isFromSameOrigin;
-            function toSet(keys) {
-                return _.zipObject(keys, keys.map(_.constant(true)));
-            }
-            utils.toSet = toSet;
-        })(utils = plugins.utils || (plugins.utils = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
 var acrolinx;
@@ -2998,10 +3012,22 @@ var acrolinx;
                 return concatTextMappings(_.map(node.childNodes, function (child) {
                     switch (child.nodeType) {
                         case Node.ELEMENT_NODE:
-                            if (IGNORED_NODE_NAMES[child.nodeName]) {
+                            var nodeName = child.nodeName;
+                            if (IGNORED_NODE_NAMES[nodeName]) {
                                 return EMPTY_TEXT_DOM_MAPPING;
                             }
-                            return extractTextDomMapping(child);
+                            var childMappings = extractTextDomMapping(child);
+                            if (utils.textextraction.NEW_LINE_TAGS[nodeName]) {
+                                var lastChildDomPos = _.last(childMappings.domPositions);
+                                return {
+                                    text: childMappings.text + '\n',
+                                    domPositions: childMappings.domPositions.concat({
+                                        node: (lastChildDomPos && lastChildDomPos.node) || child,
+                                        offset: (lastChildDomPos && lastChildDomPos.offset) || 0
+                                    })
+                                };
+                            }
+                            return childMappings;
                         case Node.TEXT_NODE:
                         default:
                             return textMapping(child.textContent, _.times(child.textContent.length, function (i) { return domPosition(child, i); }));
