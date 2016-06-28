@@ -1599,6 +1599,46 @@ var acrolinx;
 (function (acrolinx) {
     var plugins;
     (function (plugins) {
+        var utils;
+        (function (utils) {
+            var textextraction;
+            (function (textextraction) {
+                var _ = acrolinxLibs._;
+                var REPLACE_SCRIPTS_REGEXP = '<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\/script>';
+                var REPLACE_STYLES_REGEXP = '<style\\b[^<]*(?:(?!<\\/style>)<[^<]*)*<\/style>';
+                var REPLACE_TAG_REGEXP = '<([^>]+)>';
+                var REPLACE_ENTITY_REGEXP = '&.*?;';
+                var REPLACE_TAGS_PARTS = [REPLACE_SCRIPTS_REGEXP, REPLACE_STYLES_REGEXP, REPLACE_TAG_REGEXP, REPLACE_ENTITY_REGEXP];
+                var REPLACE_TAGS_REGEXP = '(' + REPLACE_TAGS_PARTS.join('|') + ')';
+                function extractText(s) {
+                    var regExp = new RegExp(REPLACE_TAGS_REGEXP, 'ig');
+                    var offsetMapping = [];
+                    var currentDiffOffset = 0;
+                    var resultText = s.replace(regExp, function (tagOrEntity, p1, p2, offset) {
+                        var rep = _.startsWith(tagOrEntity, '&') ? decodeEntities(tagOrEntity) : '';
+                        currentDiffOffset -= tagOrEntity.length - rep.length;
+                        offsetMapping.push({
+                            oldPosition: offset + tagOrEntity.length,
+                            diffOffset: currentDiffOffset
+                        });
+                        return rep;
+                    });
+                    return [resultText, offsetMapping];
+                }
+                textextraction.extractText = extractText;
+                function decodeEntities(entity) {
+                    var el = document.createElement('div');
+                    el.innerHTML = entity;
+                    return el.textContent;
+                }
+            })(textextraction = utils.textextraction || (utils.textextraction = {}));
+        })(utils = plugins.utils || (plugins.utils = {}));
+    })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
+})(acrolinx || (acrolinx = {}));
+var acrolinx;
+(function (acrolinx) {
+    var plugins;
+    (function (plugins) {
         var lookup;
         (function (lookup) {
             var diffbased;
@@ -1607,6 +1647,7 @@ var acrolinx;
                 var _ = acrolinxLibs._;
                 var log = acrolinx.plugins.utils.log;
                 var findNewIndex = acrolinx.plugins.utils.findNewIndex;
+                var extractText = acrolinx.plugins.utils.textextraction.extractText;
                 var _a = acrolinx.diffMatchPatch, DIFF_EQUAL = _a.DIFF_EQUAL, DIFF_DELETE = _a.DIFF_DELETE, DIFF_INSERT = _a.DIFF_INSERT;
                 var dmp = new acrolinx.diffMatchPatch.DiffMatchPatch();
                 function createOffsetMappingArray(diffs) {
@@ -1637,27 +1678,6 @@ var acrolinx;
                     return offsetMappingArray;
                 }
                 diffbased.createOffsetMappingArray = createOffsetMappingArray;
-                function decodeEntities(entity) {
-                    var el = document.createElement('div');
-                    el.innerHTML = entity;
-                    return el.textContent;
-                }
-                function replaceTags(s) {
-                    var regExp = /(<([^>]+)>|&.*?;)/ig;
-                    var offsetMapping = [];
-                    var currentDiffOffset = 0;
-                    var resultText = s.replace(regExp, function (tagOrEntity, p1, p2, offset) {
-                        var rep = _.startsWith(tagOrEntity, '&') ? decodeEntities(tagOrEntity) : '';
-                        currentDiffOffset -= tagOrEntity.length - rep.length;
-                        offsetMapping.push({
-                            oldPosition: offset + tagOrEntity.length,
-                            diffOffset: currentDiffOffset
-                        });
-                        return rep;
-                    });
-                    return [resultText, offsetMapping];
-                }
-                diffbased.replaceTags = replaceTags;
                 function rangeContent(content, m) {
                     return content.slice(m.range[0], m.range[1]);
                 }
@@ -1666,7 +1686,7 @@ var acrolinx;
                     if (_.isEmpty(matches)) {
                         return [];
                     }
-                    var _a = inputFormat === 'HTML' ? replaceTags(checkedDocument) : [checkedDocument, []], cleanedCheckedDocument = _a[0], cleaningOffsetMappingArray = _a[1];
+                    var _a = inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []], cleanedCheckedDocument = _a[0], cleaningOffsetMappingArray = _a[1];
                     var diffs = dmp.diff_main(cleanedCheckedDocument, currentDocument);
                     var offsetMappingArray = createOffsetMappingArray(diffs);
                     var alignedMatches = matches.map(function (match) {
@@ -1703,6 +1723,7 @@ var acrolinx;
     (function (plugins) {
         var utils;
         (function (utils) {
+            var _ = acrolinxLibs._;
             function logTime(text, f) {
                 var startTime = Date.now();
                 var result = f();
@@ -1754,6 +1775,10 @@ var acrolinx;
                 return location.protocol === protocol && location.host === host;
             }
             utils.isFromSameOrigin = isFromSameOrigin;
+            function toSet(keys) {
+                return _.zipObject(keys, keys.map(_.constant(true)));
+            }
+            utils.toSet = toSet;
         })(utils = plugins.utils || (plugins.utils = {}));
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
 })(acrolinx || (acrolinx = {}));
@@ -2239,9 +2264,15 @@ var acrolinx;
             var findNewIndex = acrolinx.plugins.utils.findNewIndex;
             var _ = acrolinxLibs._;
             function createStartTag(wrapper, id) {
-                var allAttributes = _.assign({}, wrapper.attributes, { id: id });
-                var allAttributesString = _.map(allAttributes, function (value, key) { return (key + "=\"" + _.escape(value) + "\""); }).join(' ');
-                return "<" + wrapper.tagName + " " + allAttributesString + ">";
+                var allAttributes = _.clone(wrapper.attributes);
+                if (id) {
+                    _.assign(allAttributes, { id: id });
+                }
+                var allAttributesString = _.map(allAttributes, function (value, key) { return (" " + key + "=\"" + _.escape(value) + "\""); }).join('');
+                return "<" + wrapper.tagName + allAttributesString + ">";
+            }
+            function createEndTag(tagName) {
+                return "</" + tagName + ">";
             }
             function mapBackRangeOfEscapedText(escapeResult, range) {
                 return [
@@ -2249,19 +2280,27 @@ var acrolinx;
                     findNewIndex(escapeResult.backwardAlignment, range[1])
                 ];
             }
+            function wrapperConfWithDefaults(opts, defaultTagName) {
+                if (defaultTagName === void 0) { defaultTagName = 'div'; }
+                var tagName = opts.tagName || defaultTagName;
+                if (_.includes(tagName, ' ')) {
+                    console.info("tagName \"" + tagName + "\" contains whitespaces which may lead to unexpected results.");
+                }
+                return { tagName: tagName, attributes: opts.attributes || {} };
+            }
             var MultiEditorAdapter = (function () {
-                function MultiEditorAdapter() {
+                function MultiEditorAdapter(config) {
+                    if (config === void 0) { config = {}; }
+                    this.config = config;
+                    if (config.rootElement) {
+                        this.rootElementWrapper = wrapperConfWithDefaults(config.rootElement, 'html');
+                    }
                     this.adapters = [];
                 }
                 MultiEditorAdapter.prototype.addSingleAdapter = function (singleAdapter, opts, id) {
                     if (opts === void 0) { opts = {}; }
                     if (id === void 0) { id = 'acrolinx_integration' + this.adapters.length; }
-                    this.adapters.push({
-                        id: id, adapter: singleAdapter, wrapper: {
-                            tagName: opts.tagName || 'div',
-                            attributes: opts.attributes || {}
-                        }
-                    });
+                    this.adapters.push({ id: id, adapter: singleAdapter, wrapper: wrapperConfWithDefaults(opts) });
                 };
                 MultiEditorAdapter.prototype.extractContentForCheck = function () {
                     var _this = this;
@@ -2269,7 +2308,10 @@ var acrolinx;
                     var deferred = Q.defer();
                     var contentExtractionResults = this.adapters.map(function (adapter) { return adapter.adapter.extractContentForCheck(); });
                     Q.all(contentExtractionResults).then(function (results) {
-                        var html = '';
+                        var html = _this.config.documentHeader || '';
+                        if (_this.rootElementWrapper) {
+                            html += createStartTag(_this.rootElementWrapper);
+                        }
                         for (var i = 0; i < _this.adapters.length; i++) {
                             var el = _this.adapters[i];
                             var tagName = el.wrapper.tagName;
@@ -2284,10 +2326,13 @@ var acrolinx;
                             else {
                                 elHtml = adapterContent;
                             }
-                            var newTag = startText + elHtml + '</' + tagName + '>';
+                            var newTag = startText + elHtml + createEndTag(tagName);
                             el.start = html.length + startText.length;
                             el.end = html.length + startText.length + elHtml.length;
                             html += newTag;
+                        }
+                        if (_this.rootElementWrapper) {
+                            html += createEndTag(_this.rootElementWrapper.tagName);
                         }
                         var contentExtractionResult = { content: html };
                         deferred.resolve(contentExtractionResult);
@@ -2923,6 +2968,10 @@ var acrolinx;
         var utils;
         (function (utils) {
             var _ = acrolinxLibs._;
+            var EMPTY_TEXT_DOM_MAPPING = Object.freeze({
+                text: '',
+                domPositions: []
+            });
             function textMapping(text, domPositions) {
                 return {
                     text: text,
@@ -2944,10 +2993,14 @@ var acrolinx;
                 };
             }
             utils.domPosition = domPosition;
+            var IGNORED_NODE_NAMES = utils.toSet(['SCRIPT', 'STYLE']);
             function extractTextDomMapping(node) {
                 return concatTextMappings(_.map(node.childNodes, function (child) {
                     switch (child.nodeType) {
                         case Node.ELEMENT_NODE:
+                            if (IGNORED_NODE_NAMES[child.nodeName]) {
+                                return EMPTY_TEXT_DOM_MAPPING;
+                            }
                             return extractTextDomMapping(child);
                         case Node.TEXT_NODE:
                         default:
