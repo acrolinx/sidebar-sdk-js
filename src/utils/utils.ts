@@ -1,4 +1,6 @@
 namespace acrolinx.plugins.utils {
+  'use strict';
+
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import Match = acrolinx.sidebar.Match;
 
@@ -59,7 +61,7 @@ namespace acrolinx.plugins.utils {
   }
 
   export function toSet(keys: string[])  {
-    return _.zipObject(keys, keys.map(_.constant(true))) as {[key: string]: boolean};
+    return Object.freeze(_.zipObject(keys, keys.map(_.constant(true)))) as {[key: string]: boolean};
   }
 
 }
