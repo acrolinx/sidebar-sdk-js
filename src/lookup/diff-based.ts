@@ -21,6 +21,7 @@
 /// <reference path="../typings/diff-match-patch.d.ts" />
 /// <reference path="../utils/logging.ts" />
 /// <reference path="../utils/alignment.ts" />
+/// <reference path="../utils/text-extraction" />
 
 namespace acrolinx.plugins.lookup.diffbased {
   'use strict';
@@ -31,6 +32,7 @@ namespace acrolinx.plugins.lookup.diffbased {
   import log = acrolinx.plugins.utils.log;
   import OffSetAlign = acrolinx.plugins.utils.OffSetAlign;
   import findNewIndex = acrolinx.plugins.utils.findNewIndex;
+  import extractText = acrolinx.plugins.utils.textextraction.extractText;
   const {DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT} = acrolinx.diffMatchPatch;
 
   type InputFormat = 'HTML' | 'TEXT';
@@ -65,42 +67,16 @@ namespace acrolinx.plugins.lookup.diffbased {
     return offsetMappingArray;
   }
 
-  function decodeEntities(entity: string) {
-    const el = document.createElement('div');
-    el.innerHTML = entity;
-    return el.textContent;
-  }
-
-
-  // Exported for testing
-  export function replaceTags(s: string): [string, OffSetAlign[]] {
-    const regExp = /(<([^>]+)>|&.*?;)/ig;
-    const offsetMapping: OffSetAlign[] = [];
-    let currentDiffOffset = 0;
-    const resultText = s.replace(regExp, (tagOrEntity, p1, p2, offset) => {
-      const rep = _.startsWith(tagOrEntity, '&') ? decodeEntities(tagOrEntity) : '';
-      currentDiffOffset -= tagOrEntity.length - rep.length;
-      offsetMapping.push({
-        oldPosition: offset + tagOrEntity.length,
-        diffOffset: currentDiffOffset
-      });
-      return rep;
-    });
-    return [resultText, offsetMapping];
-  }
-
-
   function rangeContent(content: string, m: AlignedMatch<Match>) {
     return content.slice(m.range[0], m.range[1]);
   }
-
 
   export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string,
                                                  matches: T[], inputFormat: InputFormat = 'HTML'): AlignedMatch<T>[] {
     if (_.isEmpty(matches)) {
       return [];
     }
-    const [cleanedCheckedDocument, cleaningOffsetMappingArray] = inputFormat === 'HTML' ? replaceTags(checkedDocument) : [checkedDocument, []];
+    const [cleanedCheckedDocument, cleaningOffsetMappingArray] = inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []];
     const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
     const offsetMappingArray = createOffsetMappingArray(diffs);
 

@@ -2,6 +2,8 @@ namespace acrolinx.plugins.utils {
   import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
   import Match = acrolinx.sidebar.Match;
 
+  import _ = acrolinxLibs._;
+
   export function logTime(text: string, f: Function) {
     const startTime = Date.now();
     const result = f();
@@ -54,6 +56,10 @@ namespace acrolinx.plugins.utils {
   export function isFromSameOrigin(url: string) {
     const {protocol, host} = parseUrl(url);
     return location.protocol === protocol && location.host === host;
+  }
+
+  export function toSet(keys: string[])  {
+    return _.zipObject(keys, keys.map(_.constant(true))) as {[key: string]: boolean};
   }
 
 }

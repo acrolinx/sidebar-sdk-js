@@ -12,6 +12,11 @@ namespace acrolinx.plugins.utils {
     offset: number;
   }
 
+  const EMPTY_TEXT_DOM_MAPPING: TextDomMapping = Object.freeze({
+    text: '',
+    domPositions: []
+  });
+
 
   export function textMapping(text: string, domPositions: DomPosition[]): TextDomMapping {
     return {
@@ -34,16 +39,22 @@ namespace acrolinx.plugins.utils {
     };
   }
 
+  const IGNORED_NODE_NAMES = toSet(['SCRIPT', 'STYLE']);
+
   export function extractTextDomMapping(node: Node): TextDomMapping {
     return concatTextMappings(_.map(node.childNodes, (child: Node) => {
-      switch (child.nodeType) {
-        case Node.ELEMENT_NODE:
-          return extractTextDomMapping(<HTMLElement> child);
-        case Node.TEXT_NODE:
-        default:
-          return textMapping(child.textContent, _.times(child.textContent.length, (i: number) => domPosition(child, i)));
+        switch (child.nodeType) {
+          case Node.ELEMENT_NODE:
+            if (IGNORED_NODE_NAMES[child.nodeName]) {
+              return EMPTY_TEXT_DOM_MAPPING;
+            }
+            return extractTextDomMapping(<HTMLElement> child);
+          case Node.TEXT_NODE:
+          default:
+            return textMapping(child.textContent, _.times(child.textContent.length, (i: number) => domPosition(child, i)));
+        }
       }
-    }));
+    ));
   }
 
   export function getEndDomPos(endIndex: number, domPositions: DomPosition[]): DomPosition {
