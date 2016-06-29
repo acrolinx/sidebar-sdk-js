@@ -9,6 +9,7 @@ namespace acrolinx.plugins.floatingSidebar {
   export const SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
   export const SIDEBAR_DRAG_OVERLAY_ID = 'acrolinxDragOverlay';
   export const SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
+  export const RESIZE_ICON_CLASS = 'acrolinxFloatingSidebarResizeIcon';
 
   const initialPos = {
     top: 20,
@@ -16,7 +17,6 @@ namespace acrolinx.plugins.floatingSidebar {
   };
 
   function addStyles() {
-    const height = Math.max(300, Math.min(900, window.innerHeight - initialPos.top - 40));
     const styleTag = document.createElement('style');
     const head = document.querySelector('head');
     styleTag.innerHTML = `
@@ -28,7 +28,6 @@ namespace acrolinx.plugins.floatingSidebar {
         padding-top: 0px;
         cursor: move;
         background: #3e96db;
-        height: ${height}px;
         box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
         border-radius: 3px;
         user-select: none;
@@ -72,7 +71,7 @@ namespace acrolinx.plugins.floatingSidebar {
         position: absolute;
         top: 20px;
         left: 0;
-        height: 300px;
+        height: 100%;
         width: 300px;
         background: transparent;
         z-index: 10001;
@@ -90,6 +89,28 @@ namespace acrolinx.plugins.floatingSidebar {
         opacity: 0.6;
         z-index: 9999;
       }
+      
+      #${SIDEBAR_ID} .${RESIZE_ICON_CLASS} {
+        position: absolute;
+        right: 10px;
+        bottom: -10px;
+        width: 10px;
+        height: 10px;
+        font-family: Roboto, sans-serif;
+        line-height: 20px;
+        padding: 5px;
+        font-size: 20px;
+        font-weight: normal;
+        color: #333;
+        z-index: 10002;
+        cursor: move;
+        opacity: 0.7;
+        transition: opacity 0.5s;
+      }
+      
+      #${SIDEBAR_ID} .${RESIZE_ICON_CLASS}:hover {
+        opacity: 1;
+      }
     `;
     head.appendChild(styleTag);
   }
@@ -99,6 +120,7 @@ namespace acrolinx.plugins.floatingSidebar {
       <div class="${TITLE_BAR_CLASS}">Acrolinx <span class="${CLOSE_ICON_CLASS}">&#x274c</span></div>
       <div id="${SIDEBAR_CONTAINER_ID}"></div>
       <div id="${SIDEBAR_DRAG_OVERLAY_ID}"></div>
+      <div class="${RESIZE_ICON_CLASS}">&#x21f3;</div>
     </div>
   `;
 
@@ -125,13 +147,20 @@ namespace acrolinx.plugins.floatingSidebar {
     show(): void;
   }
 
+  const MAX_INITIAL_HEIGHT = 900;
+  const MIN_INITIAL_HEIGHT = 400;
+  const MIN_HEIGHT = 300;
+
   export function initFloatingSidebar(): FloatingSidebar {
+    let height = Math.max(MIN_INITIAL_HEIGHT, Math.min(MAX_INITIAL_HEIGHT, window.innerHeight - initialPos.top - 40));
     const floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
     const dragOverlay = floatingSidebarElement.querySelector('#' + SIDEBAR_DRAG_OVERLAY_ID) as HTMLElement;
     const closeIcon = floatingSidebarElement.querySelector('.' + CLOSE_ICON_CLASS) as HTMLElement;
+    const resizeIcon = floatingSidebarElement.querySelector('.' + RESIZE_ICON_CLASS) as HTMLElement;
     const glassPane = createDiv({id: SIDEBAR_GLASS_PANE_ID});
     const body = document.querySelector('body');
-    let isDragging = false;
+    let isMoving = false;
+    let isResizing = false;
     let relativeMouseDownX = 0;
     let relativeMouseDownY = 0;
 
@@ -140,16 +169,25 @@ namespace acrolinx.plugins.floatingSidebar {
       floatingSidebarElement.style.top = ypos + 'px';
     }
 
+    function applyHeight(newHeight: number) {
+      floatingSidebarElement.style.height = newHeight + 'px';
+    }
+
     function onEndDrag() {
-      console.log('End drag!!!');
       hide(dragOverlay);
       hide(glassPane);
-      isDragging = false;
+      isMoving = false;
+      isResizing = false;
     }
 
     document.addEventListener('mousemove', event => {
-      if (isDragging) {
+      if (isMoving) {
         move(Math.max(event.clientX - relativeMouseDownX, 0), Math.max(event.clientY - relativeMouseDownY, 0));
+      }
+      if (isResizing) {
+        const floatingSidebarTop = floatingSidebarElement.getBoundingClientRect().top;
+        height = Math.max(event.clientY - floatingSidebarTop, MIN_HEIGHT);
+        applyHeight(height);
       }
     });
 
@@ -158,9 +196,16 @@ namespace acrolinx.plugins.floatingSidebar {
       const divTop = parseInt(floatingSidebarElement.style.top.replace('px', '')) || initialPos.top;
       relativeMouseDownX = event.clientX - divLeft;
       relativeMouseDownY = event.clientY - divTop;
-      isDragging = true;
+      isMoving = true;
       show(dragOverlay);
       show(glassPane);
+    });
+
+    resizeIcon.addEventListener('mousedown', event => {
+      isResizing = true;
+      show(dragOverlay);
+      show(glassPane);
+      event.stopPropagation();
     });
 
     document.addEventListener('mouseup', onEndDrag);
@@ -173,6 +218,7 @@ namespace acrolinx.plugins.floatingSidebar {
     hide(glassPane);
 
     addStyles();
+    applyHeight(height);
 
     body.appendChild(floatingSidebarElement);
     body.appendChild(glassPane);
