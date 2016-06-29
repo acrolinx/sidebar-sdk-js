@@ -5,6 +5,7 @@ namespace acrolinx.plugins.floatingSidebar {
 
   export const SIDEBAR_ID = 'acrolinxFloatingSidebar';
   export const TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
+  export const CLOSE_ICON_CLASS = 'acrolinxFloatingSidebarCloseIcon';
   export const SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
   export const SIDEBAR_DRAG_OVERLAY_ID = 'acrolinxDragOverlay';
   export const SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
@@ -46,7 +47,18 @@ namespace acrolinx.plugins.floatingSidebar {
         color: white;
       }
       
-  
+      #${SIDEBAR_ID} .${CLOSE_ICON_CLASS} {
+        float: right;
+        cursor: pointer;
+        margin-right: 4px;
+        opacity: 0.7;
+        transition: opacity 0.5s;
+      }
+      
+      #${SIDEBAR_ID} .${CLOSE_ICON_CLASS}:hover {
+        opacity: 1;
+      }
+      
       #${SIDEBAR_ID} #${SIDEBAR_CONTAINER_ID},
       #${SIDEBAR_ID} #acrolinxDragOverlay,
       #${SIDEBAR_ID} #${SIDEBAR_CONTAINER_ID} iframe {
@@ -84,7 +96,7 @@ namespace acrolinx.plugins.floatingSidebar {
 
   const TEMPLATE = `
     <div id="${SIDEBAR_ID}">
-      <div class="${TITLE_BAR_CLASS}">Acrolinx</div>
+      <div class="${TITLE_BAR_CLASS}">Acrolinx <span class="${CLOSE_ICON_CLASS}">&#x274c</span></div>
       <div id="${SIDEBAR_CONTAINER_ID}"></div>
       <div id="${SIDEBAR_DRAG_OVERLAY_ID}"></div>
     </div>
@@ -108,10 +120,15 @@ namespace acrolinx.plugins.floatingSidebar {
     return createDiv({innerHTML: template.trim()}).firstChild as HTMLElement;
   }
 
-  export function initFloatingSidebar() {
+  export interface FloatingSidebar {
+    hide(): void;
+    show(): void;
+  }
+
+  export function initFloatingSidebar(): FloatingSidebar {
     const floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
-    console.log(floatingSidebarElement);
     const dragOverlay = floatingSidebarElement.querySelector('#' + SIDEBAR_DRAG_OVERLAY_ID) as HTMLElement;
+    const closeIcon = floatingSidebarElement.querySelector('.' + CLOSE_ICON_CLASS) as HTMLElement;
     const glassPane = createDiv({id: SIDEBAR_GLASS_PANE_ID});
     const body = document.querySelector('body');
     let isDragging = false;
@@ -148,6 +165,10 @@ namespace acrolinx.plugins.floatingSidebar {
 
     document.addEventListener('mouseup', onEndDrag);
 
+    closeIcon.addEventListener('click', () => {
+      hide(floatingSidebarElement);
+    });
+
     hide(dragOverlay);
     hide(glassPane);
 
@@ -155,6 +176,15 @@ namespace acrolinx.plugins.floatingSidebar {
 
     body.appendChild(floatingSidebarElement);
     body.appendChild(glassPane);
+
+    return {
+      hide() {
+        hide(floatingSidebarElement);
+      },
+      show() {
+        show(floatingSidebarElement);
+      }
+    };
   }
 
 
