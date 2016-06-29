@@ -1,7 +1,10 @@
 namespace acrolinx.plugins.floatingSidebar {
   'use strict';
 
+  import _ = acrolinxLibs._;
+
   export const SIDEBAR_ID = 'acrolinxFloatingSidebar';
+  export const TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
   export const SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
   export const SIDEBAR_DRAG_OVERLAY_ID = 'acrolinxDragOverlay';
   export const SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
@@ -21,7 +24,7 @@ namespace acrolinx.plugins.floatingSidebar {
         left: ${initialPos.left}px;
         position: fixed;
         width: 300px;
-        padding-top: 20px;
+        padding-top: 0px;
         cursor: move;
         background: #3e96db;
         height: ${height}px;
@@ -29,10 +32,20 @@ namespace acrolinx.plugins.floatingSidebar {
         border-radius: 3px;
         user-select: none;
         z-index: 10000;
-          -moz-user-select: none;
-          -webkit-user-select: none;
-          -ms-user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
       }
+      
+      #${SIDEBAR_ID} .${TITLE_BAR_CLASS} {
+        font-family: Roboto, sans-serif;
+        line-height: 13px;
+        padding: 5px;
+        font-size: 13px;
+        font-weight: normal;
+        color: white;
+      }
+      
   
       #${SIDEBAR_ID} #${SIDEBAR_CONTAINER_ID},
       #${SIDEBAR_ID} #acrolinxDragOverlay,
@@ -69,9 +82,17 @@ namespace acrolinx.plugins.floatingSidebar {
     head.appendChild(styleTag);
   }
 
-  function createDiv(id: string): HTMLElement {
+  const TEMPLATE = `
+    <div id="${SIDEBAR_ID}">
+      <div class="${TITLE_BAR_CLASS}">Acrolinx</div>
+      <div id="${SIDEBAR_CONTAINER_ID}"></div>
+      <div id="${SIDEBAR_DRAG_OVERLAY_ID}"></div>
+    </div>
+  `;
+
+  function createDiv(attributes: {[attribute: string]: string} = {}): HTMLElement {
     const el = document.createElement('div');
-    el.id = id;
+    _.assign(el, attributes);
     return el;
   }
 
@@ -83,10 +104,15 @@ namespace acrolinx.plugins.floatingSidebar {
     el.style.display = 'block';
   }
 
+  function createNodeFromTemplate(template: string): HTMLElement {
+    return createDiv({innerHTML: template.trim()}).firstChild as HTMLElement;
+  }
+
   export function initFloatingSidebar() {
-    const floatingSidebarElement = createDiv(SIDEBAR_ID);
-    const dragOverlay = createDiv(SIDEBAR_DRAG_OVERLAY_ID);
-    const glassPane = createDiv(SIDEBAR_GLASS_PANE_ID);
+    const floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
+    console.log(floatingSidebarElement);
+    const dragOverlay = floatingSidebarElement.querySelector('#' + SIDEBAR_DRAG_OVERLAY_ID) as HTMLElement;
+    const glassPane = createDiv({id: SIDEBAR_GLASS_PANE_ID});
     const body = document.querySelector('body');
     let isDragging = false;
     let relativeMouseDownX = 0;
@@ -122,16 +148,13 @@ namespace acrolinx.plugins.floatingSidebar {
 
     document.addEventListener('mouseup', onEndDrag);
 
-    floatingSidebarElement.appendChild(createDiv(SIDEBAR_CONTAINER_ID));
     hide(dragOverlay);
-    floatingSidebarElement.appendChild(dragOverlay);
+    hide(glassPane);
 
     addStyles();
 
     body.appendChild(floatingSidebarElement);
-    hide(glassPane);
     body.appendChild(glassPane);
-
   }
 
 
