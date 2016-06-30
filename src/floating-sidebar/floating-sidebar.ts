@@ -117,10 +117,10 @@ namespace acrolinx.plugins.floatingSidebar {
 
   const TEMPLATE = `
     <div id="${SIDEBAR_ID}">
-      <div class="${TITLE_BAR_CLASS}">Acrolinx <span class="${CLOSE_ICON_CLASS}">&#x274c</span></div>
+      <div class="${TITLE_BAR_CLASS}">Acrolinx <span class="${CLOSE_ICON_CLASS}" title="Close">&#x274c</span></div>
       <div id="${SIDEBAR_CONTAINER_ID}"></div>
       <div id="${SIDEBAR_DRAG_OVERLAY_ID}"></div>
-      <div class="${RESIZE_ICON_CLASS}">&#x21f3;</div>
+      <div class="${RESIZE_ICON_CLASS}" title="Drag to resize">&#x21f3;</div>
     </div>
   `;
 
@@ -143,8 +143,7 @@ namespace acrolinx.plugins.floatingSidebar {
   }
 
   export interface FloatingSidebar {
-    hide(): void;
-    show(): void;
+    toggleVisibility(): void;
   }
 
   const MAX_INITIAL_HEIGHT = 900;
@@ -163,6 +162,7 @@ namespace acrolinx.plugins.floatingSidebar {
     let isResizing = false;
     let relativeMouseDownX = 0;
     let relativeMouseDownY = 0;
+    let isVisible = true;
 
     function move(xpos: number, ypos: number) {
       floatingSidebarElement.style.left = xpos + 'px';
@@ -178,6 +178,20 @@ namespace acrolinx.plugins.floatingSidebar {
       hide(glassPane);
       isMoving = false;
       isResizing = false;
+    }
+
+    function hideFloatingSidebar() {
+      hide(floatingSidebarElement);
+      isVisible = false;
+    }
+
+    function toggleVisibility() {
+      if (isVisible) {
+        hideFloatingSidebar();
+      } else {
+        show(floatingSidebarElement);
+        isVisible = true;
+      }
     }
 
     document.addEventListener('mousemove', event => {
@@ -210,9 +224,8 @@ namespace acrolinx.plugins.floatingSidebar {
 
     document.addEventListener('mouseup', onEndDrag);
 
-    closeIcon.addEventListener('click', () => {
-      hide(floatingSidebarElement);
-    });
+    closeIcon.addEventListener('click', hideFloatingSidebar);
+
 
     hide(dragOverlay);
     hide(glassPane);
@@ -224,12 +237,7 @@ namespace acrolinx.plugins.floatingSidebar {
     body.appendChild(glassPane);
 
     return {
-      hide() {
-        hide(floatingSidebarElement);
-      },
-      show() {
-        show(floatingSidebarElement);
-      }
+      toggleVisibility: toggleVisibility
     };
   }
 
