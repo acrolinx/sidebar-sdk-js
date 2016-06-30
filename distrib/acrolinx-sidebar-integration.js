@@ -2572,24 +2572,29 @@ var acrolinx;
         var floatingSidebar;
         (function (floatingSidebar) {
             'use strict';
+            var _ = acrolinxLibs._;
             floatingSidebar.SIDEBAR_ID = 'acrolinxFloatingSidebar';
+            floatingSidebar.TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
+            floatingSidebar.CLOSE_ICON_CLASS = 'acrolinxFloatingSidebarCloseIcon';
             floatingSidebar.SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
             floatingSidebar.SIDEBAR_DRAG_OVERLAY_ID = 'acrolinxDragOverlay';
             floatingSidebar.SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
+            floatingSidebar.RESIZE_ICON_CLASS = 'acrolinxFloatingSidebarResizeIcon';
             var initialPos = {
                 top: 20,
                 left: 20
             };
             function addStyles() {
-                var height = Math.max(300, Math.min(900, window.innerHeight - initialPos.top - 40));
                 var styleTag = document.createElement('style');
                 var head = document.querySelector('head');
-                styleTag.innerHTML = "\n      #" + floatingSidebar.SIDEBAR_ID + " {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 20px;\n        cursor: move;\n        background: #3e96db;\n        height: " + height + "px;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: 10000;\n          -moz-user-select: none;\n          -webkit-user-select: none;\n          -ms-user-select: none;\n      }\n  \n      #" + floatingSidebar.SIDEBAR_ID + " #" + floatingSidebar.SIDEBAR_CONTAINER_ID + ",\n      #" + floatingSidebar.SIDEBAR_ID + " #acrolinxDragOverlay,\n      #" + floatingSidebar.SIDEBAR_ID + " #" + floatingSidebar.SIDEBAR_CONTAINER_ID + " iframe {\n        position: relative;\n        background: white;\n        height: 100%;\n        border: none;\n      }\n      \n      #" + floatingSidebar.SIDEBAR_ID + " #" + floatingSidebar.SIDEBAR_DRAG_OVERLAY_ID + " {\n        position: absolute;\n        top: 20px;\n        left: 0;\n        height: 300px;\n        width: 300px;\n        background: transparent;\n        z-index: 10001;\n      }\n       \n      #" + floatingSidebar.SIDEBAR_GLASS_PANE_ID + " {\n        position: fixed;\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        top: 0;\n        left: 0;\n        background: white;\n        opacity: 0.6;\n        z-index: 9999;\n      }\n    ";
+                styleTag.innerHTML = "\n      #" + floatingSidebar.SIDEBAR_ID + " {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 0px;\n        cursor: move;\n        background: #3e96db;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: 10000;\n        -moz-user-select: none;\n        -webkit-user-select: none;\n        -ms-user-select: none;\n      }\n      \n      #" + floatingSidebar.SIDEBAR_ID + " ." + floatingSidebar.TITLE_BAR_CLASS + " {\n        font-family: Roboto, sans-serif;\n        line-height: 13px;\n        padding: 5px;\n        font-size: 13px;\n        font-weight: normal;\n        color: white;\n      }\n      \n      #" + floatingSidebar.SIDEBAR_ID + " ." + floatingSidebar.CLOSE_ICON_CLASS + " {\n        float: right;\n        cursor: pointer;\n        margin-right: 4px;\n        opacity: 0.7;\n        transition: opacity 0.5s;\n      }\n      \n      #" + floatingSidebar.SIDEBAR_ID + " ." + floatingSidebar.CLOSE_ICON_CLASS + ":hover {\n        opacity: 1;\n      }\n      \n      #" + floatingSidebar.SIDEBAR_ID + " #" + floatingSidebar.SIDEBAR_CONTAINER_ID + ",\n      #" + floatingSidebar.SIDEBAR_ID + " #acrolinxDragOverlay,\n      #" + floatingSidebar.SIDEBAR_ID + " #" + floatingSidebar.SIDEBAR_CONTAINER_ID + " iframe {\n        position: relative;\n        background: white;\n        height: 100%;\n        border: none;\n      }\n      \n      #" + floatingSidebar.SIDEBAR_ID + " #" + floatingSidebar.SIDEBAR_DRAG_OVERLAY_ID + " {\n        position: absolute;\n        top: 20px;\n        left: 0;\n        height: 100%;\n        width: 300px;\n        background: transparent;\n        z-index: 10001;\n      }\n       \n      #" + floatingSidebar.SIDEBAR_GLASS_PANE_ID + " {\n        position: fixed;\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        top: 0;\n        left: 0;\n        background: white;\n        opacity: 0.6;\n        z-index: 9999;\n      }\n      \n      #" + floatingSidebar.SIDEBAR_ID + " ." + floatingSidebar.RESIZE_ICON_CLASS + " {\n        position: absolute;\n        right: 10px;\n        bottom: -10px;\n        width: 10px;\n        height: 10px;\n        font-family: Roboto, sans-serif;\n        line-height: 20px;\n        padding: 5px;\n        font-size: 20px;\n        font-weight: normal;\n        color: #333;\n        z-index: 10002;\n        cursor: move;\n        opacity: 0.7;\n        transition: opacity 0.5s;\n      }\n      \n      #" + floatingSidebar.SIDEBAR_ID + " ." + floatingSidebar.RESIZE_ICON_CLASS + ":hover {\n        opacity: 1;\n      }\n    ";
                 head.appendChild(styleTag);
             }
-            function createDiv(id) {
+            var TEMPLATE = "\n    <div id=\"" + floatingSidebar.SIDEBAR_ID + "\">\n      <div class=\"" + floatingSidebar.TITLE_BAR_CLASS + "\">Acrolinx <span class=\"" + floatingSidebar.CLOSE_ICON_CLASS + "\" title=\"Close\">&#x274c</span></div>\n      <div id=\"" + floatingSidebar.SIDEBAR_CONTAINER_ID + "\"></div>\n      <div id=\"" + floatingSidebar.SIDEBAR_DRAG_OVERLAY_ID + "\"></div>\n      <div class=\"" + floatingSidebar.RESIZE_ICON_CLASS + "\" title=\"Drag to resize\">&#x21f3;</div>\n    </div>\n  ";
+            function createDiv(attributes) {
+                if (attributes === void 0) { attributes = {}; }
                 var el = document.createElement('div');
-                el.id = id;
+                _.assign(el, attributes);
                 return el;
             }
             function hide(el) {
@@ -2598,27 +2603,59 @@ var acrolinx;
             function show(el) {
                 el.style.display = 'block';
             }
+            function createNodeFromTemplate(template) {
+                return createDiv({ innerHTML: template.trim() }).firstChild;
+            }
+            var MAX_INITIAL_HEIGHT = 900;
+            var MIN_INITIAL_HEIGHT = 400;
+            var MIN_HEIGHT = 300;
             function initFloatingSidebar() {
-                var floatingSidebarElement = createDiv(floatingSidebar.SIDEBAR_ID);
-                var dragOverlay = createDiv(floatingSidebar.SIDEBAR_DRAG_OVERLAY_ID);
-                var glassPane = createDiv(floatingSidebar.SIDEBAR_GLASS_PANE_ID);
+                var height = Math.max(MIN_INITIAL_HEIGHT, Math.min(MAX_INITIAL_HEIGHT, window.innerHeight - initialPos.top - 40));
+                var floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
+                var dragOverlay = floatingSidebarElement.querySelector('#' + floatingSidebar.SIDEBAR_DRAG_OVERLAY_ID);
+                var closeIcon = floatingSidebarElement.querySelector('.' + floatingSidebar.CLOSE_ICON_CLASS);
+                var resizeIcon = floatingSidebarElement.querySelector('.' + floatingSidebar.RESIZE_ICON_CLASS);
+                var glassPane = createDiv({ id: floatingSidebar.SIDEBAR_GLASS_PANE_ID });
                 var body = document.querySelector('body');
-                var isDragging = false;
+                var isMoving = false;
+                var isResizing = false;
                 var relativeMouseDownX = 0;
                 var relativeMouseDownY = 0;
+                var isVisible = true;
                 function move(xpos, ypos) {
                     floatingSidebarElement.style.left = xpos + 'px';
                     floatingSidebarElement.style.top = ypos + 'px';
                 }
+                function applyHeight(newHeight) {
+                    floatingSidebarElement.style.height = newHeight + 'px';
+                }
                 function onEndDrag() {
-                    console.log('End drag!!!');
                     hide(dragOverlay);
                     hide(glassPane);
-                    isDragging = false;
+                    isMoving = false;
+                    isResizing = false;
+                }
+                function hideFloatingSidebar() {
+                    hide(floatingSidebarElement);
+                    isVisible = false;
+                }
+                function toggleVisibility() {
+                    if (isVisible) {
+                        hideFloatingSidebar();
+                    }
+                    else {
+                        show(floatingSidebarElement);
+                        isVisible = true;
+                    }
                 }
                 document.addEventListener('mousemove', function (event) {
-                    if (isDragging) {
+                    if (isMoving) {
                         move(Math.max(event.clientX - relativeMouseDownX, 0), Math.max(event.clientY - relativeMouseDownY, 0));
+                    }
+                    if (isResizing) {
+                        var floatingSidebarTop = floatingSidebarElement.getBoundingClientRect().top;
+                        height = Math.max(event.clientY - floatingSidebarTop, MIN_HEIGHT);
+                        applyHeight(height);
                     }
                 });
                 floatingSidebarElement.addEventListener('mousedown', function (event) {
@@ -2626,18 +2663,27 @@ var acrolinx;
                     var divTop = parseInt(floatingSidebarElement.style.top.replace('px', '')) || initialPos.top;
                     relativeMouseDownX = event.clientX - divLeft;
                     relativeMouseDownY = event.clientY - divTop;
-                    isDragging = true;
+                    isMoving = true;
                     show(dragOverlay);
                     show(glassPane);
                 });
+                resizeIcon.addEventListener('mousedown', function (event) {
+                    isResizing = true;
+                    show(dragOverlay);
+                    show(glassPane);
+                    event.stopPropagation();
+                });
                 document.addEventListener('mouseup', onEndDrag);
-                floatingSidebarElement.appendChild(createDiv(floatingSidebar.SIDEBAR_CONTAINER_ID));
+                closeIcon.addEventListener('click', hideFloatingSidebar);
                 hide(dragOverlay);
-                floatingSidebarElement.appendChild(dragOverlay);
-                addStyles();
-                body.appendChild(floatingSidebarElement);
                 hide(glassPane);
+                addStyles();
+                applyHeight(height);
+                body.appendChild(floatingSidebarElement);
                 body.appendChild(glassPane);
+                return {
+                    toggleVisibility: toggleVisibility
+                };
             }
             floatingSidebar.initFloatingSidebar = initFloatingSidebar;
         })(floatingSidebar = plugins.floatingSidebar || (plugins.floatingSidebar = {}));
@@ -2965,12 +3011,13 @@ var acrolinx;
         plugins.AcrolinxPlugin = AcrolinxPlugin;
         function autoBindFloatingSidebar(basicConf) {
             var conf = _.assign({}, basicConf, {
-                sidebarContainerId: plugins.floatingSidebar.SIDEBAR_CONTAINER_ID
+                sidebarContainerId: acrolinx.plugins.floatingSidebar.SIDEBAR_CONTAINER_ID
             });
-            initFloatingSidebar();
+            var floatingSidebar = initFloatingSidebar();
             var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(conf);
             acrolinxPlugin.registerAdapter(new AutoBindAdapter(conf));
             acrolinxPlugin.init();
+            return floatingSidebar;
         }
         plugins.autoBindFloatingSidebar = autoBindFloatingSidebar;
     })(plugins = acrolinx.plugins || (acrolinx.plugins = {}));
