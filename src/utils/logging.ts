@@ -1,14 +1,11 @@
-namespace acrolinx.plugins.utils {
-  let isEnabled = false;
+let isEnabled = false;
 
-  export function log(message: any, ...args: any[]) {
-    if (isEnabled) {
-      console.log(message, ...args);
-    }
+export function log(message: any, ...args: any[]) {
+  if (isEnabled) {
+    console.log(message, ...args);
   }
+}
 
-  export function enableLogging() {
-    isEnabled = true;
-  }
-
+export function enableLogging() {
+  isEnabled = true;
 }

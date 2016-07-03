@@ -21,68 +21,69 @@
 /// <reference path="../lookup/diff-based.ts" />
 /// <reference path="AbstractRichtextEditorAdapter.ts" />
 
-namespace acrolinx.plugins.adapter {
-  'use strict';
 
-  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-  import Match = acrolinx.sidebar.Match;
+import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+import Match = acrolinx.sidebar.Match;
+import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
+import {HasEditorID} from "./AdapterInterface";
+import {ContentExtractionResult} from "./AdapterInterface";
 
-  export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
-    editorId: string;
 
-    constructor(conf: HasEditorID) {
-      super(conf);
-      this.editorId = conf.editorId;
-    }
+export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
+  editorId: string;
 
-    getEditor() {
-      return CKEDITOR.instances[this.editorId];
-    }
+  constructor(conf: HasEditorID) {
+    super(conf);
+    this.editorId = conf.editorId;
+  }
 
-    getEditorDocument() : Document {
-      return this.getEditor().document.$ as any;
-    }
+  getEditor() {
+    return CKEDITOR.instances[this.editorId];
+  }
 
-    getContent() {
-      return this.getEditor().getData();
-    }
+  getEditorDocument(): Document {
+    return this.getEditor().document.$ as any;
+  }
 
-    extractContentForCheck(): ContentExtractionResult | Promise<ContentExtractionResult> {
-      this.html = this.getContent();
-      this.currentHtmlChecking = this.html;
-      if (this.isInWysiwygMode()) {
-        // TODO: remove it after server side implementation. This is a workaround
-        if (this.html === '') {
-          this.html = '<span> </span>';
-        }
-      } else {
-        if (this.isCheckingNow) {
-          this.isCheckingNow = false;
-        } else {
-          return {error: 'Action is not permitted in Source mode.'};
-        }
+  getContent() {
+    return this.getEditor().getData();
+  }
+
+  extractContentForCheck(): ContentExtractionResult | Promise<ContentExtractionResult> {
+    this.html = this.getContent();
+    this.currentHtmlChecking = this.html;
+    if (this.isInWysiwygMode()) {
+      // TODO: remove it after server side implementation. This is a workaround
+      if (this.html === '') {
+        this.html = '<span> </span>';
       }
-      return {content: this.html};
-    }
-
-    selectRanges(checkId: string, matches: Match[]) {
-      if (this.isInWysiwygMode()) {
-        super.selectRanges(checkId, matches);
+    } else {
+      if (this.isCheckingNow) {
+        this.isCheckingNow = false;
       } else {
-        window.alert('Action is not permitted in Source mode.');
+        return {error: 'Action is not permitted in Source mode.'};
       }
     }
+    return {content: this.html};
+  }
 
-    replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
-      if (this.isInWysiwygMode()) {
-        super.replaceRanges(checkId, matchesWithReplacementArg);
-      } else {
-        window.alert('Action is not permitted in Source mode.');
-      }
+  selectRanges(checkId: string, matches: Match[]) {
+    if (this.isInWysiwygMode()) {
+      super.selectRanges(checkId, matches);
+    } else {
+      window.alert('Action is not permitted in Source mode.');
     }
+  }
 
-    isInWysiwygMode () {
-      return this.getEditor().mode === 'wysiwyg';
+  replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
+    if (this.isInWysiwygMode()) {
+      super.replaceRanges(checkId, matchesWithReplacementArg);
+    } else {
+      window.alert('Action is not permitted in Source mode.');
     }
+  }
+
+  isInWysiwygMode() {
+    return this.getEditor().mode === 'wysiwyg';
   }
 }

@@ -1,6 +1,8 @@
 // Karma configuration
 // Generated on Wed Apr 30 2014 16:43:43 GMT+0200 (CEST)
 
+const istanbul = require('browserify-istanbul');
+
 module.exports = function (config) {
   config.set({
 
@@ -9,7 +11,7 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['browserify', 'mocha', 'chai'],
 
     // list of files / patterns to load in the browser
     // (If you change this, you might want to change test/index.html too.)
@@ -23,7 +25,7 @@ module.exports = function (config) {
       {pattern: 'bower_components/tinymce/**/*', included: false},
       {pattern: 'test/dummy-sidebar/**/*', included: false},
       'bower_components/jsverify/index.js',
-      'tmp/compiled/test.js'
+      'tmp/compiled/**/*.js',
     ],
 
 
@@ -34,9 +36,15 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'tmp/compiled/test.js': ['coverage']
+      'tmp/compiled/**/*.js': ['browserify']
     },
 
+    browserify: {
+      debug: true,
+      transform: [istanbul({
+        ignore: ['**/node_modules/**', '**/test/**'],
+      })],
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

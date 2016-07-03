@@ -12,7 +12,7 @@
             "check-whitespace"
         ],
         "no-var-keyword": true,
-        "quotemark": [true,
+        "quotemark": [false,
             "single",
             "avoid-escape"
         ],

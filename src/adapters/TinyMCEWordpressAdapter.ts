@@ -18,61 +18,60 @@
  *
  */
 
-namespace acrolinx.plugins.adapter {
-  'use strict';
 
-  export class TinyMCEWordpressAdapter extends TinyMCEAdapter {
+import {TinyMCEAdapter} from "./TinyMCEAdapter";
 
-    getEditor() {
-      return tinymce.get(this.editorId);
+export class TinyMCEWordpressAdapter extends TinyMCEAdapter {
+
+  getEditor() {
+    return tinymce.get(this.editorId);
+  }
+
+  getContent() {
+    return this.getEditor().getContent();
+  }
+
+  getEditorDocument() {
+    return this.getEditor().getDoc();
+  }
+
+  scrollToCurrentSelection() {
+    let isOverflow = false;
+    const editorBody = (this.getEditor() as any).getBody();
+    const eleCss = editorBody.getAttribute('style');
+    if (eleCss && eleCss.indexOf('overflow-y: hidden') !== -1) {
+      isOverflow = true;
     }
-
-    getContent() {
-      return this.getEditor().getContent();
+    const parentWidth = (this.getEditor() as any).getContainer().clientWidth;
+    const bodyClientWidthWithMargin = editorBody.scrollWidth;
+    const hasVerticalScrollbar = parentWidth > bodyClientWidthWithMargin;
+    if (hasVerticalScrollbar && !isOverflow) {
+      super.scrollToCurrentSelection();
+    } else {
+      this.scrollToCurrentSelectionWithGlobalScrollbar();
     }
+  }
 
-    getEditorDocument() {
-      return this.getEditor().getDoc();
-    }
+  scrollToCurrentSelectionWithGlobalScrollbar() {
+    const selection1 = this.getEditorDocument().getSelection();
 
-    scrollToCurrentSelection() {
-      let isOverflow = false;
-      const editorBody = (this.getEditor() as any).getBody();
-      const eleCss = editorBody.getAttribute('style');
-      if (eleCss && eleCss.indexOf('overflow-y: hidden') !== -1) {
-        isOverflow = true;
+    if (selection1) {
+      try {
+        this.scrollIntoViewWithGlobalScrollbar(selection1);
+      } catch (error) {
+        console.log('Scrolling Error: ', error);
       }
-      const parentWidth = (this.getEditor() as any).getContainer().clientWidth;
-      const bodyClientWidthWithMargin = editorBody.scrollWidth;
-      const hasVerticalScrollbar = parentWidth > bodyClientWidthWithMargin;
-      if (hasVerticalScrollbar && !isOverflow) {
-        super.scrollToCurrentSelection();
-      } else {
-        this.scrollToCurrentSelectionWithGlobalScrollbar();
-      }
     }
+  }
 
-    scrollToCurrentSelectionWithGlobalScrollbar() {
-      const selection1 = this.getEditorDocument().getSelection();
-
-      if (selection1) {
-        try {
-          this.scrollIntoViewWithGlobalScrollbar(selection1);
-        } catch (error) {
-          console.log('Scrolling Error: ', error);
-        }
-      }
-    }
-
-    protected scrollIntoViewWithGlobalScrollbar(sel: Selection) {
-      const range = sel.getRangeAt(0);
-      const tmp = range.cloneRange();
-      tmp.collapse(false);
-      const text = this.getEditorDocument().createElement('span');
-      tmp.insertNode(text);
-      const ypos = text.getClientRects()[0].top;
-      window.scrollTo(0, ypos);
-      text.parentNode.removeChild(text);
-    }
+  protected scrollIntoViewWithGlobalScrollbar(sel: Selection) {
+    const range = sel.getRangeAt(0);
+    const tmp = range.cloneRange();
+    tmp.collapse(false);
+    const text = this.getEditorDocument().createElement('span');
+    tmp.insertNode(text);
+    const ypos = text.getClientRects()[0].top;
+    window.scrollTo(0, ypos);
+    text.parentNode.removeChild(text);
   }
 }

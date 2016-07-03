@@ -12,3 +12,4 @@ tmp
 .private
 
 distrib/acrolinx-sidebar-integration.js.map
+**/.baseDir.ts

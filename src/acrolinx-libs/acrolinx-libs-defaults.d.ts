@@ -18,11 +18,8 @@
  *
  */
 
-import LoDashStatic = _.LoDashStatic;
-
-const windowWithLibs: any = window;
-const originalAcrolinxLibs = windowWithLibs['acrolinxLibs'] || {};
-export const Q = originalAcrolinxLibs.Q || windowWithLibs['Q'];
-export const _: LoDashStatic = originalAcrolinxLibs._ || windowWithLibs['_'];
-
+declare namespace acrolinxLibsStatic {
+  export const Q: any;
+  export const _: _.LoDashStatic;
+}
 

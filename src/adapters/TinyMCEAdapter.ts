@@ -18,51 +18,51 @@
  *
  */
 
-namespace acrolinx.plugins.adapter {
-  'use strict';
 
-  export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
-    editorId: string;
+import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
+import {HasEditorID} from "./AdapterInterface";
 
-    constructor(conf: HasEditorID) {
-      super(conf);
-      this.editorId = conf.editorId;
-    }
+export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
+  editorId: string;
 
-    getEditor() {
-      return tinymce.get(this.editorId);
-    }
+  constructor(conf: HasEditorID) {
+    super(conf);
+    this.editorId = conf.editorId;
+  }
 
-    getContent() {
-      return this.getEditor().getContent();
-    }
+  getEditor() {
+    return tinymce.get(this.editorId);
+  }
 
-    getEditorDocument() {
-      return this.getEditor().getDoc();
-    }
+  getContent() {
+    return this.getEditor().getContent();
+  }
 
-    scrollToCurrentSelection() {
-      const selection = this.getEditorDocument().getSelection();
-      if (selection) {
-        try {
-          const originalRange = selection.getRangeAt(0);
-          const {startContainer , startOffset, endContainer, endOffset} = originalRange;
-          selection.collapseToStart();
+  getEditorDocument() {
+    return this.getEditor().getDoc();
+  }
 
-          (this.getEditor() as any).insertContent('');
+  scrollToCurrentSelection() {
+    const selection = this.getEditorDocument().getSelection();
+    if (selection) {
+      try {
+        const originalRange = selection.getRangeAt(0);
+        const {startContainer, startOffset, endContainer, endOffset} = originalRange;
+        selection.collapseToStart();
 
-          const restoredRange = this.getEditorDocument().createRange();
-          restoredRange.setStart(startContainer, startOffset);
-          restoredRange.setEnd(endContainer, endOffset);
+        (this.getEditor() as any).insertContent('');
 
-          selection.removeAllRanges();
-          selection.addRange(restoredRange);
+        const restoredRange = this.getEditorDocument().createRange();
+        restoredRange.setStart(startContainer, startOffset);
+        restoredRange.setEnd(endContainer, endOffset);
 
-        } catch (error) {
-          console.log('Scrolling Error: ', error);
-        }
+        selection.removeAllRanges();
+        selection.addRange(restoredRange);
+
+      } catch (error) {
+        console.log('Scrolling Error: ', error);
       }
     }
-
   }
+
 }

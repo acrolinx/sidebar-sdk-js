@@ -42,12 +42,12 @@ module.exports = function (grunt) {
       ts: {
         options: {atBegin: true},
         files: ['src/**/*.ts'],
-        tasks: ['ts']
+        tasks: ['ts:base', 'ts:test', 'browserify:base'],
       },
       tsTest: {
-        options: {},
+        options: {atBegin: true},
         files: ['test/**/*.ts'],
-        tasks: ['ts:test']
+        tasks: ['ts:test', 'browserify:test']
       }
     },
 
@@ -65,7 +65,7 @@ module.exports = function (grunt) {
             var proxy = require('grunt-connect-proxy/lib/utils').proxyRequest;
             return [
               connect().use('/', serveStatic('./samples')),
-              connect().use('/tmp/compiled', serveStatic('tmp/compiled')),
+              connect().use('/tmp', serveStatic('tmp')),
               connect().use('/test', serveStatic('./test')),
               connect().use('/distrib', serveStatic('./distrib')),
               connect().use('/bower_components', serveStatic('./bower_components')),
@@ -108,23 +108,23 @@ module.exports = function (grunt) {
 
     ts: {
       base: {
-        src: ['tmp/browserify/diff-match-patch.js', 'src/**/*.ts'],
-        dest: 'distrib/' + name + '.js',
+        src: ['src/**/*.ts'],
+        dest: 'tmp/compiled/',
         options: {
+          rootDir: '.',
           noImplicitAny: true,
-          target: 'es5',
-          sourceMap: true,
-          allowJs: true
+          module: 'commonjs',
+          target: 'es5'
         }
       },
       test: {
-        src: ['tmp/browserify/diff-match-patch.js', 'src/**/*.ts', 'test/**/*.ts'],
-        dest: 'tmp/compiled/test.js',
+        src: ['src/**/*.ts', 'test/**/*.ts'],
+        dest: 'tmp/compiled/',
         options: {
+          rootDir: '.',
           noImplicitAny: true,
           target: 'es5',
-          sourceMap: false,
-          allowJs: true
+          module: 'commonjs',
         }
       }
     },
@@ -172,9 +172,13 @@ module.exports = function (grunt) {
     },
 
     browserify: {
-      vendor: {
-        src: ['src/browserify/diff-match-patch.js'],
-        dest: 'tmp/browserify/diff-match-patch.js',
+      base: {
+        src: ['tmp/compiled/src/acrolinx-sidebar-integration.js'],
+        dest: 'distrib/' + name + '.js'
+      },
+      test: {
+        src: ['tmp/compiled/test/index.js'],
+        dest: 'tmp/tests.js'
       }
     },
 
@@ -220,9 +224,9 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', ['prepareBuild', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
-  grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts']);
-  grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib', 'browserifyVendor']);
-  grunt.registerTask('distrib', ['prepareBuild', 'tslint', 'ts', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
+  grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts:base', 'ts:test', 'browserify']);
+  grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib']);
+  grunt.registerTask('distrib', ['build', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
 
   grunt.registerTask('release', 'Release the bower project', function () {
     var done = this.async();
@@ -274,8 +278,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('distribRelease', ['distrib', 'release']);
   grunt.registerTask('karmaLocal', ['tslint', 'karma:ci', 'coverage']);
-
-  grunt.registerTask('browserifyVendor', ['browserify:vendor']);
   grunt.registerTask('tsBase', ['ts:base']);
 
 

@@ -21,113 +21,112 @@
 /// <reference path="../utils/utils.ts" />
 /// <reference path="../utils/scrolling.ts" />
 
-namespace acrolinx.plugins.adapter {
-  'use strict';
 
-  import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-  import Match = acrolinx.sidebar.Match;
-  import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
-  import lookupMatches = acrolinx.plugins.lookup.diffbased.lookupMatches;
-  import _ = acrolinxLibs._;
-  import Check = acrolinx.sidebar.Check;
-  import CheckResult = acrolinx.sidebar.CheckResult;
-  import getCompleteFlagLength = acrolinx.plugins.utils.getCompleteFlagLength;
-  import fakeInputEvent = acrolinx.plugins.utils.fakeInputEvent;
-  import scrollIntoView = acrolinx.plugins.utils.scrollIntoView;
+import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+import Match = acrolinx.sidebar.Match;
+import {_} from '../acrolinx-libs/acrolinx-libs-defaults';
+import Check = acrolinx.sidebar.Check;
+import CheckResult = acrolinx.sidebar.CheckResult;
+import {getElementFromAdapterConf} from "./AdapterInterface";
+import {AlignedMatch} from "../utils/alignment";
+import {getCompleteFlagLength} from "../utils/match";
+import {scrollIntoView} from "../utils/scrolling";
+import {lookupMatches} from "../lookup/diff-based";
+import {fakeInputEvent} from "../utils/utils";
+import {AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
 
-  type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
+type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
-  export class InputAdapter implements AdapterInterface {
-    element: ValidInputElement;
-    config: AdapterConf;
-    html: string;
-    currentHtmlChecking: string;
+export class InputAdapter implements AdapterInterface {
+  element: ValidInputElement;
+  config: AdapterConf;
+  html: string;
+  currentHtmlChecking: string;
 
-    constructor(conf: AdapterConf) {
-      this.element = getElementFromAdapterConf(conf) as ValidInputElement;
-      this.config = conf;
-    }
+  constructor(conf: AdapterConf) {
+    this.element = getElementFromAdapterConf(conf) as ValidInputElement;
+    this.config = conf;
+  }
 
-    getContent() {
-      return this.element.value;
-    }
+  getContent() {
+    return this.element.value;
+  }
 
-    getCurrentText() {
-      return this.getContent();
-    }
+  getCurrentText() {
+    return this.getContent();
+  }
 
-    getFormat() {
-      return 'TEXT';
-    }
+  getFormat() {
+    return 'TEXT';
+  }
 
-    extractContentForCheck() : ContentExtractionResult {
-      this.html = this.getContent();
-      this.currentHtmlChecking = this.html;
-      return {content: this.html};
-    }
+  extractContentForCheck(): ContentExtractionResult {
+    this.html = this.getContent();
+    this.currentHtmlChecking = this.html;
+    return {content: this.html};
+  }
 
-    registerCheckResult(checkResult: CheckResult): void {
-    }
+  registerCheckResult(checkResult: CheckResult): void {
+  }
 
-    registerCheckCall(checkInfo: Check) {
-    }
+  registerCheckCall(checkInfo: Check) {
+  }
 
-    scrollAndSelect(matches: AlignedMatch<Match>[]) {
-      const newBegin = matches[0].range[0];
-      const matchLength = getCompleteFlagLength(matches);
-      const el = this.element;
+  scrollAndSelect(matches: AlignedMatch<Match>[]) {
+    const newBegin = matches[0].range[0];
+    const matchLength = getCompleteFlagLength(matches);
+    const el = this.element;
 
-      if (el.clientHeight < el.scrollHeight) {
-        // This funny trick causes scrolling inside of the textarea.
-        const text = this.element.value;
-        el.value = text.slice(0, newBegin);
-        el.focus();
-        el.scrollTop = 1e9; // Scroll to the end of the textarea.
-        const cursorScrollTop = el.scrollTop;
-        el.value = text;
-        if (cursorScrollTop > 0) {
-          el.scrollTop = cursorScrollTop + el.clientHeight / 2;
-        }
-      }
-
-      el.setSelectionRange(newBegin, newBegin + matchLength);
+    if (el.clientHeight < el.scrollHeight) {
+      // This funny trick causes scrolling inside of the textarea.
+      const text = this.element.value;
+      el.value = text.slice(0, newBegin);
       el.focus();
-      scrollIntoView(el, this.config.scrollOffsetY);
-    }
-
-    selectRanges(checkId: string, matches: Match[]) {
-      this.selectMatches(checkId, matches);
-    }
-
-    selectMatches<T extends Match>(checkId: string, matches: T[]): AlignedMatch<T>[] {
-      const alignedMatches = lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
-
-      if (_.isEmpty(alignedMatches)) {
-        throw 'Selected flagged content is modified.';
-      }
-
-      this.scrollAndSelect(alignedMatches);
-      return alignedMatches;
-    }
-
-    replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
-      const reversedMatches = _.clone(matches).reverse();
-      const el = this.element;
-      let text = el.value;
-      for (let match of reversedMatches) {
-        text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
-      }
+      el.scrollTop = 1e9; // Scroll to the end of the textarea.
+      const cursorScrollTop = el.scrollTop;
       el.value = text;
+      if (cursorScrollTop > 0) {
+        el.scrollTop = cursorScrollTop + el.clientHeight / 2;
+      }
     }
 
-    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
-      const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
-      this.scrollAndSelect(alignedMatches);
-      this.replaceAlignedMatches(alignedMatches);
-      const startOfSelection = alignedMatches[0].range[0];
-      const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
-      this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
-      fakeInputEvent(this.element);
+    el.setSelectionRange(newBegin, newBegin + matchLength);
+    el.focus();
+    scrollIntoView(el, this.config.scrollOffsetY);
+  }
+
+  selectRanges(checkId: string, matches: Match[]) {
+    this.selectMatches(checkId, matches);
+  }
+
+  selectMatches<T extends Match>(checkId: string, matches: T[]): AlignedMatch<T>[] {
+    const alignedMatches = lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
+
+    if (_.isEmpty(alignedMatches)) {
+      throw 'Selected flagged content is modified.';
     }
+
+    this.scrollAndSelect(alignedMatches);
+    return alignedMatches;
+  }
+
+  replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
+    const reversedMatches = _.clone(matches).reverse();
+    const el = this.element;
+    let text = el.value;
+    for (let match of reversedMatches) {
+      text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
+    }
+    el.value = text;
+  }
+
+  replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
+    const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
+    this.scrollAndSelect(alignedMatches);
+    this.replaceAlignedMatches(alignedMatches);
+    const startOfSelection = alignedMatches[0].range[0];
+    const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
+    this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
+    fakeInputEvent(this.element);
   }
 }

@@ -23,89 +23,84 @@
 /// <reference path="../utils/alignment.ts" />
 /// <reference path="../utils/text-extraction" />
 
-namespace acrolinx.plugins.lookup.diffbased {
-  'use strict';
+'use strict';
 
-  import Match = acrolinx.sidebar.Match;
-  import AlignedMatch = acrolinx.plugins.lookup.AlignedMatch;
-  import _ = acrolinxLibs._;
-  import log = acrolinx.plugins.utils.log;
-  import OffSetAlign = acrolinx.plugins.utils.OffSetAlign;
-  import findNewIndex = acrolinx.plugins.utils.findNewIndex;
-  import extractText = acrolinx.plugins.utils.textextraction.extractText;
-  const {DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT} = acrolinx.diffMatchPatch;
+import Match = acrolinx.sidebar.Match;
+import {_} from '../acrolinx-libs/acrolinx-libs-defaults';
+import {OffSetAlign, findNewIndex, AlignedMatch} from "../utils/alignment";
+import {extractText} from "../utils/text-extraction";
+import {log} from "../utils/logging";
+import {diff_match_patch, DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT, Diff} from "diff-match-patch";
 
-  type InputFormat = 'HTML' | 'TEXT';
+type InputFormat = 'HTML' | 'TEXT';
 
-  const dmp = new acrolinx.diffMatchPatch.DiffMatchPatch();
+const dmp = new diff_match_patch();
 
-  export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
-    let offsetMappingArray: OffSetAlign[] = [];
-    let offsetCountOld = 0;
-    let currentDiffOffset = 0;
-    diffs.forEach((diff: Diff) => {
-      const [action, value] = diff;
-      switch (action) {
-        case DIFF_EQUAL:
-          offsetCountOld += value.length;
-          break;
-        case DIFF_DELETE:
-          offsetCountOld += value.length;
-          currentDiffOffset -= value.length;
-          break;
-        case DIFF_INSERT:
-          currentDiffOffset += value.length;
-          break;
-        default:
-          throw new Error('Illegal Diff Action: ' + action);
-      }
-      offsetMappingArray.push({
-        oldPosition: offsetCountOld,
-        diffOffset: currentDiffOffset
-      });
-    });
-    return offsetMappingArray;
-  }
-
-  function rangeContent(content: string, m: AlignedMatch<Match>) {
-    return content.slice(m.range[0], m.range[1]);
-  }
-
-  export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string,
-                                                 matches: T[], inputFormat: InputFormat = 'HTML'): AlignedMatch<T>[] {
-    if (_.isEmpty(matches)) {
-      return [];
+export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
+  let offsetMappingArray: OffSetAlign[] = [];
+  let offsetCountOld = 0;
+  let currentDiffOffset = 0;
+  diffs.forEach((diff: Diff) => {
+    const [action, value] = diff;
+    switch (action) {
+      case DIFF_EQUAL:
+        offsetCountOld += value.length;
+        break;
+      case DIFF_DELETE:
+        offsetCountOld += value.length;
+        currentDiffOffset -= value.length;
+        break;
+      case DIFF_INSERT:
+        currentDiffOffset += value.length;
+        break;
+      default:
+        throw new Error('Illegal Diff Action: ' + action);
     }
-    const [cleanedCheckedDocument, cleaningOffsetMappingArray] = inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []];
-    const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
-    const offsetMappingArray = createOffsetMappingArray(diffs);
-
-    const alignedMatches = matches.map(match => {
-      const beginAfterCleaning = findNewIndex(cleaningOffsetMappingArray, match.range[0]);
-      const endAfterCleaning = findNewIndex(cleaningOffsetMappingArray, match.range[1]);
-      const alignedBegin = findNewIndex(offsetMappingArray, beginAfterCleaning);
-      const lastCharacterPos = endAfterCleaning - 1;
-      const alignedEnd = findNewIndex(offsetMappingArray, lastCharacterPos) + 1;
-      return {
-        originalMatch: match,
-        range: [alignedBegin, alignedEnd] as [number, number],
-      };
+    offsetMappingArray.push({
+      oldPosition: offsetCountOld,
+      diffOffset: currentDiffOffset
     });
-
-    const containsModifiedMatches = _.some(alignedMatches, m => rangeContent(currentDocument, m) !== m.originalMatch.content);
-
-    log('checkedDocument', checkedDocument);
-    log('cleanedCheckedDocument', cleanedCheckedDocument);
-    log('cleanedCheckedDocumentCodes', cleanedCheckedDocument.split('').map(c => c.charCodeAt(0)));
-    log('currentDocument', currentDocument);
-    log('currentDocumentCodes', currentDocument.split('').map(c => c.charCodeAt(0)));
-    log('matches', matches);
-    log('diffs', diffs);
-    log('alignedMatches', alignedMatches);
-    log('alignedMatchesContent', alignedMatches.map(m => rangeContent(currentDocument, m)));
-
-    return containsModifiedMatches ? [] : alignedMatches;
-  }
-
-
+  });
+  return offsetMappingArray;
 }
+
+function rangeContent(content: string, m: AlignedMatch<Match>) {
+  return content.slice(m.range[0], m.range[1]);
+}
+
+export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string,
+                                               matches: T[], inputFormat: InputFormat = 'HTML'): AlignedMatch<T>[] {
+  if (_.isEmpty(matches)) {
+    return [];
+  }
+  const [cleanedCheckedDocument, cleaningOffsetMappingArray] = inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []];
+  const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
+  const offsetMappingArray = createOffsetMappingArray(diffs);
+
+  const alignedMatches = matches.map(match => {
+    const beginAfterCleaning = findNewIndex(cleaningOffsetMappingArray, match.range[0]);
+    const endAfterCleaning = findNewIndex(cleaningOffsetMappingArray, match.range[1]);
+    const alignedBegin = findNewIndex(offsetMappingArray, beginAfterCleaning);
+    const lastCharacterPos = endAfterCleaning - 1;
+    const alignedEnd = findNewIndex(offsetMappingArray, lastCharacterPos) + 1;
+    return {
+      originalMatch: match,
+      range: [alignedBegin, alignedEnd] as [number, number],
+    };
+  });
+
+  const containsModifiedMatches = _.some(alignedMatches, m => rangeContent(currentDocument, m) !== m.originalMatch.content);
+  
+  log('checkedDocument', checkedDocument);
+  log('cleanedCheckedDocument', cleanedCheckedDocument);
+  log('cleanedCheckedDocumentCodes', cleanedCheckedDocument.split('').map(c => c.charCodeAt(0)));
+  log('currentDocument', currentDocument);
+  log('currentDocumentCodes', currentDocument.split('').map(c => c.charCodeAt(0)));
+  log('matches', matches);
+  log('diffs', diffs);
+  log('alignedMatches', alignedMatches);
+  log('alignedMatchesContent', alignedMatches.map(m => rangeContent(currentDocument, m)));
+
+  return containsModifiedMatches ? [] : alignedMatches;
+}
+

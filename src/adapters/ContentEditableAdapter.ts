@@ -20,36 +20,36 @@
 
 /// <reference path="../utils/scrolling.ts" />
 
-namespace acrolinx.plugins.adapter {
-  'use strict';
 
-  import scrollIntoView = acrolinx.plugins.utils.scrollIntoView;
+import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
+import {getElementFromAdapterConf} from "./AdapterInterface";
+import {scrollIntoView} from "../utils/scrolling";
+import {AdapterConf} from "./AdapterInterface";
 
 
-  export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
-    element: Element;
+export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
+  element: Element;
 
-    constructor(conf: AdapterConf) {
-      super(conf);
-      this.element = getElementFromAdapterConf(conf);
-    }
-
-    getEditorElement(): Element {
-      return this.element;
-    }
-
-    getContent() {
-      return this.element.innerHTML;
-    }
-
-    getEditorDocument(): Document {
-      return this.element.ownerDocument;
-    }
-
-    protected scrollElementIntoView(el: HTMLElement) {
-      scrollIntoView(el, this.config.scrollOffsetY);
-    }
-
+  constructor(conf: AdapterConf) {
+    super(conf);
+    this.element = getElementFromAdapterConf(conf);
   }
+
+  getEditorElement(): Element {
+    return this.element;
+  }
+
+  getContent() {
+    return this.element.innerHTML;
+  }
+
+  getEditorDocument(): Document {
+    return this.element.ownerDocument;
+  }
+
+  protected scrollElementIntoView(el: HTMLElement) {
+    scrollIntoView(el, this.config.scrollOffsetY);
+  }
+
 }
 

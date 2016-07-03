@@ -1,6 +1,6 @@
 /*
  *
- * * Copyright 2016 Acrolinx GmbH
+ * * Copyright 2015 Acrolinx GmbH
  * *
  * * Licensed under the Apache License, Version 2.0 (the "License");
  * * you may not use this file except in compliance with the License.
@@ -18,11 +18,14 @@
  *
  */
 
-import LoDashStatic = _.LoDashStatic;
-
-const windowWithLibs: any = window;
-const originalAcrolinxLibs = windowWithLibs['acrolinxLibs'] || {};
-export const Q = originalAcrolinxLibs.Q || windowWithLibs['Q'];
-export const _: LoDashStatic = originalAcrolinxLibs._ || windowWithLibs['_'];
-
+declare namespace acrolinx.plugins {
+  export interface  AcrolinxPluginConfig {
+    sidebarContainerId?: string;
+    sidebarUrl?: string;
+    useMessageAdapter?: boolean;
+    useSidebarFromSameOriginDirectly?: boolean;
+    onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
+    getDocumentReference?: () => string;
+  }
+}
 

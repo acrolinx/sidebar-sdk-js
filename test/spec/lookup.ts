@@ -1,15 +1,11 @@
 /// <reference path="../utils/test-utils.ts" />
 
-import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
 import Match = acrolinx.sidebar.Match;
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-import AdapterConf = acrolinx.plugins.adapter.AdapterConf;
-import ContentExtractionResult = acrolinx.plugins.ContentExtractionResult;
 import editor = CKEDITOR.editor;
-import getMatchesWithReplacement = acrolinx.test.utils.getMatchesWithReplacement;
-import enableLogging = acrolinx.plugins.utils.enableLogging;
-var assert = chai.assert;
-var expect = chai.expect;
+import {getMatchesWithReplacement} from "../utils/test-utils";
+import {AdapterInterface, AdapterConf, ContentExtractionResult} from "../../src/adapters/AdapterInterface";
+import assert = chai.assert;
 
 describe('adapter test', function () {
   const NON_BREAKING_SPACE = '\u00a0';
@@ -125,7 +121,7 @@ describe('adapter test', function () {
       beforeEach((done) => {
         $('body').append(adapterSpec.editorElement);
         const adapterConf: AdapterConf = {editorId: 'editorId'};
-        var adapterNameSpace = acrolinx.plugins.adapter as any;
+        var adapterNameSpace = window.acrolinx.plugins.adapter as any;
         adapter = new adapterNameSpace[adapterName](adapterConf);
         if (adapterSpec.init) {
           adapterSpec.init(done);
@@ -163,6 +159,10 @@ describe('adapter test', function () {
           });
           callback(ContentExtractionResult.content);
         });
+      }
+
+      function normalizeResultHtml(html: string) {
+        return html.replace(/\n|<span><\/span>/g, '');
       }
 
       it('Get initial text from editor element', function () {
@@ -573,11 +573,6 @@ describe('adapter test', function () {
       });
 
       if (adapterSpec.inputFormat === 'HTML') {
-        function normalizeResultHtml(html: string) {
-          return html.replace(/\n|<span><\/span>/g, '');
-        }
-
-
         it('Remove complete text content', function (done) {
           givenAText('<p>a</p>', text => {
             const matchesWithReplacement: MatchWithReplacement[] = [

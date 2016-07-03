@@ -1,12 +1,9 @@
-namespace acrolinx.plugins.autobind {
-  'use strict';
-
   import List = _.List;
-  import isIFrame = acrolinx.plugins.utils.isIFrame;
-  import InputAdapter = acrolinx.plugins.adapter.InputAdapter;
-  import ContentEditableAdapter = acrolinx.plugins.adapter.ContentEditableAdapter;
-  import AdapterInterface = acrolinx.plugins.adapter.AdapterInterface;
-  import AdapterConf = acrolinx.plugins.adapter.AdapterConf;
+  import {isIFrame} from "../utils/utils";
+  import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
+  import {InputAdapter} from "../adapters/InputAdapter";
+  import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
+  import {AdapterInterface, AdapterConf} from "../adapters/AdapterInterface";
 
 
   const EDITABLE_ELEMENTS_SELECTOR = [
@@ -52,5 +49,3 @@ namespace acrolinx.plugins.autobind {
       }
     });
   }
-
-}

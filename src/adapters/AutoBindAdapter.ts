@@ -19,38 +19,41 @@
  */
 
 /// <reference path="../utils/utils.ts" />
+/// <reference path="../acrolinx-plugin.d.ts" />
 
-namespace acrolinx.plugins.adapter {
-  'use strict';
+import {AdapterInterface} from "./AdapterInterface";
+import {MultiEditorAdapter} from "./MultiEditorAdapter";
+import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
+import {bindAdaptersForCurrentPage} from "../autobind/autobind";
 
-  export class AutoBindAdapter implements AdapterInterface {
-    private multiAdapter: MultiEditorAdapter;
-    private conf: AcrolinxPluginConfig;
 
-    constructor(conf: AcrolinxPluginConfig) {
-      this.conf = conf;
-    }
+export class AutoBindAdapter implements AdapterInterface {
+  private multiAdapter: MultiEditorAdapter;
+  private conf: AcrolinxPluginConfig;
 
-    extractContentForCheck() {
-      this.multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter();
-      acrolinx.plugins.autobind.bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
-        this.multiAdapter.addSingleAdapter(adapter);
-      });
-      return this.multiAdapter.extractContentForCheck();
-    }
+  constructor(conf: AcrolinxPluginConfig) {
+    this.conf = conf;
+  }
 
-    registerCheckCall(checkInfo: acrolinx.sidebar.Check) {
-    }
+  extractContentForCheck() {
+    this.multiAdapter = new MultiEditorAdapter();
+    bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
+      this.multiAdapter.addSingleAdapter(adapter);
+    });
+    return this.multiAdapter.extractContentForCheck();
+  }
 
-    registerCheckResult(checkResult: acrolinx.sidebar.CheckResult) {
-    }
+  registerCheckCall(checkInfo: acrolinx.sidebar.Check) {
+  }
 
-    selectRanges(checkId: string, matches: acrolinx.sidebar.Match[]) {
-      this.multiAdapter.selectRanges(checkId, matches);
-    }
+  registerCheckResult(checkResult: acrolinx.sidebar.CheckResult) {
+  }
 
-    replaceRanges(checkId: string, matchesWithReplacement: acrolinx.sidebar.MatchWithReplacement[]) {
-      this.multiAdapter.replaceRanges(checkId, matchesWithReplacement);
-    }
+  selectRanges(checkId: string, matches: acrolinx.sidebar.Match[]) {
+    this.multiAdapter.selectRanges(checkId, matches);
+  }
+
+  replaceRanges(checkId: string, matchesWithReplacement: acrolinx.sidebar.MatchWithReplacement[]) {
+    this.multiAdapter.replaceRanges(checkId, matchesWithReplacement);
   }
 }
