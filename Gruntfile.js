@@ -41,13 +41,8 @@ module.exports = function (grunt) {
       },
       ts: {
         options: {atBegin: true},
-        files: ['src/**/*.ts'],
-        tasks: ['ts:base', 'ts:test', 'browserify:base'],
-      },
-      tsTest: {
-        options: {atBegin: true},
-        files: ['test/**/*.ts'],
-        tasks: ['ts:test', 'browserify:test']
+        files: ['src/**/*.ts', 'test/**/*.ts'],
+        tasks: ['ts', 'browserify'],
       }
     },
 
@@ -107,24 +102,16 @@ module.exports = function (grunt) {
     },
 
     ts: {
-      base: {
-        src: ['src/**/*.ts'],
-        dest: 'tmp/compiled/',
-        options: {
-          rootDir: '.',
-          noImplicitAny: true,
-          module: 'commonjs',
-          target: 'es5'
-        }
-      },
-      test: {
+      all: {
         src: ['src/**/*.ts', 'test/**/*.ts'],
         dest: 'tmp/compiled/',
         options: {
           rootDir: '.',
           noImplicitAny: true,
+          noImplicitReturns: true,
+          noFallthroughCasesInSwitch: true,
           target: 'es5',
-          module: 'commonjs',
+          module: 'commonjs'
         }
       }
     },
@@ -172,7 +159,7 @@ module.exports = function (grunt) {
     },
 
     browserify: {
-      base: {
+      distrib: {
         src: ['tmp/compiled/src/acrolinx-sidebar-integration.js'],
         dest: 'distrib/' + name + '.js'
       },
@@ -224,7 +211,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', ['prepareBuild', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
-  grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts:base', 'ts:test', 'browserify']);
+  grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts', 'browserify']);
   grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib']);
   grunt.registerTask('distrib', ['build', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
 
@@ -278,7 +265,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('distribRelease', ['distrib', 'release']);
   grunt.registerTask('karmaLocal', ['tslint', 'karma:ci', 'coverage']);
-  grunt.registerTask('tsBase', ['ts:base']);
+  grunt.registerTask('typescript', ['ts']);
 
 
 };
