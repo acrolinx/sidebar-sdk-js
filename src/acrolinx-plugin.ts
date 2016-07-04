@@ -81,7 +81,11 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     }
 
     function getDefaultDocumentReference() {
-      return (config.getDocumentReference && config.getDocumentReference()) || window.location.href;
+      if (config.getDocumentReference) {
+        return config.getDocumentReference();
+      } else {
+        return window.location.href;
+      }
     }
 
     function requestGlobalCheckSync(html: ContentExtractionResult, format: string, documentReference: string) {
