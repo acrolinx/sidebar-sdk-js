@@ -2236,7 +2236,12 @@ function initAcrolinxSamplePlugin(config, editorAdapter) {
             }, config));
         }
         function getDefaultDocumentReference() {
-            return (config.getDocumentReference && config.getDocumentReference()) || window.location.href;
+            if (config.getDocumentReference) {
+                return config.getDocumentReference();
+            }
+            else {
+                return window.location.href;
+            }
         }
         function requestGlobalCheckSync(html, format, documentReference) {
             if (html.hasOwnProperty('error')) {
