@@ -29,7 +29,6 @@ import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
 
 
-
 window.acrolinx = window.acrolinx || ({} as any);
 window.acrolinx.plugins = {
   AcrolinxPlugin: AcrolinxPlugin,

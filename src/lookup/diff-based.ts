@@ -90,7 +90,7 @@ export function lookupMatches<T extends Match>(checkedDocument: string, currentD
   });
 
   const containsModifiedMatches = _.some(alignedMatches, m => rangeContent(currentDocument, m) !== m.originalMatch.content);
-  
+
   log('checkedDocument', checkedDocument);
   log('cleanedCheckedDocument', cleanedCheckedDocument);
   log('cleanedCheckedDocumentCodes', cleanedCheckedDocument.split('').map(c => c.charCodeAt(0)));
