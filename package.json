@@ -25,7 +25,8 @@
     "grunt-karma": "^0.12.1",
     "grunt-shell": "^1.1.2",
     "grunt-ts": "5.5.1",
-    "grunt-tslint": "^3.0.3",
+    "grunt-tslint": "3.1.1",
+    "istanbul": "^0.4.4",
     "jit-grunt": "^0.9.1",
     "karma": "^0.13.22",
     "karma-browserify": "5.0.5",
@@ -38,7 +39,7 @@
     "q-io": "^1.13.1",
     "request": "^2.58.0",
     "serve-static": "1.10.2",
-    "tslint": "^3.7.1",
+    "tslint": "3.13.0",
     "typescript": "1.8.10"
   },
   "scripts": {}

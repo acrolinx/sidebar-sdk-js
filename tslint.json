@@ -29,7 +29,7 @@
             "parameter": "nospace",
             "property-declaration": "nospace"
         }],
-        "no-internal-module": true,
+        "no-internal-module": false,
         "no-trailing-whitespace": false,
         "no-inferrable-types": true,
         "no-unused-variable": true
