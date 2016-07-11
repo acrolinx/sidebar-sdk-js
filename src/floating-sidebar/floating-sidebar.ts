@@ -1,4 +1,4 @@
-import {_} from '../acrolinx-libs/acrolinx-libs-defaults';
+import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 
 export const SIDEBAR_ID = 'acrolinxFloatingSidebar';
 export const TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';

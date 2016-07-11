@@ -18,9 +18,6 @@
  *
  */
 
-/// <reference path="utils/utils.ts" />
-/// <reference path="utils/sidebar-loader.ts" />
-
 
 import {_} from './acrolinx-libs/acrolinx-libs-defaults';
 

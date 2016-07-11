@@ -1,7 +1,4 @@
-/// <reference path="utils.ts" />
-
-
-import {_} from '../acrolinx-libs/acrolinx-libs-defaults';
+import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {toSet} from "./utils";
 import {OffSetAlign} from "./alignment";
 

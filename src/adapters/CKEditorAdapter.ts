@@ -18,15 +18,11 @@
  *
  */
 
-/// <reference path="../lookup/diff-based.ts" />
-/// <reference path="AbstractRichtextEditorAdapter.ts" />
-
 
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import Match = acrolinx.sidebar.Match;
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
-import {HasEditorID} from "./AdapterInterface";
-import {ContentExtractionResult} from "./AdapterInterface";
+import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
 
 
 export class CKEditorAdapter extends AbstractRichtextEditorAdapter {

@@ -1,7 +1,6 @@
 import {createOffsetMappingArray} from "../../../src/lookup/diff-based";
+import {diff_match_patch} from "diff-match-patch";
 import assert = chai.assert;
-
-import {diff_match_patch, DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT, Diff} from "diff-match-patch";
 
 
 function generateText(length: number) {

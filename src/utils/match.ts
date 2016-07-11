@@ -1,6 +1,6 @@
 'use strict';
 
-import {AlignedMatch} from './alignment';
+import {AlignedMatch} from "./alignment";
 import Match = acrolinx.sidebar.Match;
 
 export function getCompleteFlagLength<T extends Match>(matches: AlignedMatch<T>[]) {

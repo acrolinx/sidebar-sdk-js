@@ -1,5 +1,3 @@
-/// <reference path="../acrolinx-plugin.d.ts" />
-
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import Match = acrolinx.sidebar.Match;
 import Check = acrolinx.sidebar.Check;

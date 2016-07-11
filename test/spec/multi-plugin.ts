@@ -1,5 +1,3 @@
-/// <reference path="../utils/test-utils.ts" />
-
 import Match = acrolinx.sidebar.Match;
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import assert = chai.assert;
@@ -13,7 +11,8 @@ import CheckedDocumentRange = acrolinx.sidebar.CheckedDocumentRange;
 import InvalidDocumentPart = acrolinx.sidebar.InvalidDocumentPart;
 import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 import {
-  MultiEditorAdapterConfig, AddSingleAdapterOptions,
+  MultiEditorAdapterConfig,
+  AddSingleAdapterOptions,
   MultiEditorAdapter
 } from "../../src/adapters/MultiEditorAdapter";
 import {ContentEditableAdapter} from "../../src/adapters/ContentEditableAdapter";

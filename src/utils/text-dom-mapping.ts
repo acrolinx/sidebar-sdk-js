@@ -1,8 +1,6 @@
-/// <reference path="text-extraction.ts" />
-
-import {_} from '../acrolinx-libs/acrolinx-libs-defaults';
-import {toSet} from './utils';
-import {NEW_LINE_TAGS} from './text-extraction';
+import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import {toSet} from "./utils";
+import {NEW_LINE_TAGS} from "./text-extraction";
 
 
 export interface TextDomMapping {

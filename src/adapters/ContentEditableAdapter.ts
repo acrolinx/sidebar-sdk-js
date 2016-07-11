@@ -18,13 +18,10 @@
  *
  */
 
-/// <reference path="../utils/scrolling.ts" />
-
 
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
-import {getElementFromAdapterConf} from "./AdapterInterface";
+import {getElementFromAdapterConf, AdapterConf} from "./AdapterInterface";
 import {scrollIntoView} from "../utils/scrolling";
-import {AdapterConf} from "./AdapterInterface";
 
 
 export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {

@@ -1,6 +1,6 @@
 'use strict';
 
-import * as utils from './utils';
+import * as utils from "./utils";
 
 import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 

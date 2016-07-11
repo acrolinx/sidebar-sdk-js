@@ -1,4 +1,4 @@
-import {OffSetAlign} from './alignment';
+import {OffSetAlign} from "./alignment";
 
 export interface EscapeHtmlCharactersResult {
   escapedText: string;

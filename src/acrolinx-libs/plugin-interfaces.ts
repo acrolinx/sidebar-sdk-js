@@ -72,8 +72,8 @@ namespace acrolinx.sidebar {
     enableSingleSignOn?: boolean;
 
     /**
-     * This setting will render cards with suggestions in read-only mode. This means the sidebar won't trigger suggestion
-     * replacements in the document. The cards will still work for navigation.
+     * This setting will render cards with suggestions in read-only mode. This means the sidebar won't trigger
+     * suggestion replacements in the document. The cards will still work for navigation.
      */
     readOnlySuggestions?: boolean;
   }

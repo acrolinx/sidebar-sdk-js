@@ -18,17 +18,12 @@
  *
  */
 
-/// <reference path="../utils/alignment.ts" />
-/// <reference path="../utils/escaping.ts" />
-
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import Match = acrolinx.sidebar.Match;
 import CheckResult = acrolinx.sidebar.CheckResult;
 import Check = acrolinx.sidebar.Check;
 import {AdapterInterface, ContentExtractionResult} from "./AdapterInterface";
-
-
-import {_, Q} from '../acrolinx-libs/acrolinx-libs-defaults';
+import {_, Q} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {EscapeHtmlCharactersResult, escapeHtmlCharacters} from "../utils/escaping";
 import {findNewIndex} from "../utils/alignment";
 

@@ -18,13 +18,10 @@
  *
  */
 
-/// <reference path="../utils/utils.ts" />
-/// <reference path="../acrolinx-plugin.d.ts" />
-
 import {AdapterInterface} from "./AdapterInterface";
 import {MultiEditorAdapter} from "./MultiEditorAdapter";
-import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 import {bindAdaptersForCurrentPage} from "../autobind/autobind";
+import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 
 
 export class AutoBindAdapter implements AdapterInterface {

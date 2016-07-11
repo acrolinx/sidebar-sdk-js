@@ -1,9 +1,9 @@
 import List = _.List;
 import {isIFrame} from "../utils/utils";
-import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 import {InputAdapter} from "../adapters/InputAdapter";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
 import {AdapterInterface, AdapterConf} from "../adapters/AdapterInterface";
+import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 
 
 const EDITABLE_ELEMENTS_SELECTOR = [

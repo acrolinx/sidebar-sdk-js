@@ -18,15 +18,8 @@
  *
  */
 
-/// <reference path="../typings/diff-match-patch.d.ts" />
-/// <reference path="../utils/logging.ts" />
-/// <reference path="../utils/alignment.ts" />
-/// <reference path="../utils/text-extraction" />
-
-'use strict';
-
 import Match = acrolinx.sidebar.Match;
-import {_} from '../acrolinx-libs/acrolinx-libs-defaults';
+import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {OffSetAlign, findNewIndex, AlignedMatch} from "../utils/alignment";
 import {extractText} from "../utils/text-extraction";
 import {log} from "../utils/logging";
@@ -74,7 +67,7 @@ export function lookupMatches<T extends Match>(checkedDocument: string, currentD
     return [];
   }
 
-  const cleaningResult : [string, OffSetAlign[]] = inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []];
+  const cleaningResult: [string, OffSetAlign[]] = inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []];
   const [cleanedCheckedDocument, cleaningOffsetMappingArray] = cleaningResult;
   const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
   const offsetMappingArray = createOffsetMappingArray(diffs);

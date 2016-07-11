@@ -1,4 +1,4 @@
-import {_} from '../acrolinx-libs/acrolinx-libs-defaults';
+import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 import Match = acrolinx.sidebar.Match;
 
 

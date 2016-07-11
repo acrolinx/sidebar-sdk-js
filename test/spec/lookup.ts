@@ -1,5 +1,3 @@
-/// <reference path="../utils/test-utils.ts" />
-
 import Match = acrolinx.sidebar.Match;
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import editor = CKEDITOR.editor;

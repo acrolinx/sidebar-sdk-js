@@ -18,22 +18,18 @@
  *
  */
 
-/// <reference path="../utils/utils.ts" />
-/// <reference path="../utils/scrolling.ts" />
-
 
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import Match = acrolinx.sidebar.Match;
-import {_} from '../acrolinx-libs/acrolinx-libs-defaults';
-import Check = acrolinx.sidebar.Check;
-import CheckResult = acrolinx.sidebar.CheckResult;
-import {getElementFromAdapterConf} from "./AdapterInterface";
+import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import {getElementFromAdapterConf, AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
 import {AlignedMatch} from "../utils/alignment";
 import {getCompleteFlagLength} from "../utils/match";
 import {scrollIntoView} from "../utils/scrolling";
 import {lookupMatches} from "../lookup/diff-based";
 import {fakeInputEvent} from "../utils/utils";
-import {AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
+import Check = acrolinx.sidebar.Check;
+import CheckResult = acrolinx.sidebar.CheckResult;
 
 type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
