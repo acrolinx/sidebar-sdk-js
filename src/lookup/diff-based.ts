@@ -73,7 +73,9 @@ export function lookupMatches<T extends Match>(checkedDocument: string, currentD
   if (_.isEmpty(matches)) {
     return [];
   }
-  const [cleanedCheckedDocument, cleaningOffsetMappingArray] = inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []];
+
+  const cleaningResult : [string, OffSetAlign[]] = inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []];
+  const [cleanedCheckedDocument, cleaningOffsetMappingArray] = cleaningResult;
   const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
   const offsetMappingArray = createOffsetMappingArray(diffs);
 

@@ -106,12 +106,7 @@ module.exports = function (grunt) {
         src: ['src/**/*.ts', 'test/**/*.ts'],
         dest: 'tmp/compiled/',
         options: {
-          rootDir: '.',
-          noImplicitAny: true,
-          noImplicitReturns: true,
-          noFallthroughCasesInSwitch: true,
-          target: 'es5',
-          module: 'commonjs'
+          tsconfig: true,
         }
       }
     },
