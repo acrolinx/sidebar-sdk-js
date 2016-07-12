@@ -2394,7 +2394,7 @@ window.acrolinx.plugins = {
 
 },{"./acrolinx-plugin":3,"./adapters/AbstractRichtextEditorAdapter":5,"./adapters/AutoBindAdapter":7,"./adapters/CKEditorAdapter":8,"./adapters/ContentEditableAdapter":9,"./adapters/InputAdapter":10,"./adapters/MultiEditorAdapter":11,"./adapters/TinyMCEAdapter":12,"./adapters/TinyMCEWordpressAdapter":13}],5:[function(require,module,exports){
 "use strict";
-var acrolinx_libs_defaults_1 = require('../acrolinx-libs/acrolinx-libs-defaults');
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var text_dom_mapping_1 = require("../utils/text-dom-mapping");
 var diff_based_1 = require("../lookup/diff-based");
 var match_1 = require("../utils/match");
@@ -2666,7 +2666,7 @@ exports.ContentEditableAdapter = ContentEditableAdapter;
 
 },{"../utils/scrolling":22,"./AbstractRichtextEditorAdapter":5,"./AdapterInterface":6}],10:[function(require,module,exports){
 "use strict";
-var acrolinx_libs_defaults_1 = require('../acrolinx-libs/acrolinx-libs-defaults');
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var AdapterInterface_1 = require("./AdapterInterface");
 var match_1 = require("../utils/match");
 var scrolling_1 = require("../utils/scrolling");
@@ -2750,7 +2750,7 @@ exports.InputAdapter = InputAdapter;
 
 },{"../acrolinx-libs/acrolinx-libs-defaults":2,"../lookup/diff-based":16,"../utils/match":21,"../utils/scrolling":22,"../utils/utils":26,"./AdapterInterface":6}],11:[function(require,module,exports){
 "use strict";
-var acrolinx_libs_defaults_1 = require('../acrolinx-libs/acrolinx-libs-defaults');
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var escaping_1 = require("../utils/escaping");
 var alignment_1 = require("../utils/alignment");
 function createStartTag(wrapper, id) {
@@ -2792,8 +2792,14 @@ var MultiEditorAdapter = (function () {
         if (id === void 0) { id = 'acrolinx_integration' + this.adapters.length; }
         this.adapters.push({ id: id, adapter: singleAdapter, wrapper: wrapperConfWithDefaults(opts) });
     };
+    MultiEditorAdapter.prototype.removeAllAdapters = function () {
+        this.adapters = [];
+    };
     MultiEditorAdapter.prototype.extractContentForCheck = function () {
         var _this = this;
+        if (this.config.beforeCheck) {
+            this.config.beforeCheck(this);
+        }
         var deferred = acrolinx_libs_defaults_1.Q.defer();
         var contentExtractionResults = this.adapters.map(function (adapter) { return adapter.adapter.extractContentForCheck(); });
         acrolinx_libs_defaults_1.Q.all(contentExtractionResults).then(function (results) {
@@ -3031,7 +3037,7 @@ exports.bindAdaptersForCurrentPage = bindAdaptersForCurrentPage;
 
 },{"../adapters/ContentEditableAdapter":9,"../adapters/InputAdapter":10,"../utils/utils":26}],15:[function(require,module,exports){
 "use strict";
-var acrolinx_libs_defaults_1 = require('../acrolinx-libs/acrolinx-libs-defaults');
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 exports.SIDEBAR_ID = 'acrolinxFloatingSidebar';
 exports.TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
 exports.CLOSE_ICON_CLASS = 'acrolinxFloatingSidebarCloseIcon';
@@ -3147,8 +3153,8 @@ function initFloatingSidebar() {
 exports.initFloatingSidebar = initFloatingSidebar;
 
 },{"../acrolinx-libs/acrolinx-libs-defaults":2}],16:[function(require,module,exports){
-'use strict';
-var acrolinx_libs_defaults_1 = require('../acrolinx-libs/acrolinx-libs-defaults');
+"use strict";
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var alignment_1 = require("../utils/alignment");
 var text_extraction_1 = require("../utils/text-extraction");
 var logging_1 = require("../utils/logging");
@@ -3190,7 +3196,8 @@ function lookupMatches(checkedDocument, currentDocument, matches, inputFormat) {
     if (acrolinx_libs_defaults_1._.isEmpty(matches)) {
         return [];
     }
-    var _a = inputFormat === 'HTML' ? text_extraction_1.extractText(checkedDocument) : [checkedDocument, []], cleanedCheckedDocument = _a[0], cleaningOffsetMappingArray = _a[1];
+    var cleaningResult = inputFormat === 'HTML' ? text_extraction_1.extractText(checkedDocument) : [checkedDocument, []];
+    var cleanedCheckedDocument = cleaningResult[0], cleaningOffsetMappingArray = cleaningResult[1];
     var diffs = dmp.diff_main(cleanedCheckedDocument, currentDocument);
     var offsetMappingArray = createOffsetMappingArray(diffs);
     var alignedMatches = matches.map(function (match) {
@@ -3315,7 +3322,7 @@ exports.createPluginMessageAdapter = createPluginMessageAdapter;
 
 },{}],18:[function(require,module,exports){
 "use strict";
-var acrolinx_libs_defaults_1 = require('../acrolinx-libs/acrolinx-libs-defaults');
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 function findDisplacement(offsetMappingArray, originalIndex) {
     if (offsetMappingArray.length === 0) {
         return 0;
@@ -3435,7 +3442,7 @@ exports.scrollIntoView = scrollIntoView;
 
 },{}],23:[function(require,module,exports){
 'use strict';
-var utils = require('./utils');
+var utils = require("./utils");
 exports.SIDEBAR_URL = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
 function createCSSLinkElement(href) {
     var el = document.createElement('link');
@@ -3497,9 +3504,9 @@ exports.loadSidebarIntoIFrame = loadSidebarIntoIFrame;
 
 },{"./utils":26}],24:[function(require,module,exports){
 "use strict";
-var acrolinx_libs_defaults_1 = require('../acrolinx-libs/acrolinx-libs-defaults');
-var utils_1 = require('./utils');
-var text_extraction_1 = require('./text-extraction');
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
+var utils_1 = require("./utils");
+var text_extraction_1 = require("./text-extraction");
 var EMPTY_TEXT_DOM_MAPPING = Object.freeze({
     text: '',
     domPositions: []
@@ -3564,7 +3571,7 @@ exports.getEndDomPos = getEndDomPos;
 
 },{"../acrolinx-libs/acrolinx-libs-defaults":2,"./text-extraction":25,"./utils":26}],25:[function(require,module,exports){
 "use strict";
-var acrolinx_libs_defaults_1 = require('../acrolinx-libs/acrolinx-libs-defaults');
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var utils_1 = require("./utils");
 var REPLACE_SCRIPTS_REGEXP = '<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\/script>';
 var REPLACE_STYLES_REGEXP = '<style\\b[^<]*(?:(?!<\\/style>)<[^<]*)*<\/style>';
@@ -3608,7 +3615,7 @@ function decodeEntities(entity) {
 
 },{"../acrolinx-libs/acrolinx-libs-defaults":2,"./utils":26}],26:[function(require,module,exports){
 "use strict";
-var acrolinx_libs_defaults_1 = require('../acrolinx-libs/acrolinx-libs-defaults');
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 function logTime(text, f) {
     var startTime = Date.now();
     var result = f();
