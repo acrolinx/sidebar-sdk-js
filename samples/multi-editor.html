@@ -87,7 +87,12 @@
       // documentHeader: '<!DOCTYPE html>\n',
       // Optional: Wrapper around the complete concatenated html
       // rootElement: {tagName: 'html'}
+      // beforeCheck: function (multiAdapterArgument) {
+      //   multiAdapterArgument.removeAllAdapters();
+      //   multiAdapterArgument.addSingleAdapter(...)
+      // }
     });
+
     multiAdapter.addSingleAdapter(contentEditableAdapter);
 
     multiAdapter.addSingleAdapter(inputAdapter, {

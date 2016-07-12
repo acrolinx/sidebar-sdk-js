@@ -286,4 +286,24 @@ describe('multi plugin', function () {
     });
   })
 
+  describe('Config: beforeCheck', () => {
+    it('do stuff before check', (done) => {
+      initMultiPlugin(onInitDone, {
+        multiEditorAdapterConfig: {
+          beforeCheck: multiAdapter => {
+            multiAdapter.removeAllAdapters();
+            multiAdapter.addSingleAdapter(new InputAdapter({editorId: 'InputAdapter'}));
+          }
+        }
+      });
+
+      function onInitDone() {
+        waitForCheck(() => {
+          assert.equal(lastDocumentContent, '<div id="acrolinx_integration0">&lt;Initial text of InputAdapter.</div>');
+          done();
+        })
+      }
+    });
+  })
+
 });

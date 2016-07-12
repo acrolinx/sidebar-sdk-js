@@ -80,6 +80,7 @@ function mapBackRangeOfEscapedText(escapeResult: EscapeHtmlCharactersResult, ran
 export interface MultiEditorAdapterConfig {
   documentHeader?: string;
   rootElement?: WrapperConfOptions;
+  beforeCheck?: (multiAdapter: MultiEditorAdapter) => void;
 }
 
 function wrapperConfWithDefaults(opts: WrapperConfOptions, defaultTagName = 'div') {
@@ -91,11 +92,10 @@ function wrapperConfWithDefaults(opts: WrapperConfOptions, defaultTagName = 'div
 }
 
 export class MultiEditorAdapter implements AdapterInterface {
-  config: MultiEditorAdapterConfig;
-  rootElementWrapper: WrapperConf; // Optional class properties will come with ts 2.0
-  adapters: RegisteredAdapter[];
-  checkResult: CheckResult;
-  rootElement: string;
+  private config: MultiEditorAdapterConfig;
+  private rootElementWrapper: WrapperConf; // Optional class properties will come with ts 2.0
+  private adapters: RegisteredAdapter[];
+  private checkResult: CheckResult;
 
   constructor(config: MultiEditorAdapterConfig = {}) {
     this.config = config;
@@ -109,7 +109,14 @@ export class MultiEditorAdapter implements AdapterInterface {
     this.adapters.push({id: id, adapter: singleAdapter, wrapper: wrapperConfWithDefaults(opts)});
   }
 
+  removeAllAdapters() {
+    this.adapters = [];
+  }
+
   extractContentForCheck() {
+    if (this.config.beforeCheck) {
+      this.config.beforeCheck(this);
+    }
     const deferred = Q.defer();
     const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck());
     Q.all(contentExtractionResults).then((results: ContentExtractionResult[]) => {
