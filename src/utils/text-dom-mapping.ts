@@ -64,7 +64,8 @@ export function extractTextDomMapping(node: Node): TextDomMapping {
           return childMappings;
         case Node.TEXT_NODE:
         default:
-          return textMapping(child.textContent, _.times(child.textContent.length, (i: number) => domPosition(child, i)));
+          const textContent = child.textContent != null ? child.textContent : '';
+          return textMapping(textContent, _.times(textContent.length, (i: number) => domPosition(child, i)));
       }
     }
   ));

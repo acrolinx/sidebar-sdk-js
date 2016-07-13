@@ -15,7 +15,7 @@ export const AUTO_SELF_CLOSING_LINE_TAGS = toSet(['BR']);
 
 
 function getTagReplacement(completeTag: string): string {
-  const [slash1='', tagName='', slash2=''] = ((/^<(\/?)(\w+)/i).exec(completeTag.toUpperCase()) || []).slice(1);
+  const [slash1 = '', tagName = '', slash2 = ''] = ((/^<(\/?)(\w+)/i).exec(completeTag.toUpperCase()) || []).slice(1);
   if (tagName) {
     if (AUTO_SELF_CLOSING_LINE_TAGS[tagName] ||
       (NEW_LINE_TAGS[tagName] && (slash1 || slash2))) {
@@ -30,7 +30,7 @@ export function extractText(s: string): [string, OffSetAlign[]] {
   const regExp = new RegExp(REPLACE_TAGS_REGEXP, 'ig');
   const offsetMapping: OffSetAlign[] = [];
   let currentDiffOffset = 0;
-  const resultText = s.replace(regExp, (tagOrEntity, p1, p2, offset) => {
+  const resultText = s.replace(regExp, (tagOrEntity, _p1, _p2, offset) => {
     const rep = _.startsWith(tagOrEntity, '&') ? decodeEntities(tagOrEntity) : getTagReplacement(tagOrEntity);
     currentDiffOffset -= tagOrEntity.length - rep.length;
     offsetMapping.push({
@@ -42,9 +42,9 @@ export function extractText(s: string): [string, OffSetAlign[]] {
   return [resultText, offsetMapping];
 }
 
-function decodeEntities(entity: string) {
+function decodeEntities(entity: string): string {
   const el = document.createElement('div');
   el.innerHTML = entity;
-  return el.textContent;
+  return el.textContent || '';
 }
 

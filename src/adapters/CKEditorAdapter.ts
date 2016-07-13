@@ -45,7 +45,7 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
     return this.getEditor().getData();
   }
 
-  extractContentForCheck(): ContentExtractionResult | Promise<ContentExtractionResult> {
+  extractContentForCheck(): ContentExtractionResult {
     this.html = this.getContent();
     this.currentHtmlChecking = this.html;
     if (this.isInWysiwygMode()) {

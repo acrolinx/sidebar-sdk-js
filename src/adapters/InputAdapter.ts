@@ -62,10 +62,10 @@ export class InputAdapter implements AdapterInterface {
     return {content: this.html};
   }
 
-  registerCheckResult(checkResult: CheckResult): void {
+  registerCheckResult(_checkResult: CheckResult): void {
   }
 
-  registerCheckCall(checkInfo: Check) {
+  registerCheckCall(_checkInfo: Check) {
   }
 
   scrollAndSelect(matches: AlignedMatch<Match>[]) {
@@ -95,7 +95,7 @@ export class InputAdapter implements AdapterInterface {
     this.selectMatches(checkId, matches);
   }
 
-  selectMatches<T extends Match>(checkId: string, matches: T[]): AlignedMatch<T>[] {
+  selectMatches<T extends Match>(_checkId: string, matches: T[]): AlignedMatch<T>[] {
     const alignedMatches = lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
 
     if (_.isEmpty(alignedMatches)) {

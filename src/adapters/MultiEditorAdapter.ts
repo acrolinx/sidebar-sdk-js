@@ -22,7 +22,7 @@ import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import Match = acrolinx.sidebar.Match;
 import CheckResult = acrolinx.sidebar.CheckResult;
 import Check = acrolinx.sidebar.Check;
-import {AdapterInterface, ContentExtractionResult} from "./AdapterInterface";
+import {AdapterInterface, ContentExtractionResult, hasError} from "./AdapterInterface";
 import {_, Q} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {EscapeHtmlCharactersResult, escapeHtmlCharacters} from "../utils/escaping";
 import {findNewIndex} from "../utils/alignment";
@@ -93,7 +93,7 @@ function wrapperConfWithDefaults(opts: WrapperConfOptions, defaultTagName = 'div
 
 export class MultiEditorAdapter implements AdapterInterface {
   private config: MultiEditorAdapterConfig;
-  private rootElementWrapper: WrapperConf; // Optional class properties will come with ts 2.0
+  private rootElementWrapper?: WrapperConf;
   private adapters: RegisteredAdapter[];
   private checkResult: CheckResult;
 
@@ -125,11 +125,15 @@ export class MultiEditorAdapter implements AdapterInterface {
         html += createStartTag(this.rootElementWrapper);
       }
       for (let i = 0; i < this.adapters.length; i++) {
+        const extractionResult = results[i];
+        if (hasError(extractionResult)) {
+          continue;
+        }
+        const adapterContent = extractionResult.content;
         const el = this.adapters[i];
         const tagName = el.wrapper.tagName;
         const startText = createStartTag(el.wrapper, el.id);
         const isText = el.adapter.getFormat ? el.adapter.getFormat() === 'TEXT' : false;
-        const adapterContent = results[i].content;
 
         let elHtml: string;
         if (isText) {
@@ -153,7 +157,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     return deferred.promise;
   }
 
-  registerCheckCall(checkInfo: Check) {
+  registerCheckCall(_checkInfo: Check) {
   }
 
   registerCheckResult(checkResult: CheckResult): void {

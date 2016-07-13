@@ -1,9 +1,8 @@
 import List = _.List;
-import {isIFrame} from "../utils/utils";
+import {isIFrame, assign} from "../utils/utils";
 import {InputAdapter} from "../adapters/InputAdapter";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
-import {AdapterInterface, AdapterConf} from "../adapters/AdapterInterface";
-import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
+import {AdapterInterface, AdapterConf, CommonAdapterConf} from "../adapters/AdapterInterface";
 
 
 const EDITABLE_ELEMENTS_SELECTOR = [
@@ -39,9 +38,9 @@ function getEditableElements(doc: Document = document): HTMLElement[] {
 }
 
 
-export function bindAdaptersForCurrentPage(conf: AcrolinxPluginConfig = {}): AdapterInterface[] {
+export function bindAdaptersForCurrentPage(conf: CommonAdapterConf = {}): AdapterInterface[] {
   return getEditableElements().map(function (editable) {
-    const adapterConf = _.assign({}, conf, {element: editable}) as AdapterConf;
+    const adapterConf = assign(conf, {element: editable}) as AdapterConf;
     if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {
       return new InputAdapter(adapterConf);
     } else {

@@ -52,10 +52,10 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     return this.getEditorDocument().querySelector('body');
   }
 
-  registerCheckCall(checkInfo: Check) {
+  registerCheckCall(_checkInfo: Check) {
   }
 
-  registerCheckResult(checkResult: CheckResult): void {
+  registerCheckResult(_checkResult: CheckResult): void {
     this.isCheckingNow = false;
     this.currentHtmlChecking = this.html;
     this.prevCheckedHtml = this.currentHtmlChecking;
@@ -102,7 +102,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   }
 
 
-  private selectMatches<T extends Match>(checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
+  private selectMatches<T extends Match>(_checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
     const textMapping: TextMapping = this.getTextDomMapping();
     const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.currentHtmlChecking, textMapping.text, matches);
 

@@ -3,7 +3,7 @@ import Match = acrolinx.sidebar.Match;
 import Check = acrolinx.sidebar.Check;
 import CheckResult = acrolinx.sidebar.CheckResult;
 
-interface CommonAdapterConf {
+export interface CommonAdapterConf {
   scrollOffsetY?: number;
 }
 
@@ -17,28 +17,30 @@ interface HasElement extends CommonAdapterConf {
 
 export type AdapterConf = HasEditorID | HasElement;
 
+export interface HasError {
+  error: any;
+}
 
-export interface ContentExtractionResult {
-  content?: string;
-  error?: any;
+export interface SuccessfulContentExtractionResult {
+  content: string;
   documentReference?: string;
 }
+
+export type ContentExtractionResult = SuccessfulContentExtractionResult | HasError;
 
 export interface AdapterInterface {
   getEditor?(): any;
   getFormat?(): string;
-
-  /**
-   * @deprecated Use the attribute documentReference in ContentExtractionResult.
-   */
-  getDocumentReference?(): string;
-
   getContent?(): string;
   extractContentForCheck(): ContentExtractionResult | Promise<ContentExtractionResult>;
   registerCheckCall(checkInfo: Check): void;
   registerCheckResult(checkResult: CheckResult): void;
   selectRanges(checkId: string, matches: Match[]): void;
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void;
+}
+
+export function hasError(a: ContentExtractionResult): a is HasError {
+  return !!(a as HasError).error;
 }
 
 export function hasEditorID(a: AdapterConf): a is HasEditorID {

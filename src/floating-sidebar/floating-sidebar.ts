@@ -202,9 +202,13 @@ export function initFloatingSidebar(): FloatingSidebar {
     }
   });
 
+  function parsePXWithDefault(s: string | null, defaultValue: number) {
+    return parseInt(s || '') || defaultValue;
+  }
+
   floatingSidebarElement.addEventListener('mousedown', event => {
-    const divLeft = parseInt(floatingSidebarElement.style.left.replace('px', '')) || initialPos.left;
-    const divTop = parseInt(floatingSidebarElement.style.top.replace('px', '')) || initialPos.top;
+    const divLeft = parsePXWithDefault(floatingSidebarElement.style.left, initialPos.left);
+    const divTop = parsePXWithDefault(floatingSidebarElement.style.top, initialPos.top);
     relativeMouseDownX = event.clientX - divLeft;
     relativeMouseDownY = event.clientY - divTop;
     isMoving = true;

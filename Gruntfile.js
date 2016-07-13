@@ -107,6 +107,7 @@ module.exports = function (grunt) {
         dest: 'tmp/compiled/',
         tsconfig: true,
         options: {
+          additionalFlags: '--strictNullChecks --noImplicitThis --noUnusedParameters --noUnusedLocals'
         }
       }
     },

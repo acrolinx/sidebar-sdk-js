@@ -38,7 +38,7 @@ describe('text-extraction', () => {
 
     it('entities', () => {
       const html = '0&amp;1';
-      const [text, offsetMapping] = extractText(html);
+      const [text] = extractText(html);
       assert.equal(text, '0&1');
     });
 
@@ -56,7 +56,7 @@ describe('text-extraction', () => {
     it('replace complicated scripts with empty string', () => {
       // We can't handle <script type="text/javascript">alert("</script>")</script> yet.
       const html = '1<script type="text/javascript">alert("<script>");\n</script>3';
-      const [text, offsetMapping] = extractText(html);
+      const [text] = extractText(html);
       assert.equal(text, '13');
     });
 
@@ -70,7 +70,7 @@ describe('text-extraction', () => {
   describe('extractText and extractTextDomMapping should return the same text', () => {
 
     function assertSameExtractedText(html: string, message?: string) {
-      const [text, offsetMapping] = extractText(html);
+      const [text] = extractText(html);
       const textDomMapping = extractTextDomMapping(toHtmlElement(html));
       assert.equal(textDomMapping.text, text, message);
     }

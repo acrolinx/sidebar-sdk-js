@@ -41,18 +41,18 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: acrolinx.sidebar
 
 
   const sidebar: AcrolinxSidebar = {
-    init (initParameters: InitParameters): void {
+    init (_initParameters: InitParameters): void {
     },
-    checkGlobal(documentContent: string, options: CheckOptions): Check {
+    checkGlobal(_documentContent: string, _options: CheckOptions): Check {
       return {checkId: 'dummyCheckId'};
     },
     onGlobalCheckRejected(): void {
     },
 
-    invalidateRanges(invalidCheckedDocumentRanges: InvalidDocumentPart[]) {
+    invalidateRanges(_invalidCheckedDocumentRanges: InvalidDocumentPart[]) {
     },
 
-    onVisibleRangesChanged(checkedDocumentRanges: CheckedDocumentRange[]) {
+    onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
     }
   };
 
@@ -91,28 +91,28 @@ export function createPluginMessageAdapter(): acrolinx.sidebar.AcrolinxPlugin {
     requestInit () {
     },
 
-    onInitFinished (initFinishedResult: InitResult) {
+    onInitFinished (_initFinishedResult: InitResult) {
     },
 
-    configure (configuration: AcrolinxPluginConfiguration) {
+    configure (_configuration: AcrolinxPluginConfiguration) {
     },
 
     requestGlobalCheck () {
     },
 
-    onCheckResult(checkResult: CheckResult) {
+    onCheckResult(_checkResult: CheckResult) {
     },
 
-    selectRanges(checkId: string, matches: MatchWithReplacement[]) {
+    selectRanges(_checkId: string, _matches: MatchWithReplacement[]) {
     },
 
-    replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
+    replaceRanges(_checkId: string, _matchesWithReplacement: MatchWithReplacement[]) {
     },
 
-    download(download: DownloadInfo) {
+    download(_download: DownloadInfo) {
     },
 
-    openWindow(urlSpec) {
+    openWindow(_urlSpec) {
     }
 
   };

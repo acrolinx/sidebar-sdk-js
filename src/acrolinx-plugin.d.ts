@@ -20,7 +20,7 @@
 
 declare namespace acrolinx.plugins {
   export interface  AcrolinxPluginConfig {
-    sidebarContainerId?: string;
+    sidebarContainerId: string;
     sidebarUrl?: string;
     useMessageAdapter?: boolean;
     useSidebarFromSameOriginDirectly?: boolean;

@@ -1,8 +1,7 @@
 import {createOffsetMappingArray, lookupMatches} from "../../../src/lookup/diff-based";
 import {diff_match_patch} from "diff-match-patch";
 import {getMatchesWithReplacement} from "../../utils/test-utils";
-var assert = chai.assert;
-var expect = chai.expect;
+const assert = chai.assert;
 
 
 describe('lookup/diff-based', function () {

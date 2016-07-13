@@ -1,8 +1,10 @@
-import Match = acrolinx.sidebar.Match;
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import editor = CKEDITOR.editor;
 import {getMatchesWithReplacement} from "../utils/test-utils";
-import {AdapterInterface, AdapterConf, ContentExtractionResult} from "../../src/adapters/AdapterInterface";
+import {
+  AdapterInterface, AdapterConf,
+  SuccessfulContentExtractionResult
+} from "../../src/adapters/AdapterInterface";
 import assert = chai.assert;
 
 describe('adapter test', function () {
@@ -113,7 +115,7 @@ describe('adapter test', function () {
     inputEventWasTriggered = false;
 
     const adapterName = adapterSpec.name;
-    describe('adapter ' + adapterName, function () {
+    describe('adapter ' + adapterName, function (this: any) {
       this.timeout(5000);
 
       beforeEach((done) => {
@@ -135,7 +137,7 @@ describe('adapter test', function () {
       const setEditorContent = adapterSpec.setEditorContent;
 
       function assertEditorText(expectedText: string) {
-        const editorContent = (adapter.extractContentForCheck() as ContentExtractionResult).content;
+        const editorContent = (adapter.extractContentForCheck() as SuccessfulContentExtractionResult).content;
         if (adapterSpec.name === 'InputAdapter') {
           assert.equal(editorContent, expectedText);
         }
@@ -148,14 +150,14 @@ describe('adapter test', function () {
       function givenAText(text: string, callback: (text: string) => void) {
         setEditorContent(text, () => {
           adapter.registerCheckCall({checkId: dummyCheckId});
-          const ContentExtractionResult = adapter.extractContentForCheck() as ContentExtractionResult;
+          const contentExtractionResult = adapter.extractContentForCheck() as SuccessfulContentExtractionResult;
           adapter.registerCheckResult({
             checkedPart: {
               checkId: dummyCheckId,
               range: [0, text.length]
             }
           });
-          callback(ContentExtractionResult.content);
+          callback(contentExtractionResult.content);
         });
       }
 
@@ -168,7 +170,7 @@ describe('adapter test', function () {
       });
 
       it('Get current text from editor element', function (done) {
-        givenAText('current text', (text) => {
+        givenAText('current text', () => {
           assertEditorText('current text');
           done();
         });
@@ -179,7 +181,7 @@ describe('adapter test', function () {
       });
 
       it('Extract current HTML from editor element', function (done) {
-        givenAText('current text', (text) => {
+        givenAText('current text', () => {
           assertEditorText('current text');
           done();
         });
@@ -549,8 +551,6 @@ describe('adapter test', function () {
         const words = ['wordOne', 'wordTwo', 'wordThree', 'wordFour']
         var editorText = words.join(' ');
         givenAText(editorText, text => {
-          const replacements = ["a", "b", "c", "d", "e"];
-
           words.forEach((word) => {
             adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(text, word, ''));
           });
@@ -572,12 +572,12 @@ describe('adapter test', function () {
 
       if (adapterSpec.inputFormat === 'HTML') {
         it('Remove complete text content', function (done) {
-          givenAText('<p>a</p>', text => {
+          givenAText('<p>a</p>', () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
               {"content": "a", "range": [3, 4], "replacement": ""},
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent()),
+            assert.equal(normalizeResultHtml(adapter.getContent!()),
               adapterSpec.name === 'ContentEditableAdapter' ? '<p></p>' : '');
             done();
           });
@@ -585,26 +585,26 @@ describe('adapter test', function () {
 
 
         it('Missing space within divs', function (done) {
-          givenAText('<div>a b ?</div><div>c</div>', text => {
+          givenAText('<div>a b ?</div><div>c</div>', () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
               {"content": "b", "range": [7, 8], "replacement": "b?"},
               {"content": " ", "range": [8, 9], "replacement": ""},
               {"content": "?", "range": [9, 10], "replacement": ""}];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent()), '<div>a b?</div><div>c</div>')
+            assert.equal(normalizeResultHtml(adapter.getContent!()), '<div>a b?</div><div>c</div>')
             done();
           });
         });
 
         it('Replace partially tagged text', function (done) {
-          givenAText('<p><strong>a b</strong> .</p>', text => {
+          givenAText('<p><strong>a b</strong> .</p>', () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
               {"content": "b", "range": [13, 14], "replacement": "b."},
               {"content": " ", "range": [23, 24], "replacement": ""},
               {"content": ".", "range": [24, 25], "replacement": ""}
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent()), '<p><strong>a b.</strong></p>')
+            assert.equal(normalizeResultHtml(adapter.getContent!()), '<p><strong>a b.</strong></p>')
             done();
           });
         });

@@ -40,10 +40,10 @@ export class AutoBindAdapter implements AdapterInterface {
     return this.multiAdapter.extractContentForCheck();
   }
 
-  registerCheckCall(checkInfo: acrolinx.sidebar.Check) {
+  registerCheckCall(_checkInfo: acrolinx.sidebar.Check) {
   }
 
-  registerCheckResult(checkResult: acrolinx.sidebar.CheckResult) {
+  registerCheckResult(_checkResult: acrolinx.sidebar.CheckResult) {
   }
 
   selectRanges(checkId: string, matches: acrolinx.sidebar.Match[]) {

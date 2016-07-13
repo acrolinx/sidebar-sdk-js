@@ -35,16 +35,12 @@ export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
     const withoutComments = sidebarHtml.replace(/<!--[\s\S]*?-->/g, '');
     const head = document.querySelector('head');
 
-    const css = withoutComments
-      .match(/href=".*?"/g)
-      .map(getAbsoluteAttributeValue);
+    const css = _.map(withoutComments.match(/href=".*?"/g) || [], getAbsoluteAttributeValue);
     css.forEach(ref => {
       head.appendChild(createCSSLinkElement(ref));
     });
 
-    const scripts = withoutComments
-      .match(/src=".*?"/g)
-      .map(getAbsoluteAttributeValue);
+    const scripts = _.map(withoutComments.match(/src=".*?"/g) || [], getAbsoluteAttributeValue);
     scripts.forEach(ref => {
       head.appendChild(createScriptElement(ref));
     });

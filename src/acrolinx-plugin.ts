@@ -32,8 +32,9 @@ import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
 import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
-import {AdapterInterface, ContentExtractionResult} from "./adapters/AdapterInterface";
+import {AdapterInterface, ContentExtractionResult, hasError} from "./adapters/AdapterInterface";
 import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter";
+import {assign} from "./utils/utils";
 
 
 const clientComponents = [
@@ -85,14 +86,14 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
       }
     }
 
-    function requestGlobalCheckSync(html: ContentExtractionResult, format: string, documentReference: string) {
-      if (html.hasOwnProperty('error')) {
-        window.alert(html.error);
+    function requestGlobalCheckSync(extractionResult: ContentExtractionResult, format = 'HTML') {
+      if (hasError(extractionResult)) {
+        window.alert(extractionResult.error);
       } else {
-        const checkInfo = acrolinxSidebar.checkGlobal(html.content, {
+        const checkInfo = acrolinxSidebar.checkGlobal(extractionResult.content, {
           inputFormat: format || 'HTML',
           requestDescription: {
-            documentReference: documentReference || getDefaultDocumentReference()
+            documentReference: extractionResult.documentReference || getDefaultDocumentReference()
           }
         });
         adapter.registerCheckCall(checkInfo);
@@ -119,14 +120,13 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
 
       requestGlobalCheck () {
         const contentExtractionResultOrPromise = adapter.extractContentForCheck();
-        const pFormat = adapter.getFormat ? adapter.getFormat() : null;
-        const pDocumentReference = adapter.getDocumentReference ? adapter.getDocumentReference() : null;
+        const pFormat = adapter.getFormat ? adapter.getFormat() : undefined;
         if (isPromise(contentExtractionResultOrPromise)) {
           contentExtractionResultOrPromise.then((contentExtractionResult: ContentExtractionResult) => {
-            requestGlobalCheckSync(contentExtractionResult, pFormat, contentExtractionResult.documentReference || pDocumentReference);
+            requestGlobalCheckSync(contentExtractionResult, pFormat);
           });
         } else {
-          requestGlobalCheckSync(contentExtractionResultOrPromise, pFormat, contentExtractionResultOrPromise.documentReference || pDocumentReference);
+          requestGlobalCheckSync(contentExtractionResultOrPromise, pFormat);
         }
       },
 
@@ -213,7 +213,7 @@ export class AcrolinxPlugin {
 }
 
 export function autoBindFloatingSidebar(basicConf: AcrolinxPluginConfig): FloatingSidebar {
-  const conf = _.assign({}, basicConf, {
+  const conf = assign(basicConf, {
     sidebarContainerId: SIDEBAR_CONTAINER_ID
   });
 
@@ -225,4 +225,3 @@ export function autoBindFloatingSidebar(basicConf: AcrolinxPluginConfig): Floati
 
   return floatingSidebar;
 }
-

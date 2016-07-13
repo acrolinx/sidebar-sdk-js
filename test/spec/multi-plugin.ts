@@ -1,7 +1,4 @@
-import Match = acrolinx.sidebar.Match;
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import assert = chai.assert;
-import expect = chai.expect;
 import AcrolinxPlugin = acrolinx.sidebar.AcrolinxPlugin;
 import AcrolinxSidebar = acrolinx.sidebar.AcrolinxSidebar;
 import InitParameters = acrolinx.sidebar.InitParameters;
@@ -19,6 +16,7 @@ import {ContentEditableAdapter} from "../../src/adapters/ContentEditableAdapter"
 import {InputAdapter} from "../../src/adapters/InputAdapter";
 import * as acrolinxPluginModule from "../../src/acrolinx-plugin";
 import {getMatchesWithReplacement} from "../utils/test-utils";
+import {assign} from "../../src/utils/utils";
 
 const DUMMY_CHECK_ID = 'dummyCheckId';
 
@@ -40,10 +38,7 @@ describe('multi plugin', function () {
     done();
   });
 
-  function initMultiPlugin(done: Function, {config = {}, addInputAdapterOptions, multiEditorAdapterConfig}: InitMultiPluginOpts = {}) {
-    injectedPlugin = null;
-    lastDocumentContent = null;
-
+  function initMultiPlugin(done: Function, {config = {sidebarContainerId: 'sidebarContainer'}, addInputAdapterOptions, multiEditorAdapterConfig}: InitMultiPluginOpts = {}) {
     $('body').append(`
         <div id="multiPluginTest">
           <div id="ContentEditableAdapter" contenteditable="true">Initial text of ContentEditableAdapter.</div>
@@ -53,8 +48,7 @@ describe('multi plugin', function () {
       `);
 
 
-    const conf = _.assign({}, {
-      sidebarContainerId: 'sidebarContainer',
+    const conf = assign({
       sidebarUrl: location.pathname === '/test/' ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/'
     }, config);
 
@@ -101,11 +95,11 @@ describe('multi plugin', function () {
 
   function createMockSidebar(): AcrolinxSidebar {
     return {
-      init (initParameters: InitParameters): void {
+      init (_initParameters: InitParameters): void {
         injectedPlugin.onInitFinished({});
         injectedPlugin.configure({supported: {base64EncodedGzippedDocumentContent: false}});
       },
-      checkGlobal(documentContent: string, options: CheckOptions): Check {
+      checkGlobal(documentContent: string, _options: CheckOptions): Check {
         lastDocumentContent = documentContent;
         setTimeout(() => {
           injectedPlugin.onCheckResult({
@@ -126,7 +120,7 @@ describe('multi plugin', function () {
         invalidatedRanges = invalidCheckedDocumentRanges;
       },
 
-      onVisibleRangesChanged(checkedDocumentRanges: CheckedDocumentRange[]) {
+      onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
       }
     }
   }
@@ -225,6 +219,7 @@ describe('multi plugin', function () {
     beforeEach((done) => {
       initMultiPlugin(done, {
         config: {
+          sidebarContainerId: 'sidebarContainer',
           onSidebarWindowLoaded: (sidebarWindow: Window) => {
             assert.equal(sidebarWindow, getIFrameWindow());
             (sidebarWindow as any).injectedStuff = injectedStuff;
