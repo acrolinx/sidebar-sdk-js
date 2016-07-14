@@ -27,12 +27,16 @@ import {TinyMCEAdapter} from "./adapters/TinyMCEAdapter";
 import {TinyMCEWordpressAdapter} from "./adapters/TinyMCEWordpressAdapter";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
+import {createPluginMessageAdapter} from "./message-adapter/message-adapter";
+import {loadSidebarCode} from "./utils/sidebar-loader";
 
 
 window.acrolinx = window.acrolinx || ({} as any);
 window.acrolinx.plugins = {
   AcrolinxPlugin: AcrolinxPlugin,
   autoBindFloatingSidebar: autoBindFloatingSidebar,
+  createPluginMessageAdapter: createPluginMessageAdapter,
+  loadSidebarCode: loadSidebarCode,
   adapter: {
     AbstractRichtextEditorAdapter: AbstractRichtextEditorAdapter,
     AutoBindAdapter: AutoBindAdapter,

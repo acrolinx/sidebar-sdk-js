@@ -27,10 +27,14 @@ import {TinyMCEAdapter} from "./adapters/TinyMCEAdapter";
 import {TinyMCEWordpressAdapter} from "./adapters/TinyMCEWordpressAdapter";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
+import {createPluginMessageAdapter} from "./message-adapter/message-adapter";
+import {loadSidebarCode} from "./utils/sidebar-loader";
 
 interface AcrolinxSidebarIntegration {
   AcrolinxPlugin: typeof AcrolinxPlugin;
   autoBindFloatingSidebar: typeof autoBindFloatingSidebar;
+  createPluginMessageAdapter: typeof createPluginMessageAdapter;
+  loadSidebarCode: typeof loadSidebarCode;
   adapter: {
     AbstractRichtextEditorAdapter: typeof AbstractRichtextEditorAdapter;
     AutoBindAdapter: typeof AutoBindAdapter;
