@@ -28,6 +28,7 @@ import {diff_match_patch, DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT, Diff} from "diff
 type InputFormat = 'HTML' | 'TEXT';
 
 const dmp = new diff_match_patch();
+dmp.Diff_Timeout = 5;
 
 export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
   let offsetMappingArray: OffSetAlign[] = [];
