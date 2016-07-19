@@ -3178,6 +3178,7 @@ var text_extraction_1 = require("../utils/text-extraction");
 var logging_1 = require("../utils/logging");
 var diff_match_patch_1 = require("diff-match-patch");
 var dmp = new diff_match_patch_1.diff_match_patch();
+dmp.Diff_Timeout = 5;
 function createOffsetMappingArray(diffs) {
     var offsetMappingArray = [];
     var offsetCountOld = 0;
