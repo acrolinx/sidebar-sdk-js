@@ -3060,6 +3060,9 @@ exports.SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
 exports.SIDEBAR_DRAG_OVERLAY_ID = 'acrolinxDragOverlay';
 exports.SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
 exports.RESIZE_ICON_CLASS = 'acrolinxFloatingSidebarResizeIcon';
+exports.IS_RESIZING_CLASS = 'acrolinxFloatingSidebarIsResizing';
+var HIDE_ICON = 'PHN2ZyBmaWxsPSIjZmZmZmZmIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0xOSAxOUg1VjVoN1YzSDVjLTEuMTEgMC0yIC45LTIgMnYxNGMwIDEuMS44OSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMnYtN2gtMnY3ek0xNCAzdjJoMy41OWwtOS44MyA5LjgzIDEuNDEgMS40MUwxOSA2LjQxVjEwaDJWM2gtN3oiLz4KPC9zdmc+';
+var RESIZE_ICON = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6IzkwOTA5MDt9Cgkuc3Qxe2ZpbGw6bm9uZTt9Cjwvc3R5bGU+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik03LjMsMjFoOS41di0ySDcuM1YyMXogTTcuMywxN2g5LjV2LTJINy4zVjE3eiBNNy4zLDEzaDkuNXYtMkg3LjNWMTN6IE03LjMsOWg5LjVWN0g3LjNWOXogTTcuMywzdjJoOS41VjNINy4zCgl6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0wLDBoMjR2MjRIMFYweiIvPgo8L3N2Zz4K';
 var initialPos = {
     top: 20,
     left: 20
@@ -3067,10 +3070,10 @@ var initialPos = {
 function addStyles() {
     var styleTag = document.createElement('style');
     var head = document.querySelector('head');
-    styleTag.innerHTML = "\n      #" + exports.SIDEBAR_ID + " {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 0px;\n        cursor: move;\n        background: #3e96db;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: 10000;\n        -moz-user-select: none;\n        -webkit-user-select: none;\n        -ms-user-select: none;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.TITLE_BAR_CLASS + " {\n        font-family: Roboto, sans-serif;\n        line-height: 13px;\n        padding: 5px;\n        font-size: 13px;\n        font-weight: normal;\n        color: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.CLOSE_ICON_CLASS + " {\n        float: right;\n        cursor: pointer;\n        margin-right: 4px;\n        opacity: 0.7;\n        transition: opacity 0.5s;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.CLOSE_ICON_CLASS + ":hover {\n        opacity: 1;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + ",\n      #" + exports.SIDEBAR_ID + " #acrolinxDragOverlay,\n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + " iframe {\n        position: relative;\n        background: white;\n        height: 100%;\n        border: none;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_DRAG_OVERLAY_ID + " {\n        position: absolute;\n        top: 20px;\n        left: 0;\n        height: 100%;\n        width: 300px;\n        background: transparent;\n        z-index: 10001;\n      }\n       \n      #" + exports.SIDEBAR_GLASS_PANE_ID + " {\n        position: fixed;\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        top: 0;\n        left: 0;\n        background: white;\n        opacity: 0.6;\n        z-index: 9999;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + " {\n        position: absolute;\n        right: 10px;\n        bottom: -10px;\n        width: 10px;\n        height: 10px;\n        font-family: Roboto, sans-serif;\n        line-height: 20px;\n        padding: 5px;\n        font-size: 20px;\n        font-weight: normal;\n        color: #333;\n        z-index: 10002;\n        cursor: move;\n        opacity: 0.7;\n        transition: opacity 0.5s;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + ":hover {\n        opacity: 1;\n      }\n    ";
+    styleTag.innerHTML = "\n      #" + exports.SIDEBAR_ID + " {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 0px;\n        cursor: move;\n        background: #000000;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: 10000;\n        -moz-user-select: none;\n        -webkit-user-select: none;\n        -ms-user-select: none;\n        overflow: hidden;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.TITLE_BAR_CLASS + " {\n        position: relative;\n        font-family: AcrolinxRoboto, Roboto, sans-serif;\n        font-weight: 500;\n        line-height: 13px;\n        padding: 8px 10px;\n        font-size: 13px;\n        font-weight: normal;\n        color: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.CLOSE_ICON_CLASS + " {\n        position: absolute;\n        cursor: pointer;\n        margin-right: 4px;\n        top: 6px;\n        right: 3px;\n        width: 18px;\n        height: 18px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + HIDE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + ",\n      #" + exports.SIDEBAR_ID + " #acrolinxDragOverlay {\n        position: absolute; \n        top: 30px;\n        left: 0;\n        bottom: 0;\n        background: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + " iframe {\n        position: relative; \n        height: 100%;\n        border: none;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_DRAG_OVERLAY_ID + " {\n        position: absolute;\n        top: 20px;\n        left: 0;\n        height: 100%;\n        width: 300px;\n        background: transparent;\n        z-index: 10001;\n      }\n       \n      #" + exports.SIDEBAR_GLASS_PANE_ID + " {\n        position: fixed;\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        top: 0;\n        left: 0;\n        background: white;\n        opacity: 0.6;\n        z-index: 9999;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + " {\n        position: absolute;\n        right: 3px;\n        bottom: 5px;\n        font-size: 20px;\n        font-weight: normal;\n        color: #333;\n        z-index: 10002;\n        cursor: ns-resize;\n        transition: opacity 0.5s;\n        width: 24px;\n        height: 24px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + RESIZE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + ":hover {\n        opacity: 1;\n      }\n      \n      #" + exports.SIDEBAR_ID + "." + exports.IS_RESIZING_CLASS + ",\n      #" + exports.SIDEBAR_GLASS_PANE_ID + "." + exports.IS_RESIZING_CLASS + " {\n        cursor: ns-resize !important;\n      }\n      \n    ";
     head.appendChild(styleTag);
 }
-var TEMPLATE = "\n    <div id=\"" + exports.SIDEBAR_ID + "\">\n      <div class=\"" + exports.TITLE_BAR_CLASS + "\">Acrolinx <span class=\"" + exports.CLOSE_ICON_CLASS + "\" title=\"Close\">&#x274c</span></div>\n      <div id=\"" + exports.SIDEBAR_CONTAINER_ID + "\"></div>\n      <div id=\"" + exports.SIDEBAR_DRAG_OVERLAY_ID + "\"></div>\n      <div class=\"" + exports.RESIZE_ICON_CLASS + "\" title=\"Drag to resize\">&#x21f3;</div>\n    </div>\n  ";
+var TEMPLATE = "\n    <div id=\"" + exports.SIDEBAR_ID + "\">\n      <div class=\"" + exports.TITLE_BAR_CLASS + "\">Acrolinx <span class=\"" + exports.CLOSE_ICON_CLASS + "\" title=\"Hide\"></span></div>\n      <div id=\"" + exports.SIDEBAR_CONTAINER_ID + "\"></div>\n      <div id=\"" + exports.SIDEBAR_DRAG_OVERLAY_ID + "\"></div>\n      <div class=\"" + exports.RESIZE_ICON_CLASS + "\" title=\"Drag to resize\"></div>\n    </div>\n  ";
 function createDiv(attributes) {
     if (attributes === void 0) { attributes = {}; }
     var el = document.createElement('div');
@@ -3088,7 +3091,7 @@ function createNodeFromTemplate(template) {
 }
 var MAX_INITIAL_HEIGHT = 900;
 var MIN_INITIAL_HEIGHT = 400;
-var MIN_HEIGHT = 300;
+var MIN_HEIGHT = 400;
 function initFloatingSidebar() {
     var height = Math.max(MIN_INITIAL_HEIGHT, Math.min(MAX_INITIAL_HEIGHT, window.innerHeight - initialPos.top - 40));
     var floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
@@ -3114,6 +3117,8 @@ function initFloatingSidebar() {
         hide(glassPane);
         isMoving = false;
         isResizing = false;
+        floatingSidebarElement.classList.remove(exports.IS_RESIZING_CLASS);
+        glassPane.classList.remove(exports.IS_RESIZING_CLASS);
     }
     function hideFloatingSidebar() {
         hide(floatingSidebarElement);
@@ -3134,7 +3139,8 @@ function initFloatingSidebar() {
         }
         if (isResizing) {
             var floatingSidebarTop = floatingSidebarElement.getBoundingClientRect().top;
-            height = Math.max(event.clientY - floatingSidebarTop, MIN_HEIGHT);
+            var iconPositionOffset = 30;
+            height = Math.max(event.clientY - relativeMouseDownY + iconPositionOffset - floatingSidebarTop, MIN_HEIGHT);
             applyHeight(height);
         }
     });
@@ -3151,7 +3157,10 @@ function initFloatingSidebar() {
         show(glassPane);
     });
     resizeIcon.addEventListener('mousedown', function (event) {
+        relativeMouseDownY = event.clientY - resizeIcon.getBoundingClientRect().top;
         isResizing = true;
+        floatingSidebarElement.classList.add(exports.IS_RESIZING_CLASS);
+        glassPane.classList.add(exports.IS_RESIZING_CLASS);
         show(dragOverlay);
         show(glassPane);
         event.stopPropagation();
