@@ -175,7 +175,7 @@ const MIN_INITIAL_HEIGHT = 400;
 const MIN_HEIGHT = 400;
 
 export function initFloatingSidebar(): FloatingSidebar {
-  let height = Math.max(MIN_INITIAL_HEIGHT, Math.min(MAX_INITIAL_HEIGHT, window.innerHeight - initialPos.top - 240));
+  let height = Math.max(MIN_INITIAL_HEIGHT, Math.min(MAX_INITIAL_HEIGHT, window.innerHeight - initialPos.top - 40));
   const floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
   const dragOverlay = floatingSidebarElement.querySelector('#' + SIDEBAR_DRAG_OVERLAY_ID) as HTMLElement;
   const closeIcon = floatingSidebarElement.querySelector('.' + CLOSE_ICON_CLASS) as HTMLElement;
