@@ -1,5 +1,5 @@
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
-import {toSet} from "./utils";
+import {toSet, deepFreezed} from "./utils";
 import {NEW_LINE_TAGS} from "./text-extraction";
 
 
@@ -13,7 +13,7 @@ export interface DomPosition {
   offset: number;
 }
 
-const EMPTY_TEXT_DOM_MAPPING: TextDomMapping = Object.freeze({
+const EMPTY_TEXT_DOM_MAPPING: TextDomMapping = deepFreezed({
   text: '',
   domPositions: []
 });
@@ -63,9 +63,14 @@ export function extractTextDomMapping(node: Node): TextDomMapping {
           }
           return childMappings;
         case Node.TEXT_NODE:
+          const textContent = child.textContent;
+          if (textContent) {
+            return textMapping(textContent, _.times(textContent.length, (i: number) => domPosition(child, i)));
+          } else {
+            return EMPTY_TEXT_DOM_MAPPING;
+          }
         default:
-          const textContent = child.textContent != null ? child.textContent : '';
-          return textMapping(textContent, _.times(textContent.length, (i: number) => domPosition(child, i)));
+          return EMPTY_TEXT_DOM_MAPPING;
       }
     }
   ));

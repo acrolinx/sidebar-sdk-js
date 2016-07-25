@@ -68,10 +68,10 @@ describe('text-extraction', () => {
 
 
   describe('extractText and extractTextDomMapping should return the same text', () => {
-
     function assertSameExtractedText(html: string, message?: string) {
-      const [text] = extractText(html);
-      const textDomMapping = extractTextDomMapping(toHtmlElement(html));
+      const htmlElement = toHtmlElement(html);
+      const textDomMapping = extractTextDomMapping(htmlElement);
+      const [text] = extractText(htmlElement.innerHTML);
       assert.equal(textDomMapping.text, text, message);
     }
 
@@ -90,6 +90,29 @@ describe('text-extraction', () => {
       assertSameExtractedText('<p>1</p>2', 'line breaking end-tags');
       assertSameExtractedText('1<br/>2', 'line breaking self closing tags');
       assertSameExtractedText('1<br>2', 'line breaking auto self closing tags');
+      assertSameExtractedText('1<!--2-->3', 'comments');
+    });
+
+    it('fixed weird cases', () => {
+      assertSameExtractedText('</\u0000', 'this ends up as a comment');
+    });
+
+    it('random strings', function (this: any) {
+      this.timeout(2000);
+
+      const JS_VERIFY_OPTS = {
+        tests: 1000,
+        rngState: '0123456789abcdef01'
+      };
+
+      jsc.assert(jsc.forall("string",
+        (html: string) => {
+          const htmlElement = toHtmlElement(html);
+          const textDomMapping = extractTextDomMapping(htmlElement);
+          const [text] = extractText(htmlElement.innerHTML);
+          return textDomMapping.text === text;
+        }
+      ), JS_VERIFY_OPTS);
     });
 
   })

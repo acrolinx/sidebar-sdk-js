@@ -57,3 +57,26 @@ export function toSet(keys: string[]) {
 export function assign<T, U>(obj: T, update: U) : T&U {
   return _.assign({}, obj, update) as T&U;
 }
+
+function deepFreeze(o: any) {
+  Object.freeze(o);
+
+  const oIsFunction = typeof o === "function";
+  const hasOwnProp = Object.prototype.hasOwnProperty;
+
+  Object.getOwnPropertyNames(o).forEach(function (prop) {
+    if (hasOwnProp.call(o, prop)
+      && (oIsFunction ? prop !== 'caller' && prop !== 'callee' && prop !== 'arguments' : true )
+      && o[prop] !== null
+      && (typeof o[prop] === "object" || typeof o[prop] === "function")
+      && !Object.isFrozen(o[prop])) {
+      deepFreeze(o[prop]);
+    }
+  });
+}
+
+export function deepFreezed<T>(o: T): T {
+  const oClone = _.cloneDeep(o);
+  deepFreeze(oClone);
+  return oClone;
+}
