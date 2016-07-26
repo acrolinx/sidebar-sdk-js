@@ -76,6 +76,12 @@ namespace acrolinx.sidebar {
      * suggestion replacements in the document. The cards will still work for navigation.
      */
     readOnlySuggestions?: boolean;
+
+    /**
+     * This setting will prevent connection with server via other than HTTPS protocol.
+     */
+    enforceHTTPS?: boolean;
+
   }
 
   interface CheckSettings {
