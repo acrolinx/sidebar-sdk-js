@@ -3531,7 +3531,7 @@ exports.loadSidebarIntoIFrame = loadSidebarIntoIFrame;
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var utils_1 = require("./utils");
 var text_extraction_1 = require("./text-extraction");
-var EMPTY_TEXT_DOM_MAPPING = Object.freeze({
+var EMPTY_TEXT_DOM_MAPPING = utils_1.deepFreezed({
     text: '',
     domPositions: []
 });
@@ -3578,9 +3578,15 @@ function extractTextDomMapping(node) {
                 }
                 return childMappings;
             case Node.TEXT_NODE:
+                var textContent = child.textContent;
+                if (textContent) {
+                    return textMapping(textContent, acrolinx_libs_defaults_1._.times(textContent.length, function (i) { return domPosition(child, i); }));
+                }
+                else {
+                    return EMPTY_TEXT_DOM_MAPPING;
+                }
             default:
-                var textContent = child.textContent != null ? child.textContent : '';
-                return textMapping(textContent, acrolinx_libs_defaults_1._.times(textContent.length, function (i) { return domPosition(child, i); }));
+                return EMPTY_TEXT_DOM_MAPPING;
         }
     }));
 }
@@ -3696,5 +3702,25 @@ function assign(obj, update) {
     return acrolinx_libs_defaults_1._.assign({}, obj, update);
 }
 exports.assign = assign;
+function deepFreeze(o) {
+    Object.freeze(o);
+    var oIsFunction = typeof o === "function";
+    var hasOwnProp = Object.prototype.hasOwnProperty;
+    Object.getOwnPropertyNames(o).forEach(function (prop) {
+        if (hasOwnProp.call(o, prop)
+            && (oIsFunction ? prop !== 'caller' && prop !== 'callee' && prop !== 'arguments' : true)
+            && o[prop] !== null
+            && (typeof o[prop] === "object" || typeof o[prop] === "function")
+            && !Object.isFrozen(o[prop])) {
+            deepFreeze(o[prop]);
+        }
+    });
+}
+function deepFreezed(o) {
+    var oClone = acrolinx_libs_defaults_1._.cloneDeep(o);
+    deepFreeze(oClone);
+    return oClone;
+}
+exports.deepFreezed = deepFreezed;
 
 },{"../acrolinx-libs/acrolinx-libs-defaults":2}]},{},[4]);
