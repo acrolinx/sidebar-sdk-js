@@ -19,10 +19,12 @@
  */
 
 import LoDashStatic = _.LoDashStatic;
+declare const Q: any;
+declare const acrolinxLibs: {Q?: any, _?: LoDashStatic} | null | undefined;
 
-const windowWithLibs: any = window;
-const originalAcrolinxLibs = windowWithLibs['acrolinxLibs'] || {};
-export const Q = originalAcrolinxLibs.Q || windowWithLibs['Q'];
-export const _: LoDashStatic = originalAcrolinxLibs._ || windowWithLibs['_'];
+const originalAcrolinxLibs = (typeof acrolinxLibs !== 'undefined' &&  acrolinxLibs !== null)  ? acrolinxLibs : {};
+const myQ = originalAcrolinxLibs.Q || Q;
+const myLodash: LoDashStatic = originalAcrolinxLibs._ || _;
 
-
+export {myQ as Q}
+export {myLodash as _}
