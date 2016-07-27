@@ -2195,10 +2195,11 @@ module.exports['DIFF_EQUAL'] = DIFF_EQUAL;
 
 },{}],2:[function(require,module,exports){
 "use strict";
-var windowWithLibs = window;
-var originalAcrolinxLibs = windowWithLibs['acrolinxLibs'] || {};
-exports.Q = originalAcrolinxLibs.Q || windowWithLibs['Q'];
-exports._ = originalAcrolinxLibs._ || windowWithLibs['_'];
+var originalAcrolinxLibs = (typeof acrolinxLibs !== 'undefined' && acrolinxLibs !== null) ? acrolinxLibs : {};
+var myQ = originalAcrolinxLibs.Q || Q;
+exports.Q = myQ;
+var myLodash = originalAcrolinxLibs._ || _;
+exports._ = myLodash;
 
 },{}],3:[function(require,module,exports){
 "use strict";
