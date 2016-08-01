@@ -1,5 +1,5 @@
 import List = _.List;
-import {isIFrame, assign} from "../utils/utils";
+import {isIFrame, assign, isDisplayed} from "../utils/utils";
 import {InputAdapter} from "../adapters/InputAdapter";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
 import {AdapterInterface, AdapterConf, CommonAdapterConf} from "../adapters/AdapterInterface";
@@ -16,13 +16,8 @@ const EDITABLE_ELEMENTS_SELECTOR = [
 ].join(', ');
 
 
-function isVisible(el: HTMLElement) {
-  return el.offsetHeight > 0 && el.offsetWidth > 0;
-}
-
-
 function getEditableElements(doc: Document = document): HTMLElement[] {
-  const visibleElements: HTMLElement[] = _.filter((doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR) as any) as List<HTMLElement>, isVisible);
+  const visibleElements: HTMLElement[] = _.filter((doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR) as any) as List<HTMLElement>, isDisplayed) as HTMLElement[];
   return _.flatMap(visibleElements, (el: HTMLElement) => {
     if (isIFrame(el)) {
       try {

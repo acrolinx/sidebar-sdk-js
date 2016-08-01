@@ -26,7 +26,7 @@ import {TextDomMapping, extractTextDomMapping, getEndDomPos} from "../utils/text
 import {AlignedMatch} from "../utils/alignment";
 import {lookupMatches} from "../lookup/diff-based";
 import {getCompleteFlagLength} from "../utils/match";
-import {fakeInputEvent} from "../utils/utils";
+import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
 import {AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
 import CheckResult = acrolinx.sidebar.CheckResult;
 import Check = acrolinx.sidebar.Check;
@@ -97,6 +97,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   }
 
   selectRanges(checkId: string, matches: Match[]) {
+    assertElementIsDisplayed(this.getEditorElement());
     this.selectMatches(checkId, matches);
     this.scrollToCurrentSelection();
   }
@@ -161,6 +162,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   }
 
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
+    assertElementIsDisplayed(this.getEditorElement());
     const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
     const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
     this.replaceAlignedMatches(alignedMatches);

@@ -1,10 +1,7 @@
 import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import editor = CKEDITOR.editor;
 import {getMatchesWithReplacement} from "../utils/test-utils";
-import {
-  AdapterInterface, AdapterConf,
-  SuccessfulContentExtractionResult
-} from "../../src/adapters/AdapterInterface";
+import {AdapterInterface, AdapterConf, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
 import assert = chai.assert;
 
 describe('adapter test', function () {
@@ -92,7 +89,7 @@ describe('adapter test', function () {
         tinymce.get("editorId").setContent(html);
         done();
       },
-      init: (done) => {
+      init: (done: Function) => {
         tinymce.init({
           selector: "#editorId",
           height: 50,
@@ -631,6 +628,27 @@ describe('adapter test', function () {
         });
       });
 
+      if (adapterSpec.name === 'ContentEditableAdapter' || adapterSpec.name == 'InputAdapter') {
+        it('SelectRanges throws exception if editor gets removed', function (done) {
+          const completeContent = 'wordOne';
+          givenAText(completeContent, html => {
+            const matchesWithReplacement = getMatchesWithReplacement(html, 'wordOne');
+            $('#editorId').remove();
+            assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
+            done();
+          });
+        });
+
+        it('SelectRanges throws exception if editor gets hidden', function (done) {
+          const completeContent = 'wordOne wordTwo wordThree';
+          givenAText(completeContent, html => {
+            const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
+            $('#editorId').hide();
+            assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
+            done();
+          });
+        });
+      }
 
     });
   });

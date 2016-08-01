@@ -80,3 +80,17 @@ export function deepFreezed<T>(o: T): T {
   deepFreeze(oClone);
   return oClone;
 }
+
+export function isDisplayed(element: Element) : boolean {
+  if (!element.parentNode) {
+    return false;
+  }
+  const boundingBox = element.getBoundingClientRect();
+  return !!boundingBox.width && !!boundingBox.height;
+}
+
+export function assertElementIsDisplayed(element: Element) {
+  if (!isDisplayed(element)) {
+    throw Error('Adapter element is not displayed.');
+  }
+}

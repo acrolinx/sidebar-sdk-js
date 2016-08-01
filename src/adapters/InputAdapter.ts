@@ -27,7 +27,7 @@ import {AlignedMatch} from "../utils/alignment";
 import {getCompleteFlagLength} from "../utils/match";
 import {scrollIntoView} from "../utils/scrolling";
 import {lookupMatches} from "../lookup/diff-based";
-import {fakeInputEvent} from "../utils/utils";
+import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
 import Check = acrolinx.sidebar.Check;
 import CheckResult = acrolinx.sidebar.CheckResult;
 
@@ -96,10 +96,11 @@ export class InputAdapter implements AdapterInterface {
   }
 
   selectMatches<T extends Match>(_checkId: string, matches: T[]): AlignedMatch<T>[] {
+    assertElementIsDisplayed(this.element);
     const alignedMatches = lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
 
     if (_.isEmpty(alignedMatches)) {
-      throw 'Selected flagged content is modified.';
+      throw Error('Selected flagged content is modified.');
     }
 
     this.scrollAndSelect(alignedMatches);
