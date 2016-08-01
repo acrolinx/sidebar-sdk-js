@@ -22,10 +22,14 @@ import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
 import Match = acrolinx.sidebar.Match;
 import CheckResult = acrolinx.sidebar.CheckResult;
 import Check = acrolinx.sidebar.Check;
-import {AdapterInterface, ContentExtractionResult, hasError} from "./AdapterInterface";
+import {
+  AdapterInterface, ContentExtractionResult, hasError,
+  SuccessfulContentExtractionResult
+} from "./AdapterInterface";
 import {_, Q} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {EscapeHtmlCharactersResult, escapeHtmlCharacters} from "../utils/escaping";
 import {findNewIndex} from "../utils/alignment";
+import {containsText} from "../utils/utils";
 
 
 interface RemappedMatches<T extends Match> {
@@ -91,6 +95,27 @@ function wrapperConfWithDefaults(opts: WrapperConfOptions, defaultTagName = 'div
   return {tagName, attributes: opts.attributes || {}};
 }
 
+function wrapAdapterContent(registeredAdapter: RegisteredAdapter, extractionResult: SuccessfulContentExtractionResult)  {
+  const adapterContent = extractionResult.content;
+  const tagName = registeredAdapter.wrapper.tagName;
+  const startText = createStartTag(registeredAdapter.wrapper, registeredAdapter.id);
+  const isText = registeredAdapter.adapter.getFormat ? registeredAdapter.adapter.getFormat() === 'TEXT' : false;
+
+  let innerHtml: string;
+  if (isText) {
+    registeredAdapter.escapeResult = escapeHtmlCharacters(adapterContent);
+    innerHtml = registeredAdapter.escapeResult.escapedText;
+  } else {
+    innerHtml = adapterContent;
+  }
+
+  return {
+    completeHtml: startText + innerHtml + createEndTag(tagName),
+    contentStart: startText.length,
+    contentEnd: startText.length + innerHtml.length
+  };
+}
+
 export class MultiEditorAdapter implements AdapterInterface {
   private config: MultiEditorAdapterConfig;
   private rootElementWrapper?: WrapperConf;
@@ -126,27 +151,14 @@ export class MultiEditorAdapter implements AdapterInterface {
       }
       for (let i = 0; i < this.adapters.length; i++) {
         const extractionResult = results[i];
-        if (hasError(extractionResult)) {
+        if (hasError(extractionResult) || !containsText(extractionResult.content)) {
           continue;
         }
-        const adapterContent = extractionResult.content;
-        const el = this.adapters[i];
-        const tagName = el.wrapper.tagName;
-        const startText = createStartTag(el.wrapper, el.id);
-        const isText = el.adapter.getFormat ? el.adapter.getFormat() === 'TEXT' : false;
-
-        let elHtml: string;
-        if (isText) {
-          el.escapeResult = escapeHtmlCharacters(adapterContent);
-          elHtml = el.escapeResult.escapedText;
-        } else {
-          elHtml = adapterContent;
-        }
-
-        const newTag = startText + elHtml + createEndTag(tagName);
-        el.start = html.length + startText.length;
-        el.end = html.length + startText.length + elHtml.length;
-        html += newTag;
+        const registeredAdapter = this.adapters[i];
+        const {completeHtml, contentStart, contentEnd} = wrapAdapterContent(registeredAdapter, extractionResult);
+        registeredAdapter.start = html.length + contentStart;
+        registeredAdapter.end = html.length + contentEnd;
+        html += completeHtml;
       }
       if (this.rootElementWrapper) {
         html += createEndTag(this.rootElementWrapper.tagName);

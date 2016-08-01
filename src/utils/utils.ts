@@ -94,3 +94,7 @@ export function assertElementIsDisplayed(element: Element) {
     throw Error('Adapter element is not displayed.');
   }
 }
+
+export function containsText(s: string) {
+  return /\S/.test(s);
+}
