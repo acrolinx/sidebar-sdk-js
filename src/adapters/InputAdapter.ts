@@ -30,6 +30,7 @@ import {lookupMatches} from "../lookup/diff-based";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
 import Check = acrolinx.sidebar.Check;
 import CheckResult = acrolinx.sidebar.CheckResult;
+import {getEditorAttributes} from "../utils/adapter-utils";
 
 type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
@@ -125,5 +126,9 @@ export class InputAdapter implements AdapterInterface {
     const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
     this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
     fakeInputEvent(this.element);
+  }
+
+  getEditorAttributes() {
+    return getEditorAttributes(this.element);
   }
 }

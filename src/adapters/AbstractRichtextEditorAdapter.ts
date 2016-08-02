@@ -28,6 +28,7 @@ import {lookupMatches} from "../lookup/diff-based";
 import {getCompleteFlagLength} from "../utils/match";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
 import {AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
+import {getEditorAttributes} from "../utils/adapter-utils";
 import CheckResult = acrolinx.sidebar.CheckResult;
 import Check = acrolinx.sidebar.Check;
 
@@ -175,6 +176,10 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
 
   private getTextDomMapping() {
     return extractTextDomMapping(this.getEditorElement());
+  }
+
+  getEditorAttributes() {
+    return getEditorAttributes(this.getEditorElement());
   }
 
 }

@@ -23,7 +23,6 @@ import {MultiEditorAdapter} from "./MultiEditorAdapter";
 import {bindAdaptersForCurrentPage} from "../autobind/autobind";
 import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 
-
 export class AutoBindAdapter implements AdapterInterface {
   private multiAdapter: MultiEditorAdapter;
   private conf: AcrolinxPluginConfig;
@@ -33,9 +32,11 @@ export class AutoBindAdapter implements AdapterInterface {
   }
 
   extractContentForCheck() {
-    this.multiAdapter = new MultiEditorAdapter();
+    this.multiAdapter = new MultiEditorAdapter(this.conf);
     bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
-      this.multiAdapter.addSingleAdapter(adapter);
+      const editorAttributes = adapter.getEditorAttributes ? adapter.getEditorAttributes() : {};
+      const wrapperAttributes = _.mapKeys(editorAttributes, (_value, key) => 'original-' + key);
+      this.multiAdapter.addSingleAdapter(adapter, {attributes: wrapperAttributes});
     });
     return this.multiAdapter.extractContentForCheck();
   }

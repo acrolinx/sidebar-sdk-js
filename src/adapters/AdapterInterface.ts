@@ -26,6 +26,13 @@ export interface SuccessfulContentExtractionResult {
   documentReference?: string;
 }
 
+export interface EditorAttributes {
+  id?: string;
+  class?: string;
+  name?: string;
+  [key: string]: string | undefined;
+}
+
 export type ContentExtractionResult = SuccessfulContentExtractionResult | HasError;
 
 export interface AdapterInterface {
@@ -37,6 +44,7 @@ export interface AdapterInterface {
   registerCheckResult(checkResult: CheckResult): void;
   selectRanges(checkId: string, matches: Match[]): void;
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void;
+  getEditorAttributes?(): EditorAttributes;
 }
 
 export function hasError(a: ContentExtractionResult): a is HasError {
