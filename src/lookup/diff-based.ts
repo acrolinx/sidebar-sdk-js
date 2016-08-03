@@ -18,7 +18,7 @@
  *
  */
 
-import Match = acrolinx.sidebar.Match;
+import {Match} from "../acrolinx-libs/plugin-interfaces";
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {OffSetAlign, findNewIndex, AlignedMatch} from "../utils/alignment";
 import {extractText} from "../utils/text-extraction";

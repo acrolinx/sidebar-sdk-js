@@ -1,14 +1,17 @@
-import AcrolinxSidebar = acrolinx.sidebar.AcrolinxSidebar;
-import InitResult = acrolinx.sidebar.InitResult;
-import AcrolinxPluginConfiguration = acrolinx.sidebar.AcrolinxPluginConfiguration;
-import CheckResult = acrolinx.sidebar.CheckResult;
-import DownloadInfo = acrolinx.sidebar.DownloadInfo;
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-import InitParameters = acrolinx.sidebar.InitParameters;
-import CheckOptions = acrolinx.sidebar.CheckOptions;
-import Check = acrolinx.sidebar.Check;
-import InvalidDocumentPart = acrolinx.sidebar.InvalidDocumentPart;
-import CheckedDocumentRange = acrolinx.sidebar.CheckedDocumentRange;
+import {
+  AcrolinxPlugin,
+  AcrolinxSidebar,
+  InitResult,
+  AcrolinxPluginConfiguration,
+  CheckResult,
+  DownloadInfo,
+  MatchWithReplacement,
+  InitParameters,
+  CheckOptions,
+  Check,
+  InvalidDocumentPart,
+  CheckedDocumentRange
+} from "../acrolinx-libs/plugin-interfaces";
 
 // Functions are not cloneable and don't work with postMessage.
 function removeFunctions(object: any) {
@@ -36,7 +39,7 @@ function injectPostCommandAsMessage(window: Window, object: any) {
 /**
  * Connects to a sidebar iframe that is on a different domain and uses the plugin message adapter.
  */
-export function connectAcrolinxPluginToMessages(acrolinxPlugin: acrolinx.sidebar.AcrolinxPlugin, sidebarWindowIframe: HTMLIFrameElement) {
+export function connectAcrolinxPluginToMessages(acrolinxPlugin: AcrolinxPlugin, sidebarWindowIframe: HTMLIFrameElement) {
   const acrolinxPluginAny = acrolinxPlugin as any;
 
 
@@ -75,7 +78,7 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: acrolinx.sidebar
 /**
  * Used inside of a sidebar iframe on a different domain.
  */
-export function createPluginMessageAdapter(): acrolinx.sidebar.AcrolinxPlugin {
+export function createPluginMessageAdapter(): AcrolinxPlugin {
   const windowAny = window as any;
 
   function receiveMessage(event: MessageEvent) {
@@ -87,7 +90,7 @@ export function createPluginMessageAdapter(): acrolinx.sidebar.AcrolinxPlugin {
 
   addEventListener('message', receiveMessage, false);
 
-  const acrolinxSidebarPlugin: acrolinx.sidebar.AcrolinxPlugin = {
+  const acrolinxSidebarPlugin: AcrolinxPlugin = {
     requestInit () {
     },
 

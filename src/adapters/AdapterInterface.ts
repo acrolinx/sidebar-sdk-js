@@ -1,7 +1,4 @@
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-import Match = acrolinx.sidebar.Match;
-import Check = acrolinx.sidebar.Check;
-import CheckResult = acrolinx.sidebar.CheckResult;
+import {Match, MatchWithReplacement, Check, CheckResult} from "../acrolinx-libs/plugin-interfaces";
 
 export interface CommonAdapterConf {
   scrollOffsetY?: number;

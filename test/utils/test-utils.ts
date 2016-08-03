@@ -1,5 +1,6 @@
 import assert = chai.assert;
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+
+import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
 
 export function getMatchesWithReplacement(completeString: string, partialString: string, replacement = ''): MatchWithReplacement[] {
   const matches: MatchWithReplacement[] = [];

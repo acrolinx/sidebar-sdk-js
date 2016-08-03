@@ -19,22 +19,23 @@
  */
 
 
-import {_} from './acrolinx-libs/acrolinx-libs-defaults';
-
-import DownloadInfo = acrolinx.sidebar.DownloadInfo;
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-import InitResult = acrolinx.sidebar.InitResult;
-import AcrolinxPluginConfiguration = acrolinx.sidebar.AcrolinxPluginConfiguration;
-import CheckResult = acrolinx.sidebar.CheckResult;
-import AcrolinxSidebar = acrolinx.sidebar.AcrolinxSidebar;
-import AcrolinxSidebarPlugin = acrolinx.sidebar.AcrolinxPlugin;
-import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
+import {_} from "./acrolinx-libs/acrolinx-libs-defaults";
+import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
 import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {AdapterInterface, ContentExtractionResult, hasError} from "./adapters/AdapterInterface";
 import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter";
 import {assign} from "./utils/utils";
+
+type DownloadInfo = acrolinxSidebarInterfaces.DownloadInfo;
+type MatchWithReplacement = acrolinxSidebarInterfaces.MatchWithReplacement;
+type InitResult = acrolinxSidebarInterfaces.InitResult;
+type AcrolinxPluginConfiguration = acrolinxSidebarInterfaces.AcrolinxPluginConfiguration;
+type CheckResult = acrolinxSidebarInterfaces.CheckResult;
+type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
+type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
+import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 
 
 const clientComponents = [
@@ -100,7 +101,7 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
       }
     }
 
-    const acrolinxSidebarPlugin: acrolinx.sidebar.AcrolinxPlugin = {
+    const acrolinxSidebarPlugin: AcrolinxSidebarPlugin = {
       requestInit (acrolinxSidebarArg?: AcrolinxSidebar) {
         acrolinxSidebar = acrolinxSidebarArg || sidebarContentWindow.acrolinxSidebar;
         console.log('requestInit');

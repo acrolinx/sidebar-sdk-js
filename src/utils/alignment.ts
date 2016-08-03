@@ -1,5 +1,5 @@
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
-import Match = acrolinx.sidebar.Match;
+import {Match} from "../acrolinx-libs/plugin-interfaces";
 
 
 export interface OffSetAlign {

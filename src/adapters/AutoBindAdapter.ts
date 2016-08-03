@@ -18,6 +18,7 @@
  *
  */
 
+import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {AdapterInterface} from "./AdapterInterface";
 import {MultiEditorAdapter} from "./MultiEditorAdapter";
 import {bindAdaptersForCurrentPage} from "../autobind/autobind";
@@ -41,17 +42,17 @@ export class AutoBindAdapter implements AdapterInterface {
     return this.multiAdapter.extractContentForCheck();
   }
 
-  registerCheckCall(_checkInfo: acrolinx.sidebar.Check) {
+  registerCheckCall(_checkInfo: Check) {
   }
 
-  registerCheckResult(_checkResult: acrolinx.sidebar.CheckResult) {
+  registerCheckResult(_checkResult: CheckResult) {
   }
 
-  selectRanges(checkId: string, matches: acrolinx.sidebar.Match[]) {
+  selectRanges(checkId: string, matches: Match[]) {
     this.multiAdapter.selectRanges(checkId, matches);
   }
 
-  replaceRanges(checkId: string, matchesWithReplacement: acrolinx.sidebar.MatchWithReplacement[]) {
+  replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
     this.multiAdapter.replaceRanges(checkId, matchesWithReplacement);
   }
 }

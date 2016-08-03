@@ -1,4 +1,4 @@
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
+import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
 import editor = CKEDITOR.editor;
 import {getMatchesWithReplacement} from "../utils/test-utils";
 import {AdapterInterface, AdapterConf, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";

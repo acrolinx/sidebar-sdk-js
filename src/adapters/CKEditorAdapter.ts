@@ -18,9 +18,7 @@
  *
  */
 
-
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-import Match = acrolinx.sidebar.Match;
+import {Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
 import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
 

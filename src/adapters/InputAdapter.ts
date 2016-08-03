@@ -18,9 +18,7 @@
  *
  */
 
-
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-import Match = acrolinx.sidebar.Match;
+import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {getElementFromAdapterConf, AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
 import {AlignedMatch} from "../utils/alignment";
@@ -28,8 +26,6 @@ import {getCompleteFlagLength} from "../utils/match";
 import {scrollIntoView} from "../utils/scrolling";
 import {lookupMatches} from "../lookup/diff-based";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
-import Check = acrolinx.sidebar.Check;
-import CheckResult = acrolinx.sidebar.CheckResult;
 import {getEditorAttributes} from "../utils/adapter-utils";
 
 type ValidInputElement = HTMLInputElement | HTMLTextAreaElement

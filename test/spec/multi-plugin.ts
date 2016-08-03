@@ -1,11 +1,7 @@
 import assert = chai.assert;
-import AcrolinxPlugin = acrolinx.sidebar.AcrolinxPlugin;
-import AcrolinxSidebar = acrolinx.sidebar.AcrolinxSidebar;
-import InitParameters = acrolinx.sidebar.InitParameters;
-import CheckOptions = acrolinx.sidebar.CheckOptions;
-import Check = acrolinx.sidebar.Check;
-import CheckedDocumentRange = acrolinx.sidebar.CheckedDocumentRange;
-import InvalidDocumentPart = acrolinx.sidebar.InvalidDocumentPart;
+
+
+import {AcrolinxPlugin, AcrolinxSidebar, InitParameters, CheckOptions, Check, InvalidDocumentPart, CheckedDocumentRange} from '../../src/acrolinx-libs/plugin-interfaces';
 import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 import {
   MultiEditorAdapterConfig,

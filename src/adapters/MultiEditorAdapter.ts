@@ -18,12 +18,11 @@
  *
  */
 
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-import Match = acrolinx.sidebar.Match;
-import CheckResult = acrolinx.sidebar.CheckResult;
-import Check = acrolinx.sidebar.Check;
+import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {
-  AdapterInterface, ContentExtractionResult, hasError,
+  AdapterInterface,
+  ContentExtractionResult,
+  hasError,
   SuccessfulContentExtractionResult
 } from "./AdapterInterface";
 import {_, Q} from "../acrolinx-libs/acrolinx-libs-defaults";
@@ -95,7 +94,7 @@ function wrapperConfWithDefaults(opts: WrapperConfOptions, defaultTagName = 'div
   return {tagName, attributes: opts.attributes || {}};
 }
 
-function wrapAdapterContent(registeredAdapter: RegisteredAdapter, extractionResult: SuccessfulContentExtractionResult)  {
+function wrapAdapterContent(registeredAdapter: RegisteredAdapter, extractionResult: SuccessfulContentExtractionResult) {
   const adapterContent = extractionResult.content;
   const tagName = registeredAdapter.wrapper.tagName;
   const startText = createStartTag(registeredAdapter.wrapper, registeredAdapter.id);

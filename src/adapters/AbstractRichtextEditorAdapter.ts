@@ -18,9 +18,7 @@
  *
  */
 
-import MatchWithReplacement = acrolinx.sidebar.MatchWithReplacement;
-import Match = acrolinx.sidebar.Match;
-
+import {Match, MatchWithReplacement, CheckResult, Check} from "../acrolinx-libs/plugin-interfaces";
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {TextDomMapping, extractTextDomMapping, getEndDomPos} from "../utils/text-dom-mapping";
 import {AlignedMatch} from "../utils/alignment";
@@ -29,8 +27,7 @@ import {getCompleteFlagLength} from "../utils/match";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
 import {AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
 import {getEditorAttributes} from "../utils/adapter-utils";
-import CheckResult = acrolinx.sidebar.CheckResult;
-import Check = acrolinx.sidebar.Check;
+
 
 type TextMapping = TextDomMapping
 
