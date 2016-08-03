@@ -2368,7 +2368,7 @@ function autoBindFloatingSidebar(basicConf) {
 }
 exports.autoBindFloatingSidebar = autoBindFloatingSidebar;
 
-},{"./acrolinx-libs/acrolinx-libs-defaults":2,"./adapters/AdapterInterface":6,"./adapters/AutoBindAdapter":7,"./floating-sidebar/floating-sidebar":15,"./message-adapter/message-adapter":17,"./utils/sidebar-loader":23,"./utils/utils":26}],4:[function(require,module,exports){
+},{"./acrolinx-libs/acrolinx-libs-defaults":2,"./adapters/AdapterInterface":6,"./adapters/AutoBindAdapter":7,"./floating-sidebar/floating-sidebar":15,"./message-adapter/message-adapter":17,"./utils/sidebar-loader":24,"./utils/utils":27}],4:[function(require,module,exports){
 "use strict";
 var acrolinx_plugin_1 = require("./acrolinx-plugin");
 var InputAdapter_1 = require("./adapters/InputAdapter");
@@ -2399,13 +2399,14 @@ window.acrolinx.plugins = {
     }
 };
 
-},{"./acrolinx-plugin":3,"./adapters/AbstractRichtextEditorAdapter":5,"./adapters/AutoBindAdapter":7,"./adapters/CKEditorAdapter":8,"./adapters/ContentEditableAdapter":9,"./adapters/InputAdapter":10,"./adapters/MultiEditorAdapter":11,"./adapters/TinyMCEAdapter":12,"./adapters/TinyMCEWordpressAdapter":13,"./message-adapter/message-adapter":17,"./utils/sidebar-loader":23}],5:[function(require,module,exports){
+},{"./acrolinx-plugin":3,"./adapters/AbstractRichtextEditorAdapter":5,"./adapters/AutoBindAdapter":7,"./adapters/CKEditorAdapter":8,"./adapters/ContentEditableAdapter":9,"./adapters/InputAdapter":10,"./adapters/MultiEditorAdapter":11,"./adapters/TinyMCEAdapter":12,"./adapters/TinyMCEWordpressAdapter":13,"./message-adapter/message-adapter":17,"./utils/sidebar-loader":24}],5:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var text_dom_mapping_1 = require("../utils/text-dom-mapping");
 var diff_based_1 = require("../lookup/diff-based");
 var match_1 = require("../utils/match");
 var utils_1 = require("../utils/utils");
+var adapter_utils_1 = require("../utils/adapter-utils");
 var AbstractRichtextEditorAdapter = (function () {
     function AbstractRichtextEditorAdapter(conf) {
         this.config = conf;
@@ -2450,6 +2451,7 @@ var AbstractRichtextEditorAdapter = (function () {
         el.scrollIntoView();
     };
     AbstractRichtextEditorAdapter.prototype.selectRanges = function (checkId, matches) {
+        utils_1.assertElementIsDisplayed(this.getEditorElement());
         this.selectMatches(checkId, matches);
         this.scrollToCurrentSelection();
     };
@@ -2507,6 +2509,7 @@ var AbstractRichtextEditorAdapter = (function () {
         }
     };
     AbstractRichtextEditorAdapter.prototype.replaceRanges = function (checkId, matchesWithReplacement) {
+        utils_1.assertElementIsDisplayed(this.getEditorElement());
         var alignedMatches = this.selectMatches(checkId, matchesWithReplacement)[0];
         var replacement = alignedMatches.map(function (m) { return m.originalMatch.replacement; }).join('');
         this.replaceAlignedMatches(alignedMatches);
@@ -2517,11 +2520,14 @@ var AbstractRichtextEditorAdapter = (function () {
     AbstractRichtextEditorAdapter.prototype.getTextDomMapping = function () {
         return text_dom_mapping_1.extractTextDomMapping(this.getEditorElement());
     };
+    AbstractRichtextEditorAdapter.prototype.getEditorAttributes = function () {
+        return adapter_utils_1.getEditorAttributes(this.getEditorElement());
+    };
     return AbstractRichtextEditorAdapter;
 }());
 exports.AbstractRichtextEditorAdapter = AbstractRichtextEditorAdapter;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../lookup/diff-based":16,"../utils/match":21,"../utils/text-dom-mapping":24,"../utils/utils":26}],6:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../lookup/diff-based":16,"../utils/adapter-utils":18,"../utils/match":22,"../utils/text-dom-mapping":25,"../utils/utils":27}],6:[function(require,module,exports){
 "use strict";
 function hasError(a) {
     return !!a.error;
@@ -2559,9 +2565,11 @@ var AutoBindAdapter = (function () {
     }
     AutoBindAdapter.prototype.extractContentForCheck = function () {
         var _this = this;
-        this.multiAdapter = new MultiEditorAdapter_1.MultiEditorAdapter();
+        this.multiAdapter = new MultiEditorAdapter_1.MultiEditorAdapter(this.conf);
         autobind_1.bindAdaptersForCurrentPage(this.conf).forEach(function (adapter) {
-            _this.multiAdapter.addSingleAdapter(adapter);
+            var editorAttributes = adapter.getEditorAttributes ? adapter.getEditorAttributes() : {};
+            var wrapperAttributes = _.mapKeys(editorAttributes, function (_value, key) { return 'original-' + key; });
+            _this.multiAdapter.addSingleAdapter(adapter, { attributes: wrapperAttributes });
         });
         return this.multiAdapter.extractContentForCheck();
     };
@@ -2675,7 +2683,7 @@ var ContentEditableAdapter = (function (_super) {
 }(AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter));
 exports.ContentEditableAdapter = ContentEditableAdapter;
 
-},{"../utils/scrolling":22,"./AbstractRichtextEditorAdapter":5,"./AdapterInterface":6}],10:[function(require,module,exports){
+},{"../utils/scrolling":23,"./AbstractRichtextEditorAdapter":5,"./AdapterInterface":6}],10:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var AdapterInterface_1 = require("./AdapterInterface");
@@ -2683,6 +2691,7 @@ var match_1 = require("../utils/match");
 var scrolling_1 = require("../utils/scrolling");
 var diff_based_1 = require("../lookup/diff-based");
 var utils_1 = require("../utils/utils");
+var adapter_utils_1 = require("../utils/adapter-utils");
 var InputAdapter = (function () {
     function InputAdapter(conf) {
         this.element = AdapterInterface_1.getElementFromAdapterConf(conf);
@@ -2729,9 +2738,10 @@ var InputAdapter = (function () {
         this.selectMatches(checkId, matches);
     };
     InputAdapter.prototype.selectMatches = function (_checkId, matches) {
+        utils_1.assertElementIsDisplayed(this.element);
         var alignedMatches = diff_based_1.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
         if (acrolinx_libs_defaults_1._.isEmpty(alignedMatches)) {
-            throw 'Selected flagged content is modified.';
+            throw Error('Selected flagged content is modified.');
         }
         this.scrollAndSelect(alignedMatches);
         return alignedMatches;
@@ -2755,16 +2765,20 @@ var InputAdapter = (function () {
         this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
         utils_1.fakeInputEvent(this.element);
     };
+    InputAdapter.prototype.getEditorAttributes = function () {
+        return adapter_utils_1.getEditorAttributes(this.element);
+    };
     return InputAdapter;
 }());
 exports.InputAdapter = InputAdapter;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../lookup/diff-based":16,"../utils/match":21,"../utils/scrolling":22,"../utils/utils":26,"./AdapterInterface":6}],11:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../lookup/diff-based":16,"../utils/adapter-utils":18,"../utils/match":22,"../utils/scrolling":23,"../utils/utils":27,"./AdapterInterface":6}],11:[function(require,module,exports){
 "use strict";
 var AdapterInterface_1 = require("./AdapterInterface");
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var escaping_1 = require("../utils/escaping");
 var alignment_1 = require("../utils/alignment");
+var utils_1 = require("../utils/utils");
 function createStartTag(wrapper, id) {
     var allAttributes = acrolinx_libs_defaults_1._.clone(wrapper.attributes);
     if (id) {
@@ -2789,6 +2803,25 @@ function wrapperConfWithDefaults(opts, defaultTagName) {
         console.info("tagName \"" + tagName + "\" contains whitespaces which may lead to unexpected results.");
     }
     return { tagName: tagName, attributes: opts.attributes || {} };
+}
+function wrapAdapterContent(registeredAdapter, extractionResult) {
+    var adapterContent = extractionResult.content;
+    var tagName = registeredAdapter.wrapper.tagName;
+    var startText = createStartTag(registeredAdapter.wrapper, registeredAdapter.id);
+    var isText = registeredAdapter.adapter.getFormat ? registeredAdapter.adapter.getFormat() === 'TEXT' : false;
+    var innerHtml;
+    if (isText) {
+        registeredAdapter.escapeResult = escaping_1.escapeHtmlCharacters(adapterContent);
+        innerHtml = registeredAdapter.escapeResult.escapedText;
+    }
+    else {
+        innerHtml = adapterContent;
+    }
+    return {
+        completeHtml: startText + innerHtml + createEndTag(tagName),
+        contentStart: startText.length,
+        contentEnd: startText.length + innerHtml.length
+    };
 }
 var MultiEditorAdapter = (function () {
     function MultiEditorAdapter(config) {
@@ -2821,26 +2854,14 @@ var MultiEditorAdapter = (function () {
             }
             for (var i = 0; i < _this.adapters.length; i++) {
                 var extractionResult = results[i];
-                if (AdapterInterface_1.hasError(extractionResult)) {
+                if (AdapterInterface_1.hasError(extractionResult) || !utils_1.containsText(extractionResult.content)) {
                     continue;
                 }
-                var adapterContent = extractionResult.content;
-                var el = _this.adapters[i];
-                var tagName = el.wrapper.tagName;
-                var startText = createStartTag(el.wrapper, el.id);
-                var isText = el.adapter.getFormat ? el.adapter.getFormat() === 'TEXT' : false;
-                var elHtml = void 0;
-                if (isText) {
-                    el.escapeResult = escaping_1.escapeHtmlCharacters(adapterContent);
-                    elHtml = el.escapeResult.escapedText;
-                }
-                else {
-                    elHtml = adapterContent;
-                }
-                var newTag = startText + elHtml + createEndTag(tagName);
-                el.start = html.length + startText.length;
-                el.end = html.length + startText.length + elHtml.length;
-                html += newTag;
+                var registeredAdapter = _this.adapters[i];
+                var _a = wrapAdapterContent(registeredAdapter, extractionResult), completeHtml = _a.completeHtml, contentStart = _a.contentStart, contentEnd = _a.contentEnd;
+                registeredAdapter.start = html.length + contentStart;
+                registeredAdapter.end = html.length + contentEnd;
+                html += completeHtml;
             }
             if (_this.rootElementWrapper) {
                 html += createEndTag(_this.rootElementWrapper.tagName);
@@ -2893,7 +2914,7 @@ var MultiEditorAdapter = (function () {
 }());
 exports.MultiEditorAdapter = MultiEditorAdapter;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../utils/alignment":18,"../utils/escaping":19,"./AdapterInterface":6}],12:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../utils/alignment":19,"../utils/escaping":20,"../utils/utils":27,"./AdapterInterface":6}],12:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -3017,12 +3038,9 @@ var EDITABLE_ELEMENTS_SELECTOR = [
     'textarea',
     'iframe'
 ].join(', ');
-function isVisible(el) {
-    return el.offsetHeight > 0 && el.offsetWidth > 0;
-}
 function getEditableElements(doc) {
     if (doc === void 0) { doc = document; }
-    var visibleElements = _.filter(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR), isVisible);
+    var visibleElements = _.filter(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR), utils_1.isDisplayed);
     return _.flatMap(visibleElements, function (el) {
         if (utils_1.isIFrame(el)) {
             try {
@@ -3051,7 +3069,7 @@ function bindAdaptersForCurrentPage(conf) {
 }
 exports.bindAdaptersForCurrentPage = bindAdaptersForCurrentPage;
 
-},{"../adapters/ContentEditableAdapter":9,"../adapters/InputAdapter":10,"../utils/utils":26}],15:[function(require,module,exports){
+},{"../adapters/ContentEditableAdapter":9,"../adapters/InputAdapter":10,"../utils/utils":27}],15:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 exports.SIDEBAR_ID = 'acrolinxFloatingSidebar';
@@ -3254,7 +3272,7 @@ function lookupMatches(checkedDocument, currentDocument, matches, inputFormat) {
 }
 exports.lookupMatches = lookupMatches;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../utils/alignment":18,"../utils/logging":20,"../utils/text-extraction":25,"diff-match-patch":1}],17:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../utils/alignment":19,"../utils/logging":21,"../utils/text-extraction":26,"diff-match-patch":1}],17:[function(require,module,exports){
 "use strict";
 function removeFunctions(object) {
     return JSON.parse(JSON.stringify(object));
@@ -3351,6 +3369,18 @@ exports.createPluginMessageAdapter = createPluginMessageAdapter;
 
 },{}],18:[function(require,module,exports){
 "use strict";
+function getEditorAttributes(element) {
+    var attributes = {
+        id: element.id,
+        class: element.className,
+        name: element.name
+    };
+    return _.omitBy(attributes, _.isEmpty);
+}
+exports.getEditorAttributes = getEditorAttributes;
+
+},{}],19:[function(require,module,exports){
+"use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 function findDisplacement(offsetMappingArray, originalIndex) {
     if (offsetMappingArray.length === 0) {
@@ -3365,7 +3395,7 @@ function findNewIndex(offsetMappingArray, originalIndex) {
 }
 exports.findNewIndex = findNewIndex;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2}],19:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2}],20:[function(require,module,exports){
 "use strict";
 var HTML_ESCAPES = {
     '&': '&amp;',
@@ -3396,7 +3426,7 @@ function escapeHtmlCharacters(text) {
 }
 exports.escapeHtmlCharacters = escapeHtmlCharacters;
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 var isEnabled = false;
 function log(message) {
@@ -3414,14 +3444,14 @@ function enableLogging() {
 }
 exports.enableLogging = enableLogging;
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 function getCompleteFlagLength(matches) {
     return matches[matches.length - 1].range[1] - matches[0].range[0];
 }
 exports.getCompleteFlagLength = getCompleteFlagLength;
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 function getRootElement(doc) {
     return (doc.documentElement || doc.body.parentNode || doc.body);
@@ -3469,7 +3499,7 @@ function scrollIntoView(targetEl, windowTopOffset, localTopOffset) {
 }
 exports.scrollIntoView = scrollIntoView;
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 var utils = require("./utils");
 exports.SIDEBAR_URL = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
@@ -3527,7 +3557,7 @@ function loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded) {
 }
 exports.loadSidebarIntoIFrame = loadSidebarIntoIFrame;
 
-},{"./utils":26}],24:[function(require,module,exports){
+},{"./utils":27}],25:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var utils_1 = require("./utils");
@@ -3601,7 +3631,7 @@ function getEndDomPos(endIndex, domPositions) {
 }
 exports.getEndDomPos = getEndDomPos;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"./text-extraction":25,"./utils":26}],25:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"./text-extraction":26,"./utils":27}],26:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var utils_1 = require("./utils");
@@ -3645,7 +3675,7 @@ function decodeEntities(entity) {
     return el.textContent || '';
 }
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"./utils":26}],26:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"./utils":27}],27:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 function logTime(text, f) {
@@ -3723,5 +3753,23 @@ function deepFreezed(o) {
     return oClone;
 }
 exports.deepFreezed = deepFreezed;
+function isDisplayed(element) {
+    if (!element.parentNode) {
+        return false;
+    }
+    var boundingBox = element.getBoundingClientRect();
+    return !!boundingBox.width && !!boundingBox.height;
+}
+exports.isDisplayed = isDisplayed;
+function assertElementIsDisplayed(element) {
+    if (!isDisplayed(element)) {
+        throw Error('Adapter element is not displayed.');
+    }
+}
+exports.assertElementIsDisplayed = assertElementIsDisplayed;
+function containsText(s) {
+    return /\S/.test(s);
+}
+exports.containsText = containsText;
 
 },{"../acrolinx-libs/acrolinx-libs-defaults":2}]},{},[4]);
