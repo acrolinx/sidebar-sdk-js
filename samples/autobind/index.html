@@ -9,11 +9,17 @@
 
 
 <div style="float: left">
-  <p><textarea name="" id="" cols="30" rows="10">Text withh a errorr.</textarea></p>
-  <p><button id="removeTextarea">Remove Textarea</button><button id="toggleTextarea">Toggle Textarea</button></p>
+  <p><textarea id="textAreaId" name="textAreaName" class="textAreaClass" id="" cols="30" rows="10">Text withh a errorr.</textarea></p>
+  <p>
+    <button id="removeTextarea">Remove Textarea</button>
+    <button id="toggleTextarea">Toggle Textarea</button>
+  </p>
   <p><input type="text" value="head line with problemm"/></p>
-  <div contenteditable="true">This content has an problemm.</div>
-  <p><button id="removeContenteditable">Remove contenteditable</button><button id="toggleContenteditable">Toggle contenteditable</button></p>
+  <div id="contenteditableId" contenteditable="true">This content has an problemm.</div>
+  <p>
+    <button id="removeContenteditable">Remove contenteditable</button>
+    <button id="toggleContenteditable">Toggle contenteditable</button>
+  </p>
 </div>
 
 <iframe src="iframe.html" frameborder="0" height="400" style="float: left"></iframe>
@@ -26,6 +32,9 @@
     src="https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/master/samples/autobind/iframe-different-domain.html"
     frameborder="0"></iframe>
 </div>
+
+<p><input readonly type="text" value="do not check readonly"/></p>
+<p><input role="combobox" value="do nott check combobox"/></p>
 
 
 <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
