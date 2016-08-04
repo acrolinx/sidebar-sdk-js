@@ -69,5 +69,22 @@ describe('autobind', function () {
 
   });
 
+  it('dont bind readonly fields', () => {
+    setPageContent(`
+          <input readonly value="input 1 content" />
+          <textarea readonly>textarea content</textarea>
+      `);
 
+    const adapters = bindAdaptersForCurrentPage();
+    assert.equal(adapters.length, 0);
+  });
+
+  it('dont bind fields that are probably comboboc', () => {
+    setPageContent(`
+          <input role="combobox" value="input 1 content" />
+      `);
+
+    const adapters = bindAdaptersForCurrentPage();
+    assert.equal(adapters.length, 0);
+  });
 });

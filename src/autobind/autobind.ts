@@ -1,3 +1,4 @@
+import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 import List = _.List;
 import {isIFrame, assign, isDisplayed} from "../utils/utils";
 import {InputAdapter} from "../adapters/InputAdapter";
@@ -16,9 +17,18 @@ const EDITABLE_ELEMENTS_SELECTOR = [
 ].join(', ');
 
 
+function isReadOnly(el: HTMLElement) {
+  return (el as HTMLInputElement).readOnly;
+}
+
+function isProbablyCombobox(el: HTMLElement) {
+  const role = el.attributes.getNamedItem('role');
+  return role && role.value === 'combobox';
+}
+
 function getEditableElements(doc: Document = document): HTMLElement[] {
   const visibleElements: HTMLElement[] = _.filter((doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR) as any) as List<HTMLElement>, isDisplayed) as HTMLElement[];
-  return _.flatMap(visibleElements, (el: HTMLElement) => {
+  return _(visibleElements).flatMap((el: HTMLElement) => {
     if (isIFrame(el)) {
       try {
         return el.contentDocument ? getEditableElements(el.contentDocument) : [];
@@ -29,7 +39,7 @@ function getEditableElements(doc: Document = document): HTMLElement[] {
     } else {
       return [el];
     }
-  });
+  }).reject(el => isReadOnly(el) || isProbablyCombobox(el)).value();
 }
 
 

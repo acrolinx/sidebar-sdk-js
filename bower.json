@@ -2,11 +2,11 @@
   "name": "acrolinx-sidebar-integration",
   "description": "Acrolinx Sidebar Integration (with Samples)",
   "private": false,
-  "version": "0.3.31",
+  "version": "0.3.32",
   "license": "Apache-2.0",
   "dependencies": {
     "q": "~1.4.1",
-    "lodash": "^4.6.1"
+    "lodash": "^4.14.1"
   },
   "devDependencies": {
     "jquery": "~1.11.0",
