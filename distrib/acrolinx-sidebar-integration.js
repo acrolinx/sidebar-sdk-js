@@ -2203,7 +2203,7 @@ exports._ = myLodash;
 
 },{}],3:[function(require,module,exports){
 "use strict";
-var acrolinx_libs_defaults_1 = require('./acrolinx-libs/acrolinx-libs-defaults');
+var acrolinx_libs_defaults_1 = require("./acrolinx-libs/acrolinx-libs-defaults");
 var sidebar_loader_1 = require("./utils/sidebar-loader");
 var floating_sidebar_1 = require("./floating-sidebar/floating-sidebar");
 var AutoBindAdapter_1 = require("./adapters/AutoBindAdapter");
@@ -3026,6 +3026,7 @@ exports.TinyMCEWordpressAdapter = TinyMCEWordpressAdapter;
 
 },{"./TinyMCEAdapter":12}],14:[function(require,module,exports){
 "use strict";
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var utils_1 = require("../utils/utils");
 var InputAdapter_1 = require("../adapters/InputAdapter");
 var ContentEditableAdapter_1 = require("../adapters/ContentEditableAdapter");
@@ -3038,10 +3039,17 @@ var EDITABLE_ELEMENTS_SELECTOR = [
     'textarea',
     'iframe'
 ].join(', ');
+function isReadOnly(el) {
+    return el.readOnly;
+}
+function isProbablyCombobox(el) {
+    var role = el.attributes.getNamedItem('role');
+    return role && role.value === 'combobox';
+}
 function getEditableElements(doc) {
     if (doc === void 0) { doc = document; }
-    var visibleElements = _.filter(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR), utils_1.isDisplayed);
-    return _.flatMap(visibleElements, function (el) {
+    var visibleElements = acrolinx_libs_defaults_1._.filter(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR), utils_1.isDisplayed);
+    return acrolinx_libs_defaults_1._(visibleElements).flatMap(function (el) {
         if (utils_1.isIFrame(el)) {
             try {
                 return el.contentDocument ? getEditableElements(el.contentDocument) : [];
@@ -3053,7 +3061,7 @@ function getEditableElements(doc) {
         else {
             return [el];
         }
-    });
+    }).reject(function (el) { return isReadOnly(el) || isProbablyCombobox(el); }).value();
 }
 function bindAdaptersForCurrentPage(conf) {
     if (conf === void 0) { conf = {}; }
@@ -3069,7 +3077,7 @@ function bindAdaptersForCurrentPage(conf) {
 }
 exports.bindAdaptersForCurrentPage = bindAdaptersForCurrentPage;
 
-},{"../adapters/ContentEditableAdapter":9,"../adapters/InputAdapter":10,"../utils/utils":27}],15:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../adapters/ContentEditableAdapter":9,"../adapters/InputAdapter":10,"../utils/utils":27}],15:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 exports.SIDEBAR_ID = 'acrolinxFloatingSidebar';
@@ -3163,14 +3171,10 @@ function initFloatingSidebar() {
             applyHeight(height);
         }
     });
-    function parsePXWithDefault(s, defaultValue) {
-        return parseInt(s || '') || defaultValue;
-    }
     floatingSidebarElement.addEventListener('mousedown', function (event) {
-        var divLeft = parsePXWithDefault(floatingSidebarElement.style.left, initialPos.left);
-        var divTop = parsePXWithDefault(floatingSidebarElement.style.top, initialPos.top);
-        relativeMouseDownX = event.clientX - divLeft;
-        relativeMouseDownY = event.clientY - divTop;
+        var _a = floatingSidebarElement.getBoundingClientRect(), top = _a.top, left = _a.left;
+        relativeMouseDownX = event.clientX - left;
+        relativeMouseDownY = event.clientY - top;
         isMoving = true;
         show(dragOverlay);
         show(glassPane);
