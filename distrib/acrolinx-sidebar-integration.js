@@ -3042,9 +3042,23 @@ var EDITABLE_ELEMENTS_SELECTOR = [
 function isReadOnly(el) {
     return el.readOnly;
 }
+function isAutoCompleteOff(el) {
+    var autocomplete = el.getAttribute('autocomplete');
+    return autocomplete === 'off' || autocomplete === 'false';
+}
 function isProbablyCombobox(el) {
-    var role = el.attributes.getNamedItem('role');
-    return role && role.value === 'combobox';
+    var role = el.getAttribute('role');
+    return role === 'combobox' && isAutoCompleteOff(el);
+}
+var PROBABLE_SEARCH_FIELD_NAMES = ['search_query', 'q'];
+function isProbablySearchField(el) {
+    if (el.nodeName !== 'INPUT') {
+        return false;
+    }
+    if (el.getAttribute('role') === 'search') {
+        return true;
+    }
+    return acrolinx_libs_defaults_1._.includes(PROBABLE_SEARCH_FIELD_NAMES, el.getAttribute('name')) && isAutoCompleteOff(el);
 }
 function getEditableElements(doc) {
     if (doc === void 0) { doc = document; }
@@ -3061,7 +3075,7 @@ function getEditableElements(doc) {
         else {
             return [el];
         }
-    }).reject(function (el) { return isReadOnly(el) || isProbablyCombobox(el); }).value();
+    }).reject(function (el) { return isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el); }).value();
 }
 function bindAdaptersForCurrentPage(conf) {
     if (conf === void 0) { conf = {}; }
@@ -3094,10 +3108,11 @@ var initialPos = {
     top: 20,
     left: 20
 };
+var Z_INDEX = 2000000000;
 function addStyles() {
     var styleTag = document.createElement('style');
     var head = document.querySelector('head');
-    styleTag.innerHTML = "\n      #" + exports.SIDEBAR_ID + " {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 0px;\n        cursor: move;\n        background: #000000;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: 10000;\n        -moz-user-select: none;\n        -webkit-user-select: none;\n        -ms-user-select: none;\n        overflow: hidden;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.TITLE_BAR_CLASS + " {\n        position: relative;\n        font-family: AcrolinxRoboto, Roboto, sans-serif;\n        font-weight: 500;\n        line-height: 13px;\n        padding: 8px 10px;\n        font-size: 13px;\n        font-weight: normal;\n        color: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.CLOSE_ICON_CLASS + " {\n        position: absolute;\n        cursor: pointer;\n        margin-right: 4px;\n        top: 6px;\n        right: 3px;\n        width: 18px;\n        height: 18px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + HIDE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + ",\n      #" + exports.SIDEBAR_ID + " #acrolinxDragOverlay {\n        position: absolute; \n        top: 30px;\n        left: 0;\n        bottom: 0;\n        background: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + " iframe {\n        position: relative; \n        height: 100%;\n        border: none;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_DRAG_OVERLAY_ID + " {\n        position: absolute;\n        top: 20px;\n        left: 0;\n        height: 100%;\n        width: 300px;\n        background: transparent;\n        z-index: 10001;\n      }\n       \n      #" + exports.SIDEBAR_GLASS_PANE_ID + " {\n        position: fixed;\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        top: 0;\n        left: 0;\n        background: white;\n        opacity: 0.6;\n        z-index: 9999;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + " {\n        position: absolute;\n        right: 3px;\n        bottom: 5px;\n        font-size: 20px;\n        font-weight: normal;\n        color: #333;\n        z-index: 10002;\n        cursor: ns-resize;\n        transition: opacity 0.5s;\n        width: 24px;\n        height: 24px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + RESIZE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + ":hover {\n        opacity: 1;\n      }\n      \n      #" + exports.SIDEBAR_ID + "." + exports.IS_RESIZING_CLASS + ",\n      #" + exports.SIDEBAR_GLASS_PANE_ID + "." + exports.IS_RESIZING_CLASS + " {\n        cursor: ns-resize !important;\n      }\n      \n    ";
+    styleTag.innerHTML = "\n      #" + exports.SIDEBAR_ID + " {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 0px;\n        cursor: move;\n        background: #000000;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: " + Z_INDEX + ";\n        -moz-user-select: none;\n        -webkit-user-select: none;\n        -ms-user-select: none;\n        overflow: hidden;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.TITLE_BAR_CLASS + " {\n        position: relative;\n        font-family: AcrolinxRoboto, Roboto, sans-serif;\n        font-weight: 500;\n        line-height: 13px;\n        padding: 8px 10px;\n        font-size: 13px;\n        font-weight: normal;\n        color: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.CLOSE_ICON_CLASS + " {\n        position: absolute;\n        cursor: pointer;\n        margin-right: 4px;\n        top: 6px;\n        right: 3px;\n        width: 18px;\n        height: 18px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + HIDE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + ",\n      #" + exports.SIDEBAR_ID + " #acrolinxDragOverlay {\n        position: absolute; \n        top: 30px;\n        left: 0;\n        bottom: 0;\n        background: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + " iframe {\n        position: relative; \n        height: 100%;\n        border: none;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_DRAG_OVERLAY_ID + " {\n        position: absolute;\n        top: 20px;\n        left: 0;\n        height: 100%;\n        width: 300px;\n        background: transparent;\n        z-index: " + (Z_INDEX + 100) + ";\n      }\n       \n      #" + exports.SIDEBAR_GLASS_PANE_ID + " {\n        position: fixed;\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        top: 0;\n        left: 0;\n        background: white;\n        opacity: 0.6;\n        z-index: " + (Z_INDEX - 100) + ";\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + " {\n        position: absolute;\n        right: 3px;\n        bottom: 5px;\n        font-size: 20px;\n        font-weight: normal;\n        color: #333;\n        z-index: " + (Z_INDEX + 200) + ";\n        cursor: ns-resize;\n        transition: opacity 0.5s;\n        width: 24px;\n        height: 24px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + RESIZE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + ":hover {\n        opacity: 1;\n      }\n      \n      #" + exports.SIDEBAR_ID + "." + exports.IS_RESIZING_CLASS + ",\n      #" + exports.SIDEBAR_GLASS_PANE_ID + "." + exports.IS_RESIZING_CLASS + " {\n        cursor: ns-resize !important;\n      }\n      \n    ";
     head.appendChild(styleTag);
 }
 var TEMPLATE = "\n    <div id=\"" + exports.SIDEBAR_ID + "\">\n      <div class=\"" + exports.TITLE_BAR_CLASS + "\">Acrolinx <span class=\"" + exports.CLOSE_ICON_CLASS + "\" title=\"Hide\"></span></div>\n      <div id=\"" + exports.SIDEBAR_CONTAINER_ID + "\"></div>\n      <div id=\"" + exports.SIDEBAR_DRAG_OVERLAY_ID + "\"></div>\n      <div class=\"" + exports.RESIZE_ICON_CLASS + "\" title=\"Drag to resize\"></div>\n    </div>\n  ";
