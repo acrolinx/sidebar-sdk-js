@@ -1,9 +1,9 @@
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
-import List = _.List;
 import {isIFrame, assign, isDisplayed} from "../utils/utils";
 import {InputAdapter} from "../adapters/InputAdapter";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
 import {AdapterInterface, AdapterConf, CommonAdapterConf} from "../adapters/AdapterInterface";
+import List = _.List;
 
 
 const EDITABLE_ELEMENTS_SELECTOR = [
@@ -21,9 +21,25 @@ function isReadOnly(el: HTMLElement) {
   return (el as HTMLInputElement).readOnly;
 }
 
+function isAutoCompleteOff(el: HTMLElement) {
+  const autocomplete = el.getAttribute('autocomplete');
+  return autocomplete === 'off' || autocomplete === 'false';
+}
+
 function isProbablyCombobox(el: HTMLElement) {
-  const role = el.attributes.getNamedItem('role');
-  return role && role.value === 'combobox';
+  const role = el.getAttribute('role');
+  return role === 'combobox' && isAutoCompleteOff(el);
+}
+
+const PROBABLE_SEARCH_FIELD_NAMES = ['search_query', 'q'];
+function isProbablySearchField(el: HTMLElement) {
+  if (el.nodeName !== 'INPUT') {
+    return false;
+  }
+  if (el.getAttribute('role') === 'search') {
+    return true;
+  }
+  return _.includes(PROBABLE_SEARCH_FIELD_NAMES, el.getAttribute('name')) && isAutoCompleteOff(el);
 }
 
 function getEditableElements(doc: Document = document): HTMLElement[] {
@@ -39,7 +55,7 @@ function getEditableElements(doc: Document = document): HTMLElement[] {
     } else {
       return [el];
     }
-  }).reject(el => isReadOnly(el) || isProbablyCombobox(el)).value();
+  }).reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el)).value();
 }
 
 

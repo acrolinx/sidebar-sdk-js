@@ -71,20 +71,45 @@ describe('autobind', function () {
 
   it('dont bind readonly fields', () => {
     setPageContent(`
-          <input readonly value="input 1 content" />
-          <textarea readonly>textarea content</textarea>
+          <input readonly/>
+          <textarea readonly></textarea>
       `);
 
     const adapters = bindAdaptersForCurrentPage();
     assert.equal(adapters.length, 0);
   });
 
-  it('dont bind fields that are probably comboboc', () => {
+  it('dont bind fields that are probably comboboxes', () => {
     setPageContent(`
-          <input role="combobox" value="input 1 content" />
+          <input role="combobox" autocomplete="off"/>
+          <input role="combobox" autocomplete="false"/>
+          <textarea role="combobox" autocomplete="off"/></textarea>
       `);
 
     const adapters = bindAdaptersForCurrentPage();
     assert.equal(adapters.length, 0);
   });
+
+  it('bind input field that looks a bit like a combobox but is not really', () => {
+    // Such pseudo-comboboxes can be found on https://web.skype.com
+    setPageContent(`
+          <input role="combobox" />
+      `);
+
+    const adapters = bindAdaptersForCurrentPage();
+    assert.equal(adapters.length, 1);
+  });
+
+  it('dont bind probable search fields', () => {
+    setPageContent(`
+          <input role="search"/>
+          <input name="q" autocomplete="off"/>
+          <input name="search_query" autocomplete="off"/>
+      `);
+
+    const adapters = bindAdaptersForCurrentPage();
+    assert.equal(adapters.length, 0);
+  });
+
+
 });
