@@ -18,6 +18,9 @@ const initialPos = {
   left: 20
 };
 
+// Smaller than the biggest 32-bit int (2147483647) but bigger than the menu of youtube.
+const Z_INDEX = 2000000000;
+
 
 function addStyles() {
   const styleTag = document.createElement('style');
@@ -34,7 +37,7 @@ function addStyles() {
         box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);
         border-radius: 3px;
         user-select: none;
-        z-index: 10000;
+        z-index: ${Z_INDEX};
         -moz-user-select: none;
         -webkit-user-select: none;
         -ms-user-select: none;
@@ -90,7 +93,7 @@ function addStyles() {
         height: 100%;
         width: 300px;
         background: transparent;
-        z-index: 10001;
+        z-index: ${Z_INDEX + 100};
       }
        
       #${SIDEBAR_GLASS_PANE_ID} {
@@ -103,7 +106,7 @@ function addStyles() {
         left: 0;
         background: white;
         opacity: 0.6;
-        z-index: 9999;
+        z-index: ${Z_INDEX - 100};
       }
       
       #${SIDEBAR_ID} .${RESIZE_ICON_CLASS} {
@@ -113,7 +116,7 @@ function addStyles() {
         font-size: 20px;
         font-weight: normal;
         color: #333;
-        z-index: 10002;
+        z-index: ${Z_INDEX + 200};
         cursor: ns-resize;
         transition: opacity 0.5s;
         width: 24px;
@@ -227,7 +230,7 @@ export function initFloatingSidebar(): FloatingSidebar {
     if (isResizing) {
       const floatingSidebarTop = floatingSidebarElement.getBoundingClientRect().top;
       const iconPositionOffset = 30;
-      height = Math.max(event.clientY  - relativeMouseDownY + iconPositionOffset - floatingSidebarTop, MIN_HEIGHT);
+      height = Math.max(event.clientY - relativeMouseDownY + iconPositionOffset - floatingSidebarTop, MIN_HEIGHT);
       applyHeight(height);
     }
   });
