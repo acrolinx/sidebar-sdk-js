@@ -232,15 +232,10 @@ export function initFloatingSidebar(): FloatingSidebar {
     }
   });
 
-  function parsePXWithDefault(s: string | null, defaultValue: number) {
-    return parseInt(s || '') || defaultValue;
-  }
-
   floatingSidebarElement.addEventListener('mousedown', event => {
-    const divLeft = parsePXWithDefault(floatingSidebarElement.style.left, initialPos.left);
-    const divTop = parsePXWithDefault(floatingSidebarElement.style.top, initialPos.top);
-    relativeMouseDownX = event.clientX - divLeft;
-    relativeMouseDownY = event.clientY - divTop;
+    const {top, left} = floatingSidebarElement.getBoundingClientRect();
+    relativeMouseDownX = event.clientX - left;
+    relativeMouseDownY = event.clientY - top;
     isMoving = true;
     show(dragOverlay);
     show(glassPane);
