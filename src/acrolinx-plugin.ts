@@ -215,7 +215,7 @@ export class AcrolinxPlugin {
 }
 
 interface AutoBindFloatingSidebarConfig extends  FloatingSidebar {
-  asyncStorage: AsyncStorage;
+  asyncStorage?: AsyncStorage;
 }
 
 export function autoBindFloatingSidebar(basicConf: AutoBindFloatingSidebarConfig): FloatingSidebar {
