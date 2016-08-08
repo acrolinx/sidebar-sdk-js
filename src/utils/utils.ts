@@ -98,3 +98,20 @@ export function assertElementIsDisplayed(element: Element) {
 export function containsText(s: string) {
   return /\S/.test(s);
 }
+
+export function loadObjectFromLocalStorage<T>(key: string, defaultValue: T): T {
+  const valueString = localStorage.getItem(key);
+  if (valueString) {
+    return assign(defaultValue, JSON.parse(valueString));
+  } else {
+    return defaultValue;
+  }
+}
+
+export function saveObjectToLocalStorage<T>(key: string, object: T) {
+  localStorage.setItem(key, JSON.stringify(object));
+}
+
+export function removeElement(el: Element) {
+  el.parentNode.removeChild(el);
+}

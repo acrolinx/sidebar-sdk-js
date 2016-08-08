@@ -1,4 +1,5 @@
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import {loadObjectFromLocalStorage, saveObjectToLocalStorage, assign, removeElement} from "../utils/utils";
 
 export const SIDEBAR_ID = 'acrolinxFloatingSidebar';
 export const TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
@@ -9,26 +10,72 @@ export const SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
 export const RESIZE_ICON_CLASS = 'acrolinxFloatingSidebarResizeIcon';
 
 export const IS_RESIZING_CLASS = 'acrolinxFloatingSidebarIsResizing';
+export const IS_DRAGGED_CLASS = 'acrolinxFloatingSidebarIsDragged';
 
 const HIDE_ICON = 'PHN2ZyBmaWxsPSIjZmZmZmZmIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0xOSAxOUg1VjVoN1YzSDVjLTEuMTEgMC0yIC45LTIgMnYxNGMwIDEuMS44OSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMnYtN2gtMnY3ek0xNCAzdjJoMy41OWwtOS44MyA5LjgzIDEuNDEgMS40MUwxOSA2LjQxVjEwaDJWM2gtN3oiLz4KPC9zdmc+';
 const RESIZE_ICON = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6IzkwOTA5MDt9Cgkuc3Qxe2ZpbGw6bm9uZTt9Cjwvc3R5bGU+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik03LjMsMjFoOS41di0ySDcuM1YyMXogTTcuMywxN2g5LjV2LTJINy4zVjE3eiBNNy4zLDEzaDkuNXYtMkg3LjNWMTN6IE03LjMsOWg5LjVWN0g3LjNWOXogTTcuMywzdjJoOS41VjNINy4zCgl6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0wLDBoMjR2MjRIMFYweiIvPgo8L3N2Zz4K';
 
-const initialPos = {
-  top: 20,
-  left: 20
-};
-
 // Smaller than the biggest 32-bit int (2147483647) but bigger than the menu of youtube.
 const Z_INDEX = 2000000000;
 
+interface PositionUpdate {
+  top?: number;
+  left?: number;
+  height?: number;
+}
+
+interface Position extends PositionUpdate {
+  top: number;
+  left: number;
+  height: number;
+}
+
+const MAX_INITIAL_HEIGHT = 900;
+const MIN_INITIAL_HEIGHT = 400;
+const MIN_HEIGHT = 400;
+
+const DEFAULT_POS: Position = {
+  top: 20,
+  left: 20,
+  height: MIN_INITIAL_HEIGHT
+};
+
+
+const POSITION_KEY = 'acrolinx.plugins.floatingSidebar.position';
+
+function loadInitialPos(): Position {
+  const loadedPos = loadObjectFromLocalStorage(POSITION_KEY, {
+    top: DEFAULT_POS.top,
+    left: DEFAULT_POS.left,
+    height: sanitizeHeight(window.innerHeight - DEFAULT_POS.top - 40)
+  });
+  return loadedPos;
+}
+
+function sanitizeHeight(floatingSidebarHeight: number) {
+  return Math.max(MIN_HEIGHT, Math.min(MAX_INITIAL_HEIGHT, floatingSidebarHeight));
+}
+
+/**
+ * Exported only for testing.
+ */
+export function keepVisible({left, top, height}: Position, windowWidth: number = window.innerWidth, windowHeight: number = window.innerHeight): Position {
+  const minVerticalMargin = 30;
+  const minHorizontalMargin = 150;
+  return {
+    left: left > (windowWidth - minHorizontalMargin) ? (windowWidth - minHorizontalMargin) : left,
+    top: top > (windowHeight - minVerticalMargin) ? (windowHeight - minVerticalMargin) : top,
+    height: height > windowHeight ? sanitizeHeight(windowHeight - 10) : height
+  };
+}
 
 function addStyles() {
   const styleTag = document.createElement('style');
   const head = document.querySelector('head');
   styleTag.innerHTML = `
       #${SIDEBAR_ID} {
-        top: ${initialPos.top}px;
-        left: ${initialPos.left}px;
+        top: ${DEFAULT_POS.top}px;
+        left: ${DEFAULT_POS.left}px;
         position: fixed;
         width: 300px;
         padding-top: 0px;
@@ -42,6 +89,13 @@ function addStyles() {
         -webkit-user-select: none;
         -ms-user-select: none;
         overflow: hidden;
+        transition: top 1s, left 1s;
+        transition-timing-function: ease-out;
+      }
+      
+            
+      #${SIDEBAR_ID}.${IS_DRAGGED_CLASS} {
+        transition: none;
       }
       
       #${SIDEBAR_ID} .${TITLE_BAR_CLASS} {
@@ -151,7 +205,7 @@ const TEMPLATE = `
     </div>
   `;
 
-function createDiv(attributes: {[attribute: string]: string} = {}): HTMLElement {
+function createDiv(attributes: {[attribute: string]: string}): HTMLElement {
   const el = document.createElement('div');
   _.assign(el, attributes);
   return el;
@@ -171,14 +225,11 @@ function createNodeFromTemplate(template: string): HTMLElement {
 
 export interface FloatingSidebar {
   toggleVisibility(): void;
+  remove(): void;
 }
 
-const MAX_INITIAL_HEIGHT = 900;
-const MIN_INITIAL_HEIGHT = 400;
-const MIN_HEIGHT = 400;
-
 export function initFloatingSidebar(): FloatingSidebar {
-  let height = Math.max(MIN_INITIAL_HEIGHT, Math.min(MAX_INITIAL_HEIGHT, window.innerHeight - initialPos.top - 40));
+  let position = loadInitialPos();
   const floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
   const dragOverlay = floatingSidebarElement.querySelector('#' + SIDEBAR_DRAG_OVERLAY_ID) as HTMLElement;
   const closeIcon = floatingSidebarElement.querySelector('.' + CLOSE_ICON_CLASS) as HTMLElement;
@@ -191,13 +242,11 @@ export function initFloatingSidebar(): FloatingSidebar {
   let relativeMouseDownY = 0;
   let isVisible = true;
 
-  function move(xpos: number, ypos: number) {
-    floatingSidebarElement.style.left = xpos + 'px';
-    floatingSidebarElement.style.top = ypos + 'px';
-  }
-
-  function applyHeight(newHeight: number) {
-    floatingSidebarElement.style.height = newHeight + 'px';
+  function move(positionUpdate: PositionUpdate) {
+    position = assign(position, positionUpdate);
+    floatingSidebarElement.style.left = position.left + 'px';
+    floatingSidebarElement.style.top = position.top + 'px';
+    floatingSidebarElement.style.height = position.height + 'px';
   }
 
   function onEndDrag() {
@@ -206,7 +255,13 @@ export function initFloatingSidebar(): FloatingSidebar {
     isMoving = false;
     isResizing = false;
     floatingSidebarElement.classList.remove(IS_RESIZING_CLASS);
+    floatingSidebarElement.classList.remove(IS_DRAGGED_CLASS);
     glassPane.classList.remove(IS_RESIZING_CLASS);
+    savePosition();
+  }
+
+  function savePosition() {
+    saveObjectToLocalStorage(POSITION_KEY, position);
   }
 
   function hideFloatingSidebar() {
@@ -220,18 +275,21 @@ export function initFloatingSidebar(): FloatingSidebar {
     } else {
       show(floatingSidebarElement);
       isVisible = true;
+      pullInAnimationIfNeeded();
     }
   }
 
   document.addEventListener('mousemove', event => {
     if (isMoving) {
-      move(Math.max(event.clientX - relativeMouseDownX, 0), Math.max(event.clientY - relativeMouseDownY, 0));
+      move({
+        left: Math.max(event.clientX - relativeMouseDownX, 0),
+        top: Math.max(event.clientY - relativeMouseDownY, 0)
+      });
     }
     if (isResizing) {
       const floatingSidebarTop = floatingSidebarElement.getBoundingClientRect().top;
       const iconPositionOffset = 30;
-      height = Math.max(event.clientY - relativeMouseDownY + iconPositionOffset - floatingSidebarTop, MIN_HEIGHT);
-      applyHeight(height);
+      move({height: Math.max(event.clientY - relativeMouseDownY + iconPositionOffset - floatingSidebarTop, MIN_HEIGHT)});
     }
   });
 
@@ -242,6 +300,7 @@ export function initFloatingSidebar(): FloatingSidebar {
     isMoving = true;
     show(dragOverlay);
     show(glassPane);
+    floatingSidebarElement.classList.add(IS_DRAGGED_CLASS);
   });
 
   resizeIcon.addEventListener('mousedown', event => {
@@ -254,7 +313,30 @@ export function initFloatingSidebar(): FloatingSidebar {
     event.stopPropagation();
   });
 
+  function onResize() {
+    if (isVisible) {
+      move(keepVisible(position));
+    }
+  }
+
+  function pullInAnimationIfNeeded() {
+    // Timeout & css transition create a nice transition effect:
+    // If the sidebar is outside of the window, it's pulled in.
+    setTimeout(() => {
+      move(keepVisible(position));
+    }, 1);
+  }
+
+  // Currently only used for testing.
+  function remove() {
+    removeElement(floatingSidebarElement);
+    removeElement(dragOverlay);
+    window.removeEventListener('resize', onResize);
+    document.removeEventListener('mouseup', onEndDrag);
+  }
+
   document.addEventListener('mouseup', onEndDrag);
+  window.addEventListener('resize', onResize);
 
   closeIcon.addEventListener('click', hideFloatingSidebar);
 
@@ -263,13 +345,12 @@ export function initFloatingSidebar(): FloatingSidebar {
   hide(glassPane);
 
   addStyles();
-  applyHeight(height);
+  move(position);
+  pullInAnimationIfNeeded();
 
   body.appendChild(floatingSidebarElement);
   body.appendChild(glassPane);
 
-  return {
-    toggleVisibility: toggleVisibility
-  };
+  return {toggleVisibility, remove};
 }
 
