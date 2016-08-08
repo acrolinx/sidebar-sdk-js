@@ -36,6 +36,7 @@ type CheckResult = acrolinxSidebarInterfaces.CheckResult;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
 type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
 import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
+import {AsyncStorage, AsyncLocalStorage} from "./floating-sidebar/async-storage";
 
 
 const clientComponents = [
@@ -213,12 +214,17 @@ export class AcrolinxPlugin {
   }
 }
 
-export function autoBindFloatingSidebar(basicConf: AcrolinxPluginConfig): FloatingSidebar {
+interface AutoBindFloatingSidebarConfig extends  FloatingSidebar {
+  asyncStorage: AsyncStorage;
+}
+
+export function autoBindFloatingSidebar(basicConf: AutoBindFloatingSidebarConfig): FloatingSidebar {
   const conf = assign(basicConf, {
-    sidebarContainerId: SIDEBAR_CONTAINER_ID
+    sidebarContainerId: SIDEBAR_CONTAINER_ID,
+    asyncStorage: basicConf.asyncStorage || new AsyncLocalStorage()
   });
 
-  const floatingSidebar = initFloatingSidebar();
+  const floatingSidebar = initFloatingSidebar(conf);
 
   const acrolinxPlugin = new AcrolinxPlugin(conf);
   acrolinxPlugin.registerAdapter(new AutoBindAdapter(conf));

@@ -7,11 +7,13 @@ import {
   keepVisible
 } from "../../src/floating-sidebar/floating-sidebar";
 import {assertDeepEqual} from "../utils/test-utils";
+import {AsyncLocalStorage} from "../../src/floating-sidebar/async-storage";
 
 describe('floating sidebar', function () {
 
   describe('integration', () => {
     let floatingSidebar: FloatingSidebar;
+    let asyncStorage = new AsyncLocalStorage();
 
     afterEach(() => {
       const sidebarElement = document.getElementById(SIDEBAR_ID)
@@ -22,7 +24,7 @@ describe('floating sidebar', function () {
     });
 
     it('init floating sidebar', (done) => {
-      floatingSidebar = initFloatingSidebar();
+      floatingSidebar = initFloatingSidebar({asyncStorage});
       assert.isTrue(document.getElementById(SIDEBAR_ID) instanceof Element);
       setTimeout(() => {
         done();
@@ -30,7 +32,7 @@ describe('floating sidebar', function () {
     });
 
     it('toggle floating sidebar', (done) => {
-      floatingSidebar = initFloatingSidebar();
+      floatingSidebar = initFloatingSidebar({asyncStorage});
       const sidebarElement = document.getElementById(SIDEBAR_ID);
       setTimeout(() => {
         floatingSidebar.toggleVisibility();

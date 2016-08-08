@@ -1,5 +1,6 @@
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
-import {loadObjectFromLocalStorage, saveObjectToLocalStorage, assign, removeElement} from "../utils/utils";
+import {assign, removeElement} from "../utils/utils";
+import {AsyncStorage} from "./async-storage";
 
 export const SIDEBAR_ID = 'acrolinxFloatingSidebar';
 export const TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
@@ -43,13 +44,12 @@ const DEFAULT_POS: Position = {
 
 const POSITION_KEY = 'acrolinx.plugins.floatingSidebar.position';
 
-function loadInitialPos(): Position {
-  const loadedPos = loadObjectFromLocalStorage(POSITION_KEY, {
+function loadInitialPos(asyncStorage: AsyncStorage): Promise<Position> {
+  return asyncStorage.get(POSITION_KEY).then((loadedPosition: Position) => loadedPosition || {
     top: DEFAULT_POS.top,
     left: DEFAULT_POS.left,
     height: sanitizeHeight(window.innerHeight - DEFAULT_POS.top - 40)
   });
-  return loadedPos;
 }
 
 function sanitizeHeight(floatingSidebarHeight: number) {
@@ -91,6 +91,7 @@ function addStyles() {
         overflow: hidden;
         transition: top 1s, left 1s;
         transition-timing-function: ease-out;
+        display: none;
       }
       
             
@@ -228,8 +229,12 @@ export interface FloatingSidebar {
   remove(): void;
 }
 
-export function initFloatingSidebar(): FloatingSidebar {
-  let position = loadInitialPos();
+interface FloatingSidebarConfig {
+  asyncStorage: AsyncStorage;
+}
+
+export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSidebar {
+  let position = DEFAULT_POS;
   const floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
   const dragOverlay = floatingSidebarElement.querySelector('#' + SIDEBAR_DRAG_OVERLAY_ID) as HTMLElement;
   const closeIcon = floatingSidebarElement.querySelector('.' + CLOSE_ICON_CLASS) as HTMLElement;
@@ -261,7 +266,7 @@ export function initFloatingSidebar(): FloatingSidebar {
   }
 
   function savePosition() {
-    saveObjectToLocalStorage(POSITION_KEY, position);
+    config.asyncStorage.set(POSITION_KEY, position);
   }
 
   function hideFloatingSidebar() {
@@ -345,8 +350,13 @@ export function initFloatingSidebar(): FloatingSidebar {
   hide(glassPane);
 
   addStyles();
-  move(position);
-  pullInAnimationIfNeeded();
+
+  loadInitialPos(config.asyncStorage).then(loadedPosition => {
+    show(floatingSidebarElement);
+    move(loadedPosition);
+    pullInAnimationIfNeeded();
+  });
+
 
   body.appendChild(floatingSidebarElement);
   body.appendChild(glassPane);
