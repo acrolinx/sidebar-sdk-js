@@ -1,5 +1,4 @@
 import {Q} from "../acrolinx-libs/acrolinx-libs-defaults";
-import {loadObjectFromLocalStorage, saveObjectToLocalStorage} from "../utils/utils";
 
 export interface AsyncStorage {
   get<T>(key: string): Promise<T>;
@@ -7,12 +6,29 @@ export interface AsyncStorage {
 }
 
 export class AsyncLocalStorage implements AsyncStorage {
-  get<T>(key: string): Promise<T> {
-    return Q(loadObjectFromLocalStorage(key, undefined));
+  get<T>(key: string): Promise<T | null> {
+    return Q.Promise((resolve: Function) => {
+      resolve(loadFromLocalStorage(key));
+    });
   }
 
   set<T>(key: string, value: T) {
-    saveObjectToLocalStorage(key, value);
-    return Q(undefined);
+    return Q.Promise((resolve: Function) => {
+      saveToLocalStorage(key, value);
+      resolve(undefined);
+    });
+
   }
+}
+
+export function loadFromLocalStorage<T>(key: string): T | null {
+  const valueString = localStorage.getItem(key);
+  if (valueString === null) {
+    return null;
+  }
+  return JSON.parse(valueString);
+}
+
+export function saveToLocalStorage<T>(key: string, object: T) {
+  localStorage.setItem(key, JSON.stringify(object));
 }

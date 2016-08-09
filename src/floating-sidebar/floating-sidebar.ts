@@ -35,21 +35,30 @@ const MAX_INITIAL_HEIGHT = 900;
 const MIN_INITIAL_HEIGHT = 400;
 const MIN_HEIGHT = 400;
 
-const DEFAULT_POS: Position = {
+export const DEFAULT_POS: Position = Object.freeze({
   top: 20,
   left: 20,
   height: MIN_INITIAL_HEIGHT
-};
+});
 
 
-const POSITION_KEY = 'acrolinx.plugins.floatingSidebar.position';
+export const POSITION_KEY = 'acrolinx.plugins.floatingSidebar.position';
 
-function loadInitialPos(asyncStorage: AsyncStorage): Promise<Position> {
-  return asyncStorage.get(POSITION_KEY).then((loadedPosition: Position) => loadedPosition || {
+/**
+ * Exported only for testing.
+ */
+export function loadInitialPos(asyncStorage: AsyncStorage): Promise<Position> {
+  const defaultPos = {
     top: DEFAULT_POS.top,
     left: DEFAULT_POS.left,
     height: sanitizeHeight(window.innerHeight - DEFAULT_POS.top - 40)
-  });
+  };
+  return asyncStorage.get(POSITION_KEY).then(
+    (loadedPosition: Position) => assign(defaultPos, loadedPosition),
+    (e: Error) => {
+      console.error("Can't load saved sidebar position.", e);
+      return defaultPos;
+    });
 }
 
 function sanitizeHeight(floatingSidebarHeight: number) {
