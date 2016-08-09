@@ -2210,6 +2210,7 @@ var AutoBindAdapter_1 = require("./adapters/AutoBindAdapter");
 var AdapterInterface_1 = require("./adapters/AdapterInterface");
 var message_adapter_1 = require("./message-adapter/message-adapter");
 var utils_1 = require("./utils/utils");
+var async_storage_1 = require("./floating-sidebar/async-storage");
 var clientComponents = [
     {
         id: 'com.acrolinx.sidebarexample',
@@ -2358,9 +2359,10 @@ var AcrolinxPlugin = (function () {
 exports.AcrolinxPlugin = AcrolinxPlugin;
 function autoBindFloatingSidebar(basicConf) {
     var conf = utils_1.assign(basicConf, {
-        sidebarContainerId: floating_sidebar_1.SIDEBAR_CONTAINER_ID
+        sidebarContainerId: floating_sidebar_1.SIDEBAR_CONTAINER_ID,
+        asyncStorage: basicConf.asyncStorage || new async_storage_1.AsyncLocalStorage()
     });
-    var floatingSidebar = floating_sidebar_1.initFloatingSidebar();
+    var floatingSidebar = floating_sidebar_1.initFloatingSidebar(conf);
     var acrolinxPlugin = new AcrolinxPlugin(conf);
     acrolinxPlugin.registerAdapter(new AutoBindAdapter_1.AutoBindAdapter(conf));
     acrolinxPlugin.init();
@@ -2368,7 +2370,7 @@ function autoBindFloatingSidebar(basicConf) {
 }
 exports.autoBindFloatingSidebar = autoBindFloatingSidebar;
 
-},{"./acrolinx-libs/acrolinx-libs-defaults":2,"./adapters/AdapterInterface":6,"./adapters/AutoBindAdapter":7,"./floating-sidebar/floating-sidebar":15,"./message-adapter/message-adapter":17,"./utils/sidebar-loader":24,"./utils/utils":27}],4:[function(require,module,exports){
+},{"./acrolinx-libs/acrolinx-libs-defaults":2,"./adapters/AdapterInterface":6,"./adapters/AutoBindAdapter":7,"./floating-sidebar/async-storage":15,"./floating-sidebar/floating-sidebar":16,"./message-adapter/message-adapter":18,"./utils/sidebar-loader":25,"./utils/utils":28}],4:[function(require,module,exports){
 "use strict";
 var acrolinx_plugin_1 = require("./acrolinx-plugin");
 var InputAdapter_1 = require("./adapters/InputAdapter");
@@ -2399,7 +2401,7 @@ window.acrolinx.plugins = {
     }
 };
 
-},{"./acrolinx-plugin":3,"./adapters/AbstractRichtextEditorAdapter":5,"./adapters/AutoBindAdapter":7,"./adapters/CKEditorAdapter":8,"./adapters/ContentEditableAdapter":9,"./adapters/InputAdapter":10,"./adapters/MultiEditorAdapter":11,"./adapters/TinyMCEAdapter":12,"./adapters/TinyMCEWordpressAdapter":13,"./message-adapter/message-adapter":17,"./utils/sidebar-loader":24}],5:[function(require,module,exports){
+},{"./acrolinx-plugin":3,"./adapters/AbstractRichtextEditorAdapter":5,"./adapters/AutoBindAdapter":7,"./adapters/CKEditorAdapter":8,"./adapters/ContentEditableAdapter":9,"./adapters/InputAdapter":10,"./adapters/MultiEditorAdapter":11,"./adapters/TinyMCEAdapter":12,"./adapters/TinyMCEWordpressAdapter":13,"./message-adapter/message-adapter":18,"./utils/sidebar-loader":25}],5:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var text_dom_mapping_1 = require("../utils/text-dom-mapping");
@@ -2527,7 +2529,7 @@ var AbstractRichtextEditorAdapter = (function () {
 }());
 exports.AbstractRichtextEditorAdapter = AbstractRichtextEditorAdapter;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../lookup/diff-based":16,"../utils/adapter-utils":18,"../utils/match":22,"../utils/text-dom-mapping":25,"../utils/utils":27}],6:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../lookup/diff-based":17,"../utils/adapter-utils":19,"../utils/match":23,"../utils/text-dom-mapping":26,"../utils/utils":28}],6:[function(require,module,exports){
 "use strict";
 function hasError(a) {
     return !!a.error;
@@ -2683,7 +2685,7 @@ var ContentEditableAdapter = (function (_super) {
 }(AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter));
 exports.ContentEditableAdapter = ContentEditableAdapter;
 
-},{"../utils/scrolling":23,"./AbstractRichtextEditorAdapter":5,"./AdapterInterface":6}],10:[function(require,module,exports){
+},{"../utils/scrolling":24,"./AbstractRichtextEditorAdapter":5,"./AdapterInterface":6}],10:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var AdapterInterface_1 = require("./AdapterInterface");
@@ -2772,7 +2774,7 @@ var InputAdapter = (function () {
 }());
 exports.InputAdapter = InputAdapter;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../lookup/diff-based":16,"../utils/adapter-utils":18,"../utils/match":22,"../utils/scrolling":23,"../utils/utils":27,"./AdapterInterface":6}],11:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../lookup/diff-based":17,"../utils/adapter-utils":19,"../utils/match":23,"../utils/scrolling":24,"../utils/utils":28,"./AdapterInterface":6}],11:[function(require,module,exports){
 "use strict";
 var AdapterInterface_1 = require("./AdapterInterface");
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
@@ -2914,7 +2916,7 @@ var MultiEditorAdapter = (function () {
 }());
 exports.MultiEditorAdapter = MultiEditorAdapter;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../utils/alignment":19,"../utils/escaping":20,"../utils/utils":27,"./AdapterInterface":6}],12:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../utils/alignment":20,"../utils/escaping":21,"../utils/utils":28,"./AdapterInterface":6}],12:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -3091,9 +3093,43 @@ function bindAdaptersForCurrentPage(conf) {
 }
 exports.bindAdaptersForCurrentPage = bindAdaptersForCurrentPage;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../adapters/ContentEditableAdapter":9,"../adapters/InputAdapter":10,"../utils/utils":27}],15:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../adapters/ContentEditableAdapter":9,"../adapters/InputAdapter":10,"../utils/utils":28}],15:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
+var AsyncLocalStorage = (function () {
+    function AsyncLocalStorage() {
+    }
+    AsyncLocalStorage.prototype.get = function (key) {
+        return acrolinx_libs_defaults_1.Q.Promise(function (resolve) {
+            resolve(loadFromLocalStorage(key));
+        });
+    };
+    AsyncLocalStorage.prototype.set = function (key, value) {
+        return acrolinx_libs_defaults_1.Q.Promise(function (resolve) {
+            saveToLocalStorage(key, value);
+            resolve(undefined);
+        });
+    };
+    return AsyncLocalStorage;
+}());
+exports.AsyncLocalStorage = AsyncLocalStorage;
+function loadFromLocalStorage(key) {
+    var valueString = localStorage.getItem(key);
+    if (valueString === null) {
+        return null;
+    }
+    return JSON.parse(valueString);
+}
+exports.loadFromLocalStorage = loadFromLocalStorage;
+function saveToLocalStorage(key, object) {
+    localStorage.setItem(key, JSON.stringify(object));
+}
+exports.saveToLocalStorage = saveToLocalStorage;
+
+},{"../acrolinx-libs/acrolinx-libs-defaults":2}],16:[function(require,module,exports){
+"use strict";
+var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
+var utils_1 = require("../utils/utils");
 exports.SIDEBAR_ID = 'acrolinxFloatingSidebar';
 exports.TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
 exports.CLOSE_ICON_CLASS = 'acrolinxFloatingSidebarCloseIcon';
@@ -3102,22 +3138,55 @@ exports.SIDEBAR_DRAG_OVERLAY_ID = 'acrolinxDragOverlay';
 exports.SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
 exports.RESIZE_ICON_CLASS = 'acrolinxFloatingSidebarResizeIcon';
 exports.IS_RESIZING_CLASS = 'acrolinxFloatingSidebarIsResizing';
+exports.IS_DRAGGED_CLASS = 'acrolinxFloatingSidebarIsDragged';
 var HIDE_ICON = 'PHN2ZyBmaWxsPSIjZmZmZmZmIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0xOSAxOUg1VjVoN1YzSDVjLTEuMTEgMC0yIC45LTIgMnYxNGMwIDEuMS44OSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMnYtN2gtMnY3ek0xNCAzdjJoMy41OWwtOS44MyA5LjgzIDEuNDEgMS40MUwxOSA2LjQxVjEwaDJWM2gtN3oiLz4KPC9zdmc+';
 var RESIZE_ICON = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6IzkwOTA5MDt9Cgkuc3Qxe2ZpbGw6bm9uZTt9Cjwvc3R5bGU+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik03LjMsMjFoOS41di0ySDcuM1YyMXogTTcuMywxN2g5LjV2LTJINy4zVjE3eiBNNy4zLDEzaDkuNXYtMkg3LjNWMTN6IE03LjMsOWg5LjVWN0g3LjNWOXogTTcuMywzdjJoOS41VjNINy4zCgl6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0wLDBoMjR2MjRIMFYweiIvPgo8L3N2Zz4K';
-var initialPos = {
-    top: 20,
-    left: 20
-};
 var Z_INDEX = 2000000000;
+var MAX_INITIAL_HEIGHT = 900;
+var MIN_INITIAL_HEIGHT = 400;
+var MIN_HEIGHT = 400;
+exports.DEFAULT_POS = Object.freeze({
+    top: 20,
+    left: 20,
+    height: MIN_INITIAL_HEIGHT
+});
+exports.POSITION_KEY = 'acrolinx.plugins.floatingSidebar.position';
+function loadInitialPos(asyncStorage) {
+    var defaultPos = {
+        top: exports.DEFAULT_POS.top,
+        left: exports.DEFAULT_POS.left,
+        height: sanitizeHeight(window.innerHeight - exports.DEFAULT_POS.top - 40)
+    };
+    return asyncStorage.get(exports.POSITION_KEY).then(function (loadedPosition) { return utils_1.assign(defaultPos, loadedPosition); }, function (e) {
+        console.error("Can't load saved sidebar position.", e);
+        return defaultPos;
+    });
+}
+exports.loadInitialPos = loadInitialPos;
+function sanitizeHeight(floatingSidebarHeight) {
+    return Math.max(MIN_HEIGHT, Math.min(MAX_INITIAL_HEIGHT, floatingSidebarHeight));
+}
+function keepVisible(_a, windowWidth, windowHeight) {
+    var left = _a.left, top = _a.top, height = _a.height;
+    if (windowWidth === void 0) { windowWidth = window.innerWidth; }
+    if (windowHeight === void 0) { windowHeight = window.innerHeight; }
+    var minVerticalMargin = 30;
+    var minHorizontalMargin = 150;
+    return {
+        left: left > (windowWidth - minHorizontalMargin) ? (windowWidth - minHorizontalMargin) : left,
+        top: top > (windowHeight - minVerticalMargin) ? (windowHeight - minVerticalMargin) : top,
+        height: height > windowHeight ? sanitizeHeight(windowHeight - 10) : height
+    };
+}
+exports.keepVisible = keepVisible;
 function addStyles() {
     var styleTag = document.createElement('style');
     var head = document.querySelector('head');
-    styleTag.innerHTML = "\n      #" + exports.SIDEBAR_ID + " {\n        top: " + initialPos.top + "px;\n        left: " + initialPos.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 0px;\n        cursor: move;\n        background: #000000;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: " + Z_INDEX + ";\n        -moz-user-select: none;\n        -webkit-user-select: none;\n        -ms-user-select: none;\n        overflow: hidden;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.TITLE_BAR_CLASS + " {\n        position: relative;\n        font-family: AcrolinxRoboto, Roboto, sans-serif;\n        font-weight: 500;\n        line-height: 13px;\n        padding: 8px 10px;\n        font-size: 13px;\n        font-weight: normal;\n        color: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.CLOSE_ICON_CLASS + " {\n        position: absolute;\n        cursor: pointer;\n        margin-right: 4px;\n        top: 6px;\n        right: 3px;\n        width: 18px;\n        height: 18px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + HIDE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + ",\n      #" + exports.SIDEBAR_ID + " #acrolinxDragOverlay {\n        position: absolute; \n        top: 30px;\n        left: 0;\n        bottom: 0;\n        background: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + " iframe {\n        position: relative; \n        height: 100%;\n        border: none;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_DRAG_OVERLAY_ID + " {\n        position: absolute;\n        top: 20px;\n        left: 0;\n        height: 100%;\n        width: 300px;\n        background: transparent;\n        z-index: " + (Z_INDEX + 100) + ";\n      }\n       \n      #" + exports.SIDEBAR_GLASS_PANE_ID + " {\n        position: fixed;\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        top: 0;\n        left: 0;\n        background: white;\n        opacity: 0.6;\n        z-index: " + (Z_INDEX - 100) + ";\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + " {\n        position: absolute;\n        right: 3px;\n        bottom: 5px;\n        font-size: 20px;\n        font-weight: normal;\n        color: #333;\n        z-index: " + (Z_INDEX + 200) + ";\n        cursor: ns-resize;\n        transition: opacity 0.5s;\n        width: 24px;\n        height: 24px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + RESIZE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + ":hover {\n        opacity: 1;\n      }\n      \n      #" + exports.SIDEBAR_ID + "." + exports.IS_RESIZING_CLASS + ",\n      #" + exports.SIDEBAR_GLASS_PANE_ID + "." + exports.IS_RESIZING_CLASS + " {\n        cursor: ns-resize !important;\n      }\n      \n    ";
+    styleTag.innerHTML = "\n      #" + exports.SIDEBAR_ID + " {\n        top: " + exports.DEFAULT_POS.top + "px;\n        left: " + exports.DEFAULT_POS.left + "px;\n        position: fixed;\n        width: 300px;\n        padding-top: 0px;\n        cursor: move;\n        background: #000000;\n        box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.3);\n        border-radius: 3px;\n        user-select: none;\n        z-index: " + Z_INDEX + ";\n        -moz-user-select: none;\n        -webkit-user-select: none;\n        -ms-user-select: none;\n        overflow: hidden;\n        transition: top 1s, left 1s;\n        transition-timing-function: ease-out;\n        display: none;\n      }\n      \n            \n      #" + exports.SIDEBAR_ID + "." + exports.IS_DRAGGED_CLASS + " {\n        transition: none;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.TITLE_BAR_CLASS + " {\n        position: relative;\n        font-family: AcrolinxRoboto, Roboto, sans-serif;\n        font-weight: 500;\n        line-height: 13px;\n        padding: 8px 10px;\n        font-size: 13px;\n        font-weight: normal;\n        color: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.CLOSE_ICON_CLASS + " {\n        position: absolute;\n        cursor: pointer;\n        margin-right: 4px;\n        top: 6px;\n        right: 3px;\n        width: 18px;\n        height: 18px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + HIDE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + ",\n      #" + exports.SIDEBAR_ID + " #acrolinxDragOverlay {\n        position: absolute; \n        top: 30px;\n        left: 0;\n        bottom: 0;\n        background: white;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_CONTAINER_ID + " iframe {\n        position: relative; \n        height: 100%;\n        border: none;\n      }\n      \n      #" + exports.SIDEBAR_ID + " #" + exports.SIDEBAR_DRAG_OVERLAY_ID + " {\n        position: absolute;\n        top: 20px;\n        left: 0;\n        height: 100%;\n        width: 300px;\n        background: transparent;\n        z-index: " + (Z_INDEX + 100) + ";\n      }\n       \n      #" + exports.SIDEBAR_GLASS_PANE_ID + " {\n        position: fixed;\n        width: 100%;\n        height: 100%;\n        margin: 0;\n        padding: 0;\n        top: 0;\n        left: 0;\n        background: white;\n        opacity: 0.6;\n        z-index: " + (Z_INDEX - 100) + ";\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + " {\n        position: absolute;\n        right: 3px;\n        bottom: 5px;\n        font-size: 20px;\n        font-weight: normal;\n        color: #333;\n        z-index: " + (Z_INDEX + 200) + ";\n        cursor: ns-resize;\n        transition: opacity 0.5s;\n        width: 24px;\n        height: 24px;\n        background-repeat: no-repeat;\n        background-image: url(\"data:image/svg+xml;base64," + RESIZE_ICON + "\");\n        -webkit-background-size: cover;\n        -moz-background-size: cover;\n        -o-background-size: cover;\n        background-size: cover;\n      }\n      \n      #" + exports.SIDEBAR_ID + " ." + exports.RESIZE_ICON_CLASS + ":hover {\n        opacity: 1;\n      }\n      \n      #" + exports.SIDEBAR_ID + "." + exports.IS_RESIZING_CLASS + ",\n      #" + exports.SIDEBAR_GLASS_PANE_ID + "." + exports.IS_RESIZING_CLASS + " {\n        cursor: ns-resize !important;\n      }\n      \n    ";
     head.appendChild(styleTag);
 }
 var TEMPLATE = "\n    <div id=\"" + exports.SIDEBAR_ID + "\">\n      <div class=\"" + exports.TITLE_BAR_CLASS + "\">Acrolinx <span class=\"" + exports.CLOSE_ICON_CLASS + "\" title=\"Hide\"></span></div>\n      <div id=\"" + exports.SIDEBAR_CONTAINER_ID + "\"></div>\n      <div id=\"" + exports.SIDEBAR_DRAG_OVERLAY_ID + "\"></div>\n      <div class=\"" + exports.RESIZE_ICON_CLASS + "\" title=\"Drag to resize\"></div>\n    </div>\n  ";
 function createDiv(attributes) {
-    if (attributes === void 0) { attributes = {}; }
     var el = document.createElement('div');
     acrolinx_libs_defaults_1._.assign(el, attributes);
     return el;
@@ -3131,11 +3200,8 @@ function show(el) {
 function createNodeFromTemplate(template) {
     return createDiv({ innerHTML: template.trim() }).firstChild;
 }
-var MAX_INITIAL_HEIGHT = 900;
-var MIN_INITIAL_HEIGHT = 400;
-var MIN_HEIGHT = 400;
-function initFloatingSidebar() {
-    var height = Math.max(MIN_INITIAL_HEIGHT, Math.min(MAX_INITIAL_HEIGHT, window.innerHeight - initialPos.top - 40));
+function initFloatingSidebar(config) {
+    var position = exports.DEFAULT_POS;
     var floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
     var dragOverlay = floatingSidebarElement.querySelector('#' + exports.SIDEBAR_DRAG_OVERLAY_ID);
     var closeIcon = floatingSidebarElement.querySelector('.' + exports.CLOSE_ICON_CLASS);
@@ -3147,12 +3213,11 @@ function initFloatingSidebar() {
     var relativeMouseDownX = 0;
     var relativeMouseDownY = 0;
     var isVisible = true;
-    function move(xpos, ypos) {
-        floatingSidebarElement.style.left = xpos + 'px';
-        floatingSidebarElement.style.top = ypos + 'px';
-    }
-    function applyHeight(newHeight) {
-        floatingSidebarElement.style.height = newHeight + 'px';
+    function move(positionUpdate) {
+        position = utils_1.assign(position, positionUpdate);
+        floatingSidebarElement.style.left = position.left + 'px';
+        floatingSidebarElement.style.top = position.top + 'px';
+        floatingSidebarElement.style.height = position.height + 'px';
     }
     function onEndDrag() {
         hide(dragOverlay);
@@ -3160,7 +3225,12 @@ function initFloatingSidebar() {
         isMoving = false;
         isResizing = false;
         floatingSidebarElement.classList.remove(exports.IS_RESIZING_CLASS);
+        floatingSidebarElement.classList.remove(exports.IS_DRAGGED_CLASS);
         glassPane.classList.remove(exports.IS_RESIZING_CLASS);
+        savePosition();
+    }
+    function savePosition() {
+        config.asyncStorage.set(exports.POSITION_KEY, position);
     }
     function hideFloatingSidebar() {
         hide(floatingSidebarElement);
@@ -3173,17 +3243,20 @@ function initFloatingSidebar() {
         else {
             show(floatingSidebarElement);
             isVisible = true;
+            pullInAnimationIfNeeded();
         }
     }
     document.addEventListener('mousemove', function (event) {
         if (isMoving) {
-            move(Math.max(event.clientX - relativeMouseDownX, 0), Math.max(event.clientY - relativeMouseDownY, 0));
+            move({
+                left: Math.max(event.clientX - relativeMouseDownX, 0),
+                top: Math.max(event.clientY - relativeMouseDownY, 0)
+            });
         }
         if (isResizing) {
             var floatingSidebarTop = floatingSidebarElement.getBoundingClientRect().top;
             var iconPositionOffset = 30;
-            height = Math.max(event.clientY - relativeMouseDownY + iconPositionOffset - floatingSidebarTop, MIN_HEIGHT);
-            applyHeight(height);
+            move({ height: Math.max(event.clientY - relativeMouseDownY + iconPositionOffset - floatingSidebarTop, MIN_HEIGHT) });
         }
     });
     floatingSidebarElement.addEventListener('mousedown', function (event) {
@@ -3193,6 +3266,7 @@ function initFloatingSidebar() {
         isMoving = true;
         show(dragOverlay);
         show(glassPane);
+        floatingSidebarElement.classList.add(exports.IS_DRAGGED_CLASS);
     });
     resizeIcon.addEventListener('mousedown', function (event) {
         relativeMouseDownY = event.clientY - resizeIcon.getBoundingClientRect().top;
@@ -3203,21 +3277,40 @@ function initFloatingSidebar() {
         show(glassPane);
         event.stopPropagation();
     });
+    function onResize() {
+        if (isVisible) {
+            move(keepVisible(position));
+        }
+    }
+    function pullInAnimationIfNeeded() {
+        setTimeout(function () {
+            move(keepVisible(position));
+        }, 1);
+    }
+    function remove() {
+        utils_1.removeElement(floatingSidebarElement);
+        utils_1.removeElement(dragOverlay);
+        window.removeEventListener('resize', onResize);
+        document.removeEventListener('mouseup', onEndDrag);
+    }
     document.addEventListener('mouseup', onEndDrag);
+    window.addEventListener('resize', onResize);
     closeIcon.addEventListener('click', hideFloatingSidebar);
     hide(dragOverlay);
     hide(glassPane);
     addStyles();
-    applyHeight(height);
+    loadInitialPos(config.asyncStorage).then(function (loadedPosition) {
+        show(floatingSidebarElement);
+        move(loadedPosition);
+        pullInAnimationIfNeeded();
+    });
     body.appendChild(floatingSidebarElement);
     body.appendChild(glassPane);
-    return {
-        toggleVisibility: toggleVisibility
-    };
+    return { toggleVisibility: toggleVisibility, remove: remove };
 }
 exports.initFloatingSidebar = initFloatingSidebar;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2}],16:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../utils/utils":28}],17:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var alignment_1 = require("../utils/alignment");
@@ -3291,7 +3384,7 @@ function lookupMatches(checkedDocument, currentDocument, matches, inputFormat) {
 }
 exports.lookupMatches = lookupMatches;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../utils/alignment":19,"../utils/logging":21,"../utils/text-extraction":26,"diff-match-patch":1}],17:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"../utils/alignment":20,"../utils/logging":22,"../utils/text-extraction":27,"diff-match-patch":1}],18:[function(require,module,exports){
 "use strict";
 function removeFunctions(object) {
     return JSON.parse(JSON.stringify(object));
@@ -3386,7 +3479,7 @@ function createPluginMessageAdapter() {
 }
 exports.createPluginMessageAdapter = createPluginMessageAdapter;
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 function getEditorAttributes(element) {
     var attributes = {
@@ -3398,7 +3491,7 @@ function getEditorAttributes(element) {
 }
 exports.getEditorAttributes = getEditorAttributes;
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 function findDisplacement(offsetMappingArray, originalIndex) {
@@ -3414,7 +3507,7 @@ function findNewIndex(offsetMappingArray, originalIndex) {
 }
 exports.findNewIndex = findNewIndex;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2}],20:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2}],21:[function(require,module,exports){
 "use strict";
 var HTML_ESCAPES = {
     '&': '&amp;',
@@ -3445,7 +3538,7 @@ function escapeHtmlCharacters(text) {
 }
 exports.escapeHtmlCharacters = escapeHtmlCharacters;
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 var isEnabled = false;
 function log(message) {
@@ -3463,14 +3556,14 @@ function enableLogging() {
 }
 exports.enableLogging = enableLogging;
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 function getCompleteFlagLength(matches) {
     return matches[matches.length - 1].range[1] - matches[0].range[0];
 }
 exports.getCompleteFlagLength = getCompleteFlagLength;
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 function getRootElement(doc) {
     return (doc.documentElement || doc.body.parentNode || doc.body);
@@ -3518,7 +3611,7 @@ function scrollIntoView(targetEl, windowTopOffset, localTopOffset) {
 }
 exports.scrollIntoView = scrollIntoView;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 var utils = require("./utils");
 exports.SIDEBAR_URL = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
@@ -3576,7 +3669,7 @@ function loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded) {
 }
 exports.loadSidebarIntoIFrame = loadSidebarIntoIFrame;
 
-},{"./utils":27}],25:[function(require,module,exports){
+},{"./utils":28}],26:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var utils_1 = require("./utils");
@@ -3650,7 +3743,7 @@ function getEndDomPos(endIndex, domPositions) {
 }
 exports.getEndDomPos = getEndDomPos;
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"./text-extraction":26,"./utils":27}],26:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"./text-extraction":27,"./utils":28}],27:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 var utils_1 = require("./utils");
@@ -3694,7 +3787,7 @@ function decodeEntities(entity) {
     return el.textContent || '';
 }
 
-},{"../acrolinx-libs/acrolinx-libs-defaults":2,"./utils":27}],27:[function(require,module,exports){
+},{"../acrolinx-libs/acrolinx-libs-defaults":2,"./utils":28}],28:[function(require,module,exports){
 "use strict";
 var acrolinx_libs_defaults_1 = require("../acrolinx-libs/acrolinx-libs-defaults");
 function logTime(text, f) {
@@ -3790,5 +3883,9 @@ function containsText(s) {
     return /\S/.test(s);
 }
 exports.containsText = containsText;
+function removeElement(el) {
+    el.parentNode.removeChild(el);
+}
+exports.removeElement = removeElement;
 
 },{"../acrolinx-libs/acrolinx-libs-defaults":2}]},{},[4]);
