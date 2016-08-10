@@ -2522,8 +2522,8 @@ var AbstractRichtextEditorAdapter = (function () {
     AbstractRichtextEditorAdapter.prototype.getTextDomMapping = function () {
         return text_dom_mapping_1.extractTextDomMapping(this.getEditorElement());
     };
-    AbstractRichtextEditorAdapter.prototype.getEditorAttributes = function () {
-        return adapter_utils_1.getEditorAttributes(this.getEditorElement());
+    AbstractRichtextEditorAdapter.prototype.getAutobindWrapperAttributes = function () {
+        return adapter_utils_1.getAutobindWrapperAttributes(this.getEditorElement());
     };
     return AbstractRichtextEditorAdapter;
 }());
@@ -2569,8 +2569,7 @@ var AutoBindAdapter = (function () {
         var _this = this;
         this.multiAdapter = new MultiEditorAdapter_1.MultiEditorAdapter(this.conf);
         autobind_1.bindAdaptersForCurrentPage(this.conf).forEach(function (adapter) {
-            var editorAttributes = adapter.getEditorAttributes ? adapter.getEditorAttributes() : {};
-            var wrapperAttributes = _.mapKeys(editorAttributes, function (_value, key) { return 'original-' + key; });
+            var wrapperAttributes = adapter.getAutobindWrapperAttributes ? adapter.getAutobindWrapperAttributes() : {};
             _this.multiAdapter.addSingleAdapter(adapter, { attributes: wrapperAttributes });
         });
         return this.multiAdapter.extractContentForCheck();
@@ -2767,8 +2766,8 @@ var InputAdapter = (function () {
         this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
         utils_1.fakeInputEvent(this.element);
     };
-    InputAdapter.prototype.getEditorAttributes = function () {
-        return adapter_utils_1.getEditorAttributes(this.element);
+    InputAdapter.prototype.getAutobindWrapperAttributes = function () {
+        return adapter_utils_1.getAutobindWrapperAttributes(this.element);
     };
     return InputAdapter;
 }());
@@ -3481,15 +3480,16 @@ exports.createPluginMessageAdapter = createPluginMessageAdapter;
 
 },{}],19:[function(require,module,exports){
 "use strict";
-function getEditorAttributes(element) {
+function getAutobindWrapperAttributes(element) {
     var attributes = {
-        id: element.id,
-        class: element.className,
-        name: element.name
+        'original-id': element.id,
+        'original-class': element.className,
+        'original-name': element.name,
+        'original-source': element.tagName.toLowerCase()
     };
     return _.omitBy(attributes, _.isEmpty);
 }
-exports.getEditorAttributes = getEditorAttributes;
+exports.getAutobindWrapperAttributes = getAutobindWrapperAttributes;
 
 },{}],20:[function(require,module,exports){
 "use strict";
