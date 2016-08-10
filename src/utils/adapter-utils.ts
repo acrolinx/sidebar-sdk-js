@@ -1,11 +1,11 @@
-import {EditorAttributes} from "../adapters/AdapterInterface";
+import {AutobindWrapperAttributes} from "../adapters/AdapterInterface";
 
-export function getEditorAttributes(element: Element) {
-  const attributes: EditorAttributes =  {
-    id: element.id,
-    class: element.className,
-    name: (element as HTMLInputElement).name,
-    source: element.tagName.toLowerCase()
+export function getAutobindWrapperAttributes(element: Element) {
+  const attributes: AutobindWrapperAttributes = {
+    'original-id': element.id,
+    'original-class': element.className,
+    'original-name': (element as HTMLInputElement).name,
+    'original-source': element.tagName.toLowerCase()
   };
-  return _.omitBy(attributes, _.isEmpty) as EditorAttributes;
+  return _.omitBy(attributes, _.isEmpty) as AutobindWrapperAttributes;
 }

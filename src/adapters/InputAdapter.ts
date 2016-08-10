@@ -26,7 +26,7 @@ import {getCompleteFlagLength} from "../utils/match";
 import {scrollIntoView} from "../utils/scrolling";
 import {lookupMatches} from "../lookup/diff-based";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
-import {getEditorAttributes} from "../utils/adapter-utils";
+import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
 type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
@@ -124,7 +124,7 @@ export class InputAdapter implements AdapterInterface {
     fakeInputEvent(this.element);
   }
 
-  getEditorAttributes() {
-    return getEditorAttributes(this.element);
+  getAutobindWrapperAttributes() {
+    return getAutobindWrapperAttributes(this.element);
   }
 }

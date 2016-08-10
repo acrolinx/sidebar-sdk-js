@@ -1,5 +1,7 @@
 import assert = chai.assert;
 import {bindAdaptersForCurrentPage} from "../../src/autobind/autobind";
+import {AutoBindAdapter} from "../../src/adapters/AutoBindAdapter";
+import {hasError} from "../../src/adapters/AdapterInterface";
 
 describe('autobind', function () {
   const containerDivId = 'autoBindTest';
@@ -111,5 +113,28 @@ describe('autobind', function () {
     assert.equal(adapters.length, 0);
   });
 
+
+  describe('AutoBindAdapter', () => {
+    it('uses wrapper attributes from adapters', (done) => {
+      setPageContent(`
+          <input id="inputId" class="inputClass" name="inputName" value="text"/>
+          <div id="divId" class="divClass" contenteditable="true">html</div>
+      `);
+
+      const autobindAdapter = new AutoBindAdapter({});
+      const extractedContent = autobindAdapter.extractContentForCheck();
+      extractedContent.then(result => {
+        if (hasError(result)) {
+          done(result.error);
+          return;
+        }
+        assert.equal(result.content,
+          '<div original-id="inputId" original-class="inputClass" original-name="inputName" original-source="input" id="acrolinx_integration0">text</div>' +
+          '<div original-id="divId" original-class="divClass" original-source="div" id="acrolinx_integration1">html</div>'
+        );
+        done();
+      }).catch(done);
+    });
+  });
 
 });

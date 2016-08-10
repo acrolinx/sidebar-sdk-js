@@ -19,24 +19,22 @@
  */
 
 import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
-import {AdapterInterface} from "./AdapterInterface";
-import {MultiEditorAdapter} from "./MultiEditorAdapter";
+import {AdapterInterface, ContentExtractionResult} from "./AdapterInterface";
+import {MultiEditorAdapter, MultiEditorAdapterConfig} from "./MultiEditorAdapter";
 import {bindAdaptersForCurrentPage} from "../autobind/autobind";
-import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 
 export class AutoBindAdapter implements AdapterInterface {
   private multiAdapter: MultiEditorAdapter;
-  private conf: AcrolinxPluginConfig;
+  private conf: MultiEditorAdapterConfig;
 
-  constructor(conf: AcrolinxPluginConfig) {
+  constructor(conf: MultiEditorAdapterConfig) {
     this.conf = conf;
   }
 
-  extractContentForCheck() {
+  extractContentForCheck(): Promise<ContentExtractionResult> {
     this.multiAdapter = new MultiEditorAdapter(this.conf);
     bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
-      const editorAttributes = adapter.getEditorAttributes ? adapter.getEditorAttributes() : {};
-      const wrapperAttributes = _.mapKeys(editorAttributes, (_value, key) => 'original-' + key);
+      const wrapperAttributes = adapter.getAutobindWrapperAttributes ? adapter.getAutobindWrapperAttributes() : {};
       this.multiAdapter.addSingleAdapter(adapter, {attributes: wrapperAttributes});
     });
     return this.multiAdapter.extractContentForCheck();

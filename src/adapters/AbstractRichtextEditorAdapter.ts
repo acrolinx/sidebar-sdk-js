@@ -26,7 +26,7 @@ import {lookupMatches} from "../lookup/diff-based";
 import {getCompleteFlagLength} from "../utils/match";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
 import {AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
-import {getEditorAttributes} from "../utils/adapter-utils";
+import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
 
 type TextMapping = TextDomMapping
@@ -175,8 +175,8 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     return extractTextDomMapping(this.getEditorElement());
   }
 
-  getEditorAttributes() {
-    return getEditorAttributes(this.getEditorElement());
+  getAutobindWrapperAttributes() {
+    return getAutobindWrapperAttributes(this.getEditorElement());
   }
 
 }
