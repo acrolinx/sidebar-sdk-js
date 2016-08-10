@@ -2,7 +2,7 @@
 
 Showcase and library for an integration of the [Acrolinx](http://www.acrolinx.com/) sidebar into a web application.
 
-## (#table-of-content) Table of Content
+## Table of Content
 
 ## Prerequisites
 
