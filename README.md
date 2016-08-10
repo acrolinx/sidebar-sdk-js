@@ -6,10 +6,15 @@ The library contains adapters to use in your web integration. These are ready to
 ## Table of Content
 
 [The Acrolinx Sidebar](#the-acrolinx-sidebar)
+
 [Prerequisites](#prerequisites)
+
 [Setting up the Sidebar Example](#setting-up-the-sidebar-example)
+
 [Getting started with your own integration](#getting-started-with-your-own-integration )
+
 [Sidebar API Documentation](#sidebar-api-documentation)
+
 [License](#license)
 
 ## The Acrolinx Sidebar
@@ -39,15 +44,19 @@ Before you start developing your own integration, you might benefit from looking
 
 2. Install all required node modules with:
 
-    npm install
+    ```
+        npm install
+    ```
 
 3. Before you can run this example, you need to configure some settings in the [config.js](/samples/config.js). 
-   Please fill in 'clientSignature' and 'serverAdress' with the values that were provided by Acrolinx (after your kickoff meeting).
+   Please fill in `clientSignature` and `serverAdress` with the values that were provided by Acrolinx (after your kickoff meeting).
    Note that this sample will only connect to Acrolinx Servers using HTTPS and having [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) enabled.
 
 4. Now you can start the development server by typing:
-   
+  
+   ```
        grunt
+   ```
    
    (If grunt complains while the bower:install task, you might have to execute "bower install" manually.)
    
