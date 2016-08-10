@@ -1,12 +1,17 @@
 # Acrolinx Sidebar Demo
 
-Demo code for an integration of the Acrolinx sidebar into a web application
+Showcase and library for an integration of the [Acrolinx](http://www.acrolinx.com/) sidebar into a web application.
+
+## [Table of Content](#table-of-content)
 
 ## Prerequisites
 
 Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for initial consulting. 
 We like to schedule a kickoff meeting to answer any questions about your integration project. 
 After the meeting, we provide you with test server credentials and configuration settings you need to get started.
+
+[back to top](#table-of-content)
+
 
 ## Configuration of the Sidebar Example
 
@@ -35,8 +40,7 @@ Now open [http://localhost:9002](http://localhost:9002) in your web-browser.
 
 ## Sidebar API Documentation
 
-You can find the Sidebar API Documentation as a TypeScript .d.ts file here:  
-https://support.acrolinx.com/hc/en-us/articles/205687652-Acrolinx-Sidebar-API-Reference 
+
 
 ## License
 
