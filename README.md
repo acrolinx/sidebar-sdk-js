@@ -2,15 +2,13 @@
 
 Showcase and library for an integration of the [Acrolinx](http://www.acrolinx.com/) sidebar into a web application.
 
-## [Table of Content](#table-of-content)
+## (#table-of-content) Table of Content
 
 ## Prerequisites
 
 Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for initial consulting. 
 We like to schedule a kickoff meeting to answer any questions about your integration project. 
 After the meeting, we provide you with test server credentials and configuration settings you need to get started.
-
-[back to top](#table-of-content)
 
 
 ## Configuration of the Sidebar Example
@@ -59,5 +57,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 For more information visit: http://www.acrolinx.com
+
+[back to top](#table-of-content)
 
 
