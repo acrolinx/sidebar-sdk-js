@@ -4,37 +4,54 @@
  * Let's understand how the typical bootstrapping of an integration and the Acrolinx Sidebar works:
  *
  * 1) Load host editor of your integration
- * 2) Load your integration code
- * 3) Register your integration as acrolinxPlugin (var acrolinxPlugin = {...})
- *    @see AcrolinxPlugin interface for required methods
- * 4) Load sidebar and referenced libs code (usually sidebar.js, libs.js, sidebar.css)
- * 5) Once the sidebar has finished loading it will request the integration to initialize.
- *    acrolinxPlugin.requestInit() will be called.
- * 6) The acrolinxPlugin must call acrolinxSidebar.init(InitParameter).
- * 7) Once the init has finished, the plug-in will be notified: acrolinxPlugin.onInitFinished() is called.
- * 8) From time to time, the sidebar will call acrolinxPlugin.Configure() to push the latest configuration to the
- *    plug-in.
- * 9) If the user pushes the button "Check", acrolinxPlugin.requestGlobalCheck() is called.
- * 10) The acrolinxPlugin must call acrolinxSidebar.checkGlobal() to perform a check.
- *     @see acrolinxSidebar.checkGlobal()
- * 11) When the check finished, acrolinxPlugin.onCheckResult() is called and the sidebar displays cards for the issues.
- * 12) If the user clicks a card acrolinxPlugin.selectRanges() is called
- * 13) When the user selects a replacement acrolinxPlugin.replaceRanges() is called.
- * 14) ... @see method description on AcrolinxPlugin
  *
- * For a minimal integration (not feature complete) you must implement requestInit, requestGlobalCheck, configure,
- *   selectRanges, replaceRanges and download.
+ * 2) Load your integration code
+ *
+ * 3) Register your integration as acrolinxPlugin (var acrolinxPlugin = {...})
+ *    {@link AcrolinxPlugin} interface for required methods
+ *
+ * 4) Load sidebar and referenced libs code (usually sidebar.js, libs.js, sidebar.css)
+ *
+ * 5) Once the sidebar has finished loading it will request the integration to initialize.
+ *    {@link AcrolinxPlugin.requestInit|requestInit} will be called.
+ *
+ * 6) The AcrolinxPlugin must call {@link AcrolinxSidebar.init|init}.
+ *
+ * 7) Once the init has finished, the plug-in will be notified: {@link AcrolinxPlugin.onInitFinished|onInitFinished} is called.
+ *
+ * 8) From time to time, the sidebar will call {@link AcrolinxPlugin.configure|configure} to push the latest configuration to the
+ *    plug-in.
+ *
+ * 9) If the user pushes the button "Check", {@link AcrolinxPlugin.requestGlobalCheck|requestGlobalCheck} is called.
+ *
+ * 10) The acrolinxPlugin must call {@link AcrolinxSidebar.checkGlobal|checkGlobal} to perform a check.
+ *
+ * 11) When the check finished, {@link AcrolinxPlugin.onCheckResult|onCheckResult} is called and the sidebar displays cards for the issues.
+ *
+ * 12) If the user clicks a card {@link AcrolinxPlugin.selectRanges|selectRanges} is called
+ *
+ * 13) When the user selects a replacement {@link AcrolinxPlugin.replaceRanges|replaceRanges} is called.
+ *
+ * For a minimal integration (not feature complete) you must implement {@link requestInit}, {@link requestGlobalCheck}, {@link configure},
+ *   {@link selectRanges}, {@link replaceRanges} and {@link download}.
  */
 
+
+/**
+ *
+ * @interface InitParameters
+ */
 export interface InitParameters {
 
   /**
+   *
    * Provides information about your integration and other client software components for the about dialog and
    * analytics.
    */
   clientComponents?: SoftwareComponent[];
 
   /**
+   *
    * Should be equal to or start with "en", "de", "fr", "sv" or "ja".
    */
   clientLocale?: string;
@@ -144,7 +161,7 @@ export const SoftwareComponentCategory = {
    * dialog or not at all.
    */
   DETAIL: 'DETAIL'
-};
+}
 
 /**
  * Check options describe how the server should handle the checked document.
@@ -210,7 +227,7 @@ export interface CheckResult {
 export interface CheckedDocumentPart {
   /**
    * The id of the check where the document part belongs to.
-   * @see Check
+   *
    */
   checkId: string;
 
@@ -255,7 +272,7 @@ export interface MatchWithReplacement extends Match {
 
 /**
  * An asset which should be downloaded by the integration and stored as the specified file name.
- * @see AcrolinxPlugin.download()
+ *
  */
 export interface DownloadInfo {
   /**
@@ -409,7 +426,6 @@ export interface AcrolinxPlugin {
   /**
    * The check button has been pushed and the AcrolinxPlugin is requested to call AcrolinxSidebar.checkGlobal().
    *
-   * @see AcrolinxSidebar.checkGlobal()
    */
   requestGlobalCheck(): void;
 
@@ -422,16 +438,20 @@ export interface AcrolinxPlugin {
   /**
    * The integration should highlight and focus the matches belonging to the check of the checkId.
    * For selecting ranges, different strategies can be applied. A short overview:
+   *
    * 1) Search: You just search for the content-attributes of the matches. The search can be improved by some fuzzy
    * matching and adding some characters from before and after the match to the search string. pro: easy in a simple
    * version, more or less stateless - con: fuzzy
+   *
    * 2) Mapping: At the time you call check, you keep the document content and create a one to one mapping between
    * the document you checked and the document in your editor. This mapping needs to be kept up to date. Some editors
    * provide interfaces to easily implement that. pro: up to 100% exact - con: can be difficult or impossible to
    * implement, can be slow, requires a lot of memory
+   *
    * 3) Indexing: Before calling check, you scatter indices in the document, which can be kept in source as well as
    * in the requested document. These indices reduce the search space later on, so that your search will be faster
    * and more precise. pro: fast, up to 100% precise - con: invasive, changes the source document
+   *
    * 4) Combinations: You can combine all these methods to improve the positive aspects and reduce the negative
    * aspects of each strategy.
    *

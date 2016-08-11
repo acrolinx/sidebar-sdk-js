@@ -50,7 +50,7 @@ Before you start developing your own integration, you might benefit from looking
 
 3. Before you can run this example, you need to configure some settings in the [config.js](/samples/config.js). 
    Please fill in `clientSignature` and `serverAdress` with the values that were provided by Acrolinx (after your kickoff meeting).
-   Note that this sample will only connect to Acrolinx Servers using HTTPS and having [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) enabled.
+   Note that the sidebar will only connect to Acrolinx Servers, that have [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) enabled, using HTTPS.
 
 4. Now you can start the development server by typing:
   
@@ -82,7 +82,7 @@ However Acrolinx provides some reference integrations with TinyMCE and CKEditor.
 
 ## Sidebar API Documentation
 
-For now check the [sidebar plugin interface](src/acrolinx-libs/plugin-interfaces.ts).
+Check our [sidebar plugin API](http://htmlpreview.github.com/?https://github.com/acrolinx/acrolinx-sidebar-demo/tree/master/doc/pluginDoc/modules/_plugin_interfaces_.html).
 
 ## License
 
