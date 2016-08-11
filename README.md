@@ -82,7 +82,7 @@ However Acrolinx provides some reference integrations with TinyMCE and CKEditor.
 
 ## Sidebar API Documentation
 
-Check our [sidebar plugin API](http://htmlpreview.github.com/?https://github.com/acrolinx/acrolinx-sidebar-demo/tree/master/doc/pluginDoc/modules/_plugin_interfaces_.html).
+Check our [sidebar plugin API](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/blob/master/doc/pluginDoc/modules/_plugin_interfaces_.html).
 
 ## License
 
