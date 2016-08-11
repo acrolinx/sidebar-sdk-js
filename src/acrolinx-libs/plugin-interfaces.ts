@@ -129,14 +129,15 @@ export interface SoftwareComponent {
 
   /**
    * The version of the software component.
-   * Format: ${major}.${minor}.${patch}.${buildNumber}
-   * Example: '1.2.3.574'
+   * @format: ${major}.${minor}.${patch}.${buildNumber}
+   * @example: '1.2.3.574'
    */
   version: string;
 
   /**
-   * @See SoftwareComponentCategory
+   *
    * Default value if omitted: 'DEFAULT'
+   * @type SoftwareComponentCategory
    */
   category?: string;
 }
@@ -176,6 +177,7 @@ export interface CheckOptions {
   /**
    * Tells the server if the document content used AcrolinxSidebar.checkGlobal()
    * is base64 encoded and gzipped.
+   *
    * Note: You only can set this setting and encode and compress your document content, if the sidebar supports this
    * function. Check the AcrolinxPluginConfiguration.supported.base64EncodedGzippedDocumentContent which is pushed
    * via AcrolinxPlugin.configure().
@@ -193,7 +195,7 @@ export interface CheckOptions {
 
 
 /**
- * Each checkGlobal() call will return an unique id, which helps the plugin to map results,
+ * Each @link{checkGlobal} call will return an unique id, which helps the plugin to map results,
  * selection, and replacement requests to the corresponding checked document. This is necessary, because the returned
  * offsets are only valid for the document at a specific point in time. All changes made to the document after the
  * check call will make the offsets invalid. That's why it’s a good idea to store the submitted document contents
@@ -291,7 +293,7 @@ export interface OpenWindowParameters {
 }
 
 /**
- * The result of the AcrolinxSidebar.init(), which can contain an error.
+ * The result of {@link init}, which can contain an error.
  */
 export interface InitResult {
   error?: SidebarError;
@@ -350,6 +352,7 @@ export interface AcrolinxSidebar {
    * After calling this method, the sidebar will become ready for checking and call onInitFinished.
    *
    * @example
+   * ```
    *  acrolinxSidebar.init({
    *    clientSignature: 'sdfasdfiIOJEIEJIOR',
    *    pluginDownloadInfo: {
@@ -358,6 +361,7 @@ export interface AcrolinxSidebar {
    *      installedPluginBuildNumber:'42'
    *    }
    *  });
+   *  ```
    */
   init (initParameters: InitParameters): void;
 
