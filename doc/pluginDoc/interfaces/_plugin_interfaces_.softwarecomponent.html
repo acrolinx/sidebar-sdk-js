@@ -73,7 +73,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Provides information about your integration and other client software components for the about dialog and
+						<p>Provide information about your integration and other client software components for the about dialog and
 						analytics.</p>
 					</div>
 				</div>
@@ -110,14 +110,17 @@
 					<div class="tsd-signature tsd-kind-icon">category<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L141">plugin-interfaces.ts:141</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L161">plugin-interfaces.ts:161</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Check <a href="../modules/_plugin_interfaces_.html#softwarecomponentcategory">SoftwareComponentCategory</a> to choose the right value for your component.
+							By default value this value will be set to &#39;DEFAULT&#39;.</p>
+						</div>
 						<dl class="tsd-comment-tags">
-							<dt>see</dt>
-							<dd><p>SoftwareComponentCategory
-								Default value if omitted: &#39;DEFAULT&#39;</p>
+							<dt>type</dt>
+							<dd><p>SoftwareComponentCategory</p>
 							</dd>
 						</dl>
 					</div>
@@ -128,7 +131,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L122">plugin-interfaces.ts:122</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L141">plugin-interfaces.ts:141</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -144,13 +147,13 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L128">plugin-interfaces.ts:128</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L147">plugin-interfaces.ts:147</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>The name if the software component.
-							This name will be displayed in the UI.</p>
+							This name will be displayed in the sidebars about dialog.</p>
 						</div>
 					</div>
 				</section>
@@ -160,15 +163,21 @@
 					<div class="tsd-signature tsd-kind-icon">version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L135">plugin-interfaces.ts:135</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L154">plugin-interfaces.ts:154</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The version of the software component.
-								Format: ${major}.${minor}.${patch}.${buildNumber}
-							Example: &#39;1.2.3.574&#39;</p>
+							<p>The version of the software component.</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>format</dt>
+							<dd><p>: ${major}.${minor}.${patch}.${buildNumber}</p>
+							</dd>
+							<dt>example</dt>
+							<dd><p>: &#39;1.2.3.574&#39;</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 			</section>

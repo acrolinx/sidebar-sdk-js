@@ -114,23 +114,20 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L379">plugin-interfaces.ts:379</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L403">plugin-interfaces.ts:403</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p> Perform a check of the whole document. Once the check is done, acrolinxPlugin.onCheckResult() will be notified.</p>
+									<p> Perform a check of the whole document. Once the check is done, <a href="_plugin_interfaces_.acrolinxplugin.html#oncheckresult">AcrolinxPlugin.onCheckResult</a> will be notified.</p>
 								</div>
-								<dl class="tsd-comment-tags">
-									<dt>example</dt>
-									<dd><p>acrolinxSidebar.checkGlobal(&#39;<sample>my text</sample>&#39;, {
-											inputFormat: &#39;XML&#39;,
-											requestDescription: {
-											documentReference: &#39;myfile.xml&#39;
-											}
-										}):</p>
-									</dd>
-								</dl>
+								<pre><code><span class="hljs-selector-tag">acrolinxSidebar</span><span class="hljs-selector-class">.checkGlobal</span>(<span class="hljs-string">'&lt;sample&gt;my text&lt;/sample&gt;'</span>, {
+   <span class="hljs-attribute">inputFormat</span>: <span class="hljs-string">'XML'</span>,
+   <span class="hljs-attribute">requestDescription</span>: {
+     <span class="hljs-attribute">documentReference</span>: <span class="hljs-string">'myfile.xml'</span>
+   }
+});
+</code></pre>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -159,7 +156,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L362">plugin-interfaces.ts:362</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L385">plugin-interfaces.ts:385</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -167,18 +164,15 @@
 									<p>Initializes the sidebar with the specified initParameters.
 									After calling this method, the sidebar will become ready for checking and call onInitFinished.</p>
 								</div>
-								<dl class="tsd-comment-tags">
-									<dt>example</dt>
-									<dd><p> acrolinxSidebar.init({
-											clientSignature: &#39;sdfasdfiIOJEIEJIOR&#39;,
-											pluginDownloadInfo: {
-											installedPluginName:&#39;Acrolinx for Me&#39;,
-											installedPluginVersion:&#39;1&#39;,
-											installedPluginBuildNumber:&#39;42&#39;
-											}
-										});</p>
-									</dd>
-								</dl>
+								<pre><code> <span class="hljs-selector-tag">acrolinxSidebar</span><span class="hljs-selector-class">.init</span>({
+   <span class="hljs-attribute">clientSignature</span>: <span class="hljs-string">'sdfasdfiIOJEIEJIOR'</span>,
+   <span class="hljs-attribute">pluginDownloadInfo</span>: {
+     <span class="hljs-attribute">installedPluginName</span>:<span class="hljs-string">'Acrolinx for Me'</span>,
+     <span class="hljs-attribute">installedPluginVersion</span>:<span class="hljs-string">'1'</span>,
+     <span class="hljs-attribute">installedPluginBuildNumber</span>:<span class="hljs-string">'42'</span>
+   }
+ });
+</code></pre>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -200,12 +194,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L388">plugin-interfaces.ts:388</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L413">plugin-interfaces.ts:413</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>This function can be used to invalidate parts of the document, which had been changed or deleted.</p>
+									<p>This function can be used to invalidate check result cards that link to invalid parts of the document.
+									That can happen due to changes or deletions in the document.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -231,7 +226,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L381">plugin-interfaces.ts:381</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L405">plugin-interfaces.ts:405</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -248,7 +243,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L395">plugin-interfaces.ts:395</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L420">plugin-interfaces.ts:420</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

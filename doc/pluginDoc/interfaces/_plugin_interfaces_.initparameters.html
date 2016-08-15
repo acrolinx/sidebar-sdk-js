@@ -117,12 +117,13 @@
 					<div class="tsd-signature tsd-kind-icon">check<wbr>Settings<span class="tsd-signature-symbol">:</span> <a href="_plugin_interfaces_.checksettings.html" class="tsd-signature-type">CheckSettings</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L77">plugin-interfaces.ts:77</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L87">plugin-interfaces.ts:87</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>This settings will overwrite the saved settings of the user.</p>
+							<p>With this property you can define check settings that will apply to all triggered checks.
+							This settings will overwrite the saved settings of the user.</p>
 						</div>
 					</div>
 				</section>
@@ -132,14 +133,16 @@
 					<div class="tsd-signature tsd-kind-icon">client<wbr>Components<span class="tsd-signature-symbol">:</span> <a href="_plugin_interfaces_.softwarecomponent.html" class="tsd-signature-type">SoftwareComponent</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L51">plugin-interfaces.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L57">plugin-interfaces.ts:57</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Provides information about your integration and other client software components for the about dialog and
-							analytics.</p>
+							<p>These provide information about your integration and other client software components to display them
+							in the sidebars about dialog. In addition they are used for analytics.</p>
 						</div>
+						<p>They should include information about your plugin and can contain additional libraries or components you are using
+						in your integration. For details check <a href="_plugin_interfaces_.softwarecomponent.html">SoftwareComponent</a>.</p>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
@@ -148,12 +151,12 @@
 					<div class="tsd-signature tsd-kind-icon">client<wbr>Locale<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L57">plugin-interfaces.ts:57</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L63">plugin-interfaces.ts:63</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Should be equal to or start with &quot;en&quot;, &quot;de&quot;, &quot;fr&quot;, &quot;sv&quot; or &quot;ja&quot;.</p>
+							<p>The client locale should be equal to or start with &quot;en&quot;, &quot;de&quot;, &quot;fr&quot;, &quot;sv&quot; or &quot;ja&quot;. By default it is set to &quot;en&quot;.</p>
 						</div>
 					</div>
 				</section>
@@ -163,12 +166,13 @@
 					<div class="tsd-signature tsd-kind-icon">client<wbr>Signature<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L62">plugin-interfaces.ts:62</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L70">plugin-interfaces.ts:70</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p> The integration specific clientSignature. To get one, ask your Acrolinx contact.</p>
+							<p> The integration specific clientSignature. To get one, ask your Acrolinx contact. It is used to register and
+							identify your plugin.</p>
 						</div>
 					</div>
 				</section>
@@ -178,7 +182,7 @@
 					<div class="tsd-signature tsd-kind-icon">default<wbr>Check<wbr>Settings<span class="tsd-signature-symbol">:</span> <a href="_plugin_interfaces_.checksettings.html" class="tsd-signature-type">CheckSettings</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L83">plugin-interfaces.ts:83</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L93">plugin-interfaces.ts:93</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -194,9 +198,15 @@
 					<div class="tsd-signature tsd-kind-icon">enable<wbr>Single<wbr>Sign<wbr>On<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L85">plugin-interfaces.ts:85</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L100">plugin-interfaces.ts:100</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If your Acrolinx Server is configured to support single sign on, you have to set this property to true in order to
+							enable single sign on from your integration.</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="enforcehttps" class="tsd-anchor"></a>
@@ -204,12 +214,12 @@
 					<div class="tsd-signature tsd-kind-icon">enforceHTTPS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L96">plugin-interfaces.ts:96</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L112">plugin-interfaces.ts:112</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>This setting will prevent connection with server via other than HTTPS protocol.</p>
+							<p>This setting will prevent any connection with an Acrolinx Server via other than HTTPS protocol.</p>
 						</div>
 					</div>
 				</section>
@@ -219,7 +229,7 @@
 					<div class="tsd-signature tsd-kind-icon">read<wbr>Only<wbr>Suggestions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L91">plugin-interfaces.ts:91</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L106">plugin-interfaces.ts:106</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -235,12 +245,13 @@
 					<div class="tsd-signature tsd-kind-icon">server<wbr>Address<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L67">plugin-interfaces.ts:67</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L76">plugin-interfaces.ts:76</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Default value is &#39;&#39; which means the base URL of the host that it runs from.</p>
+							<p>By default value of this property is &#39;&#39;. That means the base URL of the host that your plugin runs from.
+							If your Acrolinx Server runs on a different host, you have to put the address here.</p>
 						</div>
 					</div>
 				</section>
@@ -250,12 +261,12 @@
 					<div class="tsd-signature tsd-kind-icon">show<wbr>Server<wbr>Selector<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/836951b/src/acrolinx-libs/plugin-interfaces.ts#L72">plugin-interfaces.ts:72</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/17a9158/src/acrolinx-libs/plugin-interfaces.ts#L81">plugin-interfaces.ts:81</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Enables user to manually change the serverAddress on the sign in screen.</p>
+							<p>This property enables the user to manually change the serverAddress on the log-in screen.</p>
 						</div>
 					</div>
 				</section>

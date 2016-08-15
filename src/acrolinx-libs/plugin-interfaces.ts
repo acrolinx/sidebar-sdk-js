@@ -3,23 +3,27 @@
  *
  * Let's understand how the typical bootstrapping of an integration and the Acrolinx Sidebar works:
  *
- * 1) Load host editor of your integration
+ * 1) Load the host editor of your integration.
  *
- * 2) Load your integration code
+ * 2) Load your integration code.
  *
- * 3) Register your integration as acrolinxPlugin (var acrolinxPlugin = {...})
- *    {@link AcrolinxPlugin} interface for required methods
+ * 3) Register your integration as an AcrolinxPlugin.
  *
- * 4) Load sidebar and referenced libs code (usually sidebar.js, libs.js, sidebar.css)
+ *  ```
+ *  var acrolinxPlugin = {...}
+ *  ```
+ *  Check the {@link AcrolinxPlugin} interface for required methods, that you have to implement.
  *
- * 5) Once the sidebar has finished loading it will request the integration to initialize.
- *    {@link AcrolinxPlugin.requestInit|requestInit} will be called.
+ * 4) Load the sidebar and the referenced libraries code (usually sidebar.js, libs.js, sidebar.css).
  *
- * 6) The AcrolinxPlugin must call {@link AcrolinxSidebar.init|init}.
+ * 5) Once the sidebar has finished loading it will request the integration to initialize by calling
+ *    {@link AcrolinxPlugin.requestInit|requestInit}.
  *
- * 7) Once the init has finished, the plug-in will be notified: {@link AcrolinxPlugin.onInitFinished|onInitFinished} is called.
+ * 6) The AcrolinxPlugin now must call {@link AcrolinxSidebar.init|init}.
  *
- * 8) From time to time, the sidebar will call {@link AcrolinxPlugin.configure|configure} to push the latest configuration to the
+ * 7) Once the init process has finished, the plug-in will be notified: {@link AcrolinxPlugin.onInitFinished|onInitFinished}.
+ *
+ * 8) After initializing the sidebar will call {@link AcrolinxPlugin.configure|configure} and push the latest configuration to the
  *    plug-in.
  *
  * 9) If the user pushes the button "Check", {@link AcrolinxPlugin.requestGlobalCheck|requestGlobalCheck} is called.
@@ -44,34 +48,40 @@
 export interface InitParameters {
 
   /**
+   * These provide information about your integration and other client software components to display them
+   * in the sidebars about dialog. In addition they are used for analytics.
    *
-   * Provides information about your integration and other client software components for the about dialog and
-   * analytics.
+   * They should include information about your plugin and can contain additional libraries or components you are using
+   * in your integration. For details check {@link SoftwareComponent}.
    */
   clientComponents?: SoftwareComponent[];
 
   /**
    *
-   * Should be equal to or start with "en", "de", "fr", "sv" or "ja".
+   * The client locale should be equal to or start with "en", "de", "fr", "sv" or "ja". By default it is set to "en".
    */
   clientLocale?: string;
 
   /**
-   *  The integration specific clientSignature. To get one, ask your Acrolinx contact.
+   *  The integration specific clientSignature. To get one, ask your Acrolinx contact. It is used to register and
+   *  identify your plugin.
+   *
    */
   clientSignature?: string;
 
   /**
-   * Default value is '' which means the base URL of the host that it runs from.
+   * By default value of this property is ''. That means the base URL of the host that your plugin runs from.
+   * If your Acrolinx Server runs on a different host, you have to put the address here.
    */
   serverAddress?: string;
 
   /**
-   * Enables user to manually change the serverAddress on the sign in screen.
+   * This property enables the user to manually change the serverAddress on the log-in screen.
    */
   showServerSelector?: boolean;
 
   /**
+   * With this property you can define check settings that will apply to all triggered checks.
    * This settings will overwrite the saved settings of the user.
    */
   checkSettings?: CheckSettings;
@@ -82,6 +92,11 @@ export interface InitParameters {
    */
   defaultCheckSettings?: CheckSettings;
 
+  /**
+   * If your Acrolinx Server is configured to support single sign on, you have to set this property to true in order to
+   * enable single sign on from your integration.
+   *
+   */
   enableSingleSignOn?: boolean;
 
   /**
@@ -91,12 +106,16 @@ export interface InitParameters {
   readOnlySuggestions?: boolean;
 
   /**
-   * This setting will prevent connection with server via other than HTTPS protocol.
+   * This setting will prevent any connection with an Acrolinx Server via other than HTTPS protocol.
+   *
    */
   enforceHTTPS?: boolean;
 
 }
 
+/**
+ * These are the settings used, when checking text.
+ */
 interface CheckSettings {
   language: string;
   ruleSetName: string;
@@ -111,7 +130,7 @@ interface CheckSettings {
 }
 
 /**
- * Provides information about your integration and other client software components for the about dialog and
+ * Provide information about your integration and other client software components for the about dialog and
  * analytics.
  */
 export interface SoftwareComponent {
@@ -123,7 +142,7 @@ export interface SoftwareComponent {
 
   /**
    * The name if the software component.
-   * This name will be displayed in the UI.
+   * This name will be displayed in the sidebars about dialog.
    */
   name: string;
 
@@ -135,8 +154,8 @@ export interface SoftwareComponent {
   version: string;
 
   /**
-   *
-   * Default value if omitted: 'DEFAULT'
+   * Check {@link SoftwareComponentCategory} to choose the right value for your component.
+   * By default value this value will be set to 'DEFAULT'.
    * @type SoftwareComponentCategory
    */
   category?: string;
@@ -169,18 +188,18 @@ export const SoftwareComponentCategory = {
  */
 export interface CheckOptions {
   /**
+   *
    * Valid formats are:
    * XML, HTML, TEXT, WORD_XML
    */
   inputFormat?: string;
 
   /**
-   * Tells the server if the document content used AcrolinxSidebar.checkGlobal()
-   * is base64 encoded and gzipped.
+   * Set this to true, if the documents content is base64 encoded and gzipped.
    *
-   * Note: You only can set this setting and encode and compress your document content, if the sidebar supports this
-   * function. Check the AcrolinxPluginConfiguration.supported.base64EncodedGzippedDocumentContent which is pushed
-   * via AcrolinxPlugin.configure().
+   * Note that you only can set this setting and encode and compress your document content, if the sidebar supports this
+   * function. Check {@link AcrolinxPluginConfiguration.supported} which is pushed
+   * via {@link AcrolinxPlugin.configure}.
    */
   base64EncodedGzipped?: boolean;
 
@@ -195,10 +214,10 @@ export interface CheckOptions {
 
 
 /**
- * Each @link{checkGlobal} call will return an unique id, which helps the plugin to map results,
+ * Each {@link checkGlobal} call will return an unique id, which helps the plugin to map results,
  * selection, and replacement requests to the corresponding checked document. This is necessary, because the returned
  * offsets are only valid for the document at a specific point in time. All changes made to the document after the
- * check call will make the offsets invalid. That's why it’s a good idea to store the submitted document contents
+ * check call will make the offsets invalid. That's why you should to store the submitted document contents
  * together with its check ids in a map.
  */
 export interface Check {
@@ -207,7 +226,7 @@ export interface Check {
 
 
 /**
- * The sidebar will tell the plug-in using checkedPart which parts of the document had been checked.
+ * After a check the sidebar will tell the plug-in which parts of the document had been checked.
  */
 export interface CheckResult {
   /**
@@ -216,7 +235,7 @@ export interface CheckResult {
    */
   checkedPart: CheckedDocumentPart;
   /**
-   * If an error occurred the error object is set.
+   * If an error occurs during the check the error object will be set.
    */
   error?: CheckError;
 }
@@ -304,9 +323,9 @@ export interface SidebarError {
   /**
    *  The code which enables the integration to react:
    *
-   *  httpError: Something went wrong while talking to server
-   *  tokenInvalid: The token has not been accepted by the server
-   *  argumentPropertyInvalid: Some argument is invalid, please check your arguments with the interface definition.
+   *  `httpError` : Something went wrong while talking to server
+   *  `tokenInvalid` : The token has not been accepted by the server
+   *  `argumentPropertyInvalid` : Some argument is invalid, please check your arguments with the interface definition.
    */
   code: string;
 
@@ -335,9 +354,9 @@ export interface AcrolinxPluginConfiguration {
   supported: {
     /**
      * If true, you can send the document content in
-     * AcrolinxSidebar.checkGlobal()
+     * {@link AcrolinxSidebar.checkGlobal}
      * base64 encoded and gzipped. In that case, you must set
-     * CheckOptions.base64EncodedGzipped to true.
+     * {@link CheckOptions.base64EncodedGzipped} to true.
      */
     base64EncodedGzippedDocumentContent: boolean;
   };
@@ -351,8 +370,8 @@ export interface AcrolinxSidebar {
    * Initializes the sidebar with the specified initParameters.
    * After calling this method, the sidebar will become ready for checking and call onInitFinished.
    *
-   * @example
-   * ```
+   *
+   *```
    *  acrolinxSidebar.init({
    *    clientSignature: 'sdfasdfiIOJEIEJIOR',
    *    pluginDownloadInfo: {
@@ -361,20 +380,21 @@ export interface AcrolinxSidebar {
    *      installedPluginBuildNumber:'42'
    *    }
    *  });
-   *  ```
+   * ```
    */
   init (initParameters: InitParameters): void;
 
   /**
-   *  Perform a check of the whole document. Once the check is done, acrolinxPlugin.onCheckResult() will be notified.
+   *  Perform a check of the whole document. Once the check is done, {@link AcrolinxPlugin.onCheckResult} will be notified.
    *
-   * @example
+   * ```
    * acrolinxSidebar.checkGlobal('<sample>my text</sample>', {
    *    inputFormat: 'XML',
    *    requestDescription: {
    *      documentReference: 'myfile.xml'
    *    }
-   * }):
+   * });
+   * ```
    *
    * @param documentContent The document you want to check.
    * @return Object containing The ID of the check.
@@ -385,7 +405,8 @@ export interface AcrolinxSidebar {
   onGlobalCheckRejected(): void;
 
   /**
-   * This function can be used to invalidate parts of the document, which had been changed or deleted.
+   * This function can be used to invalidate check result cards that link to invalid parts of the document.
+   * That can happen due to changes or deletions in the document.
    *
    * @param invalidCheckedDocumentRanges  checkIds and offsets belonging to a previous performed check.
    */
@@ -469,7 +490,7 @@ export interface AcrolinxPlugin {
   /**
    * The integration should replace the matches belonging to the check of the checkId by its replacements.
    *
-   * Note: Often you are able to reuse much of the implementation for selectRanges.
+   * Note that in most cases you are able to reuse much of the implementation for {@link selectRanges}.
    *
    * @param checkId  The id of the check. You get the id as result of checkGlobal.
    * @param matchesWithReplacements The parts of the document, which should be replaced and its replacements.
@@ -478,8 +499,7 @@ export interface AcrolinxPlugin {
 
   /**
    * This method is called if the sidebar needs to start a file download. Usually
-   * you just need to pop up the URL in the downloadInfo with existing browser functions. This method enables the
-   * integration to jump in and perform some special download logic.
+   * you just need to pop up the URL in the downloadInfo with existing browser functions.
    *
    * @param downloadInfo Contains the URL to download.
    */
