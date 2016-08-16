@@ -24,12 +24,8 @@
 
 var basicConf = {
   sidebarContainerId: 'sidebarContainer',
-  serverAddress: 'http://skopelos:8031',
-  clientSignature: 'QWNyb2xpbnhDUVBsdWctaW4',
-  //sidebarUrl: 'http://skopelos:9001/'
-  sidebarUrl: 'http://skopelos:9002/sidebar/',
-  useSidebarFromSameOriginDirectly: true,
-  clientLocale: 'de'
+  serverAddress: 'http://<SERVER NAME>:8031',
+  clientSignature: '<CLIENT SIGNATURE>'
 
 // These settings are only effective on servers with disabled checking profiles.
   //checkSettings: {
