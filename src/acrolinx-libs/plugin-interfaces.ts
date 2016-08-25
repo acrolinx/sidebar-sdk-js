@@ -181,7 +181,7 @@ export const SoftwareComponentCategory = {
    * dialog or not at all.
    */
   DETAIL: 'DETAIL'
-}
+};
 
 /**
  * Check options describe how the server should handle the checked document.
