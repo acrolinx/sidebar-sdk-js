@@ -24,8 +24,8 @@
 
 var basicConf = {
   sidebarContainerId: 'sidebarContainer',
-  serverAddress: 'http://<SERVER NAME>:8031',
-  clientSignature: '<CLIENT SIGNATURE>'
+  serverAddress: 'http://integration.acrolinx.com:8031/',
+  clientSignature: 'SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5'
 
 // These settings are only effective on servers with disabled checking profiles.
   //checkSettings: {
