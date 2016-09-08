@@ -56,7 +56,9 @@ Before you start developing your own integration, you might benefit from looking
    
    (If grunt complains while the bower:install task, you might have to execute "bower install" manually.)
    
-   Now open [http://localhost:9002](http://localhost:9002) in your web-browser.
+   Now open [http://localhost:9002](http://localhost:9002) in your web-browser. Choose the sample, that you want to see.
+   You will see sidebars login page. If not already pre-filled type 'http://integration.acrolinx.com:8031' as the server 
+   address and choose a username and a password to login. 
    
    ![Screen Shot of Example](/doc/screenshot.png)
    
