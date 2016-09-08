@@ -3613,8 +3613,29 @@ exports.scrollIntoView = scrollIntoView;
 
 },{}],25:[function(require,module,exports){
 'use strict';
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var utils = require("./utils");
 exports.SIDEBAR_URL = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
+var SidebarURLInvalidError = (function (_super) {
+    __extends(SidebarURLInvalidError, _super);
+    function SidebarURLInvalidError(message, configuredSidebarURL, htmlLoaded) {
+        _super.call(this, message);
+        this.message = message;
+        this.configuredSidebarURL = configuredSidebarURL;
+        this.htmlLoaded = htmlLoaded;
+        this.configuredSidebarURL = configuredSidebarURL;
+        this.htmlLoaded = htmlLoaded;
+        this.details = message + "\n" +
+            "Configured SidebarURL:" + configuredSidebarURL + "\n" +
+            htmlLoaded;
+    }
+    return SidebarURLInvalidError;
+}(Error));
+exports.SidebarURLInvalidError = SidebarURLInvalidError;
 function createCSSLinkElement(href) {
     var el = document.createElement('link');
     el.rel = 'stylesheet';
@@ -3634,6 +3655,15 @@ function loadSidebarCode(sidebarUrl) {
     var sidebarBaseUrl = sidebarUrl;
     var getAbsoluteAttributeValue = function (s) { return s.replace(/^.*"(.*)".*$/g, sidebarBaseUrl + '$1'); };
     utils.fetch(sidebarBaseUrl + 'index.html', function (sidebarHtml) {
+        if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
+            try {
+                throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly.", sidebarBaseUrl, sidebarHtml);
+            }
+            catch (error) {
+                console.log(error.details);
+                return;
+            }
+        }
         var withoutComments = sidebarHtml.replace(/<!--[\s\S]*?-->/g, '');
         var head = document.querySelector('head');
         var css = _.map(withoutComments.match(/href=".*?"/g) || [], getAbsoluteAttributeValue);
@@ -3656,6 +3686,17 @@ function loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded) {
     }
     else {
         utils.fetch(completeSidebarUrl, function (sidebarHtml) {
+            if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
+                try {
+                    throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly. " +
+                        "Check developer console for more information!", completeSidebarUrl, sidebarHtml);
+                }
+                catch (error) {
+                    console.log(error.configuredSidebarURL);
+                    console.error(error.details);
+                    return;
+                }
+            }
             var sidebarContentWindow = sidebarIFrameElement.contentWindow;
             var sidebarHtmlWithAbsoluteLinks = sidebarHtml
                 .replace(/src="/g, 'src="' + sidebarBaseUrl)

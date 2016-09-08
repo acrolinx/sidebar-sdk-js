@@ -6,6 +6,19 @@ import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 
 export const SIDEBAR_URL = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
 
+export class SidebarURLInvalidError extends Error {
+  public details: string;
+  constructor(public message: string, public configuredSidebarURL: string, public htmlLoaded: string) {
+    super(message);
+    this.configuredSidebarURL = configuredSidebarURL;
+    this.htmlLoaded = htmlLoaded;
+    this.details = message + "\n" +
+      "Configured SidebarURL:" + configuredSidebarURL + "\n" +
+      htmlLoaded;
+  }
+}
+
+
 function createCSSLinkElement(href: string) {
   const el = document.createElement('link');
   el.rel = 'stylesheet';
@@ -32,6 +45,15 @@ export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
   const getAbsoluteAttributeValue = (s: string) => s.replace(/^.*"(.*)".*$/g, sidebarBaseUrl + '$1');
 
   utils.fetch(sidebarBaseUrl + 'index.html', sidebarHtml => {
+    if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
+      try {
+        throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly.", sidebarBaseUrl, sidebarHtml);
+      } catch (error) {
+        console.log(error.details);
+        return;
+      }
+    }
+
     const withoutComments = sidebarHtml.replace(/<!--[\s\S]*?-->/g, '');
     const head = document.querySelector('head');
 
@@ -56,6 +78,16 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
     sidebarIFrameElement.src = completeSidebarUrl;
   } else {
     utils.fetch(completeSidebarUrl, sidebarHtml => {
+      if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
+        try {
+          throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly. " +
+            "Check developer console for more information!", completeSidebarUrl, sidebarHtml);
+        } catch (error) {
+          console.log(error.configuredSidebarURL);
+          console.error(error.details);
+          return;
+        }
+      }
       const sidebarContentWindow = sidebarIFrameElement.contentWindow;
       const sidebarHtmlWithAbsoluteLinks = sidebarHtml
         .replace(/src="/g, 'src="' + sidebarBaseUrl)
