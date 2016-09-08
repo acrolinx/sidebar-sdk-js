@@ -27,10 +27,10 @@ To get an impression what the sidebar looks like in other integration check the
 
 ## Prerequisites
 
-Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for initial consulting. 
-We like to schedule a kickoff meeting to answer any questions about your integration project. 
-After the meeting, we provide you with test server credentials and configuration settings you need to get started.
-
+Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for consulting and getting your integration certified.
+This sample works with a test license on an internal acrolinx server. This license is only meant for demonstration and developing purposes.
+Once you finished your integration you'll have to get a license for your integration from Acrolinx.
+  
 Please note that this an example for a integration into a web application only. 
 Acrolinx offers different other SDKs for developing integrations. 
 
@@ -48,11 +48,7 @@ Before you start developing your own integration, you might benefit from looking
         npm install
     ```
 
-3. Before you can run this example, you need to configure some settings in the [config.js](/samples/config.js). 
-   Please fill in `clientSignature` and `serverAdress` with the values that were provided by Acrolinx (after your kickoff meeting).
-   Note that the sidebar will only connect to Acrolinx Servers, that have [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) enabled, using HTTPS.
-
-4. Now you can start the development server by typing:
+3. Now you can start the development server by typing:
   
    ```
        grunt
