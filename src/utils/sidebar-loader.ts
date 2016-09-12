@@ -83,7 +83,10 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
           throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly. " +
             "Check developer console for more information!", completeSidebarUrl, sidebarHtml);
         } catch (error) {
-          alert(error.message);
+          const sidebarContentWindow = sidebarIFrameElement.contentWindow;
+          sidebarContentWindow.document.open();
+          sidebarContentWindow.document.write(error.message);
+          sidebarContentWindow.document.close();
           console.error(error.details);
           return;
         }
