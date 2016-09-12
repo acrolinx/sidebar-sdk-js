@@ -78,12 +78,12 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
     sidebarIFrameElement.src = completeSidebarUrl;
   } else {
     utils.fetch(completeSidebarUrl, sidebarHtml => {
+      const sidebarContentWindow = sidebarIFrameElement.contentWindow;
       if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
         try {
           throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly. " +
             "Check developer console for more information!", completeSidebarUrl, sidebarHtml);
         } catch (error) {
-          const sidebarContentWindow = sidebarIFrameElement.contentWindow;
           sidebarContentWindow.document.open();
           sidebarContentWindow.document.write(error.message);
           sidebarContentWindow.document.close();
@@ -91,7 +91,6 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
           return;
         }
       }
-      const sidebarContentWindow = sidebarIFrameElement.contentWindow;
       const sidebarHtmlWithAbsoluteLinks = sidebarHtml
         .replace(/src="/g, 'src="' + sidebarBaseUrl)
         .replace(/href="/g, 'href="' + sidebarBaseUrl);
