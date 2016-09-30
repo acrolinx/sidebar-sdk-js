@@ -24,8 +24,40 @@
 
 var basicConf = {
   sidebarContainerId: 'sidebarContainer',
+
+  //See: https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/master/doc/pluginDoc/interfaces/_plugin_interfaces_.initparameters.html
   serverAddress: 'http://integration.acrolinx.com:8031/',
-  clientSignature: 'SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5'
+  clientSignature: 'SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5',
+  //showServerSelector: true,
+  //readOnlySuggestions: true,
+  //sidebarUrl:'https://<LOCAL_SERVER_ADDRESS>/sidebar/v14/',
+
+  // clientComponents: [
+  //   {
+  //     id: 'com.acrolinx.sidebarexample',
+  //     name: 'Acrolinx Sidebar Example Client',
+  //     version: '1.2.3.999',
+  //     category: 'MAIN'
+  //   },
+  //   {
+  //     id: 'com.acrolinx.somecms',
+  //     name: 'My CMS',
+  //     version: '1.2.3.999'
+  //   },
+  //   {
+  //     id: 'com.acrolinx.somelib',
+  //     name: 'Referenced Lib',
+  //     version: '1.0.0.0',
+  //     category: 'DETAIL'
+  //   },
+  //   {
+  //     id: 'com.acrolinx.anotherlib',
+  //     name: 'Another Referenced Lib',
+  //     version: '0.0.0.1',
+  //     category: 'DETAIL'
+  //   }
+  // ]
+
 
 // These settings are only effective on servers with disabled checking profiles.
   //checkSettings: {
