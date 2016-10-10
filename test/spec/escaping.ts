@@ -90,7 +90,7 @@ describe('escapeHtmlCharacters', function () {
 
     it('wild html characters', () => {
       const wild = '&!<!>!"!\'!`!';
-      assert.equal(_.escape(wild), escapeHtmlCharacters(wild).escapedText);
+      assert.equal('&amp;!&lt;!&gt;!&quot;!&#39;!&#96;!', escapeHtmlCharacters(wild).escapedText);
       assertBackwardMappingIsCorrect(wild);
     });
 
@@ -104,7 +104,8 @@ describe('escapeHtmlCharacters', function () {
 
   });
 
-  it('escapedText is identical result of _.escape', () => {
+  // TODO lodash escape not identical for "`"
+  it.skip('escapedText is identical result of _.escape', () => {
     jsc.assert(jsc.forall("string",
       (text: string) => _.escape(text) === escapeHtmlCharacters(text).escapedText
     ), JS_VERIFY_OPTS);
