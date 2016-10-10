@@ -374,11 +374,11 @@ export interface AcrolinxSidebar {
    *```
    *  acrolinxSidebar.init({
    *    clientSignature: 'sdfasdfiIOJEIEJIOR',
-   *    pluginDownloadInfo: {
-   *      installedPluginName:'Acrolinx for Me',
-   *      installedPluginVersion:'1',
-   *      installedPluginBuildNumber:'42'
-   *    }
+   *    clientComponents: [{
+   *      id: 'com.acrolinx.myEditor'
+   *      name:'Acrolinx for myEditor',
+   *      version:'1.0.0.42'
+   *    }]
    *  });
    * ```
    */
