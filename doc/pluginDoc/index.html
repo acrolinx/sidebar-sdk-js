@@ -82,9 +82,9 @@
 					To get an impression what the sidebar looks like in other integration check the
 				<a href="https://support.acrolinx.com/hc/en-us/articles/205594781-Acrolinx-Sidebar-Edition-User-Interface-Reference">Acrolinx Support Center</a>.</p>
 				<h2 id="prerequisites">Prerequisites</h2>
-				<p>Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for initial consulting.
-					We like to schedule a kickoff meeting to answer any questions about your integration project.
-				After the meeting, we provide you with test server credentials and configuration settings you need to get started.</p>
+				<p>Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for consulting and getting your integration certified.
+					This sample works with a test license on an internal acrolinx server. This license is only meant for demonstration and developing purposes.
+				Once you finished your integration you&#39;ll have to get a license for your integration from Acrolinx.</p>
 				<p>Please note that this an example for a integration into a web application only.
 				Acrolinx offers different other SDKs for developing integrations. </p>
 				<p>Before you start developing your own integration, you might benefit from looking into the sidebar example.</p>
@@ -96,14 +96,12 @@
 					<li><p>Install all required node modules with:</p>
 						<pre><code>     npm <span class="hljs-keyword">install</span>
 </code></pre></li>
-					<li><p>Before you can run this example, you need to configure some settings in the <a href="/samples/config.js">config.js</a>.
-							Please fill in <code>clientSignature</code> and <code>serverAdress</code> with the values that were provided by Acrolinx (after your kickoff meeting).
-						Note that the sidebar will only connect to Acrolinx Servers, that have <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> enabled, using HTTPS.</p>
-					</li>
 					<li><p>Now you can start the development server by typing:</p>
 						<pre><code><span class="hljs-attribute">    grunt</span>
 </code></pre><p>(If grunt complains while the bower:install task, you might have to execute &quot;bower install&quot; manually.)</p>
-						<p>Now open <a href="http://localhost:9002">http://localhost:9002</a> in your web-browser.</p>
+						<p>Now open <a href="http://localhost:9002">http://localhost:9002</a> in your web-browser. Choose the sample, that you want to see.
+							You will see sidebars login page. If not already pre-filled type &#39;<a href="http://integration.acrolinx.com:8031">http://integration.acrolinx.com:8031</a>&#39; as the server
+						address and choose a username and a password to login. </p>
 						<p><img src="/doc/screenshot.png" alt="Screen Shot of Example"></p>
 					</li>
 				</ol>

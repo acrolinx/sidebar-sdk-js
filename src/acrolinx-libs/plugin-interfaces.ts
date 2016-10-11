@@ -8,7 +8,6 @@
  * 2) Load your integration code.
  *
  * 3) Register your integration as an AcrolinxPlugin.
- *
  *  ```
  *  var acrolinxPlugin = {...}
  *  ```
@@ -21,7 +20,8 @@
  *
  * 6) The AcrolinxPlugin now must call {@link AcrolinxSidebar.init|init}.
  *
- * 7) Once the init process has finished, the plug-in will be notified: {@link AcrolinxPlugin.onInitFinished|onInitFinished}.
+ * 7) Once the init process has finished, the plug-in will be notified:
+ *    {@link AcrolinxPlugin.onInitFinished|onInitFinished}.
  *
  * 8) After initializing the sidebar will call {@link AcrolinxPlugin.configure|configure} and push the latest configuration to the
  *    plug-in.
@@ -95,7 +95,6 @@ export interface InitParameters {
   /**
    * If your Acrolinx Server is configured to support single sign on, you have to set this property to true in order to
    * enable single sign on from your integration.
-   *
    */
   enableSingleSignOn?: boolean;
 
@@ -107,7 +106,6 @@ export interface InitParameters {
 
   /**
    * This setting will prevent any connection with an Acrolinx Server via other than HTTPS protocol.
-   *
    */
   enforceHTTPS?: boolean;
 
@@ -188,7 +186,6 @@ export const SoftwareComponentCategory = {
  */
 export interface CheckOptions {
   /**
-   *
    * Valid formats are:
    * XML, HTML, TEXT, WORD_XML
    */
@@ -293,7 +290,6 @@ export interface MatchWithReplacement extends Match {
 
 /**
  * An asset which should be downloaded by the integration and stored as the specified file name.
- *
  */
 export interface DownloadInfo {
   /**
@@ -369,7 +365,6 @@ export interface AcrolinxSidebar {
   /**
    * Initializes the sidebar with the specified initParameters.
    * After calling this method, the sidebar will become ready for checking and call onInitFinished.
-   *
    *
    *```
    *  acrolinxSidebar.init({
