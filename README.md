@@ -85,7 +85,7 @@ Let's take a look at how the sidebar is loaded and the typical interactions with
 1. Load your host editor and your integration code.
  
 2. Register your integration as an Acrolinx Plugin (Check the API Documentation for the Acrolinx Plugin Interface.) 
- You'll find the API Documentation [here](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/tree/v0.3.37/doc/pluginDoc/modules/_plugin_interfaces_.html).
+ You'll find the API Documentation [here](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.37/doc/pluginDoc/modules/_plugin_interfaces_.html).
  ```
  var acrolinxPlugin = {...}
  ```
@@ -105,7 +105,7 @@ to initialize by calling `requestInit`.
  
  ![Initializing plug-in and sidebar](/doc/initSidebarPlugin.png)
  
-You'll find the API Documentation [here](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/tree/v0.3.37/doc/pluginDoc/modules/_plugin_interfaces_.html).
+You'll find the API Documentation [here](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.37/doc/pluginDoc/modules/_plugin_interfaces_.html).
 
 ### Checking
 
@@ -123,13 +123,13 @@ You'll find the API Documentation [here](https://cdn.rawgit.com/acrolinx/acrolin
 - When the user clicks on a replacement the sidebar will call `replaceRanges`.
 
 These are the most important interactions between the Acrolinx sidebar and your integration. 
-Please check the [sidebar plugin API](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/tree/v0.3.37/doc/pluginDoc/modules/_plugin_interfaces_.html) for more information.
+Please check the [sidebar plugin API](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.37/doc/pluginDoc/modules/_plugin_interfaces_.html) for more information.
 
 [back to top](#table-of-content)
 
 ## Sidebar API Documentation
 
-Check our [sidebar plugin API](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/tree/v0.3.37/doc/pluginDoc/modules/_plugin_interfaces_.html).
+Check our [sidebar plugin API](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.37/doc/pluginDoc/modules/_plugin_interfaces_.html).
 
 ## License
 
