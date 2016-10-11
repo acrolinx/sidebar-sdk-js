@@ -25,9 +25,9 @@
 var basicConf = {
   sidebarContainerId: 'sidebarContainer',
 
-  //See: https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/master/doc/pluginDoc/interfaces/_plugin_interfaces_.initparameters.html
+  //See: https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/tree/v0.3.37/doc/pluginDoc/interfaces/_plugin_interfaces_.initparameters.html
   serverAddress: 'http://integration.acrolinx.com:8031/',
-  clientSignature: 'SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5',
+  clientSignature: 'SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5'
   //showServerSelector: true,
   //readOnlySuggestions: true,
   //sidebarUrl:'https://<LOCAL_SERVER_ADDRESS>/sidebar/v14/',
