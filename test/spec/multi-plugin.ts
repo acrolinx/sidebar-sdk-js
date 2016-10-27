@@ -5,7 +5,6 @@ import {
   AcrolinxPlugin, AcrolinxSidebar, InitParameters, CheckOptions, Check, InvalidDocumentPart, CheckedDocumentRange,
   SidebarConfiguration
 } from '../../src/acrolinx-libs/plugin-interfaces';
-import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 import {
   MultiEditorAdapterConfig,
   AddSingleAdapterOptions,
@@ -16,6 +15,7 @@ import {InputAdapter} from "../../src/adapters/InputAdapter";
 import * as acrolinxPluginModule from "../../src/acrolinx-plugin";
 import {getMatchesWithReplacement} from "../utils/test-utils";
 import {assign} from "../../src/utils/utils";
+import {AcrolinxPluginConfig} from "../../src/acrolinx-plugin";
 
 const DUMMY_CHECK_ID = 'dummyCheckId';
 

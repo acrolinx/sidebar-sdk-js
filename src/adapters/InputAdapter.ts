@@ -20,7 +20,10 @@
 
 import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
-import {getElementFromAdapterConf, AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
+import {
+  getElementFromAdapterConf, AdapterInterface, AdapterConf, ContentExtractionResult,
+  AutobindWrapperAttributes
+} from "./AdapterInterface";
 import {AlignedMatch} from "../utils/alignment";
 import {getCompleteFlagLength} from "../utils/match";
 import {scrollIntoView} from "../utils/scrolling";
@@ -28,7 +31,7 @@ import {lookupMatches} from "../lookup/diff-based";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
 import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
-type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
+export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
 export class InputAdapter implements AdapterInterface {
   element: ValidInputElement;
@@ -83,7 +86,7 @@ export class InputAdapter implements AdapterInterface {
       }
     }
 
-    el.setSelectionRange(newBegin, newBegin + matchLength);
+    (el as HTMLTextAreaElement).setSelectionRange(newBegin, newBegin + matchLength);
     el.focus();
     scrollIntoView(el, this.config.scrollOffsetY);
   }
@@ -120,11 +123,11 @@ export class InputAdapter implements AdapterInterface {
     this.replaceAlignedMatches(alignedMatches);
     const startOfSelection = alignedMatches[0].range[0];
     const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
-    this.element.setSelectionRange(startOfSelection, startOfSelection + replacement.length);
+    (this.element as HTMLTextAreaElement).setSelectionRange(startOfSelection, startOfSelection + replacement.length);
     fakeInputEvent(this.element);
   }
 
-  getAutobindWrapperAttributes() {
+  getAutobindWrapperAttributes(): AutobindWrapperAttributes {
     return getAutobindWrapperAttributes(this.element);
   }
 }

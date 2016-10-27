@@ -37,8 +37,15 @@ type AcrolinxPluginConfiguration = acrolinxSidebarInterfaces.AcrolinxPluginConfi
 type CheckResult = acrolinxSidebarInterfaces.CheckResult;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
 type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
-import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 
+export interface  AcrolinxPluginConfig {
+  sidebarContainerId: string;
+  sidebarUrl?: string;
+  useMessageAdapter?: boolean;
+  useSidebarFromSameOriginDirectly?: boolean;
+  onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
+  getDocumentReference?: () => string;
+}
 
 const clientComponents = [
   {
@@ -240,7 +247,7 @@ export class AcrolinxPlugin {
   }
 }
 
-interface AutoBindFloatingSidebarConfig extends FloatingSidebar {
+export interface AutoBindFloatingSidebarConfig extends FloatingSidebar {
   asyncStorage?: AsyncStorage;
 }
 

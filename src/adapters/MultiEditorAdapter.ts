@@ -31,12 +31,12 @@ import {findNewIndex} from "../utils/alignment";
 import {containsText} from "../utils/utils";
 
 
-interface RemappedMatches<T extends Match> {
+export interface RemappedMatches<T extends Match> {
   matches: T[];
   adapter: AdapterInterface;
 }
 
-type AttributeMap =  {[key: string]: any};
+export type AttributeMap =  {[key: string]: any};
 
 export interface WrapperConfOptions {
   tagName?: string;
@@ -45,12 +45,12 @@ export interface WrapperConfOptions {
 
 export type AddSingleAdapterOptions = WrapperConfOptions;
 
-interface WrapperConf extends WrapperConfOptions {
+export interface WrapperConf extends WrapperConfOptions {
   tagName: string;
   attributes: AttributeMap;
 }
 
-interface RegisteredAdapter {
+export interface RegisteredAdapter {
   id: string;
   adapter: AdapterInterface;
   wrapper: WrapperConf;

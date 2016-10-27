@@ -25,7 +25,7 @@ import {AlignedMatch} from "../utils/alignment";
 import {lookupMatches} from "../lookup/diff-based";
 import {getCompleteFlagLength} from "../utils/match";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
-import {AdapterInterface, AdapterConf, ContentExtractionResult} from "./AdapterInterface";
+import {AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes} from "./AdapterInterface";
 import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
 
@@ -175,7 +175,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     return extractTextDomMapping(this.getEditorElement());
   }
 
-  getAutobindWrapperAttributes() {
+  getAutobindWrapperAttributes(): AutobindWrapperAttributes {
     return getAutobindWrapperAttributes(this.getEditorElement());
   }
 

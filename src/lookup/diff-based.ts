@@ -25,7 +25,7 @@ import {extractText} from "../utils/text-extraction";
 import {log} from "../utils/logging";
 import {diff_match_patch, DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT, Diff} from "diff-match-patch";
 
-type InputFormat = 'HTML' | 'TEXT';
+export type InputFormat = 'HTML' | 'TEXT';
 
 const dmp = new diff_match_patch();
 dmp.Diff_Timeout = 5;

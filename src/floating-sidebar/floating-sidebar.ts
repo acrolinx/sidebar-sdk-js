@@ -19,13 +19,13 @@ const RESIZE_ICON = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB
 // Smaller than the biggest 32-bit int (2147483647) but bigger than the menu of youtube.
 const Z_INDEX = 2000000000;
 
-interface PositionUpdate {
+export interface PositionUpdate {
   top?: number;
   left?: number;
   height?: number;
 }
 
-interface Position extends PositionUpdate {
+export interface Position extends PositionUpdate {
   top: number;
   left: number;
   height: number;
@@ -238,7 +238,7 @@ export interface FloatingSidebar {
   remove(): void;
 }
 
-interface FloatingSidebarConfig {
+export interface FloatingSidebarConfig {
   asyncStorage: AsyncStorage;
 }
 

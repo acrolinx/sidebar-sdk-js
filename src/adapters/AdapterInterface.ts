@@ -8,7 +8,7 @@ export interface HasEditorID extends CommonAdapterConf {
   editorId: string;
 }
 
-interface HasElement extends CommonAdapterConf {
+export interface HasElement extends CommonAdapterConf {
   element: HTMLElement;
 }
 

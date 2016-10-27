@@ -31,8 +31,35 @@ import {createPluginMessageAdapter} from "./message-adapter/message-adapter";
 import {loadSidebarCode} from "./utils/sidebar-loader";
 
 
-window.acrolinx = window.acrolinx || ({} as any);
-window.acrolinx.plugins = {
+export interface AcrolinxSidebarIntegration {
+  AcrolinxPlugin: typeof AcrolinxPlugin;
+  autoBindFloatingSidebar: typeof autoBindFloatingSidebar;
+  createPluginMessageAdapter: typeof createPluginMessageAdapter;
+  loadSidebarCode: typeof loadSidebarCode;
+  adapter: {
+    AbstractRichtextEditorAdapter: typeof AbstractRichtextEditorAdapter;
+    AutoBindAdapter: typeof AutoBindAdapter;
+    CKEditorAdapter: typeof CKEditorAdapter;
+    ContentEditableAdapter: typeof ContentEditableAdapter;
+    InputAdapter: typeof InputAdapter;
+    MultiEditorAdapter: typeof MultiEditorAdapter;
+    TinyMCEAdapter: typeof TinyMCEAdapter;
+    TinyMCEWordpressAdapter: typeof TinyMCEWordpressAdapter;
+  };
+}
+
+declare global {
+  /* tslint:disable:no-unused-variable */
+  const acrolinx: {
+    plugins: AcrolinxSidebarIntegration
+  };
+  /* tslint:enable */
+}
+
+const augmentedWindow = window as any;
+
+augmentedWindow.acrolinx = augmentedWindow.acrolinx || ({} as any);
+augmentedWindow.acrolinx.plugins = {
   AcrolinxPlugin: AcrolinxPlugin,
   autoBindFloatingSidebar: autoBindFloatingSidebar,
   createPluginMessageAdapter: createPluginMessageAdapter,

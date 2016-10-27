@@ -118,7 +118,7 @@ describe('adapter test', function () {
       beforeEach((done) => {
         $('body').append(adapterSpec.editorElement);
         const adapterConf: AdapterConf = {editorId: 'editorId'};
-        var adapterNameSpace = window.acrolinx.plugins.adapter as any;
+        const adapterNameSpace = acrolinx.plugins.adapter as any;
         adapter = new adapterNameSpace[adapterName](adapterConf);
         if (adapterSpec.init) {
           adapterSpec.init(done);

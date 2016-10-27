@@ -1,8 +1,7 @@
 'use strict';
 
 import * as utils from "./utils";
-
-import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
+import {AcrolinxPluginConfig} from "../acrolinx-plugin";
 
 export const SIDEBAR_URL = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
 

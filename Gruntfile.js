@@ -19,6 +19,8 @@
  */
 const FS = require("q-io/fs");
 const serveStatic = require('serve-static');
+const dts = require('dts-bundle');
+
 
 module.exports = function (grunt) {
   var name = 'acrolinx-sidebar-integration';
@@ -42,7 +44,7 @@ module.exports = function (grunt) {
       ts: {
         options: {atBegin: true},
         files: ['src/**/*.ts', 'test/**/*.ts'],
-        tasks: ['ts', 'browserify'],
+        tasks: ['ts:all', 'browserify'],
       }
     },
 
@@ -108,6 +110,14 @@ module.exports = function (grunt) {
         tsconfig: true,
         options: {
           additionalFlags: '--strictNullChecks --noImplicitThis --noUnusedParameters --noUnusedLocals'
+        }
+      },
+      allWithDeclarations: {
+        src: ['src/**/*.ts', 'test/**/*.ts'],
+        dest: 'tmp/compiled/',
+        tsconfig: true,
+        options: {
+          additionalFlags: '--strictNullChecks --noImplicitThis --noUnusedParameters --noUnusedLocals --declaration'
         }
       }
     },
@@ -192,6 +202,17 @@ module.exports = function (grunt) {
           dir: 'tmp/reports/coverage'
         }
       }
+    },
+
+    dtsGenerator: {
+      options: {
+        name: 'acrolinx-sidebar-integration',
+        baseDir: './tmp/compiled',
+        out: './dist/acrolinx-sidebar-integration.d.ts'
+      },
+      default: {
+        src: ['tmp/compiled/**/*.d.ts']
+      }
     }
   };
 
@@ -207,9 +228,9 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', ['prepareBuild', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
-  grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts', 'browserify']);
+  grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts:all', 'browserify']);
   grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib']);
-  grunt.registerTask('distrib', ['build', 'karma:ci', 'coverage', 'uglify', 'clean:tsSourceMap']);
+  grunt.registerTask('distrib', ['build', 'karma:ci', 'coverage', 'uglify', 'buildDeclarations', 'clean:tsSourceMap']);
 
   grunt.registerTask('release', 'Release the bower project', function () {
     var done = this.async();
@@ -259,9 +280,20 @@ module.exports = function (grunt) {
     });
   });
 
+  grunt.registerTask('bundleDeclarations', 'Bundle the different .d.ts files into one', function () {
+    dts.bundle({
+      name: 'acrolinx-sidebar-integration',
+      baseDir: 'tmp/compiled/src',
+      main: 'tmp/compiled/src/acrolinx-sidebar-integration.d.ts',
+      out: '../../../distrib/acrolinx-sidebar-integration.d.ts'
+    });
+  });
+
   grunt.registerTask('distribRelease', ['distrib', 'release']);
   grunt.registerTask('karmaLocal', ['tslint', 'karma:ci', 'coverage']);
-  grunt.registerTask('typescript', ['ts']);
+  grunt.registerTask('typescript', ['ts:all']);
+  grunt.registerTask('typescriptWithDeclarations', ['ts:allWithDeclarations']);
+  grunt.registerTask('buildDeclarations', ['typescriptWithDeclarations', 'bundleDeclarations']);
 
 
 };

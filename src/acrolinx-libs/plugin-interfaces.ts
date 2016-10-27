@@ -117,7 +117,7 @@ export interface InitParameters extends SidebarConfiguration {
 /**
  * These are the settings used, when checking text.
  */
-interface CheckSettings {
+export interface CheckSettings {
   language: string;
   ruleSetName: string;
   termSets: string[];
