@@ -21,6 +21,7 @@
 
 import {_, Q} from "./acrolinx-libs/acrolinx-libs-defaults";
 import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
+import {SidebarConfiguration} from "./acrolinx-libs/plugin-interfaces";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
 import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
@@ -37,7 +38,6 @@ type CheckResult = acrolinxSidebarInterfaces.CheckResult;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
 type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
 import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
-import {SidebarConfiguration} from "./acrolinx-libs/plugin-interfaces";
 
 
 const clientComponents = [
@@ -202,10 +202,10 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
 
 
 export class AcrolinxPlugin {
-  initConfig: AcrolinxPluginConfig;
-  adapter: AdapterInterface;
-  config: SidebarConfiguration;
-  sidebar: AcrolinxSidebar;
+  private readonly initConfig: AcrolinxPluginConfig;
+  private adapter: AdapterInterface;
+  private config: SidebarConfiguration;
+  private sidebar: AcrolinxSidebar;
 
   constructor(conf: AcrolinxPluginConfig) {
     this.initConfig = conf;
@@ -219,15 +219,24 @@ export class AcrolinxPlugin {
   configure(conf: SidebarConfiguration) {
     this.config = _.assign(this.config, conf);
     if (this.sidebar) {
-      this.sidebar.configure(this.config);
+      this.configureSidebar();
     }
   }
 
   init() {
     initAcrolinxSamplePlugin(this.initConfig, this.adapter).then(sidebar => {
       this.sidebar = sidebar;
-      sidebar.configure(this.config);
+      this.configureSidebar();
     });
+  }
+
+  private configureSidebar() {
+    // Old versions of the sidebar may not support the configure method.
+    try {
+      this.sidebar.configure(this.config);
+    } catch (e) {
+      console.error("Error while calling sidebar.configure: ", e);
+    }
   }
 }
 
