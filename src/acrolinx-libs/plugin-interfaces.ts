@@ -23,29 +23,38 @@
  * 7) Once the init process has finished, the plug-in will be notified:
  *    {@link AcrolinxPlugin.onInitFinished|onInitFinished}.
  *
- * 8) After initializing the sidebar will call {@link AcrolinxPlugin.configure|configure} and push the latest configuration to the
- *    plug-in.
+ * 8) After initializing the sidebar will call {@link AcrolinxPlugin.configure|configure} and push the latest
+ * configuration to the plug-in.
  *
  * 9) If the user pushes the button "Check", {@link AcrolinxPlugin.requestGlobalCheck|requestGlobalCheck} is called.
  *
  * 10) The acrolinxPlugin must call {@link AcrolinxSidebar.checkGlobal|checkGlobal} to perform a check.
  *
- * 11) When the check finished, {@link AcrolinxPlugin.onCheckResult|onCheckResult} is called and the sidebar displays cards for the issues.
+ * 11) When the check finished, {@link AcrolinxPlugin.onCheckResult|onCheckResult} is called and the sidebar displays
+ * cards for the issues.
  *
  * 12) If the user clicks a card {@link AcrolinxPlugin.selectRanges|selectRanges} is called
  *
  * 13) When the user selects a replacement {@link AcrolinxPlugin.replaceRanges|replaceRanges} is called.
  *
- * For a minimal integration (not feature complete) you must implement {@link requestInit}, {@link requestGlobalCheck}, {@link configure},
+ * For a minimal integration (not feature complete) you must implement {@link requestInit}, {@link requestGlobalCheck},
+ * {@link configure},
  *   {@link selectRanges}, {@link replaceRanges} and {@link download}.
  */
 
+export interface SidebarConfiguration {
+  /**
+   * This setting will render cards with suggestions in read-only mode. This means the sidebar won't trigger suggestion
+   * replacements in the document. The cards will still work for navigation.
+   */
+  readOnlySuggestions?: boolean;
+}
 
 /**
  *
  * @interface InitParameters
  */
-export interface InitParameters {
+export interface InitParameters extends SidebarConfiguration {
 
   /**
    * These provide information about your integration and other client software components to display them
@@ -97,12 +106,6 @@ export interface InitParameters {
    * enable single sign on from your integration.
    */
   enableSingleSignOn?: boolean;
-
-  /**
-   * This setting will render cards with suggestions in read-only mode. This means the sidebar won't trigger suggestion
-   * replacements in the document. The cards will still work for navigation.
-   */
-  readOnlySuggestions?: boolean;
 
   /**
    * This setting will prevent any connection with an Acrolinx Server via other than HTTPS protocol.
@@ -366,7 +369,7 @@ export interface AcrolinxSidebar {
    * Initializes the sidebar with the specified initParameters.
    * After calling this method, the sidebar will become ready for checking and call onInitFinished.
    *
-   *```
+   * ```
    *  acrolinxSidebar.init({
    *    clientSignature: 'sdfasdfiIOJEIEJIOR',
    *    clientComponents: [{
@@ -377,10 +380,23 @@ export interface AcrolinxSidebar {
    *  });
    * ```
    */
-  init (initParameters: InitParameters): void;
+  init(initParameters: InitParameters): void;
 
   /**
-   *  Perform a check of the whole document. Once the check is done, {@link AcrolinxPlugin.onCheckResult} will be notified.
+   * Configures the sidebar with the specified parameters.
+   * This method can be called repeatedly after init was called.
+   *
+   * ```
+   *  acrolinxSidebar.configure({
+   *    readOnlySuggestions: true
+   *  });
+   * ```
+   */
+  configure(configuration: SidebarConfiguration): void;
+
+  /**
+   *  Perform a check of the whole document. Once the check is done, {@link AcrolinxPlugin.onCheckResult} will be
+   * notified.
    *
    * ```
    * acrolinxSidebar.checkGlobal('<sample>my text</sample>', {

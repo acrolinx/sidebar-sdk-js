@@ -10,7 +10,7 @@ import {
   CheckOptions,
   Check,
   InvalidDocumentPart,
-  CheckedDocumentRange
+  CheckedDocumentRange, SidebarConfiguration
 } from "../acrolinx-libs/plugin-interfaces";
 
 // Functions are not cloneable and don't work with postMessage.
@@ -45,6 +45,8 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: AcrolinxPlugin, 
 
   const sidebar: AcrolinxSidebar = {
     init (_initParameters: InitParameters): void {
+    },
+    configure (_initParameters: SidebarConfiguration): void {
     },
     checkGlobal(_documentContent: string, _options: CheckOptions): Check {
       return {checkId: 'dummyCheckId'};

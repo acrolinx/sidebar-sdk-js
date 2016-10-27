@@ -1,7 +1,10 @@
 import assert = chai.assert;
 
 
-import {AcrolinxPlugin, AcrolinxSidebar, InitParameters, CheckOptions, Check, InvalidDocumentPart, CheckedDocumentRange} from '../../src/acrolinx-libs/plugin-interfaces';
+import {
+  AcrolinxPlugin, AcrolinxSidebar, InitParameters, CheckOptions, Check, InvalidDocumentPart, CheckedDocumentRange,
+  SidebarConfiguration
+} from '../../src/acrolinx-libs/plugin-interfaces';
 import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
 import {
   MultiEditorAdapterConfig,
@@ -28,6 +31,9 @@ describe('multi plugin', function () {
   let lastDocumentContent: string;
   let afterCheckCallback: Function;
   let invalidatedRanges: InvalidDocumentPart[];
+  let newConfig: SidebarConfiguration;
+
+  let acrolinxPlugin: acrolinxPluginModule.AcrolinxPlugin;
 
   afterEach((done) => {
     $('#multiPluginTest').remove();
@@ -48,7 +54,7 @@ describe('multi plugin', function () {
       sidebarUrl: location.pathname === '/test/' ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/'
     }, config);
 
-    const acrolinxPlugin = new acrolinxPluginModule.AcrolinxPlugin(conf);
+    acrolinxPlugin = new acrolinxPluginModule.AcrolinxPlugin(conf);
 
     const contentEditableAdapter = new ContentEditableAdapter({editorId: 'ContentEditableAdapter'});
     const inputAdapter = new InputAdapter({editorId: 'InputAdapter'});
@@ -94,6 +100,9 @@ describe('multi plugin', function () {
       init (_initParameters: InitParameters): void {
         injectedPlugin.onInitFinished({});
         injectedPlugin.configure({supported: {base64EncodedGzippedDocumentContent: false}});
+      },
+      configure (config: SidebarConfiguration): void {
+        newConfig = config;
       },
       checkGlobal(documentContent: string, _options: CheckOptions): Check {
         lastDocumentContent = documentContent;
@@ -295,6 +304,33 @@ describe('multi plugin', function () {
         })
       }
     });
+  })
+
+  describe('configure and reconfigure', () => {
+    it('configure before init done', (done) => {
+      initMultiPlugin(onInitDone);
+      acrolinxPlugin.configure({readOnlySuggestions: true});
+
+      function onInitDone() {
+        setTimeout(() => {
+          assert.equal(newConfig.readOnlySuggestions, true);
+          done();
+        }, 1);
+      }
+    });
+
+    it('configure later', (done) => {
+      initMultiPlugin(onInitDone);
+
+      function onInitDone() {
+        setTimeout(() => {
+          acrolinxPlugin.configure({readOnlySuggestions: true});
+          assert.equal(newConfig.readOnlySuggestions, true);
+          done();
+        }, 1);
+      }
+    });
+
   })
 
 });

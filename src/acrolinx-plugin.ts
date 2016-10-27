@@ -19,7 +19,7 @@
  */
 
 
-import {_} from "./acrolinx-libs/acrolinx-libs-defaults";
+import {_, Q} from "./acrolinx-libs/acrolinx-libs-defaults";
 import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
 import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
@@ -27,6 +27,7 @@ import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {AdapterInterface, ContentExtractionResult, hasError} from "./adapters/AdapterInterface";
 import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter";
 import {assign} from "./utils/utils";
+import {AsyncStorage, AsyncLocalStorage} from "./floating-sidebar/async-storage";
 
 type DownloadInfo = acrolinxSidebarInterfaces.DownloadInfo;
 type MatchWithReplacement = acrolinxSidebarInterfaces.MatchWithReplacement;
@@ -36,7 +37,7 @@ type CheckResult = acrolinxSidebarInterfaces.CheckResult;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
 type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
 import AcrolinxPluginConfig = acrolinx.plugins.AcrolinxPluginConfig;
-import {AsyncStorage, AsyncLocalStorage} from "./floating-sidebar/async-storage";
+import {SidebarConfiguration} from "./acrolinx-libs/plugin-interfaces";
 
 
 const clientComponents = [
@@ -57,7 +58,8 @@ type IFrameWindowOfSidebar = Window & {
   acrolinxPlugin: AcrolinxSidebarPlugin;
 }
 
-function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface) {
+function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface): Promise<AcrolinxSidebar> {
+  const result = Q.defer();
   const sidebarContainer = document.getElementById(config.sidebarContainerId);
 
   if (!sidebarContainer) {
@@ -105,6 +107,7 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     const acrolinxSidebarPlugin: AcrolinxSidebarPlugin = {
       requestInit (acrolinxSidebarArg?: AcrolinxSidebar) {
         acrolinxSidebar = acrolinxSidebarArg || sidebarContentWindow.acrolinxSidebar;
+        result.resolve(acrolinxSidebar);
         console.log('requestInit');
         initSidebarOnPremise();
       },
@@ -194,27 +197,41 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
   }
 
   loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded);
+  return result.promise;
 }
 
 
 export class AcrolinxPlugin {
-  config: AcrolinxPluginConfig;
+  initConfig: AcrolinxPluginConfig;
   adapter: AdapterInterface;
+  config: SidebarConfiguration;
+  sidebar: AcrolinxSidebar;
 
   constructor(conf: AcrolinxPluginConfig) {
-    this.config = conf;
+    this.initConfig = conf;
+    this.config = {};
   }
 
   registerAdapter(adapter: AdapterInterface) {
     this.adapter = adapter;
   }
 
+  configure(conf: SidebarConfiguration) {
+    this.config = _.assign(this.config, conf);
+    if (this.sidebar) {
+      this.sidebar.configure(this.config);
+    }
+  }
+
   init() {
-    initAcrolinxSamplePlugin(this.config, this.adapter);
+    initAcrolinxSamplePlugin(this.initConfig, this.adapter).then(sidebar => {
+      this.sidebar = sidebar;
+      sidebar.configure(this.config);
+    });
   }
 }
 
-interface AutoBindFloatingSidebarConfig extends  FloatingSidebar {
+interface AutoBindFloatingSidebarConfig extends FloatingSidebar {
   asyncStorage?: AsyncStorage;
 }
 
