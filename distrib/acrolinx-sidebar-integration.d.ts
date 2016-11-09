@@ -372,9 +372,11 @@ declare module 'acrolinx-sidebar-integration/floating-sidebar/floating-sidebar' 
     export const SIDEBAR_CONTAINER_ID: string;
     export const SIDEBAR_DRAG_OVERLAY_ID: string;
     export const SIDEBAR_GLASS_PANE_ID: string;
+    export const FOOTER: string;
     export const RESIZE_ICON_CLASS: string;
     export const IS_RESIZING_CLASS: string;
     export const IS_DRAGGED_CLASS: string;
+    export const FOOTER_HEIGHT: number;
     export interface PositionUpdate {
         top?: number;
         left?: number;
