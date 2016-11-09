@@ -8,10 +8,13 @@ export const CLOSE_ICON_CLASS = 'acrolinxFloatingSidebarCloseIcon';
 export const SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
 export const SIDEBAR_DRAG_OVERLAY_ID = 'acrolinxDragOverlay';
 export const SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
+export const FOOTER = 'acrolinxFloatingSidebarFooter';
 export const RESIZE_ICON_CLASS = 'acrolinxFloatingSidebarResizeIcon';
 
 export const IS_RESIZING_CLASS = 'acrolinxFloatingSidebarIsResizing';
 export const IS_DRAGGED_CLASS = 'acrolinxFloatingSidebarIsDragged';
+
+export const FOOTER_HEIGHT = 34;
 
 const HIDE_ICON = 'PHN2ZyBmaWxsPSIjZmZmZmZmIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0xOSAxOUg1VjVoN1YzSDVjLTEuMTEgMC0yIC45LTIgMnYxNGMwIDEuMS44OSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMnYtN2gtMnY3ek0xNCAzdjJoMy41OWwtOS44MyA5LjgzIDEuNDEgMS40MUwxOSA2LjQxVjEwaDJWM2gtN3oiLz4KPC9zdmc+';
 const RESIZE_ICON = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6IzkwOTA5MDt9Cgkuc3Qxe2ZpbGw6bm9uZTt9Cjwvc3R5bGU+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik03LjMsMjFoOS41di0ySDcuM1YyMXogTTcuMywxN2g5LjV2LTJINy4zVjE3eiBNNy4zLDEzaDkuNXYtMkg3LjNWMTN6IE03LjMsOWg5LjVWN0g3LjNWOXogTTcuMywzdjJoOS41VjNINy4zCgl6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0wLDBoMjR2MjRIMFYweiIvPgo8L3N2Zz4K';
@@ -140,7 +143,7 @@ function addStyles() {
         position: absolute; 
         top: 30px;
         left: 0;
-        bottom: 0;
+        bottom: ${FOOTER_HEIGHT}px;
         background: white;
       }
       
@@ -173,6 +176,15 @@ function addStyles() {
         z-index: ${Z_INDEX - 100};
       }
       
+      #${SIDEBAR_ID} .${FOOTER} {
+        position: absolute;
+        bottom: 0;
+        background: white;
+        width: 100%;
+        height: ${FOOTER_HEIGHT}px;
+        border-top: 1px solid #dadada;
+      }
+      
       #${SIDEBAR_ID} .${RESIZE_ICON_CLASS} {
         position: absolute;
         right: 3px;
@@ -180,9 +192,7 @@ function addStyles() {
         font-size: 20px;
         font-weight: normal;
         color: #333;
-        z-index: ${Z_INDEX + 200};
         cursor: ns-resize;
-        transition: opacity 0.5s;
         width: 24px;
         height: 24px;
         background-repeat: no-repeat;
@@ -191,10 +201,6 @@ function addStyles() {
         -moz-background-size: cover;
         -o-background-size: cover;
         background-size: cover;
-      }
-      
-      #${SIDEBAR_ID} .${RESIZE_ICON_CLASS}:hover {
-        opacity: 1;
       }
       
       #${SIDEBAR_ID}.${IS_RESIZING_CLASS},
@@ -211,7 +217,7 @@ const TEMPLATE = `
       <div class="${TITLE_BAR_CLASS}">Acrolinx <span class="${CLOSE_ICON_CLASS}" title="Hide"></span></div>
       <div id="${SIDEBAR_CONTAINER_ID}"></div>
       <div id="${SIDEBAR_DRAG_OVERLAY_ID}"></div>
-      <div class="${RESIZE_ICON_CLASS}" title="Drag to resize"></div>
+      <div class="${FOOTER}"><div class="${RESIZE_ICON_CLASS}" title="Drag to resize"></div></div>
     </div>
   `;
 
