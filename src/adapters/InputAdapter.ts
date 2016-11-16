@@ -22,7 +22,7 @@ import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/
 import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {
   getElementFromAdapterConf, AdapterInterface, AdapterConf, ContentExtractionResult,
-  AutobindWrapperAttributes
+  AutobindWrapperAttributes,
 } from "./AdapterInterface";
 import {AlignedMatch} from "../utils/alignment";
 import {getCompleteFlagLength} from "../utils/match";
@@ -33,15 +33,21 @@ import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
 export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
+type Format = 'TEXT' | 'MARKDOWN';
+
+type InputAdapterConf = AdapterConf & {
+  format?: Format
+};
+
 export class InputAdapter implements AdapterInterface {
   element: ValidInputElement;
-  config: AdapterConf;
+  config: InputAdapterConf;
   html: string;
   currentHtmlChecking: string;
 
-  constructor(conf: AdapterConf) {
+  constructor(conf: InputAdapterConf) {
     this.element = getElementFromAdapterConf(conf) as ValidInputElement;
-    this.config = conf;
+    this.config = _.cloneDeep(conf);
   }
 
   getContent() {
@@ -53,7 +59,7 @@ export class InputAdapter implements AdapterInterface {
   }
 
   getFormat() {
-    return 'TEXT';
+    return this.config.format || 'TEXT';
   }
 
   extractContentForCheck(): ContentExtractionResult {

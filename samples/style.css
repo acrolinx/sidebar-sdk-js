@@ -56,6 +56,11 @@ h1 {
   display: none;
 }
 
+.note {
+  font-style: italic;
+  font-size: small;
+}
+
 div[contenteditable=true] {
   border: 1px solid #ddd;
   padding: 0.5em;
