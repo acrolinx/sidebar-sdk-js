@@ -65,8 +65,7 @@ This textt has more then a errorr.
     // Create the main Acrolinx plugin.
     var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
 
-    // Create an adapter for an editable div.
-    // Alternative: new acrolinx.plugins.adapter.ContentEditableAdapter({element: document.getElementById('editor')})
+    // Create an adapter for a text area.
     var adapter = new acrolinx.plugins.adapter.InputAdapter({editorId: 'editor', format: 'MARKDOWN'});
 
     // Register the single adapter to the main Acrolinx plugin.
