@@ -33,9 +33,9 @@ import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
 export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
 
-type Format = 'TEXT' | 'MARKDOWN';
+export type Format = 'TEXT' | 'MARKDOWN';
 
-type InputAdapterConf = AdapterConf & {
+export type InputAdapterConf = AdapterConf & {
   format?: Format
 };
 
