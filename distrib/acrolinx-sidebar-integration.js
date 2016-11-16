@@ -2719,7 +2719,7 @@ var adapter_utils_1 = require("../utils/adapter-utils");
 var InputAdapter = (function () {
     function InputAdapter(conf) {
         this.element = AdapterInterface_1.getElementFromAdapterConf(conf);
-        this.config = conf;
+        this.config = acrolinx_libs_defaults_1._.cloneDeep(conf);
     }
     InputAdapter.prototype.getContent = function () {
         return this.element.value;
@@ -2728,7 +2728,7 @@ var InputAdapter = (function () {
         return this.getContent();
     };
     InputAdapter.prototype.getFormat = function () {
-        return 'TEXT';
+        return this.config.format || 'TEXT';
     };
     InputAdapter.prototype.extractContentForCheck = function () {
         this.html = this.getContent();

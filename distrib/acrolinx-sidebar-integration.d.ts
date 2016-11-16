@@ -65,15 +65,19 @@ declare module 'acrolinx-sidebar-integration/adapters/InputAdapter' {
     import { AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     import { AlignedMatch } from "acrolinx-sidebar-integration/utils/alignment";
     export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement;
+    export type Format = 'TEXT' | 'MARKDOWN';
+    export type InputAdapterConf = AdapterConf & {
+        format?: Format;
+    };
     export class InputAdapter implements AdapterInterface {
         element: ValidInputElement;
-        config: AdapterConf;
+        config: InputAdapterConf;
         html: string;
         currentHtmlChecking: string;
-        constructor(conf: AdapterConf);
+        constructor(conf: InputAdapterConf);
         getContent(): string;
         getCurrentText(): string;
-        getFormat(): string;
+        getFormat(): "TEXT" | "MARKDOWN";
         extractContentForCheck(): ContentExtractionResult;
         registerCheckResult(_checkResult: CheckResult): void;
         registerCheckCall(_checkInfo: Check): void;
