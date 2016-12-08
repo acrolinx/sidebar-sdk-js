@@ -3,7 +3,7 @@
 import * as utils from "./utils";
 import {AcrolinxPluginConfig} from "../acrolinx-plugin";
 
-export const SIDEBAR_URL = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
+export const SIDEBAR_URL = 'https://sidebar-classic.acrolinx-cloud.com/v14/prod/';
 
 export class SidebarURLInvalidError extends Error {
   public details: string;
