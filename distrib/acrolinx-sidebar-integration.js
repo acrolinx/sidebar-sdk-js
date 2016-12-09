@@ -3646,7 +3646,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var utils = require("./utils");
-exports.SIDEBAR_URL = 'https://acrolinx-sidebar-classic.s3.amazonaws.com/v14/prod/';
+exports.SIDEBAR_URL = 'https://sidebar-classic.acrolinx-cloud.com/v14/prod/';
 var SidebarURLInvalidError = (function (_super) {
     __extends(SidebarURLInvalidError, _super);
     function SidebarURLInvalidError(message, configuredSidebarURL, htmlLoaded) {
