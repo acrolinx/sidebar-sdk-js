@@ -31,14 +31,14 @@ For more information visit: http://www.acrolinx.com
 </div>
 
 
-<script src="/bower_components/lodash/lodash.js"></script>
+<script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/q/q.js"></script>
 <script src="/distrib/acrolinx-sidebar-integration.js"></script>
 <script src="../config.js"></script>
 
 
 <script>
-  var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(_.assign({}, basicConf, {
+  var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin($.extend({}, basicConf, {
     useMessageAdapter: true,
     sidebarUrl: './sidebar-iframe/'
   }));
