@@ -96,13 +96,6 @@ module.exports = function (grunt) {
       }
     },
 
-    jshint: {
-      myFiles: ['samples/**/*.js'],
-      options: {
-        jshintrc: ".jshintrc"
-      }
-    },
-
     ts: {
       all: {
         src: ['src/**/*.ts', 'test/**/*.ts'],
