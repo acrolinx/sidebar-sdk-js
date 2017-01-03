@@ -17,7 +17,6 @@ module.exports = function (config) {
     // (If you change this, you might want to change test/index.html too.)
     files: [
       'bower_components/jquery/dist/jquery.js',
-      'bower_components/q/q.js',
       'bower_components/ckeditor/ckeditor.js',
       {pattern: 'bower_components/ckeditor/**/*', included: false},
       'bower_components/tinymce/tinymce.js',

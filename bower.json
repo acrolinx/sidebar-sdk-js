@@ -4,9 +4,6 @@
   "private": false,
   "version": "0.3.41",
   "license": "Apache-2.0",
-  "dependencies": {
-    "q": "~1.4.1"
-  },
   "devDependencies": {
     "jquery": "~1.11.0",
     "ckeditor": "4.5.7",

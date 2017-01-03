@@ -21,21 +21,23 @@ describe('async storage', () => {
 
   it('set and get an object', (done) => {
     const testValue = {dummy: 'foo'};
-    storage.set(testKey, testValue).then(
-      storage.get(testKey).then(restoredValue => {
-        assertDeepEqual(restoredValue, testValue);
-        done();
-      }).catch(done)
+    storage.set(testKey, testValue).then(() => {
+        storage.get(testKey).then(restoredValue => {
+          assertDeepEqual(restoredValue, testValue);
+          done();
+        }).catch(done)
+      }
     );
   });
 
   it('set and get an string', (done) => {
     const testValue = 'foo';
-    storage.set(testKey, testValue).then(
-      storage.get(testKey).then(restoredValue => {
-        assertDeepEqual(restoredValue, testValue);
-        done();
-      }).catch(done)
+    storage.set(testKey, testValue).then(() => {
+        storage.get(testKey).then(restoredValue => {
+          assertDeepEqual(restoredValue, testValue);
+          done();
+        }).catch(done)
+      }
     );
   });
 

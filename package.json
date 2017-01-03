@@ -6,10 +6,12 @@
   "private": true,
   "dependencies": {
     "diff-match-patch": "1.0.0",
+    "es6-promise": "^4.0.5",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
+    "@types/es6-promise": "0.0.32",
     "@types/jquery": "^2.0.37",
     "@types/lodash": "^4.14.45",
     "@types/mocha": "2.2.35",

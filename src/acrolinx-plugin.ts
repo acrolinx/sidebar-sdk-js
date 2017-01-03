@@ -19,7 +19,7 @@
  */
 
 import * as _ from "lodash";
-import {Q} from "./acrolinx-libs/acrolinx-libs-defaults";
+import {Promise} from 'es6-promise';
 import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
 import {SidebarConfiguration} from "./acrolinx-libs/plugin-interfaces";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
@@ -66,7 +66,7 @@ type IFrameWindowOfSidebar = Window & {
 };
 
 function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface): Promise<AcrolinxSidebar> {
-  const result = Q.defer();
+  let resolvePromise: Function;
   const sidebarContainer = document.getElementById(config.sidebarContainerId);
 
   if (!sidebarContainer) {
@@ -114,7 +114,7 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     const acrolinxSidebarPlugin: AcrolinxSidebarPlugin = {
       requestInit (acrolinxSidebarArg?: AcrolinxSidebar) {
         acrolinxSidebar = acrolinxSidebarArg || sidebarContentWindow.acrolinxSidebar;
-        result.resolve(acrolinxSidebar);
+        resolvePromise(acrolinxSidebar);
         console.log('requestInit');
         initSidebarOnPremise();
       },
@@ -203,8 +203,12 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     }
   }
 
+  const result = new Promise((resolve, _reject) => {
+    resolvePromise = resolve;
+  });
+
   loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded);
-  return result.promise;
+  return result;
 }
 
 

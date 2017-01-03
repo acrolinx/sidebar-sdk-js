@@ -17,7 +17,6 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-
 import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {
   AdapterInterface,
@@ -26,7 +25,7 @@ import {
   SuccessfulContentExtractionResult
 } from "./AdapterInterface";
 import * as _ from "lodash";
-import {Q} from "../acrolinx-libs/acrolinx-libs-defaults";
+import {Promise} from "es6-promise";
 import {EscapeHtmlCharactersResult, escapeHtmlCharacters} from "../utils/escaping";
 import {findNewIndex} from "../utils/alignment";
 import {containsText} from "../utils/utils";
@@ -142,31 +141,31 @@ export class MultiEditorAdapter implements AdapterInterface {
     if (this.config.beforeCheck) {
       this.config.beforeCheck(this);
     }
-    const deferred = Q.defer();
-    const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck());
-    Q.all(contentExtractionResults).then((results: ContentExtractionResult[]) => {
-      let html = this.config.documentHeader || '';
-      if (this.rootElementWrapper) {
-        html += createStartTag(this.rootElementWrapper);
-      }
-      for (let i = 0; i < this.adapters.length; i++) {
-        const extractionResult = results[i];
-        if (hasError(extractionResult) || !containsText(extractionResult.content)) {
-          continue;
+    return new Promise((resolve, _reject) => {
+      const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck());
+      Promise.all(contentExtractionResults).then((results: ContentExtractionResult[]) => {
+        let html = this.config.documentHeader || '';
+        if (this.rootElementWrapper) {
+          html += createStartTag(this.rootElementWrapper);
         }
-        const registeredAdapter = this.adapters[i];
-        const {completeHtml, contentStart, contentEnd} = wrapAdapterContent(registeredAdapter, extractionResult);
-        registeredAdapter.start = html.length + contentStart;
-        registeredAdapter.end = html.length + contentEnd;
-        html += completeHtml;
-      }
-      if (this.rootElementWrapper) {
-        html += createEndTag(this.rootElementWrapper.tagName);
-      }
-      const contentExtractionResult: ContentExtractionResult = {content: html};
-      deferred.resolve(contentExtractionResult);
+        for (let i = 0; i < this.adapters.length; i++) {
+          const extractionResult = results[i];
+          if (hasError(extractionResult) || !containsText(extractionResult.content)) {
+            continue;
+          }
+          const registeredAdapter = this.adapters[i];
+          const {completeHtml, contentStart, contentEnd} = wrapAdapterContent(registeredAdapter, extractionResult);
+          registeredAdapter.start = html.length + contentStart;
+          registeredAdapter.end = html.length + contentEnd;
+          html += completeHtml;
+        }
+        if (this.rootElementWrapper) {
+          html += createEndTag(this.rootElementWrapper.tagName);
+        }
+        const contentExtractionResult: ContentExtractionResult = {content: html};
+        resolve(contentExtractionResult);
+      });
     });
-    return deferred.promise;
   }
 
   registerCheckCall(_checkInfo: Check) {
@@ -187,7 +186,7 @@ export class MultiEditorAdapter implements AdapterInterface {
   }
 
   remapMatches<T extends Match>(matches: T[]) {
-    const map: {[id: string]: RemappedMatches<T> } = {};
+    const map: {[id: string]: RemappedMatches<T>} = {};
     for (const match of matches) {
       const registeredAdapter = this.getAdapterForMatch(match);
       if (!map.hasOwnProperty(registeredAdapter.id)) {

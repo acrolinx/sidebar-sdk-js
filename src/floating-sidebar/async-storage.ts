@@ -1,4 +1,4 @@
-import {Q} from "../acrolinx-libs/acrolinx-libs-defaults";
+import {Promise} from 'es6-promise';
 
 export interface AsyncStorage {
   get<T>(key: string): Promise<T>;
@@ -7,13 +7,13 @@ export interface AsyncStorage {
 
 export class AsyncLocalStorage implements AsyncStorage {
   get<T>(key: string): Promise<T | null> {
-    return Q.Promise((resolve: Function) => {
-      resolve(loadFromLocalStorage(key));
+    return new Promise<T | null>((resolve) => {
+      resolve(loadFromLocalStorage<T>(key));
     });
   }
 
   set<T>(key: string, value: T) {
-    return Q.Promise((resolve: Function) => {
+    return new Promise<undefined>((resolve: Function) => {
       saveToLocalStorage(key, value);
       resolve(undefined);
     });
