@@ -25,7 +25,7 @@ describe('adapter test', function () {
   }
 
   function getCkEditorInstance(id: string): editor {
-    return CKEDITOR.instances[id];
+    return CKEDITOR.instances[id as any];
   }
 
   const adapters: AdapterSpec[] = [

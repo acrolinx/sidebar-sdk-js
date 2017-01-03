@@ -32,7 +32,7 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditor() {
-    return CKEDITOR.instances[this.editorId];
+    return CKEDITOR.instances[this.editorId as any];
   }
 
   getEditorDocument(): Document {
