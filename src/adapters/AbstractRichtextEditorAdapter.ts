@@ -47,7 +47,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   abstract getContent(): string;
 
   protected getEditorElement(): Element {
-    return this.getEditorDocument().querySelector('body');
+    return this.getEditorDocument().querySelector('body')!;
   }
 
   registerCheckCall(_checkInfo: Check) {

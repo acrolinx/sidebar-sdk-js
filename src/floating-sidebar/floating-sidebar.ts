@@ -83,7 +83,7 @@ export function keepVisible({left, top, height}: Position, windowWidth: number =
 
 function addStyles() {
   const styleTag = document.createElement('style');
-  const head = document.querySelector('head');
+  const head = document.querySelector('head')!;
   styleTag.innerHTML = `
       #${SIDEBAR_ID} {
         top: ${DEFAULT_POS.top}px;
@@ -255,7 +255,7 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
   const closeIcon = floatingSidebarElement.querySelector('.' + CLOSE_ICON_CLASS) as HTMLElement;
   const resizeIcon = floatingSidebarElement.querySelector('.' + RESIZE_ICON_CLASS) as HTMLElement;
   const glassPane = createDiv({id: SIDEBAR_GLASS_PANE_ID});
-  const body = document.querySelector('body');
+  const body = document.querySelector('body')!;
   let isMoving = false;
   let isResizing = false;
   let relativeMouseDownX = 0;

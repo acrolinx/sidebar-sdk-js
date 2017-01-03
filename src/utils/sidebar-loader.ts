@@ -54,7 +54,7 @@ export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
     }
 
     const withoutComments = sidebarHtml.replace(/<!--[\s\S]*?-->/g, '');
-    const head = document.querySelector('head');
+    const head = document.querySelector('head')!;
 
     const css = _.map(withoutComments.match(/href=".*?"/g) || [], getAbsoluteAttributeValue);
     css.forEach(ref => {

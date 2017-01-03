@@ -72,6 +72,6 @@ export class TinyMCEWordpressAdapter extends TinyMCEAdapter {
     tmp.insertNode(text);
     const ypos = text.getClientRects()[0].top;
     window.scrollTo(0, ypos);
-    text.parentNode.removeChild(text);
+    text.parentNode!.removeChild(text);
   }
 }

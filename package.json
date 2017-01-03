@@ -8,6 +8,7 @@
     "diff-match-patch": "1.0.0"
   },
   "devDependencies": {
+    "@types/mocha": "2.2.35",
     "browserify-istanbul": "2.0.0",
     "chai": "^3.5.0",
     "dts-bundle": "^0.6.1",
@@ -41,7 +42,7 @@
     "request": "^2.58.0",
     "serve-static": "1.10.2",
     "tslint": "3.13.0",
-    "typescript": "2.0.3"
+    "typescript": "2.1.4"
   },
   "scripts": {}
 }

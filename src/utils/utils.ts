@@ -100,5 +100,5 @@ export function containsText(s: string) {
 }
 
 export function removeElement(el: Element) {
-  el.parentNode.removeChild(el);
+  el.parentNode!.removeChild(el);
 }
