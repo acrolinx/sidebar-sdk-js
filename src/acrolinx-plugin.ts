@@ -18,8 +18,8 @@
  *
  */
 
-
-import {_, Q} from "./acrolinx-libs/acrolinx-libs-defaults";
+import * as _ from "lodash";
+import {Q} from "./acrolinx-libs/acrolinx-libs-defaults";
 import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
 import {SidebarConfiguration} from "./acrolinx-libs/plugin-interfaces";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";

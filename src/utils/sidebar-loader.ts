@@ -1,5 +1,4 @@
-'use strict';
-
+import * as _ from "lodash";
 import * as utils from "./utils";
 import {AcrolinxPluginConfig} from "../acrolinx-plugin";
 

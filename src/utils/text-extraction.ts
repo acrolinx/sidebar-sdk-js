@@ -1,4 +1,4 @@
-import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import * as _ from "lodash";
 import {toSet} from "./utils";
 import {OffSetAlign} from "./alignment";
 

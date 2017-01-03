@@ -1,4 +1,4 @@
-import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import * as _ from "lodash";
 import {Match} from "../acrolinx-libs/plugin-interfaces";
 
 

@@ -1,5 +1,5 @@
 const assert = chai.assert;
-
+import * as _ from "lodash";
 
 import {
   AcrolinxPlugin, AcrolinxSidebar, InitParameters, CheckOptions, Check, InvalidDocumentPart, CheckedDocumentRange,

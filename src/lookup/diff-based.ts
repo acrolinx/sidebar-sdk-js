@@ -18,8 +18,8 @@
  *
  */
 
+import * as _ from "lodash";
 import {Match} from "../acrolinx-libs/plugin-interfaces";
-import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {OffSetAlign, findNewIndex, AlignedMatch} from "../utils/alignment";
 import {extractText} from "../utils/text-extraction";
 import {log} from "../utils/logging";

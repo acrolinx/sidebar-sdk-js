@@ -1,4 +1,4 @@
-import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import * as _ from "lodash";
 import {toSet, deepFreezed} from "./utils";
 import {NEW_LINE_TAGS} from "./text-extraction";
 

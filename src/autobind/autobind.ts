@@ -1,4 +1,4 @@
-import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import * as _ from "lodash";
 import {isIFrame, assign, isDisplayed} from "../utils/utils";
 import {InputAdapter} from "../adapters/InputAdapter";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";

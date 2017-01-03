@@ -19,7 +19,7 @@
  */
 
 import {Match, MatchWithReplacement, CheckResult, Check} from "../acrolinx-libs/plugin-interfaces";
-import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import * as _ from "lodash";
 import {TextDomMapping, extractTextDomMapping, getEndDomPos} from "../utils/text-dom-mapping";
 import {AlignedMatch} from "../utils/alignment";
 import {lookupMatches} from "../lookup/diff-based";

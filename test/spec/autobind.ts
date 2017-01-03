@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 const assert = chai.assert;
 import {bindAdaptersForCurrentPage} from "../../src/autobind/autobind";
 import {AutoBindAdapter} from "../../src/adapters/AutoBindAdapter";

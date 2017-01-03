@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import {assertDeepEqual} from "../utils/test-utils";
 import {escapeHtmlCharacters} from "../../src/utils/escaping";
 import {findNewIndex} from "../../src/utils/alignment";

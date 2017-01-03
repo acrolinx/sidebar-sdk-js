@@ -24,7 +24,5 @@ declare const acrolinxLibs: {Q?: any, _?: LoDashStatic} | null | undefined;
 
 const originalAcrolinxLibs = (typeof acrolinxLibs !== 'undefined' &&  acrolinxLibs !== null)  ? acrolinxLibs : {};
 const myQ = originalAcrolinxLibs.Q || Q;
-const myLodash: LoDashStatic = originalAcrolinxLibs._ || _;
 
 export {myQ as Q}
-export {myLodash as _}

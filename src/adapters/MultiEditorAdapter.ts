@@ -25,7 +25,8 @@ import {
   hasError,
   SuccessfulContentExtractionResult
 } from "./AdapterInterface";
-import {_, Q} from "../acrolinx-libs/acrolinx-libs-defaults";
+import * as _ from "lodash";
+import {Q} from "../acrolinx-libs/acrolinx-libs-defaults";
 import {EscapeHtmlCharactersResult, escapeHtmlCharacters} from "../utils/escaping";
 import {findNewIndex} from "../utils/alignment";
 import {containsText} from "../utils/utils";
@@ -203,7 +204,7 @@ export class MultiEditorAdapter implements AdapterInterface {
 
   getAdapterForMatch(match: Match): RegisteredAdapter {
     return _.find(this.adapters,
-      (adapter: RegisteredAdapter) => (match.range[0] >= adapter.start) && (match.range[1] <= adapter.end));
+      (adapter: RegisteredAdapter) => (match.range[0] >= adapter.start) && (match.range[1] <= adapter.end))!;
   }
 
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {

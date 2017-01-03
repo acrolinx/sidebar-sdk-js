@@ -6,14 +6,12 @@
   <script src="/bower_components/ckeditor/ckeditor.js"></script>
   <script src="/bower_components/tinymce/tinymce.js"></script>
 
-  <script src="/bower_components/lodash/lodash.js"></script>
   <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
   <script src="/bower_components/q/q.js"></script>
 
   <script>
     var acrolinxLibs = {
       Q: Q.noConflict(),
-      _: _.noConflict()
     };
   </script>
 
@@ -70,8 +68,6 @@
 
 
   function initAcrolinx() {
-    var _ = acrolinxLibs._;
-
     // Create the main Acrolinx plugin.
     var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
 

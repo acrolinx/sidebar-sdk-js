@@ -1,4 +1,4 @@
-import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import * as _ from "lodash";
 
 export function logTime(text: string, f: Function) {
   const startTime = Date.now();

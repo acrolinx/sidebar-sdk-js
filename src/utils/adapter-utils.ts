@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import {AutobindWrapperAttributes} from "../adapters/AdapterInterface";
 
 export function getAutobindWrapperAttributes(element: Element) {

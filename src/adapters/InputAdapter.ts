@@ -19,7 +19,7 @@
  */
 
 import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
-import {_} from "../acrolinx-libs/acrolinx-libs-defaults";
+import * as _ from "lodash";
 import {
   getElementFromAdapterConf, AdapterInterface, AdapterConf, ContentExtractionResult,
   AutobindWrapperAttributes,
