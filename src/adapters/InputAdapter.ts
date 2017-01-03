@@ -31,7 +31,7 @@ import {lookupMatches} from "../lookup/diff-based";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
 import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
-export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement
+export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement;
 
 export type Format = 'TEXT' | 'MARKDOWN';
 

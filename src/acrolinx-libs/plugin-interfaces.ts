@@ -260,7 +260,7 @@ export interface CheckedDocumentPart {
 
 
 export type InvalidDocumentPart = CheckedDocumentPart;
-export type CheckedDocumentRange = CheckedDocumentPart
+export type CheckedDocumentRange = CheckedDocumentPart;
 
 
 export interface Match {

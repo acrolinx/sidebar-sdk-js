@@ -63,7 +63,7 @@ function isPromise(result: ContentExtractionResult | Promise<ContentExtractionRe
 type IFrameWindowOfSidebar = Window & {
   acrolinxSidebar: AcrolinxSidebar;
   acrolinxPlugin: AcrolinxSidebarPlugin;
-}
+};
 
 function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface): Promise<AcrolinxSidebar> {
   const result = Q.defer();

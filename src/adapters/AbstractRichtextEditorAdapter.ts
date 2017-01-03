@@ -29,7 +29,7 @@ import {AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperA
 import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
 
-type TextMapping = TextDomMapping
+type TextMapping = TextDomMapping;
 
 export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
   html: string;
