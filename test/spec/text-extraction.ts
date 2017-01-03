@@ -1,7 +1,7 @@
 import {extractText} from "../../src/utils/text-extraction";
 import {findNewIndex} from "../../src/utils/alignment";
 import {extractTextDomMapping} from "../../src/utils/text-dom-mapping";
-import assert = chai.assert;
+const assert = chai.assert;
 
 
 describe('text-extraction', () => {

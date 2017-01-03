@@ -8,6 +8,7 @@
     "diff-match-patch": "1.0.0"
   },
   "devDependencies": {
+    "@types/chai": "^3.4.34",
     "@types/mocha": "2.2.35",
     "browserify-istanbul": "2.0.0",
     "chai": "^3.5.0",

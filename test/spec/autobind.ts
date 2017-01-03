@@ -1,4 +1,4 @@
-import assert = chai.assert;
+const assert = chai.assert;
 import {bindAdaptersForCurrentPage} from "../../src/autobind/autobind";
 import {AutoBindAdapter} from "../../src/adapters/AutoBindAdapter";
 import {hasError} from "../../src/adapters/AdapterInterface";

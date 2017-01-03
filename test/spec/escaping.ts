@@ -1,7 +1,7 @@
 import {assertDeepEqual} from "../utils/test-utils";
 import {escapeHtmlCharacters} from "../../src/utils/escaping";
 import {findNewIndex} from "../../src/utils/alignment";
-import assert = chai.assert;
+const assert = chai.assert;
 
 
 const JS_VERIFY_OPTS = {

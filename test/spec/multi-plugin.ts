@@ -1,4 +1,4 @@
-import assert = chai.assert;
+const assert = chai.assert;
 
 
 import {

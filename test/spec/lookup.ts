@@ -2,7 +2,7 @@ import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
 import editor = CKEDITOR.editor;
 import {getMatchesWithReplacement} from "../utils/test-utils";
 import {AdapterInterface, AdapterConf, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
-import assert = chai.assert;
+const assert = chai.assert;
 
 describe('adapter test', function () {
   const NON_BREAKING_SPACE = '\u00a0';
