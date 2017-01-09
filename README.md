@@ -40,15 +40,29 @@ Before you start developing your own integration, you might benefit from looking
 
 ### using nodejs and grunt-cli
 
-1. After check out, make sure, that you have installed nodejs (which includes npm) and grunt-cli.
+1. Make sure that git is in your PATH variable. You can verify that running 
 
-2. Install all required node modules with:
+    ```
+    git
+    ```
+
+    in your console. If the command wasn't found, git is not in in your system's PATH variable.
+
+2. After check out, make sure, that you have installed nodejs (which includes npm).
+
+3. Install grunt-cli with
+
+    ```
+    npm install -g grunt-cli
+    ```
+
+4. In your console navigate into the projects root folder and install all required node modules with:
 
     ```
         npm install
     ```
 
-3. Now you can start the development server by typing:
+5. Now you can start the development server by typing:
   
    ```
        grunt
