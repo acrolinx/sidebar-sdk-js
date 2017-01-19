@@ -262,7 +262,7 @@ module.exports = function (grunt) {
               }
             },
           });
-          grunt.task.run('gitcommit', 'gittag', 'shell');
+          grunt.task.run('gitcommit', 'gittag', 'gitpush');
           done();
 
         } else {
