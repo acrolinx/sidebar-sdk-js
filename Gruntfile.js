@@ -255,7 +255,16 @@ module.exports = function (grunt) {
               }
             }
           });
-          grunt.task.run('gitcommit', 'gittag', 'shell');
+          grunt.config('gitpush', {
+            task: {
+              options: {
+                upstream: true,
+                tags: true,
+                force: true
+              }
+            }
+          });
+          grunt.task.run('gitcommit', 'gittag', 'gitpush');
           done();
 
         } else {
