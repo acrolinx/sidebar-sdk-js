@@ -173,7 +173,7 @@ module.exports = function (grunt) {
         stderr: false
       },
       target: {
-        command: 'git push --tags origin HEAD:master'
+        command: 'git config --global push.default simple; git push --set-upstream origin master; git push --tags'
       }
     },
 
@@ -253,22 +253,9 @@ module.exports = function (grunt) {
                 tag: 'v' + version,
                 message: 'Releasing: ' + version
               }
-            },
+            }
           });
-          grunt.config('gitpush', {
-            pushCommit:{
-              options: {
-                upstream:true,
-                force:true
-              }
-            },
-            addtag: {
-              options: {
-                tags: true
-              }
-            },
-          });
-          grunt.task.run('gitcommit', 'gittag', 'gitpush');
+          grunt.task.run('gitcommit', 'gittag', 'shell');
           done();
 
         } else {
