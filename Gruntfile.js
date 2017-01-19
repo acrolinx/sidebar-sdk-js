@@ -258,7 +258,9 @@ module.exports = function (grunt) {
           grunt.config('gitpush', {
             addtag: {
               task: {
-                tags: true
+                tags: true,
+                upstream:true,
+                force:true
               }
             },
           });
