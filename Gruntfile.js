@@ -256,11 +256,15 @@ module.exports = function (grunt) {
             },
           });
           grunt.config('gitpush', {
-            addtag: {
-              task: {
-                tags: true,
+            pushCommit:{
+              options: {
                 upstream:true,
                 force:true
+              }
+            },
+            addtag: {
+              options: {
+                tags: true
               }
             },
           });
