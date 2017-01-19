@@ -77,7 +77,7 @@ declare module 'acrolinx-sidebar-integration/adapters/InputAdapter' {
         constructor(conf: InputAdapterConf);
         getContent(): string;
         getCurrentText(): string;
-        getFormat(): "TEXT" | "MARKDOWN";
+        getFormat(): Format;
         extractContentForCheck(): ContentExtractionResult;
         registerCheckResult(_checkResult: CheckResult): void;
         registerCheckCall(_checkInfo: Check): void;
@@ -220,7 +220,7 @@ declare module 'acrolinx-sidebar-integration/adapters/MultiEditorAdapter' {
         constructor(config?: MultiEditorAdapterConfig);
         addSingleAdapter(singleAdapter: AdapterInterface, opts?: AddSingleAdapterOptions, id?: string): void;
         removeAllAdapters(): void;
-        extractContentForCheck(): any;
+        extractContentForCheck(): Promise<{}>;
         registerCheckCall(_checkInfo: Check): void;
         registerCheckResult(checkResult: CheckResult): void;
         selectRanges(checkId: string, matches: Match[]): void;
@@ -240,7 +240,7 @@ declare module 'acrolinx-sidebar-integration/message-adapter/message-adapter' {
 
 declare module 'acrolinx-sidebar-integration/utils/sidebar-loader' {
     import { AcrolinxPluginConfig } from "acrolinx-sidebar-integration/acrolinx-plugin";
-    export const SIDEBAR_URL: string;
+    export const SIDEBAR_URL = "https://sidebar-classic.acrolinx-cloud.com/v14/prod/";
     export class SidebarURLInvalidError extends Error {
         message: string;
         configuredSidebarURL: string;
@@ -370,17 +370,17 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
 
 declare module 'acrolinx-sidebar-integration/floating-sidebar/floating-sidebar' {
     import { AsyncStorage } from "acrolinx-sidebar-integration/floating-sidebar/async-storage";
-    export const SIDEBAR_ID: string;
-    export const TITLE_BAR_CLASS: string;
-    export const CLOSE_ICON_CLASS: string;
-    export const SIDEBAR_CONTAINER_ID: string;
-    export const SIDEBAR_DRAG_OVERLAY_ID: string;
-    export const SIDEBAR_GLASS_PANE_ID: string;
-    export const FOOTER: string;
-    export const RESIZE_ICON_CLASS: string;
-    export const IS_RESIZING_CLASS: string;
-    export const IS_DRAGGED_CLASS: string;
-    export const FOOTER_HEIGHT: number;
+    export const SIDEBAR_ID = "acrolinxFloatingSidebar";
+    export const TITLE_BAR_CLASS = "acrolinxFloatingSidebarTitleBar";
+    export const CLOSE_ICON_CLASS = "acrolinxFloatingSidebarCloseIcon";
+    export const SIDEBAR_CONTAINER_ID = "acrolinxSidebarContainer";
+    export const SIDEBAR_DRAG_OVERLAY_ID = "acrolinxDragOverlay";
+    export const SIDEBAR_GLASS_PANE_ID = "acrolinxFloatingSidebarGlassPane";
+    export const FOOTER = "acrolinxFloatingSidebarFooter";
+    export const RESIZE_ICON_CLASS = "acrolinxFloatingSidebarResizeIcon";
+    export const IS_RESIZING_CLASS = "acrolinxFloatingSidebarIsResizing";
+    export const IS_DRAGGED_CLASS = "acrolinxFloatingSidebarIsDragged";
+    export const FOOTER_HEIGHT = 34;
     export interface PositionUpdate {
         top?: number;
         left?: number;
@@ -392,7 +392,7 @@ declare module 'acrolinx-sidebar-integration/floating-sidebar/floating-sidebar' 
         height: number;
     }
     export const DEFAULT_POS: Position;
-    export const POSITION_KEY: string;
+    export const POSITION_KEY = "acrolinx.plugins.floatingSidebar.position";
     export function loadInitialPos(asyncStorage: AsyncStorage): Promise<Position>;
     export function keepVisible({left, top, height}: Position, windowWidth?: number, windowHeight?: number): Position;
     export interface FloatingSidebar {
@@ -456,7 +456,7 @@ declare module 'acrolinx-sidebar-integration/floating-sidebar/async-storage' {
     }
     export class AsyncLocalStorage implements AsyncStorage {
         get<T>(key: string): Promise<T | null>;
-        set<T>(key: string, value: T): any;
+        set<T>(key: string, value: T): Promise<undefined>;
     }
     export function loadFromLocalStorage<T>(key: string): T | null;
     export function saveToLocalStorage<T>(key: string, object: T): void;
