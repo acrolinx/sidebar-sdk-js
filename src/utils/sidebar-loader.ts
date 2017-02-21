@@ -33,6 +33,11 @@ function createScriptElement(src: string) {
   return el;
 }
 
+function createCompleteSidebarUrl(sidebarBaseUrl: string) {
+	const timestamp = Date.now();
+	return sidebarBaseUrl + 'index.html?t=' + timestamp;
+}
+
 /**
  * Loads the Styles and Scripts of the sidebar into the current window.
  * @param sidebarUrl must end with /
@@ -41,8 +46,9 @@ export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
   const sidebarBaseUrl = sidebarUrl;
 
   const getAbsoluteAttributeValue = (s: string) => s.replace(/^.*"(.*)".*$/g, sidebarBaseUrl + '$1');
-
-  utils.fetch(sidebarBaseUrl + 'index.html', sidebarHtml => {
+  
+  const completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
+  utils.fetch(completeSidebarUrl, sidebarHtml => {
     if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
       try {
         throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly.", sidebarBaseUrl, sidebarHtml);
@@ -70,7 +76,7 @@ export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
 
 export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFrameElement: HTMLIFrameElement, onSidebarLoaded: () => void) {
   const sidebarBaseUrl = config.sidebarUrl || SIDEBAR_URL;
-  const completeSidebarUrl = sidebarBaseUrl + 'index.html';
+  const completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
   if (config.useMessageAdapter || (config.useSidebarFromSameOriginDirectly && utils.isFromSameOrigin(sidebarBaseUrl))) {
     sidebarIFrameElement.addEventListener('load', onSidebarLoaded);
     sidebarIFrameElement.src = completeSidebarUrl;
