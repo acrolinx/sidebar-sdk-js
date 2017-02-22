@@ -82,7 +82,9 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
     sidebarIFrameElement.src = completeSidebarUrl;
   } else {
     utils.fetch(completeSidebarUrl, sidebarHtml => {
+
       const sidebarContentWindow = sidebarIFrameElement.contentWindow;
+	  
       if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
         try {
           throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly. " +
