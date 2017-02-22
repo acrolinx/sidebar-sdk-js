@@ -34,8 +34,8 @@ function createScriptElement(src: string) {
 }
 
 function createCompleteSidebarUrl(sidebarBaseUrl: string) {
-	const timestamp = Date.now();
-	return sidebarBaseUrl + 'index.html?t=' + timestamp;
+  const timestamp = Date.now();
+  return sidebarBaseUrl + 'index.html?t=' + timestamp;
 }
 
 /**

@@ -1,0 +1,25 @@
+From 529f7df16e204c38efc43c428a76d28fc357838f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ralf=20K=C3=BChnlein?= <ralf.kuehnlein@acrolinx.com>
+Date: Thu, 16 Feb 2017 14:21:15 +0100
+Subject: [PATCH 1/2] DEV-10854 using new test server URL in live demo
+
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index 3d48fc2..8beec99 100644
+--- a/README.md
++++ b/README.md
+@@ -5,7 +5,7 @@ The library contains adapters to use in your web integration. These are ready to
+ 
+ ## Live Demo
+ 
+-[Acrolinx Sidebar Live Demo](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/00bd24b8d0aeccf88ec17fa9c78c962528180f30/samples/index.html)
++[Acrolinx Sidebar Live Demo](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/3eae2725d5471494affab6abc4af87fad3bb4fc5/samples/index.html)
+ 
+ ## Table of Content
+ 
+-- 
+2.10.0.windows.1
+
