@@ -24,8 +24,7 @@ The library contains adapters to use in your web integration. These are ready to
 ## The Acrolinx Sidebar
 
 The Acrolinx sidebar is designed to show up beside the window where you edit your content. 
-You use it for checking, reviewing, and correcting your content. For web integrations Acrolinx provides a sidebar hosted in the cloud.
-So your integration can always keep up to date with bug fixes and new features.
+You use it for checking, reviewing, and correcting your content. 
 To get an impression what the sidebar looks like in other integration check the 
 [Acrolinx Support Center](https://support.acrolinx.com/hc/en-us/articles/205594781-Acrolinx-Sidebar-Edition-User-Interface-Reference).
 
