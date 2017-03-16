@@ -26,11 +26,13 @@ function postCommandAsMessage(window: Window, command: string, ...args: any[]) {
   }, '*');
 }
 
-function injectPostCommandAsMessage(window: Window, object: any) {
+type WindowProvider = () => Window;
+
+function injectPostCommandAsMessage(windowProvider: WindowProvider, object: any) {
   for (const key in object) {
     const originalMethod = object[key];
     object[key] = (...args: any[]) => {
-      postCommandAsMessage(window, key, ...args);
+      postCommandAsMessage(windowProvider(), key, ...args);
       return originalMethod.apply(object, args);
     };
   }
@@ -61,7 +63,7 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: AcrolinxPlugin, 
     }
   };
 
-  injectPostCommandAsMessage(sidebarWindowIframe.contentWindow, sidebar);
+  injectPostCommandAsMessage(() => sidebarWindowIframe.contentWindow, sidebar);
 
   function receiveMessage(event: MessageEvent) {
     const {command, args} = event.data;
@@ -122,7 +124,7 @@ export function createPluginMessageAdapter(): AcrolinxPlugin {
 
   };
 
-  injectPostCommandAsMessage(window.parent, acrolinxSidebarPlugin);
+  injectPostCommandAsMessage(() => window.parent, acrolinxSidebarPlugin);
 
 
   return acrolinxSidebarPlugin;

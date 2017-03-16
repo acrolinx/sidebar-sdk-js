@@ -17,9 +17,8 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-
 import * as _ from "lodash";
-import {Promise} from 'es6-promise';
+import {Promise} from "es6-promise";
 import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
 import {SidebarConfiguration} from "./acrolinx-libs/plugin-interfaces";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
@@ -79,7 +78,7 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
 
   const adapter = editorAdapter;
 
-  function onSidebarLoaded() {
+  function createAcrolinxSidebarPlugin(): AcrolinxSidebarPlugin {
     let acrolinxSidebar: AcrolinxSidebar;
 
     function initSidebarOnPremise() {
@@ -191,15 +190,30 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
 
     };
 
-    if (config.onSidebarWindowLoaded) {
-      config.onSidebarWindowLoaded(sidebarContentWindow);
-    }
+    return acrolinxSidebarPlugin;
+  }
+
+  function injectAcrolinxPluginInSidebar() {
+    const acrolinxSidebarPlugin = createAcrolinxSidebarPlugin();
+
+    onSidebarLoaded();
 
     console.log('Install acrolinxPlugin in sidebar.');
-    if (config.useMessageAdapter) {
-      connectAcrolinxPluginToMessages(acrolinxSidebarPlugin, sidebarIFrameElement);
-    } else {
-      sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
+    sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
+  }
+
+  function loadSidebarUsingMessageAdapter() {
+    const acrolinxSidebarPlugin = createAcrolinxSidebarPlugin();
+
+    console.log('Connect acrolinxPlugin in sidebar.');
+    connectAcrolinxPluginToMessages(acrolinxSidebarPlugin, sidebarIFrameElement);
+
+    loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded);
+  }
+
+  function onSidebarLoaded() {
+    if (config.onSidebarWindowLoaded) {
+      config.onSidebarWindowLoaded(sidebarContentWindow);
     }
   }
 
@@ -207,7 +221,11 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     resolvePromise = resolve;
   });
 
-  loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded);
+  if (config.useMessageAdapter) {
+    loadSidebarUsingMessageAdapter();
+  } else {
+    loadSidebarIntoIFrame(config, sidebarIFrameElement, injectAcrolinxPluginInSidebar);
+  }
   return result;
 }
 
