@@ -193,7 +193,7 @@ export class MultiEditorAdapter implements AdapterInterface {
         map[registeredAdapter.id] = {matches: [], adapter: registeredAdapter.adapter};
       }
       const remappedMatch = _.clone(match);
-      const rangeInsideWrapper: [number, number] = [match.range[0] - registeredAdapter.start, match.range[1] - registeredAdapter.start];
+      const rangeInsideWrapper: [number, number] = [match.range[0] - (registeredAdapter.start!), match.range[1] - (registeredAdapter.start!)];
       remappedMatch.range = registeredAdapter.escapeResult ?
         mapBackRangeOfEscapedText(registeredAdapter.escapeResult, rangeInsideWrapper) : rangeInsideWrapper;
       map[registeredAdapter.id].matches.push(remappedMatch);
@@ -203,7 +203,7 @@ export class MultiEditorAdapter implements AdapterInterface {
 
   getAdapterForMatch(match: Match): RegisteredAdapter {
     return _.find(this.adapters,
-      (adapter: RegisteredAdapter) => (match.range[0] >= adapter.start) && (match.range[1] <= adapter.end))!;
+      (adapter: RegisteredAdapter) => (match.range[0] >= adapter.start!) && (match.range[1] <= adapter.end!))!;
   }
 
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
