@@ -40,6 +40,7 @@ type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
 export interface  AcrolinxPluginConfig {
   sidebarContainerId: string;
   sidebarUrl?: string;
+  sidebarHtml?: string;
   useMessageAdapter?: boolean;
   useSidebarFromSameOriginDirectly?: boolean;
   onSidebarWindowLoaded?: (sidebarWindow: Window) => void;

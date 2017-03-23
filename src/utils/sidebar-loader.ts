@@ -75,6 +75,11 @@ export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
 }
 
 export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFrameElement: HTMLIFrameElement, onSidebarLoaded: () => void) {
+  if (config.sidebarHtml) {
+      injectSidebarHtml(config.sidebarHtml, sidebarIFrameElement);
+      onSidebarLoaded();
+      return;
+  }
   const sidebarBaseUrl = config.sidebarUrl || SIDEBAR_URL;
   const completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
   if (config.useMessageAdapter || (config.useSidebarFromSameOriginDirectly && utils.isFromSameOrigin(sidebarBaseUrl))) {
@@ -82,17 +87,12 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
     sidebarIFrameElement.src = completeSidebarUrl;
   } else {
     utils.fetch(completeSidebarUrl, sidebarHtml => {
-
-      const sidebarContentWindow = sidebarIFrameElement.contentWindow;
-	  
       if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
         try {
           throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly. " +
             "Check developer console for more information!", completeSidebarUrl, sidebarHtml);
         } catch (error) {
-          sidebarContentWindow.document.open();
-          sidebarContentWindow.document.write(error.message);
-          sidebarContentWindow.document.close();
+          injectSidebarHtml(error.message, sidebarIFrameElement);
           console.error(error.details);
           return;
         }
@@ -100,11 +100,15 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
       const sidebarHtmlWithAbsoluteLinks = sidebarHtml
         .replace(/src="/g, 'src="' + sidebarBaseUrl)
         .replace(/href="/g, 'href="' + sidebarBaseUrl);
-      sidebarContentWindow.document.open();
-      sidebarContentWindow.document.write(sidebarHtmlWithAbsoluteLinks);
-      sidebarContentWindow.document.close();
+      injectSidebarHtml(sidebarHtmlWithAbsoluteLinks, sidebarIFrameElement);
       onSidebarLoaded();
     });
   }
 }
 
+function injectSidebarHtml(sidebarHtml: string, sidebarIFrameElement: HTMLIFrameElement) {
+  const sidebarContentWindow = sidebarIFrameElement.contentWindow;
+  sidebarContentWindow.document.open();
+  sidebarContentWindow.document.write(sidebarHtml);
+  sidebarContentWindow.document.close();
+}
