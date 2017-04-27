@@ -258,6 +258,7 @@ module.exports = function (grunt) {
           grunt.config('gitpush', {
             task: {
               options: {
+                verbose: true,
                 upstream: true,
                 tags: true,
                 force: true
