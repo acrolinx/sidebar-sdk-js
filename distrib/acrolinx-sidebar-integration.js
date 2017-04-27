@@ -2200,7 +2200,7 @@ module.exports['DIFF_EQUAL'] = DIFF_EQUAL;
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   4.0.5
+ * @version   4.1.0
  */
 
 (function (global, factory) {
@@ -2508,6 +2508,7 @@ function handleMaybeThenable(promise, maybeThenable, then$$) {
   } else {
     if (then$$ === GET_THEN_ERROR) {
       _reject(promise, GET_THEN_ERROR.error);
+      GET_THEN_ERROR.error = null;
     } else if (then$$ === undefined) {
       fulfill(promise, maybeThenable);
     } else if (isFunction(then$$)) {
@@ -2628,7 +2629,7 @@ function invokeCallback(settled, promise, callback, detail) {
     if (value === TRY_CATCH_ERROR) {
       failed = true;
       error = value.error;
-      value = null;
+      value.error = null;
     } else {
       succeeded = true;
     }
@@ -3351,6 +3352,7 @@ Promise.Promise = Promise;
 return Promise;
 
 })));
+
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"_process":4}],3:[function(require,module,exports){
@@ -20612,6 +20614,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -20625,6 +20631,7 @@ process.umask = function() { return 0; };
 
 },{}],5:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var es6_promise_1 = require("es6-promise");
 var sidebar_loader_1 = require("./utils/sidebar-loader");
@@ -20655,7 +20662,7 @@ function initAcrolinxSamplePlugin(config, editorAdapter) {
     sidebarContainer.appendChild(sidebarIFrameElement);
     var sidebarContentWindow = sidebarIFrameElement.contentWindow;
     var adapter = editorAdapter;
-    function onSidebarLoaded() {
+    function createAcrolinxSidebarPlugin() {
         var acrolinxSidebar;
         function initSidebarOnPremise() {
             acrolinxSidebar.init(_.assign({}, {
@@ -20756,21 +20763,34 @@ function initAcrolinxSamplePlugin(config, editorAdapter) {
                 window.open(url);
             }
         };
+        return acrolinxSidebarPlugin;
+    }
+    function injectAcrolinxPluginInSidebar() {
+        var acrolinxSidebarPlugin = createAcrolinxSidebarPlugin();
+        onSidebarLoaded();
+        console.log('Install acrolinxPlugin in sidebar.');
+        sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
+    }
+    function loadSidebarUsingMessageAdapter() {
+        var acrolinxSidebarPlugin = createAcrolinxSidebarPlugin();
+        console.log('Connect acrolinxPlugin in sidebar.');
+        message_adapter_1.connectAcrolinxPluginToMessages(acrolinxSidebarPlugin, sidebarIFrameElement);
+        sidebar_loader_1.loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded);
+    }
+    function onSidebarLoaded() {
         if (config.onSidebarWindowLoaded) {
             config.onSidebarWindowLoaded(sidebarContentWindow);
-        }
-        console.log('Install acrolinxPlugin in sidebar.');
-        if (config.useMessageAdapter) {
-            message_adapter_1.connectAcrolinxPluginToMessages(acrolinxSidebarPlugin, sidebarIFrameElement);
-        }
-        else {
-            sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
         }
     }
     var result = new es6_promise_1.Promise(function (resolve, _reject) {
         resolvePromise = resolve;
     });
-    sidebar_loader_1.loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded);
+    if (config.useMessageAdapter) {
+        loadSidebarUsingMessageAdapter();
+    }
+    else {
+        sidebar_loader_1.loadSidebarIntoIFrame(config, sidebarIFrameElement, injectAcrolinxPluginInSidebar);
+    }
     return result;
 }
 var AcrolinxPlugin = (function () {
@@ -20820,6 +20840,7 @@ exports.autoBindFloatingSidebar = autoBindFloatingSidebar;
 
 },{"./adapters/AdapterInterface":8,"./adapters/AutoBindAdapter":9,"./floating-sidebar/async-storage":17,"./floating-sidebar/floating-sidebar":18,"./message-adapter/message-adapter":20,"./utils/sidebar-loader":27,"./utils/utils":30,"es6-promise":2,"lodash":3}],6:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var acrolinx_plugin_1 = require("./acrolinx-plugin");
 var InputAdapter_1 = require("./adapters/InputAdapter");
 var ContentEditableAdapter_1 = require("./adapters/ContentEditableAdapter");
@@ -20852,6 +20873,7 @@ augmentedWindow.acrolinx.plugins = {
 
 },{"./acrolinx-plugin":5,"./adapters/AbstractRichtextEditorAdapter":7,"./adapters/AutoBindAdapter":9,"./adapters/CKEditorAdapter":10,"./adapters/ContentEditableAdapter":11,"./adapters/InputAdapter":12,"./adapters/MultiEditorAdapter":13,"./adapters/TinyMCEAdapter":14,"./adapters/TinyMCEWordpressAdapter":15,"./message-adapter/message-adapter":20,"./utils/sidebar-loader":27}],7:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var text_dom_mapping_1 = require("../utils/text-dom-mapping");
 var diff_based_1 = require("../lookup/diff-based");
@@ -20980,6 +21002,7 @@ exports.AbstractRichtextEditorAdapter = AbstractRichtextEditorAdapter;
 
 },{"../lookup/diff-based":19,"../utils/adapter-utils":21,"../utils/match":25,"../utils/text-dom-mapping":28,"../utils/utils":30,"lodash":3}],8:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 function hasError(a) {
     return !!a.error;
 }
@@ -21008,6 +21031,7 @@ exports.getElementFromAdapterConf = getElementFromAdapterConf;
 
 },{}],9:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var MultiEditorAdapter_1 = require("./MultiEditorAdapter");
 var autobind_1 = require("../autobind/autobind");
 var AutoBindAdapter = (function () {
@@ -21039,11 +21063,17 @@ exports.AutoBindAdapter = AutoBindAdapter;
 
 },{"../autobind/autobind":16,"./MultiEditorAdapter":13}],10:[function(require,module,exports){
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var AbstractRichtextEditorAdapter_1 = require("./AbstractRichtextEditorAdapter");
 var CKEditorAdapter = (function (_super) {
     __extends(CKEditorAdapter, _super);
@@ -21104,11 +21134,17 @@ exports.CKEditorAdapter = CKEditorAdapter;
 
 },{"./AbstractRichtextEditorAdapter":7}],11:[function(require,module,exports){
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var AbstractRichtextEditorAdapter_1 = require("./AbstractRichtextEditorAdapter");
 var AdapterInterface_1 = require("./AdapterInterface");
 var scrolling_1 = require("../utils/scrolling");
@@ -21137,6 +21173,7 @@ exports.ContentEditableAdapter = ContentEditableAdapter;
 
 },{"../utils/scrolling":26,"./AbstractRichtextEditorAdapter":7,"./AdapterInterface":8}],12:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var AdapterInterface_1 = require("./AdapterInterface");
 var match_1 = require("../utils/match");
@@ -21226,6 +21263,7 @@ exports.InputAdapter = InputAdapter;
 
 },{"../lookup/diff-based":19,"../utils/adapter-utils":21,"../utils/match":25,"../utils/scrolling":26,"../utils/utils":30,"./AdapterInterface":8,"lodash":3}],13:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var AdapterInterface_1 = require("./AdapterInterface");
 var _ = require("lodash");
 var es6_promise_1 = require("es6-promise");
@@ -21347,7 +21385,7 @@ var MultiEditorAdapter = (function () {
                 map[registeredAdapter.id] = { matches: [], adapter: registeredAdapter.adapter };
             }
             var remappedMatch = _.clone(match);
-            var rangeInsideWrapper = [match.range[0] - registeredAdapter.start, match.range[1] - registeredAdapter.start];
+            var rangeInsideWrapper = [match.range[0] - (registeredAdapter.start), match.range[1] - (registeredAdapter.start)];
             remappedMatch.range = registeredAdapter.escapeResult ?
                 mapBackRangeOfEscapedText(registeredAdapter.escapeResult, rangeInsideWrapper) : rangeInsideWrapper;
             map[registeredAdapter.id].matches.push(remappedMatch);
@@ -21369,11 +21407,17 @@ exports.MultiEditorAdapter = MultiEditorAdapter;
 
 },{"../utils/alignment":22,"../utils/escaping":23,"../utils/utils":30,"./AdapterInterface":8,"es6-promise":2,"lodash":3}],14:[function(require,module,exports){
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var AbstractRichtextEditorAdapter_1 = require("./AbstractRichtextEditorAdapter");
 var TinyMCEAdapter = (function (_super) {
     __extends(TinyMCEAdapter, _super);
@@ -21416,16 +21460,22 @@ exports.TinyMCEAdapter = TinyMCEAdapter;
 
 },{"./AbstractRichtextEditorAdapter":7}],15:[function(require,module,exports){
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var TinyMCEAdapter_1 = require("./TinyMCEAdapter");
 var TinyMCEWordpressAdapter = (function (_super) {
     __extends(TinyMCEWordpressAdapter, _super);
     function TinyMCEWordpressAdapter() {
-        return _super.apply(this, arguments) || this;
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     TinyMCEWordpressAdapter.prototype.getEditor = function () {
         return tinymce.get(this.editorId);
@@ -21480,6 +21530,7 @@ exports.TinyMCEWordpressAdapter = TinyMCEWordpressAdapter;
 
 },{"./TinyMCEAdapter":14}],16:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var utils_1 = require("../utils/utils");
 var InputAdapter_1 = require("../adapters/InputAdapter");
@@ -21547,6 +21598,7 @@ exports.bindAdaptersForCurrentPage = bindAdaptersForCurrentPage;
 
 },{"../adapters/ContentEditableAdapter":11,"../adapters/InputAdapter":12,"../utils/utils":30,"lodash":3}],17:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var es6_promise_1 = require("es6-promise");
 var AsyncLocalStorage = (function () {
     function AsyncLocalStorage() {
@@ -21580,6 +21632,7 @@ exports.saveToLocalStorage = saveToLocalStorage;
 
 },{"es6-promise":2}],18:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var utils_1 = require("../utils/utils");
 exports.SIDEBAR_ID = 'acrolinxFloatingSidebar';
@@ -21766,6 +21819,7 @@ exports.initFloatingSidebar = initFloatingSidebar;
 
 },{"../utils/utils":30,"lodash":3}],19:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var alignment_1 = require("../utils/alignment");
 var text_extraction_1 = require("../utils/text-extraction");
@@ -21840,6 +21894,7 @@ exports.lookupMatches = lookupMatches;
 
 },{"../utils/alignment":22,"../utils/logging":24,"../utils/text-extraction":29,"diff-match-patch":1,"lodash":3}],20:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 function removeFunctions(object) {
     return JSON.parse(JSON.stringify(object));
 }
@@ -21853,7 +21908,7 @@ function postCommandAsMessage(window, command) {
         args: removeFunctions(args)
     }, '*');
 }
-function injectPostCommandAsMessage(window, object) {
+function injectPostCommandAsMessage(windowProvider, object) {
     var _loop_1 = function (key) {
         var originalMethod = object[key];
         object[key] = function () {
@@ -21861,7 +21916,7 @@ function injectPostCommandAsMessage(window, object) {
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            postCommandAsMessage.apply(void 0, [window, key].concat(args));
+            postCommandAsMessage.apply(void 0, [windowProvider(), key].concat(args));
             return originalMethod.apply(object, args);
         };
     };
@@ -21886,7 +21941,7 @@ function connectAcrolinxPluginToMessages(acrolinxPlugin, sidebarWindowIframe) {
         onVisibleRangesChanged: function (_checkedDocumentRanges) {
         }
     };
-    injectPostCommandAsMessage(sidebarWindowIframe.contentWindow, sidebar);
+    injectPostCommandAsMessage(function () { return sidebarWindowIframe.contentWindow; }, sidebar);
     function receiveMessage(event) {
         var _a = event.data, command = _a.command, args = _a.args;
         if (acrolinxPluginAny[command]) {
@@ -21930,13 +21985,14 @@ function createPluginMessageAdapter() {
         openWindow: function (_urlSpec) {
         }
     };
-    injectPostCommandAsMessage(window.parent, acrolinxSidebarPlugin);
+    injectPostCommandAsMessage(function () { return window.parent; }, acrolinxSidebarPlugin);
     return acrolinxSidebarPlugin;
 }
 exports.createPluginMessageAdapter = createPluginMessageAdapter;
 
 },{}],21:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 function getAutobindWrapperAttributes(element) {
     var attributes = {
@@ -21951,6 +22007,7 @@ exports.getAutobindWrapperAttributes = getAutobindWrapperAttributes;
 
 },{"lodash":3}],22:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 function findDisplacement(offsetMappingArray, originalIndex) {
     if (offsetMappingArray.length === 0) {
@@ -21967,6 +22024,7 @@ exports.findNewIndex = findNewIndex;
 
 },{"lodash":3}],23:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var HTML_ESCAPES = {
     '&': '&amp;',
     '<': '&lt;',
@@ -21998,6 +22056,7 @@ exports.escapeHtmlCharacters = escapeHtmlCharacters;
 
 },{}],24:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var isEnabled = false;
 function log(message) {
     var args = [];
@@ -22016,6 +22075,7 @@ exports.enableLogging = enableLogging;
 
 },{}],25:[function(require,module,exports){
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 function getCompleteFlagLength(matches) {
     return matches[matches.length - 1].range[1] - matches[0].range[0];
 }
@@ -22023,6 +22083,7 @@ exports.getCompleteFlagLength = getCompleteFlagLength;
 
 },{}],26:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 function getRootElement(doc) {
     return (doc.documentElement || doc.body.parentNode || doc.body);
 }
@@ -22071,11 +22132,17 @@ exports.scrollIntoView = scrollIntoView;
 
 },{}],27:[function(require,module,exports){
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var utils = require("./utils");
 exports.SIDEBAR_URL = 'https://sidebar-classic.acrolinx-cloud.com/v14/prod/';
@@ -22110,11 +22177,16 @@ function createScriptElement(src) {
     el.defer = false;
     return el;
 }
+function createCompleteSidebarUrl(sidebarBaseUrl) {
+    var timestamp = Date.now();
+    return sidebarBaseUrl + 'index.html?t=' + timestamp;
+}
 function loadSidebarCode(sidebarUrl) {
     if (sidebarUrl === void 0) { sidebarUrl = exports.SIDEBAR_URL; }
     var sidebarBaseUrl = sidebarUrl;
     var getAbsoluteAttributeValue = function (s) { return s.replace(/^.*"(.*)".*$/g, sidebarBaseUrl + '$1'); };
-    utils.fetch(sidebarBaseUrl + 'index.html', function (sidebarHtml) {
+    var completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
+    utils.fetch(completeSidebarUrl, function (sidebarHtml) {
         if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
             try {
                 throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly.", sidebarBaseUrl, sidebarHtml);
@@ -22138,24 +22210,26 @@ function loadSidebarCode(sidebarUrl) {
 }
 exports.loadSidebarCode = loadSidebarCode;
 function loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded) {
+    if (config.sidebarHtml) {
+        injectSidebarHtml(config.sidebarHtml, sidebarIFrameElement);
+        onSidebarLoaded();
+        return;
+    }
     var sidebarBaseUrl = config.sidebarUrl || exports.SIDEBAR_URL;
-    var completeSidebarUrl = sidebarBaseUrl + 'index.html';
+    var completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
     if (config.useMessageAdapter || (config.useSidebarFromSameOriginDirectly && utils.isFromSameOrigin(sidebarBaseUrl))) {
         sidebarIFrameElement.addEventListener('load', onSidebarLoaded);
         sidebarIFrameElement.src = completeSidebarUrl;
     }
     else {
         utils.fetch(completeSidebarUrl, function (sidebarHtml) {
-            var sidebarContentWindow = sidebarIFrameElement.contentWindow;
             if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
                 try {
                     throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly. " +
                         "Check developer console for more information!", completeSidebarUrl, sidebarHtml);
                 }
                 catch (error) {
-                    sidebarContentWindow.document.open();
-                    sidebarContentWindow.document.write(error.message);
-                    sidebarContentWindow.document.close();
+                    injectSidebarHtml(error.message, sidebarIFrameElement);
                     console.error(error.details);
                     return;
                 }
@@ -22163,17 +22237,22 @@ function loadSidebarIntoIFrame(config, sidebarIFrameElement, onSidebarLoaded) {
             var sidebarHtmlWithAbsoluteLinks = sidebarHtml
                 .replace(/src="/g, 'src="' + sidebarBaseUrl)
                 .replace(/href="/g, 'href="' + sidebarBaseUrl);
-            sidebarContentWindow.document.open();
-            sidebarContentWindow.document.write(sidebarHtmlWithAbsoluteLinks);
-            sidebarContentWindow.document.close();
+            injectSidebarHtml(sidebarHtmlWithAbsoluteLinks, sidebarIFrameElement);
             onSidebarLoaded();
         });
     }
 }
 exports.loadSidebarIntoIFrame = loadSidebarIntoIFrame;
+function injectSidebarHtml(sidebarHtml, sidebarIFrameElement) {
+    var sidebarContentWindow = sidebarIFrameElement.contentWindow;
+    sidebarContentWindow.document.open();
+    sidebarContentWindow.document.write(sidebarHtml);
+    sidebarContentWindow.document.close();
+}
 
 },{"./utils":30,"lodash":3}],28:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var utils_1 = require("./utils");
 var text_extraction_1 = require("./text-extraction");
@@ -22248,6 +22327,7 @@ exports.getEndDomPos = getEndDomPos;
 
 },{"./text-extraction":29,"./utils":30,"lodash":3}],29:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var utils_1 = require("./utils");
 var REPLACE_SCRIPTS_REGEXP = '<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\/script>';
@@ -22292,6 +22372,7 @@ function decodeEntities(entity) {
 
 },{"./utils":30,"lodash":3}],30:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 function logTime(text, f) {
     var startTime = Date.now();

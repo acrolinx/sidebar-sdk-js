@@ -43,6 +43,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
     export interface AcrolinxPluginConfig {
         sidebarContainerId: string;
         sidebarUrl?: string;
+        sidebarHtml?: string;
         useMessageAdapter?: boolean;
         useSidebarFromSameOriginDirectly?: boolean;
         onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
