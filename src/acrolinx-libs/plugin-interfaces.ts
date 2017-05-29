@@ -275,6 +275,16 @@ export interface Match {
    * Available since the 5.0 server.
    */
   extractedRange?: [number, number];
+  /**
+   * Available since the 5.2.1 server.
+   */
+  locations?: MatchLocation[];
+}
+
+export interface MatchLocation {
+  type: string;
+  title?: string;
+  values: {[key: string]: string};
 }
 
 
