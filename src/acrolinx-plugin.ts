@@ -66,7 +66,7 @@ type IFrameWindowOfSidebar = Window & {
 };
 
 function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface): Promise<AcrolinxSidebar> {
-  let resolvePromise: Function;
+  let resolvePromise: (sidebar: AcrolinxSidebar) => void;
   const sidebarContainer = document.getElementById(config.sidebarContainerId);
 
   if (!sidebarContainer) {
@@ -218,7 +218,7 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     }
   }
 
-  const result = new Promise((resolve, _reject) => {
+  const result = new Promise<AcrolinxSidebar>((resolve, _reject) => {
     resolvePromise = resolve;
   });
 

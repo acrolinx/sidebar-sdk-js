@@ -137,7 +137,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     this.adapters = [];
   }
 
-  extractContentForCheck() {
+  extractContentForCheck(): Promise<ContentExtractionResult>  {
     if (this.config.beforeCheck) {
       this.config.beforeCheck(this);
     }

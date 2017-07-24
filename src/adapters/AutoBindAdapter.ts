@@ -19,16 +19,14 @@
  */
 
 import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
-import {AdapterInterface, ContentExtractionResult} from "./AdapterInterface";
+import {AdapterInterface, CommonAdapterConf, ContentExtractionResult} from "./AdapterInterface";
 import {MultiEditorAdapter, MultiEditorAdapterConfig} from "./MultiEditorAdapter";
 import {bindAdaptersForCurrentPage} from "../autobind/autobind";
 
 export class AutoBindAdapter implements AdapterInterface {
   private multiAdapter: MultiEditorAdapter;
-  private conf: MultiEditorAdapterConfig;
 
-  constructor(conf: MultiEditorAdapterConfig) {
-    this.conf = conf;
+  constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf)) {
   }
 
   extractContentForCheck(): Promise<ContentExtractionResult> {

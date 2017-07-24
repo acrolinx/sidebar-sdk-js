@@ -51,7 +51,7 @@ export function isFromSameOrigin(url: string) {
 }
 
 export function toSet(keys: string[]) {
-  return Object.freeze(_.zipObject(keys, keys.map(_.constant(true)))) as {[key: string]: boolean};
+  return Object.freeze(_.zipObject(keys, keys.map(_.constant(true))) as {[key: string]: boolean});
 }
 
 export function assign<T, U>(obj: T, update: U) : T&U {

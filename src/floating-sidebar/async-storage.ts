@@ -1,7 +1,7 @@
 import {Promise} from 'es6-promise';
 
 export interface AsyncStorage {
-  get<T>(key: string): Promise<T>;
+  get<T>(key: string): Promise<T | null>;
   set<T>(key: string, value: T): Promise<void>;
 }
 
