@@ -36,7 +36,7 @@ export interface RemappedMatches<T extends Match> {
   adapter: AdapterInterface;
 }
 
-export type AttributeMap =  {[key: string]: any};
+export type AttributeMap = { [key: string]: any };
 
 export interface WrapperConfOptions {
   tagName?: string;
@@ -54,9 +54,12 @@ export interface RegisteredAdapter {
   id: string;
   adapter: AdapterInterface;
   wrapper: WrapperConf;
-  start?: number;
-  end?: number;
+  checkedRange?: [number, number];
   escapeResult?: EscapeHtmlCharactersResult;
+}
+
+export interface CheckedRegisteredAdapter extends RegisteredAdapter {
+  checkedRange: [number, number];
 }
 
 
@@ -137,7 +140,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     this.adapters = [];
   }
 
-  extractContentForCheck(): Promise<ContentExtractionResult>  {
+  extractContentForCheck(): Promise<ContentExtractionResult> {
     if (this.config.beforeCheck) {
       this.config.beforeCheck(this);
     }
@@ -150,13 +153,13 @@ export class MultiEditorAdapter implements AdapterInterface {
         }
         for (let i = 0; i < this.adapters.length; i++) {
           const extractionResult = results[i];
+          const registeredAdapter = this.adapters[i];
           if (hasError(extractionResult) || !containsText(extractionResult.content)) {
+            registeredAdapter.checkedRange = undefined;
             continue;
           }
-          const registeredAdapter = this.adapters[i];
           const {completeHtml, contentStart, contentEnd} = wrapAdapterContent(registeredAdapter, extractionResult);
-          registeredAdapter.start = html.length + contentStart;
-          registeredAdapter.end = html.length + contentEnd;
+          registeredAdapter.checkedRange = [html.length + contentStart, html.length + contentEnd];
           html += completeHtml;
         }
         if (this.rootElementWrapper) {
@@ -186,14 +189,15 @@ export class MultiEditorAdapter implements AdapterInterface {
   }
 
   remapMatches<T extends Match>(matches: T[]) {
-    const map: {[id: string]: RemappedMatches<T>} = {};
+    const map: { [id: string]: RemappedMatches<T> } = {};
     for (const match of matches) {
       const registeredAdapter = this.getAdapterForMatch(match);
       if (!map.hasOwnProperty(registeredAdapter.id)) {
         map[registeredAdapter.id] = {matches: [], adapter: registeredAdapter.adapter};
       }
+      const checkedRangeStart = registeredAdapter.checkedRange[0];
+      const rangeInsideWrapper: [number, number] = [match.range[0] - (checkedRangeStart), match.range[1] - (checkedRangeStart)];
       const remappedMatch = _.clone(match);
-      const rangeInsideWrapper: [number, number] = [match.range[0] - (registeredAdapter.start!), match.range[1] - (registeredAdapter.start!)];
       remappedMatch.range = registeredAdapter.escapeResult ?
         mapBackRangeOfEscapedText(registeredAdapter.escapeResult, rangeInsideWrapper) : rangeInsideWrapper;
       map[registeredAdapter.id].matches.push(remappedMatch);
@@ -201,9 +205,12 @@ export class MultiEditorAdapter implements AdapterInterface {
     return map;
   }
 
-  getAdapterForMatch(match: Match): RegisteredAdapter {
+  getAdapterForMatch(match: Match): CheckedRegisteredAdapter {
     return _.find(this.adapters,
-      (adapter: RegisteredAdapter) => (match.range[0] >= adapter.start!) && (match.range[1] <= adapter.end!))!;
+      (adapter: RegisteredAdapter) => {
+        const checkedRange = adapter.checkedRange;
+        return checkedRange && (match.range[0] >= checkedRange[0]) && (match.range[1] <= checkedRange[1]);
+      }) as CheckedRegisteredAdapter;
   }
 
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {

@@ -49,6 +49,10 @@ export function hasError(a: ContentExtractionResult): a is HasError {
   return !!(a as HasError).error;
 }
 
+export function isSuccessfulContentExtractionResult(a: ContentExtractionResult): a is SuccessfulContentExtractionResult {
+  return typeof (a as SuccessfulContentExtractionResult).content == 'string';
+}
+
 export function hasEditorID(a: AdapterConf): a is HasEditorID {
   return !!(a as HasEditorID).editorId;
 }
