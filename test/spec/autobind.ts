@@ -136,6 +136,16 @@ describe('autobind', function () {
         done();
       }).catch(done);
     });
+
+    it('returns format of inner MultiEditor ', () => {
+      const autobindAdapterAuto = new AutoBindAdapter({aggregateFormat: 'AUTO'});
+      assert.equal(autobindAdapterAuto.getFormat(), 'AUTO');
+
+      const autobindAdapterHtml = new AutoBindAdapter({aggregateFormat: 'HTML'});
+      assert.equal(autobindAdapterHtml.getFormat(), 'HTML');
+    });
+
+
   });
 
 });

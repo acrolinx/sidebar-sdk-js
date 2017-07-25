@@ -84,6 +84,7 @@ function mapBackRangeOfEscapedText(escapeResult: EscapeHtmlCharactersResult, ran
 }
 
 export interface MultiEditorAdapterConfig {
+  aggregateFormat?: 'AUTO' | 'HTML';
   documentHeader?: string;
   rootElement?: WrapperConfOptions;
   beforeCheck?: (multiAdapter: MultiEditorAdapter) => void;
@@ -130,6 +131,10 @@ export class MultiEditorAdapter implements AdapterInterface {
       this.rootElementWrapper = wrapperConfWithDefaults(config.rootElement, 'html');
     }
     this.adapters = [];
+  }
+
+  getFormat() {
+    return this.config.aggregateFormat || 'HTML';
   }
 
   addSingleAdapter(singleAdapter: AdapterInterface, opts: AddSingleAdapterOptions = {}, id = 'acrolinx_integration' + this.adapters.length) {

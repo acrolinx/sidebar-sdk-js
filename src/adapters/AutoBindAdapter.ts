@@ -27,10 +27,19 @@ export class AutoBindAdapter implements AdapterInterface {
   private multiAdapter: MultiEditorAdapter;
 
   constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf)) {
+    this.initMultiAdapter();
+  }
+
+  private initMultiAdapter() {
+    this.multiAdapter = new MultiEditorAdapter(this.conf);
+  }
+
+  getFormat() {
+    return this.multiAdapter.getFormat();
   }
 
   extractContentForCheck(): Promise<ContentExtractionResult> {
-    this.multiAdapter = new MultiEditorAdapter(this.conf);
+    this.initMultiAdapter();
     bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
       const wrapperAttributes = adapter.getAutobindWrapperAttributes ? adapter.getAutobindWrapperAttributes() : {};
       this.multiAdapter.addSingleAdapter(adapter, {attributes: wrapperAttributes});

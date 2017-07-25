@@ -27,7 +27,8 @@ import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {AdapterInterface, ContentExtractionResult, hasError} from "./adapters/AdapterInterface";
 import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter";
 import {assign} from "./utils/utils";
-import {AsyncStorage, AsyncLocalStorage} from "./floating-sidebar/async-storage";
+import {AsyncLocalStorage, AsyncStorage} from "./floating-sidebar/async-storage";
+import {MultiEditorAdapterConfig} from "./adapters/MultiEditorAdapter";
 
 type DownloadInfo = acrolinxSidebarInterfaces.DownloadInfo;
 type MatchWithReplacement = acrolinxSidebarInterfaces.MatchWithReplacement;
@@ -37,7 +38,7 @@ type CheckResult = acrolinxSidebarInterfaces.CheckResult;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
 type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
 
-export interface  AcrolinxPluginConfig {
+export interface AcrolinxPluginConfig {
   sidebarContainerId: string;
   sidebarUrl?: string;
   sidebarHtml?: string;
@@ -112,25 +113,25 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     }
 
     const acrolinxSidebarPlugin: AcrolinxSidebarPlugin = {
-      requestInit (acrolinxSidebarArg?: AcrolinxSidebar) {
+      requestInit(acrolinxSidebarArg?: AcrolinxSidebar) {
         acrolinxSidebar = acrolinxSidebarArg || sidebarContentWindow.acrolinxSidebar;
         resolvePromise(acrolinxSidebar);
         console.log('requestInit');
         initSidebarOnPremise();
       },
 
-      onInitFinished (initFinishedResult: InitResult) {
+      onInitFinished(initFinishedResult: InitResult) {
         console.log('onInitFinished: ', initFinishedResult);
         if (initFinishedResult.error) {
           window.alert(initFinishedResult.error.message);
         }
       },
 
-      configure (configuration: AcrolinxPluginConfiguration) {
+      configure(configuration: AcrolinxPluginConfiguration) {
         console.log('configure: ', configuration);
       },
 
-      requestGlobalCheck () {
+      requestGlobalCheck() {
         const contentExtractionResultOrPromise = adapter.extractContentForCheck();
         const pFormat = adapter.getFormat ? adapter.getFormat() : undefined;
         if (isPromise(contentExtractionResultOrPromise)) {
@@ -153,7 +154,7 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
         } catch (msg) {
           console.log(msg);
 
-          acrolinxSidebar.invalidateRanges(matches.map(function (match) {
+          acrolinxSidebar.invalidateRanges(matches.map(function(match) {
               return {
                 checkId: checkId,
                 range: match.range
@@ -170,7 +171,7 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
           adapter.replaceRanges(checkId, matchesWithReplacement);
         } catch (msg) {
           console.log(msg);
-          acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function (match) {
+          acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function(match) {
               return {
                 checkId: checkId,
                 range: match.range
@@ -270,7 +271,7 @@ export class AcrolinxPlugin {
   }
 }
 
-export interface AutoBindFloatingSidebarConfig extends FloatingSidebar {
+export interface AutoBindFloatingSidebarConfig extends AcrolinxPluginConfig, MultiEditorAdapterConfig {
   asyncStorage?: AsyncStorage;
 }
 

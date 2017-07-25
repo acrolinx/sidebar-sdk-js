@@ -70,6 +70,16 @@ describe('multi-editor-adapter', () => {
       content: adapter2Content,
       range: [0, adapter2Content.length]
     }]);
-  })
+  });
+
+  it('getFormat returns config.aggregateFormat', () => {
+    const multiAdapter = new MultiEditorAdapter({aggregateFormat: 'AUTO'});
+    assert.equal(multiAdapter.getFormat(), 'AUTO');
+  });
+
+  it('getFormat returns HTML as default', () => {
+    assert.equal(new MultiEditorAdapter().getFormat(), 'HTML');
+  });
+
 });
 
