@@ -40,6 +40,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
     import { FloatingSidebar } from "acrolinx-sidebar-integration/floating-sidebar/floating-sidebar";
     import { AdapterInterface } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     import { AsyncStorage } from "acrolinx-sidebar-integration/floating-sidebar/async-storage";
+    import { MultiEditorAdapterConfig } from "acrolinx-sidebar-integration/adapters/MultiEditorAdapter";
     export interface AcrolinxPluginConfig {
         sidebarContainerId: string;
         sidebarUrl?: string;
@@ -55,7 +56,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
         configure(conf: SidebarConfiguration): void;
         init(): void;
     }
-    export interface AutoBindFloatingSidebarConfig extends FloatingSidebar {
+    export interface AutoBindFloatingSidebarConfig extends AcrolinxPluginConfig, MultiEditorAdapterConfig {
         asyncStorage?: AsyncStorage;
     }
     export function autoBindFloatingSidebar(basicConf: AutoBindFloatingSidebarConfig): FloatingSidebar;
@@ -172,10 +173,11 @@ declare module 'acrolinx-sidebar-integration/adapters/TinyMCEWordpressAdapter' {
 
 declare module 'acrolinx-sidebar-integration/adapters/AutoBindAdapter' {
     import { Check, CheckResult, Match, MatchWithReplacement } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
-    import { AdapterInterface, ContentExtractionResult } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
+    import { AdapterInterface, CommonAdapterConf, ContentExtractionResult } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     import { MultiEditorAdapterConfig } from "acrolinx-sidebar-integration/adapters/MultiEditorAdapter";
     export class AutoBindAdapter implements AdapterInterface {
-        constructor(conf: MultiEditorAdapterConfig);
+        constructor(conf: (MultiEditorAdapterConfig & CommonAdapterConf));
+        getFormat(): "AUTO" | "HTML";
         extractContentForCheck(): Promise<ContentExtractionResult>;
         registerCheckCall(_checkInfo: Check): void;
         registerCheckResult(_checkResult: CheckResult): void;
@@ -186,7 +188,7 @@ declare module 'acrolinx-sidebar-integration/adapters/AutoBindAdapter' {
 
 declare module 'acrolinx-sidebar-integration/adapters/MultiEditorAdapter' {
     import { Check, CheckResult, Match, MatchWithReplacement } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
-    import { AdapterInterface } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
+    import { AdapterInterface, ContentExtractionResult } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     import { EscapeHtmlCharactersResult } from "acrolinx-sidebar-integration/utils/escaping";
     export interface RemappedMatches<T extends Match> {
         matches: T[];
@@ -208,27 +210,31 @@ declare module 'acrolinx-sidebar-integration/adapters/MultiEditorAdapter' {
         id: string;
         adapter: AdapterInterface;
         wrapper: WrapperConf;
-        start?: number;
-        end?: number;
+        checkedRange?: [number, number];
         escapeResult?: EscapeHtmlCharactersResult;
     }
+    export interface CheckedRegisteredAdapter extends RegisteredAdapter {
+        checkedRange: [number, number];
+    }
     export interface MultiEditorAdapterConfig {
+        aggregateFormat?: 'AUTO' | 'HTML';
         documentHeader?: string;
         rootElement?: WrapperConfOptions;
         beforeCheck?: (multiAdapter: MultiEditorAdapter) => void;
     }
     export class MultiEditorAdapter implements AdapterInterface {
         constructor(config?: MultiEditorAdapterConfig);
+        getFormat(): "AUTO" | "HTML";
         addSingleAdapter(singleAdapter: AdapterInterface, opts?: AddSingleAdapterOptions, id?: string): void;
         removeAllAdapters(): void;
-        extractContentForCheck(): Promise<{}>;
+        extractContentForCheck(): Promise<ContentExtractionResult>;
         registerCheckCall(_checkInfo: Check): void;
         registerCheckResult(checkResult: CheckResult): void;
         selectRanges(checkId: string, matches: Match[]): void;
         remapMatches<T extends Match>(matches: T[]): {
             [id: string]: RemappedMatches<T>;
         };
-        getAdapterForMatch(match: Match): RegisteredAdapter;
+        getAdapterForMatch(match: Match): CheckedRegisteredAdapter;
         replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void;
     }
 }
@@ -315,6 +321,14 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
         content: string;
         range: [number, number];
         extractedRange?: [number, number];
+        locations?: MatchLocation[];
+    }
+    export interface MatchLocation {
+        type: string;
+        title?: string;
+        values: {
+            [key: string]: string;
+        };
     }
     export interface MatchWithReplacement extends Match {
         replacement: string;
@@ -445,6 +459,7 @@ declare module 'acrolinx-sidebar-integration/adapters/AdapterInterface' {
         getAutobindWrapperAttributes?(): AutobindWrapperAttributes;
     }
     export function hasError(a: ContentExtractionResult): a is HasError;
+    export function isSuccessfulContentExtractionResult(a: ContentExtractionResult): a is SuccessfulContentExtractionResult;
     export function hasEditorID(a: AdapterConf): a is HasEditorID;
     export function hasElement(a: AdapterConf): a is HasElement;
     export function getElementFromAdapterConf(conf: AdapterConf): HTMLElement;
@@ -452,7 +467,7 @@ declare module 'acrolinx-sidebar-integration/adapters/AdapterInterface' {
 
 declare module 'acrolinx-sidebar-integration/floating-sidebar/async-storage' {
     export interface AsyncStorage {
-        get<T>(key: string): Promise<T>;
+        get<T>(key: string): Promise<T | null>;
         set<T>(key: string, value: T): Promise<void>;
     }
     export class AsyncLocalStorage implements AsyncStorage {
