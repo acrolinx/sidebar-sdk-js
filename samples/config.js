@@ -29,6 +29,7 @@ var basicConf = {
   serverAddress: 'https://test-ssl.acrolinx.com/',
   clientSignature: 'SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5'
 
+  //clientLocale: 'en'
   //showServerSelector: true,
   //readOnlySuggestions: true,
   //sidebarUrl:'https://<LOCAL_SERVER_ADDRESS>/sidebar/v14/',
