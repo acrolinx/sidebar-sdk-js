@@ -27,7 +27,19 @@ var basicConf = {
 
   //See: https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.37/doc/pluginDoc/interfaces/_plugin_interfaces_.initparameters.html
   serverAddress: 'https://test-ssl.acrolinx.com/',
-  clientSignature: 'SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5'
+  clientSignature: 'SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5',
+
+  /**
+   * This callback can be used to set the documentReference.
+   * It is called in the moment when the document is checked.
+   * The default value is window.location.href.
+   * In a CMS the link to the article might be a good documentReference.
+   * On other cases the full file name might be a good option.
+   * @return {string}
+   */
+  getDocumentReference: function () {
+    return window.location.href;
+  },
 
   //clientLocale: 'en'
   //showServerSelector: true,
