@@ -38,6 +38,13 @@ type CheckResult = acrolinxSidebarInterfaces.CheckResult;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
 type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
 
+export interface AcrolinxSimpleStorage {
+  getItem(key: string): string | null;
+  removeItem(key: string): void;
+  setItem(key: string, data: string): void;
+  clear(): void;
+}
+
 export interface AcrolinxPluginConfig {
   sidebarContainerId: string;
   sidebarUrl?: string;
@@ -46,6 +53,7 @@ export interface AcrolinxPluginConfig {
   useSidebarFromSameOriginDirectly?: boolean;
   onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
   getDocumentReference?: () => string;
+  acrolinxStorage?: AcrolinxSimpleStorage;
 }
 
 const clientComponents = [
@@ -64,6 +72,7 @@ function isPromise(result: ContentExtractionResult | Promise<ContentExtractionRe
 type IFrameWindowOfSidebar = Window & {
   acrolinxSidebar: AcrolinxSidebar;
   acrolinxPlugin: AcrolinxSidebarPlugin;
+  acrolinxStorage?: AcrolinxSimpleStorage;
 };
 
 function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface): Promise<AcrolinxSidebar> {
@@ -201,6 +210,9 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     onSidebarLoaded();
 
     console.log('Install acrolinxPlugin in sidebar.');
+    if (config.acrolinxStorage) {
+      sidebarContentWindow.acrolinxStorage = config.acrolinxStorage;
+    }
     sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
   }
 
