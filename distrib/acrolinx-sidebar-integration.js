@@ -20768,6 +20768,9 @@ function initAcrolinxSamplePlugin(config, editorAdapter) {
         var acrolinxSidebarPlugin = createAcrolinxSidebarPlugin();
         onSidebarLoaded();
         console.log('Install acrolinxPlugin in sidebar.');
+        if (config.acrolinxStorage) {
+            sidebarContentWindow.acrolinxStorage = config.acrolinxStorage;
+        }
         sidebarContentWindow.acrolinxPlugin = acrolinxSidebarPlugin;
     }
     function loadSidebarUsingMessageAdapter() {

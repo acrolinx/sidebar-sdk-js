@@ -41,6 +41,12 @@ declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
     import { AdapterInterface } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     import { AsyncStorage } from "acrolinx-sidebar-integration/floating-sidebar/async-storage";
     import { MultiEditorAdapterConfig } from "acrolinx-sidebar-integration/adapters/MultiEditorAdapter";
+    export interface AcrolinxSimpleStorage {
+        getItem(key: string): string | null;
+        removeItem(key: string): void;
+        setItem(key: string, data: string): void;
+        clear(): void;
+    }
     export interface AcrolinxPluginConfig {
         sidebarContainerId: string;
         sidebarUrl?: string;
@@ -49,6 +55,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
         useSidebarFromSameOriginDirectly?: boolean;
         onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
         getDocumentReference?: () => string;
+        acrolinxStorage?: AcrolinxSimpleStorage;
     }
     export class AcrolinxPlugin {
         constructor(conf: AcrolinxPluginConfig);
