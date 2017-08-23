@@ -112,6 +112,11 @@ export interface InitParameters extends SidebarConfiguration {
    */
   enforceHTTPS?: boolean;
 
+  /**
+   * If the user clicks the help button, the sidebar opens this URL using AcrolinxPlugin.openWindow.
+   * If this property is omitted, the sidebar opens the Acrolinx default help.
+   */
+  helpUrl?: string;
 }
 
 /**

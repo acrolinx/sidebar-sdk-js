@@ -42,6 +42,7 @@ var basicConf = {
   },
 
   //clientLocale: 'en'
+  //helpUrl: 'https://www.acrolinx.com',
   //showServerSelector: true,
   //readOnlySuggestions: true,
   //sidebarUrl:'https://<LOCAL_SERVER_ADDRESS>/sidebar/v14/',
