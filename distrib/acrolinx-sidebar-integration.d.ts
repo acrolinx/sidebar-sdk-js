@@ -280,6 +280,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
         defaultCheckSettings?: CheckSettings;
         enableSingleSignOn?: boolean;
         enforceHTTPS?: boolean;
+        helpUrl?: string;
     }
     export interface CheckSettings {
         language: string;
