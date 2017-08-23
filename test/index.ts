@@ -1,4 +1,3 @@
-declare const require: (name: String) => any;
 require('es6-promise/auto');
 require('./spec/lookup-unit-tests/diff-based');
 require('./spec/lookup-unit-tests/diff-based-performance');
