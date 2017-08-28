@@ -5,7 +5,7 @@ The library contains adapters to use in your web integration. These are ready to
 
 ## Live Demo
 
-[Acrolinx Sidebar Live Demo](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/e99607abc61c923f36e926ecab29d4b15060630c/samples/index.html)
+[Acrolinx Sidebar Live Demo](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.52/samples/index.html)
 
 ## Table of Content
 
