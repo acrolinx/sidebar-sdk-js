@@ -273,6 +273,30 @@ export class AcrolinxPlugin {
     });
   }
 
+  cleanIFrameContainerIfNeeded ( callback: () => void ) {
+    const sidebarContainer = document.getElementById( this.initConfig.sidebarContainerId );
+    if ( sidebarContainer ) {
+       const iFrame: HTMLIFrameElement | null = sidebarContainer.querySelector('iframe');
+       if ( iFrame ) {
+         // Changing the src before cleaning the whole container is needed at least in IE 11
+         // to avoid exceptions inside the iFrame caused by disappearing javascript objects.
+         // The try/catch is just added to be on the safe side.
+         try {
+            iFrame.src = 'about:blank';
+            setTimeout(() => {
+               sidebarContainer.innerHTML = '';
+               callback();
+            }, 0);
+         } catch (error) {
+            console.error(error);
+            callback();
+          }
+       } else {
+          callback();
+       }
+    }
+  }
+
   private configureSidebar() {
     // Old versions of the sidebar may not support the configure method.
     try {
