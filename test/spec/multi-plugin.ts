@@ -36,6 +36,7 @@ describe('multi plugin', function () {
   let acrolinxPlugin: acrolinxPluginModule.AcrolinxPlugin;
 
   afterEach((done) => {
+    acrolinxPlugin.dispose(function (){});
     $('#multiPluginTest').remove();
     done();
   });
