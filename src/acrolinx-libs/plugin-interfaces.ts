@@ -451,7 +451,7 @@ export interface AcrolinxSidebar {
    *
    * @param callback function
    */
-  unload(callback: () => void) : void;
+  dispose(callback: () => void) : void;
 }
 
 

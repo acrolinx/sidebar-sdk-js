@@ -273,7 +273,7 @@ export class AcrolinxPlugin {
     });
   }
 
-  unload ( callback: () => void ) {
+  dispose ( callback: () => void ) {
     const sidebarContainer = document.getElementById( this.initConfig.sidebarContainerId );
     if ( sidebarContainer ) {
        const iFrame: HTMLIFrameElement | null = sidebarContainer.querySelector('iframe');
