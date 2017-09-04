@@ -60,6 +60,8 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: AcrolinxPlugin, 
     },
 
     onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
+    },
+    dispose(_callback: () => void) {
     }
   };
 
