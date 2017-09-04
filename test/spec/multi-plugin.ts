@@ -128,7 +128,7 @@ describe('multi plugin', function () {
       onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
       },
 
-      cleanIFrameContainerIfNeeded ( _callback: () => void ) {
+      unload ( _callback: () => void ) {
       }
     }
   }

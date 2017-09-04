@@ -61,7 +61,7 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: AcrolinxPlugin, 
 
     onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
     },
-    cleanIFrameContainerIfNeeded(_callback: () => void) {
+    unload(_callback: () => void) {
     }
   };
 

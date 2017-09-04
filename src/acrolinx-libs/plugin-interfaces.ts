@@ -451,7 +451,7 @@ export interface AcrolinxSidebar {
    *
    * @param callback function
    */
-  cleanIFrameContainerIfNeeded(callback: () => void) : void;
+  unload(callback: () => void) : void;
 }
 
 
