@@ -15,7 +15,7 @@
     "@types/diff-match-patch": "^1.0.31",
     "@types/es6-promise": "0.0.32",
     "@types/jquery": "^2.0.37",
-    "@types/lodash": "4.14.71",
+    "@types/lodash": "4.14.74",
     "@types/mocha": "2.2.35",
     "browserify-istanbul": "2.0.0",
     "chai": "^3.5.0",
@@ -50,7 +50,7 @@
     "serve-static": "1.11.1",
     "tslint": "4.2.0",
     "typedoc": "0.8.0",
-    "typescript": "2.4.2"
+    "typescript": "2.5.2"
   },
   "scripts": {
     "buildDoc": "typedoc --out ./doc/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",

@@ -62,8 +62,10 @@ describe('adapter test', function () {
       inputFormat: 'HTML',
       editorElement: '<textarea name="editorId" id="editorId" rows="10" cols="40">initial text</textarea>',
       setEditorContent: (html: string, done: DoneCallback) => {
-        getCkEditorInstance('editorId').setData(html, () => {
-          done();
+        getCkEditorInstance('editorId').setData(html, {
+          callback: () => {
+            done();
+          }
         });
       },
       init: (done: DoneCallback) => {

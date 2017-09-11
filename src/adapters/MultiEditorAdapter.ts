@@ -214,7 +214,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     return _.find(this.adapters,
       (adapter: RegisteredAdapter) => {
         const checkedRange = adapter.checkedRange;
-        return checkedRange && (match.range[0] >= checkedRange[0]) && (match.range[1] <= checkedRange[1]);
+        return !!checkedRange && (match.range[0] >= checkedRange[0]) && (match.range[1] <= checkedRange[1]);
       }) as CheckedRegisteredAdapter;
   }
 
