@@ -51,6 +51,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
         sidebarContainerId: string;
         sidebarUrl?: string;
         sidebarHtml?: string;
+        checkSelection?: boolean;
         useMessageAdapter?: boolean;
         useSidebarFromSameOriginDirectly?: boolean;
         onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
@@ -62,6 +63,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
         registerAdapter(adapter: AdapterInterface): void;
         configure(conf: SidebarConfiguration): void;
         init(): void;
+        dispose(callback: () => void): void;
     }
     export interface AutoBindFloatingSidebarConfig extends AcrolinxPluginConfig, MultiEditorAdapterConfig {
         asyncStorage?: AsyncStorage;
@@ -71,7 +73,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
 
 declare module 'acrolinx-sidebar-integration/adapters/InputAdapter' {
     import { Check, CheckResult, Match, MatchWithReplacement } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
-    import { AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
+    import { AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes, ExtractContentForCheckOpts } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     import { AlignedMatch } from "acrolinx-sidebar-integration/utils/alignment";
     export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement;
     export type Format = 'TEXT' | 'MARKDOWN';
@@ -79,7 +81,7 @@ declare module 'acrolinx-sidebar-integration/adapters/InputAdapter' {
         format?: Format;
     };
     export class InputAdapter implements AdapterInterface {
-        element: ValidInputElement;
+        readonly element: ValidInputElement;
         config: InputAdapterConf;
         html: string;
         currentHtmlChecking: string;
@@ -87,7 +89,7 @@ declare module 'acrolinx-sidebar-integration/adapters/InputAdapter' {
         getContent(): string;
         getCurrentText(): string;
         getFormat(): Format;
-        extractContentForCheck(): ContentExtractionResult;
+        extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult;
         registerCheckResult(_checkResult: CheckResult): void;
         registerCheckCall(_checkInfo: Check): void;
         scrollAndSelect(matches: AlignedMatch<Match>[]): void;
@@ -102,19 +104,21 @@ declare module 'acrolinx-sidebar-integration/adapters/InputAdapter' {
 declare module 'acrolinx-sidebar-integration/adapters/ContentEditableAdapter' {
     import { AbstractRichtextEditorAdapter } from "acrolinx-sidebar-integration/adapters/AbstractRichtextEditorAdapter";
     import { AdapterConf } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
+    import { DocumentSelection } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
     export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
         element: Element;
         constructor(conf: AdapterConf);
         getEditorElement(): Element;
         getContent(): string;
+        protected getSelection(): DocumentSelection | undefined;
         getEditorDocument(): Document;
         protected scrollElementIntoView(el: HTMLElement): void;
     }
 }
 
 declare module 'acrolinx-sidebar-integration/adapters/AbstractRichtextEditorAdapter' {
-    import { Match, MatchWithReplacement, CheckResult, Check } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
-    import { AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
+    import { Match, MatchWithReplacement, CheckResult, Check, DocumentSelection } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
+    import { AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes, ExtractContentForCheckOpts } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
         html: string;
         config: AdapterConf;
@@ -127,7 +131,8 @@ declare module 'acrolinx-sidebar-integration/adapters/AbstractRichtextEditorAdap
         protected getEditorElement(): Element;
         registerCheckCall(_checkInfo: Check): void;
         registerCheckResult(_checkResult: CheckResult): void;
-        extractContentForCheck(): ContentExtractionResult;
+        extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult;
+        protected getSelection(): DocumentSelection | undefined;
         scrollToCurrentSelection(): void;
         protected scrollElementIntoView(el: HTMLElement): void;
         selectRanges(checkId: string, matches: Match[]): void;
@@ -180,12 +185,12 @@ declare module 'acrolinx-sidebar-integration/adapters/TinyMCEWordpressAdapter' {
 
 declare module 'acrolinx-sidebar-integration/adapters/AutoBindAdapter' {
     import { Check, CheckResult, Match, MatchWithReplacement } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
-    import { AdapterInterface, CommonAdapterConf, ContentExtractionResult } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
+    import { AdapterInterface, CommonAdapterConf, ContentExtractionResult, ExtractContentForCheckOpts } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     import { MultiEditorAdapterConfig } from "acrolinx-sidebar-integration/adapters/MultiEditorAdapter";
     export class AutoBindAdapter implements AdapterInterface {
         constructor(conf: (MultiEditorAdapterConfig & CommonAdapterConf));
         getFormat(): "AUTO" | "HTML";
-        extractContentForCheck(): Promise<ContentExtractionResult>;
+        extractContentForCheck(opts: ExtractContentForCheckOpts): Promise<ContentExtractionResult>;
         registerCheckCall(_checkInfo: Check): void;
         registerCheckResult(_checkResult: CheckResult): void;
         selectRanges(checkId: string, matches: Match[]): void;
@@ -195,7 +200,7 @@ declare module 'acrolinx-sidebar-integration/adapters/AutoBindAdapter' {
 
 declare module 'acrolinx-sidebar-integration/adapters/MultiEditorAdapter' {
     import { Check, CheckResult, Match, MatchWithReplacement } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
-    import { AdapterInterface, ContentExtractionResult } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
+    import { AdapterInterface, ContentExtractionResult, ExtractContentForCheckOpts } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     import { EscapeHtmlCharactersResult } from "acrolinx-sidebar-integration/utils/escaping";
     export interface RemappedMatches<T extends Match> {
         matches: T[];
@@ -234,7 +239,7 @@ declare module 'acrolinx-sidebar-integration/adapters/MultiEditorAdapter' {
         getFormat(): "AUTO" | "HTML";
         addSingleAdapter(singleAdapter: AdapterInterface, opts?: AddSingleAdapterOptions, id?: string): void;
         removeAllAdapters(): void;
-        extractContentForCheck(): Promise<ContentExtractionResult>;
+        extractContentForCheck(opts: ExtractContentForCheckOpts): Promise<ContentExtractionResult>;
         registerCheckCall(_checkInfo: Check): void;
         registerCheckResult(checkResult: CheckResult): void;
         selectRanges(checkId: string, matches: Match[]): void;
@@ -311,7 +316,12 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
         requestDescription?: {
             documentReference?: string;
         };
+        selection?: DocumentSelection;
     }
+    export interface DocumentSelection {
+        ranges: DocumentRange[];
+    }
+    export type DocumentRange = [number, number];
     export interface Check {
         checkId: string;
     }
@@ -370,6 +380,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
         onGlobalCheckRejected(): void;
         invalidateRanges(invalidCheckedDocumentRanges: InvalidDocumentPart[]): void;
         onVisibleRangesChanged(checkedDocumentRanges: CheckedDocumentRange[]): void;
+        dispose(callback: () => void): void;
     }
     export interface AcrolinxPlugin {
         requestInit(): void;
@@ -429,7 +440,7 @@ declare module 'acrolinx-sidebar-integration/floating-sidebar/floating-sidebar' 
 }
 
 declare module 'acrolinx-sidebar-integration/adapters/AdapterInterface' {
-    import { Match, MatchWithReplacement, Check, CheckResult } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
+    import { Match, MatchWithReplacement, Check, CheckResult, DocumentSelection } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
     export interface CommonAdapterConf {
         scrollOffsetY?: number;
     }
@@ -446,6 +457,7 @@ declare module 'acrolinx-sidebar-integration/adapters/AdapterInterface' {
     export interface SuccessfulContentExtractionResult {
         content: string;
         documentReference?: string;
+        selection?: DocumentSelection;
     }
     export interface AutobindWrapperAttributes {
         'orginal-id'?: string;
@@ -455,11 +467,14 @@ declare module 'acrolinx-sidebar-integration/adapters/AdapterInterface' {
         [key: string]: string | undefined;
     }
     export type ContentExtractionResult = SuccessfulContentExtractionResult | HasError;
+    export interface ExtractContentForCheckOpts {
+        checkSelection?: boolean;
+    }
     export interface AdapterInterface {
         getEditor?(): any;
         getFormat?(): string;
         getContent?(): string;
-        extractContentForCheck(): ContentExtractionResult | Promise<ContentExtractionResult>;
+        extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult | Promise<ContentExtractionResult>;
         registerCheckCall(checkInfo: Check): void;
         registerCheckResult(checkResult: CheckResult): void;
         selectRanges(checkId: string, matches: Match[]): void;

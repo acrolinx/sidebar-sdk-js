@@ -20687,7 +20687,8 @@ function initAcrolinxSamplePlugin(config, editorAdapter) {
                     inputFormat: format || 'HTML',
                     requestDescription: {
                         documentReference: extractionResult.documentReference || getDefaultDocumentReference()
-                    }
+                    },
+                    selection: config.checkSelection ? extractionResult.selection : undefined
                 });
                 adapter.registerCheckCall(checkInfo);
             }
@@ -20709,7 +20710,7 @@ function initAcrolinxSamplePlugin(config, editorAdapter) {
                 console.log('configure: ', configuration);
             },
             requestGlobalCheck: function () {
-                var contentExtractionResultOrPromise = adapter.extractContentForCheck();
+                var contentExtractionResultOrPromise = adapter.extractContentForCheck({ checkSelection: config.checkSelection });
                 var pFormat = adapter.getFormat ? adapter.getFormat() : undefined;
                 if (isPromise(contentExtractionResultOrPromise)) {
                     contentExtractionResultOrPromise.then(function (contentExtractionResult) {
@@ -20816,6 +20817,28 @@ var AcrolinxPlugin = (function () {
             _this.configureSidebar();
         });
     };
+    AcrolinxPlugin.prototype.dispose = function (callback) {
+        var sidebarContainer = document.getElementById(this.initConfig.sidebarContainerId);
+        if (sidebarContainer) {
+            var iFrame = sidebarContainer.querySelector('iframe');
+            if (iFrame) {
+                try {
+                    iFrame.src = 'about:blank';
+                    setTimeout(function () {
+                        sidebarContainer.innerHTML = '';
+                        callback();
+                    }, 0);
+                }
+                catch (error) {
+                    console.error(error);
+                    callback();
+                }
+            }
+            else {
+                callback();
+            }
+        }
+    };
     AcrolinxPlugin.prototype.configureSidebar = function () {
         try {
             this.sidebar.configure(this.config);
@@ -20840,7 +20863,7 @@ function autoBindFloatingSidebar(basicConf) {
 }
 exports.autoBindFloatingSidebar = autoBindFloatingSidebar;
 
-},{"./adapters/AdapterInterface":8,"./adapters/AutoBindAdapter":9,"./floating-sidebar/async-storage":17,"./floating-sidebar/floating-sidebar":18,"./message-adapter/message-adapter":20,"./utils/sidebar-loader":27,"./utils/utils":30,"es6-promise":2,"lodash":3}],6:[function(require,module,exports){
+},{"./adapters/AdapterInterface":8,"./adapters/AutoBindAdapter":9,"./floating-sidebar/async-storage":17,"./floating-sidebar/floating-sidebar":18,"./message-adapter/message-adapter":20,"./utils/sidebar-loader":28,"./utils/utils":31,"es6-promise":2,"lodash":3}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var acrolinx_plugin_1 = require("./acrolinx-plugin");
@@ -20854,6 +20877,7 @@ var AutoBindAdapter_1 = require("./adapters/AutoBindAdapter");
 var MultiEditorAdapter_1 = require("./adapters/MultiEditorAdapter");
 var message_adapter_1 = require("./message-adapter/message-adapter");
 var sidebar_loader_1 = require("./utils/sidebar-loader");
+var range_1 = require("./utils/range");
 var augmentedWindow = window;
 augmentedWindow.acrolinx = augmentedWindow.acrolinx || {};
 augmentedWindow.acrolinx.plugins = {
@@ -20861,6 +20885,7 @@ augmentedWindow.acrolinx.plugins = {
     autoBindFloatingSidebar: acrolinx_plugin_1.autoBindFloatingSidebar,
     createPluginMessageAdapter: message_adapter_1.createPluginMessageAdapter,
     loadSidebarCode: sidebar_loader_1.loadSidebarCode,
+    getSelectionHtmlRange: range_1.getSelectionHtmlRange,
     adapter: {
         AbstractRichtextEditorAdapter: AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter,
         AutoBindAdapter: AutoBindAdapter_1.AutoBindAdapter,
@@ -20873,7 +20898,7 @@ augmentedWindow.acrolinx.plugins = {
     }
 };
 
-},{"./acrolinx-plugin":5,"./adapters/AbstractRichtextEditorAdapter":7,"./adapters/AutoBindAdapter":9,"./adapters/CKEditorAdapter":10,"./adapters/ContentEditableAdapter":11,"./adapters/InputAdapter":12,"./adapters/MultiEditorAdapter":13,"./adapters/TinyMCEAdapter":14,"./adapters/TinyMCEWordpressAdapter":15,"./message-adapter/message-adapter":20,"./utils/sidebar-loader":27}],7:[function(require,module,exports){
+},{"./acrolinx-plugin":5,"./adapters/AbstractRichtextEditorAdapter":7,"./adapters/AutoBindAdapter":9,"./adapters/CKEditorAdapter":10,"./adapters/ContentEditableAdapter":11,"./adapters/InputAdapter":12,"./adapters/MultiEditorAdapter":13,"./adapters/TinyMCEAdapter":14,"./adapters/TinyMCEWordpressAdapter":15,"./message-adapter/message-adapter":20,"./utils/range":26,"./utils/sidebar-loader":28}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -20896,10 +20921,13 @@ var AbstractRichtextEditorAdapter = (function () {
         this.currentHtmlChecking = this.html;
         this.prevCheckedHtml = this.currentHtmlChecking;
     };
-    AbstractRichtextEditorAdapter.prototype.extractContentForCheck = function () {
+    AbstractRichtextEditorAdapter.prototype.extractContentForCheck = function (opts) {
         this.html = this.getContent();
         this.currentHtmlChecking = this.html;
-        return { content: this.html };
+        return { content: this.html, selection: opts.checkSelection ? this.getSelection() : undefined };
+    };
+    AbstractRichtextEditorAdapter.prototype.getSelection = function () {
+        return undefined;
     };
     AbstractRichtextEditorAdapter.prototype.scrollIntoView = function (sel) {
         var range = sel.getRangeAt(0);
@@ -21002,7 +21030,7 @@ var AbstractRichtextEditorAdapter = (function () {
 }());
 exports.AbstractRichtextEditorAdapter = AbstractRichtextEditorAdapter;
 
-},{"../lookup/diff-based":19,"../utils/adapter-utils":21,"../utils/match":25,"../utils/text-dom-mapping":28,"../utils/utils":30,"lodash":3}],8:[function(require,module,exports){
+},{"../lookup/diff-based":19,"../utils/adapter-utils":21,"../utils/match":25,"../utils/text-dom-mapping":29,"../utils/utils":31,"lodash":3}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function hasError(a) {
@@ -21051,14 +21079,14 @@ var AutoBindAdapter = (function () {
     AutoBindAdapter.prototype.getFormat = function () {
         return this.multiAdapter.getFormat();
     };
-    AutoBindAdapter.prototype.extractContentForCheck = function () {
+    AutoBindAdapter.prototype.extractContentForCheck = function (opts) {
         var _this = this;
         this.initMultiAdapter();
         autobind_1.bindAdaptersForCurrentPage(this.conf).forEach(function (adapter) {
             var wrapperAttributes = adapter.getAutobindWrapperAttributes ? adapter.getAutobindWrapperAttributes() : {};
             _this.multiAdapter.addSingleAdapter(adapter, { attributes: wrapperAttributes });
         });
-        return this.multiAdapter.extractContentForCheck();
+        return this.multiAdapter.extractContentForCheck(opts);
     };
     AutoBindAdapter.prototype.registerCheckCall = function (_checkInfo) {
     };
@@ -21161,6 +21189,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var AbstractRichtextEditorAdapter_1 = require("./AbstractRichtextEditorAdapter");
 var AdapterInterface_1 = require("./AdapterInterface");
 var scrolling_1 = require("../utils/scrolling");
+var range_1 = require("../utils/range");
 var ContentEditableAdapter = (function (_super) {
     __extends(ContentEditableAdapter, _super);
     function ContentEditableAdapter(conf) {
@@ -21174,6 +21203,18 @@ var ContentEditableAdapter = (function (_super) {
     ContentEditableAdapter.prototype.getContent = function () {
         return this.element.innerHTML;
     };
+    ContentEditableAdapter.prototype.getSelection = function () {
+        var htmlRange = range_1.getSelectionHtmlRange(this.getEditorElement());
+        if (htmlRange) {
+            console.log('selected content: ', this.getContent().slice(htmlRange[0], htmlRange[1]));
+            return {
+                ranges: [htmlRange]
+            };
+        }
+        else {
+            return undefined;
+        }
+    };
     ContentEditableAdapter.prototype.getEditorDocument = function () {
         return this.element.ownerDocument;
     };
@@ -21184,7 +21225,7 @@ var ContentEditableAdapter = (function (_super) {
 }(AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter));
 exports.ContentEditableAdapter = ContentEditableAdapter;
 
-},{"../utils/scrolling":26,"./AbstractRichtextEditorAdapter":7,"./AdapterInterface":8}],12:[function(require,module,exports){
+},{"../utils/range":26,"../utils/scrolling":27,"./AbstractRichtextEditorAdapter":7,"./AdapterInterface":8}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -21208,10 +21249,26 @@ var InputAdapter = (function () {
     InputAdapter.prototype.getFormat = function () {
         return this.config.format || 'TEXT';
     };
-    InputAdapter.prototype.extractContentForCheck = function () {
+    InputAdapter.prototype.extractContentForCheck = function (opts) {
         this.html = this.getContent();
         this.currentHtmlChecking = this.html;
-        return { content: this.html };
+        return {
+            content: this.html,
+            selection: opts.checkSelection ? this.getSelection() : undefined
+        };
+    };
+    InputAdapter.prototype.getSelection = function () {
+        var selectionStart = this.element.selectionStart;
+        var selectionEnd = this.element.selectionEnd;
+        if (_.isNumber(selectionStart) && _.isNumber(selectionEnd) &&
+            selectionStart < selectionEnd && this.getContent().slice(selectionStart, selectionEnd).trim() !== '') {
+            return {
+                ranges: [[selectionStart, selectionEnd]]
+            };
+        }
+        else {
+            return undefined;
+        }
     };
     InputAdapter.prototype.registerCheckResult = function (_checkResult) {
     };
@@ -21274,7 +21331,7 @@ var InputAdapter = (function () {
 }());
 exports.InputAdapter = InputAdapter;
 
-},{"../lookup/diff-based":19,"../utils/adapter-utils":21,"../utils/match":25,"../utils/scrolling":26,"../utils/utils":30,"./AdapterInterface":8,"lodash":3}],13:[function(require,module,exports){
+},{"../lookup/diff-based":19,"../utils/adapter-utils":21,"../utils/match":25,"../utils/scrolling":27,"../utils/utils":31,"./AdapterInterface":8,"lodash":3}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AdapterInterface_1 = require("./AdapterInterface");
@@ -21347,15 +21404,16 @@ var MultiEditorAdapter = (function () {
     MultiEditorAdapter.prototype.removeAllAdapters = function () {
         this.adapters = [];
     };
-    MultiEditorAdapter.prototype.extractContentForCheck = function () {
+    MultiEditorAdapter.prototype.extractContentForCheck = function (opts) {
         var _this = this;
         if (this.config.beforeCheck) {
             this.config.beforeCheck(this);
         }
         return new es6_promise_1.Promise(function (resolve, _reject) {
-            var contentExtractionResults = _this.adapters.map(function (adapter) { return adapter.adapter.extractContentForCheck(); });
+            var contentExtractionResults = _this.adapters.map(function (adapter) { return adapter.adapter.extractContentForCheck(opts); });
             es6_promise_1.Promise.all(contentExtractionResults).then(function (results) {
                 var html = _this.config.documentHeader || '';
+                var selectionRanges = [];
                 if (_this.rootElementWrapper) {
                     html += createStartTag(_this.rootElementWrapper);
                 }
@@ -21368,12 +21426,18 @@ var MultiEditorAdapter = (function () {
                     }
                     var _a = wrapAdapterContent(registeredAdapter, extractionResult), completeHtml = _a.completeHtml, contentStart = _a.contentStart, contentEnd = _a.contentEnd;
                     registeredAdapter.checkedRange = [html.length + contentStart, html.length + contentEnd];
+                    if (extractionResult.selection) {
+                        for (var _i = 0, _b = extractionResult.selection.ranges; _i < _b.length; _i++) {
+                            var selectionRange = _b[_i];
+                            selectionRanges.push([selectionRange[0] + registeredAdapter.checkedRange[0], selectionRange[1] + registeredAdapter.checkedRange[0]]);
+                        }
+                    }
                     html += completeHtml;
                 }
                 if (_this.rootElementWrapper) {
                     html += createEndTag(_this.rootElementWrapper.tagName);
                 }
-                var contentExtractionResult = { content: html };
+                var contentExtractionResult = { content: html, selection: { ranges: selectionRanges } };
                 resolve(contentExtractionResult);
             });
         });
@@ -21412,7 +21476,7 @@ var MultiEditorAdapter = (function () {
     MultiEditorAdapter.prototype.getAdapterForMatch = function (match) {
         return _.find(this.adapters, function (adapter) {
             var checkedRange = adapter.checkedRange;
-            return checkedRange && (match.range[0] >= checkedRange[0]) && (match.range[1] <= checkedRange[1]);
+            return !!checkedRange && (match.range[0] >= checkedRange[0]) && (match.range[1] <= checkedRange[1]);
         });
     };
     MultiEditorAdapter.prototype.replaceRanges = function (checkId, matchesWithReplacement) {
@@ -21425,7 +21489,7 @@ var MultiEditorAdapter = (function () {
 }());
 exports.MultiEditorAdapter = MultiEditorAdapter;
 
-},{"../utils/alignment":22,"../utils/escaping":23,"../utils/utils":30,"./AdapterInterface":8,"es6-promise":2,"lodash":3}],14:[function(require,module,exports){
+},{"../utils/alignment":22,"../utils/escaping":23,"../utils/utils":31,"./AdapterInterface":8,"es6-promise":2,"lodash":3}],14:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -21616,7 +21680,7 @@ function bindAdaptersForCurrentPage(conf) {
 }
 exports.bindAdaptersForCurrentPage = bindAdaptersForCurrentPage;
 
-},{"../adapters/ContentEditableAdapter":11,"../adapters/InputAdapter":12,"../utils/utils":30,"lodash":3}],17:[function(require,module,exports){
+},{"../adapters/ContentEditableAdapter":11,"../adapters/InputAdapter":12,"../utils/utils":31,"lodash":3}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var es6_promise_1 = require("es6-promise");
@@ -21837,7 +21901,7 @@ function initFloatingSidebar(config) {
 }
 exports.initFloatingSidebar = initFloatingSidebar;
 
-},{"../utils/utils":30,"lodash":3}],19:[function(require,module,exports){
+},{"../utils/utils":31,"lodash":3}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -21912,7 +21976,7 @@ function lookupMatches(checkedDocument, currentDocument, matches, inputFormat) {
 }
 exports.lookupMatches = lookupMatches;
 
-},{"../utils/alignment":22,"../utils/logging":24,"../utils/text-extraction":29,"diff-match-patch":1,"lodash":3}],20:[function(require,module,exports){
+},{"../utils/alignment":22,"../utils/logging":24,"../utils/text-extraction":30,"diff-match-patch":1,"lodash":3}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function removeFunctions(object) {
@@ -21959,6 +22023,8 @@ function connectAcrolinxPluginToMessages(acrolinxPlugin, sidebarWindowIframe) {
         invalidateRanges: function (_invalidCheckedDocumentRanges) {
         },
         onVisibleRangesChanged: function (_checkedDocumentRanges) {
+        },
+        dispose: function (_callback) {
         }
     };
     injectPostCommandAsMessage(function () { return sidebarWindowIframe.contentWindow; }, sidebar);
@@ -22104,6 +22170,88 @@ exports.getCompleteFlagLength = getCompleteFlagLength;
 },{}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var _ = require("lodash");
+function getSelectedRangeInsideOf(editorElement) {
+    var selection = document.getSelection();
+    if (selection.rangeCount === 0) {
+        return undefined;
+    }
+    var range = selection.getRangeAt(0);
+    if (!containsOrIs(editorElement, range.commonAncestorContainer)) {
+        return undefined;
+    }
+    if (range.toString().trim() === '') {
+        return undefined;
+    }
+    return range;
+}
+function containsOrIs(ancestor, descendant) {
+    return ancestor === descendant || (descendant.compareDocumentPosition(ancestor) & Node.DOCUMENT_POSITION_CONTAINS);
+}
+function getNodePath(ancestor, node) {
+    var result = [];
+    var currentNode = node;
+    while (currentNode !== ancestor) {
+        var parent_1 = currentNode.parentNode;
+        if (!parent_1) {
+            break;
+        }
+        var index = _.indexOf(parent_1.childNodes, currentNode);
+        if (index === -1) {
+            break;
+        }
+        result.push(index);
+        currentNode = parent_1;
+    }
+    result.reverse();
+    return result;
+}
+function findNodeByPath(ancestor, path) {
+    var currentNode = ancestor;
+    for (var _i = 0, path_1 = path; _i < path_1.length; _i++) {
+        var nodeIndex = path_1[_i];
+        var childNode = currentNode.childNodes[nodeIndex];
+        if (!childNode) {
+            return undefined;
+        }
+        currentNode = childNode;
+    }
+    return currentNode;
+}
+var RANGE_MARKER_START = 'ACRO_ßELECTION_START';
+var RANGE_MARKER_END = 'ACRO_ßELECTION_END';
+function getSelectionHtmlRange(editorElement) {
+    var range = getSelectedRangeInsideOf(editorElement);
+    if (!range) {
+        return undefined;
+    }
+    var rangeStartElementPath = getNodePath(editorElement, range.startContainer);
+    var rangeEndElementPath = getNodePath(editorElement, range.endContainer);
+    var clonedEditorElement = editorElement.cloneNode(true);
+    var clonedStartElement = findNodeByPath(clonedEditorElement, rangeStartElementPath);
+    var clonedEndElement = findNodeByPath(clonedEditorElement, rangeEndElementPath);
+    if (!clonedStartElement || !clonedEndElement) {
+        return undefined;
+    }
+    var clonedRange = document.createRange();
+    clonedRange.setStart(clonedStartElement, range.startOffset);
+    clonedRange.setEnd(clonedEndElement, range.endOffset);
+    clonedRange.insertNode(document.createTextNode(RANGE_MARKER_START));
+    clonedRange.collapse(false);
+    clonedRange.insertNode(document.createTextNode(RANGE_MARKER_END));
+    var htmlWithMarkers = clonedEditorElement.innerHTML;
+    var htmlStartOffset = htmlWithMarkers.indexOf(RANGE_MARKER_START);
+    var htmlEndOffset = htmlWithMarkers.indexOf(RANGE_MARKER_END);
+    if (htmlStartOffset === -1 || htmlEndOffset === -1) {
+        return undefined;
+    }
+    return [htmlStartOffset, htmlEndOffset - RANGE_MARKER_START.length];
+}
+exports.getSelectionHtmlRange = getSelectionHtmlRange;
+
+},{"lodash":3}],27:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 function getRootElement(doc) {
     return (doc.documentElement || doc.body.parentNode || doc.body);
 }
@@ -22150,7 +22298,7 @@ function scrollIntoView(targetEl, windowTopOffset, localTopOffset) {
 }
 exports.scrollIntoView = scrollIntoView;
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -22270,7 +22418,7 @@ function injectSidebarHtml(sidebarHtml, sidebarIFrameElement) {
     sidebarContentWindow.document.close();
 }
 
-},{"./utils":30,"lodash":3}],28:[function(require,module,exports){
+},{"./utils":31,"lodash":3}],29:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -22345,7 +22493,7 @@ function getEndDomPos(endIndex, domPositions) {
 }
 exports.getEndDomPos = getEndDomPos;
 
-},{"./text-extraction":29,"./utils":30,"lodash":3}],29:[function(require,module,exports){
+},{"./text-extraction":30,"./utils":31,"lodash":3}],30:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -22390,7 +22538,7 @@ function decodeEntities(entity) {
     return el.textContent || '';
 }
 
-},{"./utils":30,"lodash":3}],30:[function(require,module,exports){
+},{"./utils":31,"lodash":3}],31:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
