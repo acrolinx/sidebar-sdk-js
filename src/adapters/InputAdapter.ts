@@ -18,11 +18,11 @@
  *
  */
 
-import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, CheckResult, DocumentSelection, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import * as _ from "lodash";
 import {
   getElementFromAdapterConf, AdapterInterface, AdapterConf, ContentExtractionResult,
-  AutobindWrapperAttributes,
+  AutobindWrapperAttributes, ExtractContentForCheckOpts,
 } from "./AdapterInterface";
 import {AlignedMatch} from "../utils/alignment";
 import {getCompleteFlagLength} from "../utils/match";
@@ -40,7 +40,7 @@ export type InputAdapterConf = AdapterConf & {
 };
 
 export class InputAdapter implements AdapterInterface {
-  element: ValidInputElement;
+  readonly element: ValidInputElement;
   config: InputAdapterConf;
   html: string;
   currentHtmlChecking: string;
@@ -62,10 +62,26 @@ export class InputAdapter implements AdapterInterface {
     return this.config.format || 'TEXT';
   }
 
-  extractContentForCheck(): ContentExtractionResult {
+  extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult {
     this.html = this.getContent();
     this.currentHtmlChecking = this.html;
-    return {content: this.html};
+    return {
+      content: this.html,
+      selection: opts.checkSelection ? this.getSelection() : undefined
+    };
+  }
+
+  private getSelection(): DocumentSelection | undefined {
+    const selectionStart = this.element.selectionStart;
+    const selectionEnd = this.element.selectionEnd;
+    if (_.isNumber(selectionStart) && _.isNumber(selectionEnd) &&
+      selectionStart < selectionEnd && this.getContent().slice(selectionStart, selectionEnd).trim() !== '') {
+      return {
+        ranges: [[selectionStart, selectionEnd]]
+      };
+    } else {
+      return undefined;
+    }
   }
 
   registerCheckResult(_checkResult: CheckResult): void {

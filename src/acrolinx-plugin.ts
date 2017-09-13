@@ -49,6 +49,7 @@ export interface AcrolinxPluginConfig {
   sidebarContainerId: string;
   sidebarUrl?: string;
   sidebarHtml?: string;
+  checkSelection?: boolean;
   useMessageAdapter?: boolean;
   useSidebarFromSameOriginDirectly?: boolean;
   onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
@@ -115,7 +116,8 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
           inputFormat: format || 'HTML',
           requestDescription: {
             documentReference: extractionResult.documentReference || getDefaultDocumentReference()
-          }
+          },
+          selection: config.checkSelection ? extractionResult.selection : undefined
         });
         adapter.registerCheckCall(checkInfo);
       }
@@ -141,7 +143,7 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
       },
 
       requestGlobalCheck() {
-        const contentExtractionResultOrPromise = adapter.extractContentForCheck();
+        const contentExtractionResultOrPromise = adapter.extractContentForCheck({checkSelection: config.checkSelection});
         const pFormat = adapter.getFormat ? adapter.getFormat() : undefined;
         if (isPromise(contentExtractionResultOrPromise)) {
           contentExtractionResultOrPromise.then((contentExtractionResult: ContentExtractionResult) => {
@@ -273,27 +275,27 @@ export class AcrolinxPlugin {
     });
   }
 
-  dispose ( callback: () => void ) {
-    const sidebarContainer = document.getElementById( this.initConfig.sidebarContainerId );
-    if ( sidebarContainer ) {
-       const iFrame: HTMLIFrameElement | null = sidebarContainer.querySelector('iframe');
-       if ( iFrame ) {
-         // Changing the src before cleaning the whole container is needed at least in IE 11
-         // to avoid exceptions inside the iFrame caused by disappearing javascript objects.
-         // The try/catch is just added to be on the safe side.
-         try {
-            iFrame.src = 'about:blank';
-            setTimeout(() => {
-               sidebarContainer.innerHTML = '';
-               callback();
-            }, 0);
-         } catch (error) {
-            console.error(error);
+  dispose(callback: () => void) {
+    const sidebarContainer = document.getElementById(this.initConfig.sidebarContainerId);
+    if (sidebarContainer) {
+      const iFrame: HTMLIFrameElement | null = sidebarContainer.querySelector('iframe');
+      if (iFrame) {
+        // Changing the src before cleaning the whole container is needed at least in IE 11
+        // to avoid exceptions inside the iFrame caused by disappearing javascript objects.
+        // The try/catch is just added to be on the safe side.
+        try {
+          iFrame.src = 'about:blank';
+          setTimeout(() => {
+            sidebarContainer.innerHTML = '';
             callback();
-          }
-       } else {
+          }, 0);
+        } catch (error) {
+          console.error(error);
           callback();
-       }
+        }
+      } else {
+        callback();
+      }
     }
   }
 

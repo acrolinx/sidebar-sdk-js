@@ -17,10 +17,10 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, CheckResult, DocumentRange, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {
   AdapterInterface,
-  ContentExtractionResult,
+  ContentExtractionResult, ExtractContentForCheckOpts,
   hasError,
   SuccessfulContentExtractionResult
 } from "./AdapterInterface";
@@ -145,14 +145,15 @@ export class MultiEditorAdapter implements AdapterInterface {
     this.adapters = [];
   }
 
-  extractContentForCheck(): Promise<ContentExtractionResult> {
+  extractContentForCheck(opts: ExtractContentForCheckOpts): Promise<ContentExtractionResult> {
     if (this.config.beforeCheck) {
       this.config.beforeCheck(this);
     }
     return new Promise((resolve, _reject) => {
-      const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck());
+      const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck(opts));
       Promise.all(contentExtractionResults).then((results: ContentExtractionResult[]) => {
         let html = this.config.documentHeader || '';
+        let selectionRanges: DocumentRange[] = [];
         if (this.rootElementWrapper) {
           html += createStartTag(this.rootElementWrapper);
         }
@@ -165,12 +166,17 @@ export class MultiEditorAdapter implements AdapterInterface {
           }
           const {completeHtml, contentStart, contentEnd} = wrapAdapterContent(registeredAdapter, extractionResult);
           registeredAdapter.checkedRange = [html.length + contentStart, html.length + contentEnd];
+          if (extractionResult.selection) {
+            for (let selectionRange of extractionResult.selection.ranges) {
+              selectionRanges.push([selectionRange[0] + registeredAdapter.checkedRange[0], selectionRange[1] + registeredAdapter.checkedRange[0]]);
+            }
+          }
           html += completeHtml;
         }
         if (this.rootElementWrapper) {
           html += createEndTag(this.rootElementWrapper.tagName);
         }
-        const contentExtractionResult: ContentExtractionResult = {content: html};
+        const contentExtractionResult: ContentExtractionResult = {content: html, selection: {ranges: selectionRanges}};
         resolve(contentExtractionResult);
       });
     });

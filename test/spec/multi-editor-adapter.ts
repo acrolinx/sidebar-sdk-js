@@ -43,7 +43,7 @@ describe('multi-editor-adapter', () => {
     multiAdapter.addSingleAdapter(adapter2);
 
     // Check the first time when adapter 1 has some content
-    const extractionResult = await multiAdapter.extractContentForCheck();
+    const extractionResult = await multiAdapter.extractContentForCheck({});
     if (!isSuccessfulContentExtractionResult(extractionResult)) {
       return assert.ok(false, 'Extraction should have no error');
     }
@@ -51,7 +51,7 @@ describe('multi-editor-adapter', () => {
 
     // Check the second time when adapter 1 has no content
     adapter1.content = '';
-    const extractionResult2 = await multiAdapter.extractContentForCheck();
+    const extractionResult2 = await multiAdapter.extractContentForCheck({});
     if (!isSuccessfulContentExtractionResult(extractionResult2)) {
       return assert.ok(false, 'Extraction should have no error');
     }

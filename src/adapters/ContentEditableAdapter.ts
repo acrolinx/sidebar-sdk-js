@@ -22,6 +22,8 @@
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
 import {getElementFromAdapterConf, AdapterConf} from "./AdapterInterface";
 import {scrollIntoView} from "../utils/scrolling";
+import {DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
+import {getSelectionHtmlRange} from "../utils/range";
 
 
 export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
@@ -38,6 +40,18 @@ export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
 
   getContent() {
     return this.element.innerHTML;
+  }
+
+  protected getSelection(): DocumentSelection | undefined {
+    const htmlRange = getSelectionHtmlRange(this.getEditorElement() as HTMLElement);
+    if (htmlRange) {
+      console.log('selected content: ', this.getContent().slice(htmlRange[0], htmlRange[1]));
+      return {
+        ranges: [htmlRange]
+      };
+    } else {
+      return undefined;
+    }
   }
 
   getEditorDocument(): Document {

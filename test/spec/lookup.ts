@@ -136,7 +136,7 @@ describe('adapter test', function () {
       const setEditorContent = adapterSpec.setEditorContent;
 
       function assertEditorText(expectedText: string) {
-        const editorContent = (adapter.extractContentForCheck() as SuccessfulContentExtractionResult).content;
+        const editorContent = (adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult).content;
         if (adapterSpec.name === 'InputAdapter') {
           assert.equal(editorContent, expectedText);
         }
@@ -149,7 +149,7 @@ describe('adapter test', function () {
       function givenAText(text: string, callback: (text: string) => void) {
         setEditorContent(text, () => {
           adapter.registerCheckCall({checkId: dummyCheckId});
-          const contentExtractionResult = adapter.extractContentForCheck() as SuccessfulContentExtractionResult;
+          const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
           adapter.registerCheckResult({
             checkedPart: {
               checkId: dummyCheckId,

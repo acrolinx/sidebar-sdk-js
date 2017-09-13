@@ -19,7 +19,10 @@
  */
 
 import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
-import {AdapterInterface, CommonAdapterConf, ContentExtractionResult} from "./AdapterInterface";
+import {
+  AdapterInterface, CommonAdapterConf, ContentExtractionResult,
+  ExtractContentForCheckOpts
+} from "./AdapterInterface";
 import {MultiEditorAdapter, MultiEditorAdapterConfig} from "./MultiEditorAdapter";
 import {bindAdaptersForCurrentPage} from "../autobind/autobind";
 
@@ -38,13 +41,13 @@ export class AutoBindAdapter implements AdapterInterface {
     return this.multiAdapter.getFormat();
   }
 
-  extractContentForCheck(): Promise<ContentExtractionResult> {
+  extractContentForCheck(opts: ExtractContentForCheckOpts): Promise<ContentExtractionResult> {
     this.initMultiAdapter();
     bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
       const wrapperAttributes = adapter.getAutobindWrapperAttributes ? adapter.getAutobindWrapperAttributes() : {};
       this.multiAdapter.addSingleAdapter(adapter, {attributes: wrapperAttributes});
     });
-    return this.multiAdapter.extractContentForCheck();
+    return this.multiAdapter.extractContentForCheck(opts);
   }
 
   registerCheckCall(_checkInfo: Check) {

@@ -29,6 +29,7 @@ import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
 import {createPluginMessageAdapter} from "./message-adapter/message-adapter";
 import {loadSidebarCode} from "./utils/sidebar-loader";
+import {getSelectionHtmlRange} from "./utils/range";
 
 
 export interface AcrolinxSidebarIntegration {
@@ -64,6 +65,7 @@ augmentedWindow.acrolinx.plugins = {
   autoBindFloatingSidebar: autoBindFloatingSidebar,
   createPluginMessageAdapter: createPluginMessageAdapter,
   loadSidebarCode: loadSidebarCode,
+  getSelectionHtmlRange: getSelectionHtmlRange,
   adapter: {
     AbstractRichtextEditorAdapter: AbstractRichtextEditorAdapter,
     AutoBindAdapter: AutoBindAdapter,

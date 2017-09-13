@@ -215,7 +215,18 @@ export interface CheckOptions {
      */
     documentReference?: string;
   };
+
+  /**
+   * Experimental
+   */
+  selection?: DocumentSelection;
 }
+
+export interface DocumentSelection {
+  ranges: DocumentRange[];
+}
+
+export type DocumentRange = [number, number];
 
 
 /**

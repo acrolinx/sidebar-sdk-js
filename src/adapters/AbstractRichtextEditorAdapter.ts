@@ -18,14 +18,17 @@
  *
  */
 
-import {Match, MatchWithReplacement, CheckResult, Check} from "../acrolinx-libs/plugin-interfaces";
+import {Match, MatchWithReplacement, CheckResult, Check, DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
 import * as _ from "lodash";
 import {TextDomMapping, extractTextDomMapping, getEndDomPos} from "../utils/text-dom-mapping";
 import {AlignedMatch} from "../utils/alignment";
 import {lookupMatches} from "../lookup/diff-based";
 import {getCompleteFlagLength} from "../utils/match";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
-import {AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes} from "./AdapterInterface";
+import {
+  AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes,
+  ExtractContentForCheckOpts
+} from "./AdapterInterface";
 import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
 
@@ -59,12 +62,15 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     this.prevCheckedHtml = this.currentHtmlChecking;
   }
 
-  extractContentForCheck(): ContentExtractionResult {
+  extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult {
     this.html = this.getContent();
     this.currentHtmlChecking = this.html;
-    return {content: this.html};
+    return {content: this.html, selection: opts.checkSelection ? this.getSelection() : undefined};
   }
 
+  protected getSelection(): DocumentSelection | undefined {
+    return undefined;
+  }
 
   private scrollIntoView(sel: Selection) {
     const range = sel.getRangeAt(0);

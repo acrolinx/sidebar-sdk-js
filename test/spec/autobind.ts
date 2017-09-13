@@ -123,7 +123,7 @@ describe('autobind', function () {
       `);
 
       const autobindAdapter = new AutoBindAdapter({});
-      const extractedContent = autobindAdapter.extractContentForCheck();
+      const extractedContent = autobindAdapter.extractContentForCheck({});
       extractedContent.then(result => {
         if (hasError(result)) {
           done(result.error);

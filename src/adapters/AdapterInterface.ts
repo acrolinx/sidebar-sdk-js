@@ -1,4 +1,4 @@
-import {Match, MatchWithReplacement, Check, CheckResult} from "../acrolinx-libs/plugin-interfaces";
+import {Match, MatchWithReplacement, Check, CheckResult, DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
 
 export interface CommonAdapterConf {
   scrollOffsetY?: number;
@@ -21,6 +21,7 @@ export interface HasError {
 export interface SuccessfulContentExtractionResult {
   content: string;
   documentReference?: string;
+  selection?: DocumentSelection;
 }
 
 export interface AutobindWrapperAttributes {
@@ -33,11 +34,15 @@ export interface AutobindWrapperAttributes {
 
 export type ContentExtractionResult = SuccessfulContentExtractionResult | HasError;
 
+export interface ExtractContentForCheckOpts {
+  checkSelection?: boolean;
+}
+
 export interface AdapterInterface {
   getEditor?(): any;
   getFormat?(): string;
   getContent?(): string;
-  extractContentForCheck(): ContentExtractionResult | Promise<ContentExtractionResult>;
+  extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult | Promise<ContentExtractionResult>;
   registerCheckCall(checkInfo: Check): void;
   registerCheckResult(checkResult: CheckResult): void;
   selectRanges(checkId: string, matches: Match[]): void;
