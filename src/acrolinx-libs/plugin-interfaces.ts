@@ -112,6 +112,8 @@ export interface InitParameters extends SidebarConfiguration {
    */
   enforceHTTPS?: boolean;
 
+  uiMode?: UiMode;
+
   /**
    * If the user clicks the help button, the sidebar opens this URL using AcrolinxPlugin.openWindow.
    * If this property is omitted, the sidebar opens the Acrolinx default help.
@@ -119,10 +121,14 @@ export interface InitParameters extends SidebarConfiguration {
   helpUrl?: string;
 }
 
+export type UiMode = 'default' | 'noOptions';
+
 /**
  * These are the settings used, when checking text.
  */
-export interface CheckSettings {
+export type CheckSettings = CheckSettingsSelection | CheckingProfileSelection;
+
+export interface CheckSettingsSelection {
   language: string;
   ruleSetName: string;
   termSets: string[];
@@ -133,6 +139,10 @@ export interface CheckSettings {
   harvestTerms: boolean;
   checkSeo: boolean;
   termStatuses: string[];
+}
+
+export interface CheckingProfileSelection {
+  profileId: string;
 }
 
 /**
