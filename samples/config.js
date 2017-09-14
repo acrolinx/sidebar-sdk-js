@@ -40,6 +40,7 @@ var basicConf = {
     return window.location.href;
   },
 
+  //uiMode: 'noOptions',
   //clientLocale: 'en'
   //helpUrl: 'https://www.acrolinx.com',
   //showServerSelector: true,
