@@ -285,9 +285,15 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
         defaultCheckSettings?: CheckSettings;
         enableSingleSignOn?: boolean;
         enforceHTTPS?: boolean;
+        supported?: {
+            checkSelection?: boolean;
+        };
+        uiMode?: UiMode;
         helpUrl?: string;
     }
-    export interface CheckSettings {
+    export type UiMode = 'default' | 'noOptions';
+    export type CheckSettings = CheckSettingsSelection | CheckingProfileSelection;
+    export interface CheckSettingsSelection {
         language: string;
         ruleSetName: string;
         termSets: string[];
@@ -298,6 +304,9 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
         harvestTerms: boolean;
         checkSeo: boolean;
         termStatuses: string[];
+    }
+    export interface CheckingProfileSelection {
+        profileId: string;
     }
     export interface SoftwareComponent {
         id: string;
@@ -310,6 +319,9 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
         DEFAULT: string;
         DETAIL: string;
     };
+    export interface RequestGlobalCheckOptions {
+        selection: boolean;
+    }
     export interface CheckOptions {
         inputFormat?: string;
         base64EncodedGzipped?: boolean;
@@ -386,7 +398,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
         requestInit(): void;
         onInitFinished(finishResult: InitResult): void;
         configure(configuration: AcrolinxPluginConfiguration): void;
-        requestGlobalCheck(): void;
+        requestGlobalCheck(options?: RequestGlobalCheckOptions): void;
         onCheckResult(checkResult: CheckResult): void;
         selectRanges(checkId: string, matches: Match[]): void;
         replaceRanges(checkId: string, matchesWithReplacements: MatchWithReplacement[]): void;

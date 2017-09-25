@@ -20666,7 +20666,10 @@ function initAcrolinxSamplePlugin(config, editorAdapter) {
         function initSidebarOnPremise() {
             acrolinxSidebar.init(_.assign({}, {
                 showServerSelector: true,
-                clientComponents: clientComponents
+                clientComponents: clientComponents,
+                supported: {
+                    checkSelection: !!config.checkSelection
+                }
             }, config));
         }
         function getDefaultDocumentReference() {
@@ -20709,8 +20712,9 @@ function initAcrolinxSamplePlugin(config, editorAdapter) {
             configure: function (configuration) {
                 console.log('configure: ', configuration);
             },
-            requestGlobalCheck: function () {
-                var contentExtractionResultOrPromise = adapter.extractContentForCheck({ checkSelection: config.checkSelection });
+            requestGlobalCheck: function (options) {
+                if (options === void 0) { options = { selection: false }; }
+                var contentExtractionResultOrPromise = adapter.extractContentForCheck({ checkSelection: options.selection });
                 var pFormat = adapter.getFormat ? adapter.getFormat() : undefined;
                 if (isPromise(contentExtractionResultOrPromise)) {
                     contentExtractionResultOrPromise.then(function (contentExtractionResult) {
