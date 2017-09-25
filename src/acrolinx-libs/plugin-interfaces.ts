@@ -112,6 +112,13 @@ export interface InitParameters extends SidebarConfiguration {
    */
   enforceHTTPS?: boolean;
 
+  /**
+   * Extraordinary capabilities of the plugin.
+   */
+  supported?: {
+    checkSelection?: boolean;
+  };
+
   uiMode?: UiMode;
 
   /**
@@ -198,6 +205,10 @@ export const SoftwareComponentCategory = {
    */
   DETAIL: 'DETAIL'
 };
+
+export interface RequestGlobalCheckOptions {
+  selection: boolean;
+}
 
 /**
  * Check options describe how the server should handle the checked document.
@@ -507,7 +518,7 @@ export interface AcrolinxPlugin {
    * The check button has been pushed and the AcrolinxPlugin is requested to call AcrolinxSidebar.checkGlobal().
    *
    */
-  requestGlobalCheck(): void;
+  requestGlobalCheck(options?: RequestGlobalCheckOptions): void;
 
   /**
    * Notifies the AcrolinxPlugin that a check has finished. If a global check has been performed, that's a good time

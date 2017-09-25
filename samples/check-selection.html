@@ -21,33 +21,11 @@
       Acrolinx Sidebar API Documentation</a>
   </p>
 
-  <p>Styled Text 1 (Editable div)</p>
+  <p>Styled Text (Editable div)</p>
   <div id="editableDiv1" contenteditable="true" spellcheck="false" style="min-width: 30em;">
-    <p>The <strong class="testClass">testt</strong> and the <i>testt</i>.</p>
+    <p>The <strong class="testClass">testi</strong> and the <i>testo</i>.</p>
     <p>And here we have a new testt.</p>
   </div>
-  <button id="editableDiv1_extractSelection">Extract selection to console</button>
-
-  <p>Styled Text 2 (Editable div)</p>
-  <div id="editableDiv2" contenteditable="true" spellcheck="false" style="min-width: 30em;">
-    <p>The <strong class="testClass">testi</strong> and the <i>testo</i>.</p>
-    <p>And here we have a new testa.</p>
-  </div>
-  <button id="editableDiv2_extractSelection">Extract selection to console</button>
-
-  <p>Plain Text 1 (TextArea)</p>
-  <textarea id="textarea1" style="min-width: 30em;height: 60px">
-The errorr and the errorr.
-And here we have a new errorr.
-  </textarea>
-  <div id="textarea1_selection"></div>
-
-  <p>Plain Text 2 (TextArea)</p>
-  <textarea id="textarea2" style="min-width: 30em;height: 60px">
-The errori and the erroro.
-And here we have a new errora.
-    </textarea>
-  <div id="textarea2_selection"></div>
 </div>
 
 
@@ -57,58 +35,15 @@ And here we have a new errora.
 
   basicConf.checkSelection = true;
 
-  function initDebugHelpers() {
-    function mountExtractSelectionButton(editableDivId) {
-      document.getElementById(editableDivId + '_extractSelection').addEventListener('click', function () {
-        var editableDiv = document.getElementById(editableDivId);
-        var htmlRange = acrolinx.plugins.getSelectionHtmlRange(editableDiv);
-        if (htmlRange) {
-          console.log('Selected content: "'+editableDiv.innerHTML.slice(htmlRange[0], htmlRange[1])+'"');
-        } else {
-          console.log('There is no selected content in this field or only empty content selected.');
-        }
-      })
-    };
-
-    function mountTextAreaSelectionDisplay(textareaId) {
-      setInterval(function () {
-        var textarea = document.getElementById(textareaId);
-        var selectionView = document.getElementById(textareaId + '_selection');
-        selectionView.innerText = textarea.selectionStart + '..' + textarea.selectionEnd +
-          '= "' + textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)+'"';
-      }, 100);
-    }
-
-    mountExtractSelectionButton('editableDiv1');
-    mountExtractSelectionButton('editableDiv2');
-
-    mountTextAreaSelectionDisplay('textarea1');
-    mountTextAreaSelectionDisplay('textarea2');
-  }
-
   function initAcrolinxPlugin() {
     var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
-
     var contentEditableAdapter1 = new acrolinx.plugins.adapter.ContentEditableAdapter({editorId: 'editableDiv1'});
-    var contentEditableAdapter2 = new acrolinx.plugins.adapter.ContentEditableAdapter({editorId: 'editableDiv2'});
-
-    var inputAdapter1 = new acrolinx.plugins.adapter.InputAdapter({editorId: 'textarea1', checkSelection: true});
-    var inputAdapter2 = new acrolinx.plugins.adapter.InputAdapter({editorId: 'textarea2', checkSelection: true});
-
     var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter({});
-
     multiAdapter.addSingleAdapter(contentEditableAdapter1);
-    multiAdapter.addSingleAdapter(contentEditableAdapter2);
-
-    multiAdapter.addSingleAdapter(inputAdapter1);
-    multiAdapter.addSingleAdapter(inputAdapter2);
-
     acrolinxPlugin.registerAdapter(multiAdapter);
-
     acrolinxPlugin.init();
   }
 
-  initDebugHelpers();
   initAcrolinxPlugin();
 
 </script>

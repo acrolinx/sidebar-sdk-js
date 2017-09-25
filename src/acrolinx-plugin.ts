@@ -20,7 +20,7 @@
 import * as _ from "lodash";
 import {Promise} from "es6-promise";
 import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
-import {SidebarConfiguration} from "./acrolinx-libs/plugin-interfaces";
+import {RequestGlobalCheckOptions, SidebarConfiguration} from "./acrolinx-libs/plugin-interfaces";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
 import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
@@ -96,7 +96,10 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     function initSidebarOnPremise() {
       acrolinxSidebar.init(_.assign({}, {
         showServerSelector: true,
-        clientComponents: clientComponents
+        clientComponents: clientComponents,
+        supported: {
+          checkSelection: !!config.checkSelection
+        }
       }, config));
     }
 
@@ -142,8 +145,8 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
         console.log('configure: ', configuration);
       },
 
-      requestGlobalCheck() {
-        const contentExtractionResultOrPromise = adapter.extractContentForCheck({checkSelection: config.checkSelection});
+      requestGlobalCheck(options: RequestGlobalCheckOptions = {selection: false}) {
+        const contentExtractionResultOrPromise = adapter.extractContentForCheck({checkSelection: options.selection});
         const pFormat = adapter.getFormat ? adapter.getFormat() : undefined;
         if (isPromise(contentExtractionResultOrPromise)) {
           contentExtractionResultOrPromise.then((contentExtractionResult: ContentExtractionResult) => {
