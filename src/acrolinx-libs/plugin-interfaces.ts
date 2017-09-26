@@ -516,7 +516,8 @@ export interface AcrolinxPlugin {
 
   /**
    * The check button has been pushed and the AcrolinxPlugin is requested to call AcrolinxSidebar.checkGlobal().
-   *
+   * If the plugin supports checkSelection (InitParameters.supported.checkSelection) options will be set
+   * and contains a hint if the plugin should send the current selection when calling AcrolinxSidebar.checkGlobal().
    */
   requestGlobalCheck(options?: RequestGlobalCheckOptions): void;
 
