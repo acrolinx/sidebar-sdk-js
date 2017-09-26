@@ -20889,7 +20889,7 @@ augmentedWindow.acrolinx.plugins = {
     autoBindFloatingSidebar: acrolinx_plugin_1.autoBindFloatingSidebar,
     createPluginMessageAdapter: message_adapter_1.createPluginMessageAdapter,
     loadSidebarCode: sidebar_loader_1.loadSidebarCode,
-    getSelectionHtmlRange: range_1.getSelectionHtmlRange,
+    getSelectionHtmlRanges: range_1.getSelectionHtmlRanges,
     adapter: {
         AbstractRichtextEditorAdapter: AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter,
         AutoBindAdapter: AutoBindAdapter_1.AutoBindAdapter,
@@ -21194,6 +21194,7 @@ var AbstractRichtextEditorAdapter_1 = require("./AbstractRichtextEditorAdapter")
 var AdapterInterface_1 = require("./AdapterInterface");
 var scrolling_1 = require("../utils/scrolling");
 var range_1 = require("../utils/range");
+var _ = require("lodash");
 var ContentEditableAdapter = (function (_super) {
     __extends(ContentEditableAdapter, _super);
     function ContentEditableAdapter(conf) {
@@ -21208,16 +21209,13 @@ var ContentEditableAdapter = (function (_super) {
         return this.element.innerHTML;
     };
     ContentEditableAdapter.prototype.getSelection = function () {
-        var htmlRange = range_1.getSelectionHtmlRange(this.getEditorElement());
-        if (htmlRange) {
-            console.log('selected content: ', this.getContent().slice(htmlRange[0], htmlRange[1]));
-            return {
-                ranges: [htmlRange]
-            };
-        }
-        else {
+        var htmlRanges = range_1.getSelectionHtmlRanges(this.getEditorElement());
+        if (_.isEmpty(htmlRanges)) {
             return undefined;
         }
+        return {
+            ranges: htmlRanges
+        };
     };
     ContentEditableAdapter.prototype.getEditorDocument = function () {
         return this.element.ownerDocument;
@@ -21229,7 +21227,7 @@ var ContentEditableAdapter = (function (_super) {
 }(AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter));
 exports.ContentEditableAdapter = ContentEditableAdapter;
 
-},{"../utils/range":26,"../utils/scrolling":27,"./AbstractRichtextEditorAdapter":7,"./AdapterInterface":8}],12:[function(require,module,exports){
+},{"../utils/range":26,"../utils/scrolling":27,"./AbstractRichtextEditorAdapter":7,"./AdapterInterface":8,"lodash":3}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -22175,19 +22173,20 @@ exports.getCompleteFlagLength = getCompleteFlagLength;
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
-function getSelectedRangeInsideOf(editorElement) {
+function getRangesOfCurrentSelection() {
     var selection = document.getSelection();
-    if (selection.rangeCount === 0) {
-        return undefined;
+    var ranges = [];
+    for (var i = 0; i < selection.rangeCount; i++) {
+        ranges.push(selection.getRangeAt(i));
     }
-    var range = selection.getRangeAt(0);
-    if (!containsOrIs(editorElement, range.commonAncestorContainer)) {
-        return undefined;
-    }
-    if (range.toString().trim() === '') {
-        return undefined;
-    }
-    return range;
+    return ranges;
+}
+function getNonEmptySelectedRangesInsideOf(editorElement) {
+    var ranges = getRangesOfCurrentSelection();
+    return ranges.filter(function (range) {
+        return containsOrIs(editorElement, range.commonAncestorContainer) &&
+            range.toString().trim() !== '';
+    });
 }
 function containsOrIs(ancestor, descendant) {
     return ancestor === descendant || (descendant.compareDocumentPosition(ancestor) & Node.DOCUMENT_POSITION_CONTAINS);
@@ -22224,11 +22223,7 @@ function findNodeByPath(ancestor, path) {
 }
 var RANGE_MARKER_START = 'ACRO_ßELECTION_START';
 var RANGE_MARKER_END = 'ACRO_ßELECTION_END';
-function getSelectionHtmlRange(editorElement) {
-    var range = getSelectedRangeInsideOf(editorElement);
-    if (!range) {
-        return undefined;
-    }
+function mapDomRangeToHtmlRange(editorElement, range) {
     var rangeStartElementPath = getNodePath(editorElement, range.startContainer);
     var rangeEndElementPath = getNodePath(editorElement, range.endContainer);
     var clonedEditorElement = editorElement.cloneNode(true);
@@ -22251,7 +22246,11 @@ function getSelectionHtmlRange(editorElement) {
     }
     return [htmlStartOffset, htmlEndOffset - RANGE_MARKER_START.length];
 }
-exports.getSelectionHtmlRange = getSelectionHtmlRange;
+function getSelectionHtmlRanges(editorElement) {
+    var ranges = getNonEmptySelectedRangesInsideOf(editorElement);
+    return _.compact(ranges.map(function (range) { return mapDomRangeToHtmlRange(editorElement, range); }));
+}
+exports.getSelectionHtmlRanges = getSelectionHtmlRanges;
 
 },{"lodash":3}],27:[function(require,module,exports){
 "use strict";
