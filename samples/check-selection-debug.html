@@ -62,9 +62,11 @@ And here we have a new errora.
     function mountExtractSelectionButton(editableDivId) {
       document.getElementById(editableDivId + '_extractSelection').addEventListener('click', function () {
         var editableDiv = document.getElementById(editableDivId);
-        var htmlRange = acrolinx.plugins.getSelectionHtmlRange(editableDiv);
-        if (htmlRange) {
-          console.log('Selected content: "'+editableDiv.innerHTML.slice(htmlRange[0], htmlRange[1])+'"');
+        var htmlRanges = acrolinx.plugins.getSelectionHtmlRanges(editableDiv);
+        if (htmlRanges.length > 0) {
+          console.log('Selected content: ', htmlRanges.map(function (range) {
+            return editableDiv.innerHTML.slice(range[0], range[1])
+          }));
         } else {
           console.log('There is no selected content in this field or only empty content selected.');
         }
@@ -76,7 +78,7 @@ And here we have a new errora.
         var textarea = document.getElementById(textareaId);
         var selectionView = document.getElementById(textareaId + '_selection');
         selectionView.innerText = textarea.selectionStart + '..' + textarea.selectionEnd +
-          '= "' + textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)+'"';
+          '= "' + textarea.value.slice(textarea.selectionStart, textarea.selectionEnd) + '"';
       }, 100);
     }
 

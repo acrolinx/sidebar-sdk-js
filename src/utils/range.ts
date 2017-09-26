@@ -1,25 +1,20 @@
 import * as _ from "lodash";
 
-function getSelectedRangeInsideOf(editorElement: HTMLElement): Range | undefined {
+function getRangesOfCurrentSelection(): Range[] {
   const selection = document.getSelection();
-  // console.log('selection', selection);
-  if (selection.rangeCount === 0) {
-    return undefined;
+  const ranges = [];
+  for (let i = 0; i < selection.rangeCount; i++) {
+    ranges.push(selection.getRangeAt(i));
   }
-  // TODO: Care for multiple selections in tables in firefox?
-  const range = selection.getRangeAt(0);
-  // console.log('range', range);
-  if (!containsOrIs(editorElement, range.commonAncestorContainer)) {
-    // console.log('range is not in editorElement', range, range.commonAncestorContainer, editorElement);
-    // console.log(range.commonAncestorContainer);
-    // console.log(editorElement);
-    return undefined;
-  }
-  if (range.toString().trim() === '') {
-    // console.log('range is empty', range);
-    return undefined;
-  }
-  return range;
+  return ranges;
+}
+
+function getNonEmptySelectedRangesInsideOf(editorElement: HTMLElement): Range[] {
+  const ranges = getRangesOfCurrentSelection();
+  return ranges.filter(range =>
+    containsOrIs(editorElement, range.commonAncestorContainer) &&
+    range.toString().trim() !== ''
+  );
 }
 
 /**
@@ -67,12 +62,7 @@ function findNodeByPath(ancestor: Node, path: number[]): Node | undefined {
 const RANGE_MARKER_START = 'ACRO_ßELECTION_START';
 const RANGE_MARKER_END = 'ACRO_ßELECTION_END';
 
-export function getSelectionHtmlRange(editorElement: HTMLElement): [number, number] | undefined {
-  const range = getSelectedRangeInsideOf(editorElement);
-  // console.log('Got Range', range);
-  if (!range) {
-    return undefined;
-  }
+function mapDomRangeToHtmlRange(editorElement: HTMLElement, range: Range): [number, number] | undefined {
   const rangeStartElementPath = getNodePath(editorElement, range.startContainer);
   const rangeEndElementPath = getNodePath(editorElement, range.endContainer);
   // console.log('range elements path', rangeStartElementPath, rangeEndElementPath);
@@ -102,4 +92,13 @@ export function getSelectionHtmlRange(editorElement: HTMLElement): [number, numb
   }
 
   return [htmlStartOffset, htmlEndOffset - RANGE_MARKER_START.length];
+}
+
+
+export function getSelectionHtmlRanges(editorElement: HTMLElement): [number, number][] {
+  const ranges = getNonEmptySelectedRangesInsideOf(editorElement);
+  // We could optimize this mapping of individual ranges by implementing a function
+  // which maps all ranges at once, but this would probably increase code complexity just
+  // to speed up the rare corner case of multiple ranges in a selection.
+  return _.compact(ranges.map(range => mapDomRangeToHtmlRange(editorElement, range)));
 }
