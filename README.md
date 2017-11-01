@@ -3,6 +3,8 @@
 Showcase and library for an integration of the [Acrolinx](http://www.acrolinx.com/) sidebar into a web application.
 The library contains adapters to use in your web integration. These are ready to use for: Editable divs, input elements and rich text editors like CKEditor and TinyMCE.
 
+See: [Getting Started with Custom Integrations](https://support.acrolinx.com/hc/en-us/articles/205687652-Getting-Started-with-Custom-Integrations)
+
 ## Live Demo
 
 [Acrolinx Sidebar Live Demo](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.52/samples/index.html)
