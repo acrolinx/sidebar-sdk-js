@@ -494,6 +494,24 @@ describe('adapter test', function () {
         }
       });
 
+      if (adapterSpec.inputFormat === 'TEXT') {
+        it('Replace word containing entity in case of markdown',  (done) => {
+          givenAText('wordOne D&amp;D wordThree', text => {
+            const replacement = 'Dungeons and Dragons';
+            const matchesWithReplacement = getMatchesWithReplacement(text, 'D&amp;D', replacement);
+
+            // In case of markdown, the server might replace the entities of matches with the corresponding char
+            // but we must still find it.
+            matchesWithReplacement[0].content = 'Dungeons & Dragons';
+
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement)
+            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            assertEditorText(`wordOne ${replacement} wordThree`);
+            done();
+          });
+        });
+      };
+
       if (adapterSpec.inputFormat === 'HTML') {
         it('Replace word before entity &nbsp;', function (done) {
           givenAText('Southh&nbsp;is warm.', html => {

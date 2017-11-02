@@ -58,7 +58,7 @@ export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
   return offsetMappingArray;
 }
 
-function rangeContent(content: string, m: AlignedMatch<Match>) {
+function rangeContent(content: string, m: { range: [number, number] }) {
   return content.slice(m.range[0], m.range[1]);
 }
 
@@ -85,9 +85,10 @@ export function lookupMatches<T extends Match>(checkedDocument: string, currentD
     };
   });
 
-  const containsModifiedMatches = _.some(alignedMatches, m => rangeContent(currentDocument, m) !== m.originalMatch.content);
+  const containsModifiedMatches = inputFormat === 'HTML' ?
+    _.some(alignedMatches, m => rangeContent(currentDocument, m) !== m.originalMatch.content) :
+    _.some(alignedMatches, m => rangeContent(currentDocument, m) !== rangeContent(checkedDocument, m.originalMatch));
 
-  log('checkedDocument', checkedDocument);
   log('cleanedCheckedDocument', cleanedCheckedDocument);
   log('cleanedCheckedDocumentCodes', cleanedCheckedDocument.split('').map(c => c.charCodeAt(0)));
   log('currentDocument', currentDocument);
