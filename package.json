@@ -33,8 +33,7 @@
     "grunt-istanbul-coverage": "^0.1.4",
     "grunt-karma": "2.0.0",
     "grunt-shell": "^2.1.0",
-    "grunt-ts": "6.0.0-beta.3",
-    "grunt-tslint": "4.0.0",
+    "grunt-ts": "6.0.0-beta.17",
     "istanbul": "^0.4.5",
     "jit-grunt": "^0.10.0",
     "karma": "1.3.0",
@@ -48,12 +47,14 @@
     "q-io": "^1.13.2",
     "request": "^2.79.0",
     "serve-static": "1.11.1",
-    "tslint": "4.2.0",
+    "tslint": "5.8.0",
     "typedoc": "0.8.0",
     "typescript": "2.6.1"
   },
   "scripts": {
     "buildDoc": "typedoc --out ./doc/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
+    "tslintFix": "tslint --fix 'src/**/*.ts' 'test/**/*.ts'"
   }
 }

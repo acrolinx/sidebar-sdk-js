@@ -39,7 +39,7 @@ module.exports = function (grunt) {
       tslint: {
         options: {atBegin: true},
         files: ['src/**/*.ts', 'tslint.json'],
-        tasks: ['tslint']
+        tasks: ['shell:tslint']
       },
       ts: {
         options: {atBegin: true},
@@ -115,18 +115,6 @@ module.exports = function (grunt) {
       }
     },
 
-    tslint: {
-      options: {
-        // can be a configuration object or a filepath to tslint.json
-        configuration: "tslint.json"
-      },
-      files: {
-        src: [
-          "src/**/*.ts", "!src/typings/**/*.ts"
-        ]
-      }
-    },
-
     uglify: {
       options: {
         sourceMapRoot: '../',
@@ -170,10 +158,11 @@ module.exports = function (grunt) {
 
     shell: {
       options: {
-        stderr: false
+        stderr: false,
+        failOnError: true,
       },
-      target: {
-        command: 'git config --global push.default simple; git push --set-upstream origin master; git push --tags'
+      tslint: {
+        command: 'npm run tslint'
       }
     },
 
@@ -221,7 +210,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', ['prepareBuild', 'serve']);
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
-  grunt.registerTask('build', ['prepareBuild', 'tslint', 'ts:all', 'browserify']);
+  grunt.registerTask('build', ['prepareBuild', 'shell:tslint', 'ts:all', 'browserify']);
   grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib']);
   grunt.registerTask('distrib', ['build', 'karma:ci', 'coverage', 'uglify', 'buildDeclarations', 'clean:tsSourceMap']);
 
@@ -286,7 +275,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('distribRelease', ['distrib', 'release']);
-  grunt.registerTask('karmaLocal', ['tslint', 'karma:ci', 'coverage']);
+  grunt.registerTask('karmaLocal', ['shell:tslint', 'karma:ci', 'coverage']);
   grunt.registerTask('typescript', ['ts:all']);
   grunt.registerTask('typescriptWithDeclarations', ['ts:allWithDeclarations']);
   grunt.registerTask('buildDeclarations', ['typescriptWithDeclarations', 'bundleDeclarations']);

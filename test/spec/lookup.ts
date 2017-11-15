@@ -34,7 +34,7 @@ describe('adapter test', function () {
       inputFormat: 'HTML',
       editorElement: '<div id="editorId" contenteditable="true">initial text</div>',
       setEditorContent: (html: string, done: DoneCallback) => {
-        $('#editorId').html(html).on('input', ()=> {
+        $('#editorId').html(html).on('input', () => {
           inputEventWasTriggered = true;
         });
         done();
@@ -48,7 +48,7 @@ describe('adapter test', function () {
       inputFormat: 'TEXT',
       editorElement: '<textarea id="editorId">initial text</textarea>',
       setEditorContent: (html: string, done: DoneCallback) => {
-        $('#editorId').val(html).on('input', ()=> {
+        $('#editorId').val(html).on('input', () => {
           inputEventWasTriggered = true;
         });
         done();
@@ -228,7 +228,7 @@ describe('adapter test', function () {
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement[1]]);
           assertEditorText('wordOne wordSame wordSameReplacement wordThree');
           done();
-        })
+        });
       });
 
       it('Replace first of the same word', function (done) {
@@ -260,7 +260,7 @@ describe('adapter test', function () {
           assertEditorText('wordOne wordSame1 wordSame2 wordThree');
           done();
         });
-      })
+      });
 
 
       it('Replace the same word two times with different replacements, where the first replacement is kinda long', function (done) {
@@ -395,7 +395,7 @@ describe('adapter test', function () {
       it('Replace last word', function (done) {
         givenAText('wordOne wordTwo', text => {
 
-          var matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'wordTw');
+          let matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'wordTw');
           adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
 
           assertEditorText('wordOne wordTw');
@@ -486,7 +486,7 @@ describe('adapter test', function () {
           givenAText('wordOne D&amp;D wordThree', text => {
             const replacement = 'Dungeons and Dragons';
             const matchesWithReplacement = getMatchesWithReplacement(text, 'D&amp;D', replacement);
-            adapter.selectRanges(dummyCheckId, matchesWithReplacement)
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
             assertEditorText(`wordOne ${replacement} wordThree`);
             done();
@@ -504,13 +504,13 @@ describe('adapter test', function () {
             // but we must still find it.
             matchesWithReplacement[0].content = 'Dungeons & Dragons';
 
-            adapter.selectRanges(dummyCheckId, matchesWithReplacement)
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
             assertEditorText(`wordOne ${replacement} wordThree`);
             done();
           });
         });
-      };
+      }
 
       if (adapterSpec.inputFormat === 'HTML') {
         it('Replace word before entity &nbsp;', function (done) {
@@ -565,8 +565,8 @@ describe('adapter test', function () {
       });
 
       it('selectRanges does not change text', function (done) {
-        const words = ['wordOne', 'wordTwo', 'wordThree', 'wordFour']
-        var editorText = words.join(' ');
+        const words = ['wordOne', 'wordTwo', 'wordThree', 'wordFour'];
+        let editorText = words.join(' ');
         givenAText(editorText, text => {
           words.forEach((word) => {
             adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(text, word, ''));
@@ -608,7 +608,7 @@ describe('adapter test', function () {
               {"content": " ", "range": [8, 9], "replacement": ""},
               {"content": "?", "range": [9, 10], "replacement": ""}];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent!()), '<div>a b?</div><div>c</div>')
+            assert.equal(normalizeResultHtml(adapter.getContent!()), '<div>a b?</div><div>c</div>');
             done();
           });
         });
@@ -621,7 +621,7 @@ describe('adapter test', function () {
               {"content": ".", "range": [24, 25], "replacement": ""}
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent!()), '<p><strong>a b.</strong></p>')
+            assert.equal(normalizeResultHtml(adapter.getContent!()), '<p><strong>a b.</strong></p>');
             done();
           });
         });

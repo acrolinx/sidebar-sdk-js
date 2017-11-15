@@ -25,7 +25,7 @@ describe('async storage', () => {
         storage.get(testKey).then(restoredValue => {
           assertDeepEqual(restoredValue, testValue);
           done();
-        }).catch(done)
+        }).catch(done);
       }
     );
   });
@@ -36,7 +36,7 @@ describe('async storage', () => {
         storage.get(testKey).then(restoredValue => {
           assertDeepEqual(restoredValue, testValue);
           done();
-        }).catch(done)
+        }).catch(done);
       }
     );
   });
@@ -45,16 +45,16 @@ describe('async storage', () => {
     storage.get(testKey).then(restoredValue => {
       assert.isNull(restoredValue);
       done();
-    }).catch(done)
+    }).catch(done);
   });
 
   it('reject promise if stored value is crap', (done) => {
-    localStorage.setItem(testKey, '{')
+    localStorage.setItem(testKey, '{');
     storage.get(testKey).then(_restoredValue => {
       done('Should be rejected');
     }).catch(() => {
       done();
-    })
+    });
   });
 });
 
@@ -69,7 +69,7 @@ describe('floating sidebar', function () {
     });
 
     afterEach(() => {
-      const sidebarElement = document.getElementById(SIDEBAR_ID)
+      const sidebarElement = document.getElementById(SIDEBAR_ID);
       if (floatingSidebar && sidebarElement) {
         floatingSidebar.remove();
         assert.isNull(document.getElementById(SIDEBAR_ID));
@@ -90,7 +90,7 @@ describe('floating sidebar', function () {
         left: 22,
         height: 456
       };
-      localStorage.setItem(POSITION_KEY, JSON.stringify(oldPos))
+      localStorage.setItem(POSITION_KEY, JSON.stringify(oldPos));
       floatingSidebar = initFloatingSidebar({asyncStorage});
       setTimeout(() => {
         const sidebarElement = document.getElementById(SIDEBAR_ID) as HTMLElement;
@@ -103,7 +103,7 @@ describe('floating sidebar', function () {
     });
 
     it('restore on defaultPosition if stored position is crap', (done) => {
-      localStorage.setItem(POSITION_KEY, '{')
+      localStorage.setItem(POSITION_KEY, '{');
       floatingSidebar = initFloatingSidebar({asyncStorage});
       setTimeout(() => {
         const sidebarElement = document.getElementById(SIDEBAR_ID) as HTMLElement;
@@ -141,7 +141,7 @@ describe('floating sidebar', function () {
     it('keeps valid values', () => {
       const originalPosition = {left: 600, top: 600, height: 600};
       assertDeepEqual(keepVisible(originalPosition, 750, 700), originalPosition);
-    })
+    });
 
   });
 

@@ -13,7 +13,7 @@ const JS_VERIFY_OPTS = {
 
 function findIndices(char: string, text: string) {
   const indices: number[] = [];
-  for (var i = 0; i < text.length; i++) {
+  for (let i = 0; i < text.length; i++) {
     if (text[i] === char) {
       indices.push(i);
     }

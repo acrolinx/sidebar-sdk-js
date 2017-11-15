@@ -5,4 +5,4 @@ interface JSC {
   forall: Function;
 }
 
-declare const jsc:JSC;
+declare const jsc: JSC;

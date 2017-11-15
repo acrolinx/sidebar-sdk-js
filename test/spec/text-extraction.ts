@@ -115,6 +115,6 @@ describe('text-extraction', () => {
       ), JS_VERIFY_OPTS);
     });
 
-  })
+  });
 });
 

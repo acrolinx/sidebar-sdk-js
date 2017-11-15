@@ -21,8 +21,7 @@
             "check-branch",
             "check-operator",
             "check-separator",
-            "check-type",
-            "check-module"
+            "check-type"
         ],
         "typedef-whitespace": [true, {
             "index-signature": "nospace",

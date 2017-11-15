@@ -20,9 +20,9 @@ import {AcrolinxPluginConfig} from "../../src/acrolinx-plugin";
 const DUMMY_CHECK_ID = 'dummyCheckId';
 
 interface InitMultiPluginOpts {
-  config?: AcrolinxPluginConfig
+  config?: AcrolinxPluginConfig;
   multiEditorAdapterConfig?: MultiEditorAdapterConfig;
-  addInputAdapterOptions?: AddSingleAdapterOptions
+  addInputAdapterOptions?: AddSingleAdapterOptions;
 }
 
 describe('multi plugin', function () {
@@ -36,7 +36,7 @@ describe('multi plugin', function () {
   let acrolinxPlugin: acrolinxPluginModule.AcrolinxPlugin;
 
   afterEach((done) => {
-    acrolinxPlugin.dispose(function (){});
+    acrolinxPlugin.dispose(function () {});
     $('#multiPluginTest').remove();
     done();
   });
@@ -131,7 +131,7 @@ describe('multi plugin', function () {
 
       dispose ( _callback: () => void ) {
       }
-    }
+    };
   }
 
   function waitForCheck(callback: Function) {
@@ -152,7 +152,7 @@ describe('multi plugin', function () {
           '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>'
         );
         done();
-      })
+      });
     });
 
     it('selectRanges', (done) => {
@@ -175,7 +175,7 @@ describe('multi plugin', function () {
         const textArea = document.getElementById('InputAdapter') as HTMLTextAreaElement;
         assert.equal(textArea.value.slice(textArea.selectionStart, textArea.selectionEnd), selectedText);
         done();
-      })
+      });
     });
 
     it('replaceRanges', (done) => {
@@ -186,7 +186,7 @@ describe('multi plugin', function () {
         injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
         assert.equal(document.getSelection().toString(), replacement);
         done();
-      })
+      });
     });
 
     it('trying to select modified ranges invalidated them', (done) => {
@@ -201,7 +201,7 @@ describe('multi plugin', function () {
           range: contentEditableAdapterMatch[0].range
         }]);
         done();
-      })
+      });
     });
 
     it('trying to replace modified ranges invalidated them', (done) => {
@@ -216,7 +216,7 @@ describe('multi plugin', function () {
           range: contentEditableAdapterMatch[0].range
         }]);
         done();
-      })
+      });
     });
 
   });
@@ -263,7 +263,7 @@ describe('multi plugin', function () {
             '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>'
           );
           done();
-        })
+        });
       }
     });
   });
@@ -285,10 +285,10 @@ describe('multi plugin', function () {
           assert.equal(lastDocumentContent.substr(0, expectedBegin.length), expectedBegin);
           assert.isTrue(_.endsWith(lastDocumentContent, '</root>'));
           done();
-        })
+        });
       }
     });
-  })
+  });
 
   describe('Config: beforeCheck', () => {
     it('do stuff before check', (done) => {
@@ -305,10 +305,10 @@ describe('multi plugin', function () {
         waitForCheck(() => {
           assert.equal(lastDocumentContent, '<div id="acrolinx_integration0">&lt;Initial text of InputAdapter.</div>');
           done();
-        })
+        });
       }
     });
-  })
+  });
 
   describe('configure and reconfigure', () => {
     it('configure before init done', (done) => {
@@ -335,6 +335,6 @@ describe('multi plugin', function () {
       }
     });
 
-  })
+  });
 
 });
