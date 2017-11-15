@@ -50,7 +50,7 @@
     "serve-static": "1.11.1",
     "tslint": "4.2.0",
     "typedoc": "0.8.0",
-    "typescript": "2.5.2"
+    "typescript": "2.6.1"
   },
   "scripts": {
     "buildDoc": "typedoc --out ./doc/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",

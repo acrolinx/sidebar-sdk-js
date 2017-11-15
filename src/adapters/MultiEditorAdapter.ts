@@ -123,7 +123,6 @@ export class MultiEditorAdapter implements AdapterInterface {
   private config: MultiEditorAdapterConfig;
   private rootElementWrapper?: WrapperConf;
   private adapters: RegisteredAdapter[];
-  private checkResult: CheckResult;
 
   constructor(config: MultiEditorAdapterConfig = {}) {
     this.config = config;
@@ -186,7 +185,6 @@ export class MultiEditorAdapter implements AdapterInterface {
   }
 
   registerCheckResult(checkResult: CheckResult): void {
-    this.checkResult = checkResult;
     this.adapters.forEach(entry => {
       entry.adapter.registerCheckResult(checkResult);
     });
