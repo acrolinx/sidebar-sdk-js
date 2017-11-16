@@ -65,6 +65,7 @@ module.exports = function (grunt) {
               connect().use('/tmp', serveStatic('tmp')),
               connect().use('/test', serveStatic('./test')),
               connect().use('/distrib', serveStatic('./distrib')),
+              connect().use('/distrib', serveStatic('./tmp')),  // to stay compatible with the webpack path layout
               connect().use('/bower_components', serveStatic('./bower_components')),
               connect().use('/src', serveStatic('./src')),
               proxy

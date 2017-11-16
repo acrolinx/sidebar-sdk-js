@@ -1,7 +1,10 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/acrolinx-sidebar-integration.ts',
+  entry: {
+    'acrolinx-sidebar-integration': './src/acrolinx-sidebar-integration.ts',
+    'tests': './test/index.ts'
+  },
   module: {
     rules: [
       {
@@ -12,10 +15,10 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ]
+    extensions: ['.tsx', '.ts', '.js']
   },
   output: {
-    filename: 'acrolinx-sidebar-integration.js',
+    filename: '[name].js',
     publicPath: "/distrib/",
     path: path.resolve(__dirname, 'distrib')
   }
