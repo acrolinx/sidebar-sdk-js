@@ -47,15 +47,19 @@
     "q-io": "^1.13.2",
     "request": "^2.79.0",
     "serve-static": "1.11.1",
+    "ts-loader": "^3.1.1",
     "tslint": "5.8.0",
     "typedoc": "0.8.0",
-    "typescript": "2.6.1"
+    "typescript": "2.6.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
   },
   "scripts": {
     "buildDoc": "typedoc --out ./doc/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",
     "tsc": "tsc",
     "tscWatch": "tsc -w",
     "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
-    "tslintFix": "tslint --fix 'src/**/*.ts' 'test/**/*.ts'"
+    "tslintFix": "tslint --fix 'src/**/*.ts' 'test/**/*.ts'",
+    "webpack-dev-server": "webpack-dev-server"
   }
 }
