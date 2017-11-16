@@ -101,16 +101,13 @@ module.exports = function (grunt) {
         src: ['src/**/*.ts', 'test/**/*.ts'],
         dest: 'tmp/compiled/',
         tsconfig: true,
-        options: {
-          additionalFlags: '--strictNullChecks --noImplicitThis --noUnusedParameters --noUnusedLocals'
-        }
       },
       allWithDeclarations: {
         src: ['src/**/*.ts', 'test/**/*.ts'],
         dest: 'tmp/compiled/',
         tsconfig: true,
         options: {
-          additionalFlags: '--strictNullChecks --noImplicitThis --noUnusedParameters --noUnusedLocals --declaration'
+          additionalFlags: '--declaration'
         }
       }
     },

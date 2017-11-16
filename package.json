@@ -54,6 +54,7 @@
   "scripts": {
     "buildDoc": "typedoc --out ./doc/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",
     "tsc": "tsc",
+    "tscWatch": "tsc -w",
     "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
     "tslintFix": "tslint --fix 'src/**/*.ts' 'test/**/*.ts'"
   }

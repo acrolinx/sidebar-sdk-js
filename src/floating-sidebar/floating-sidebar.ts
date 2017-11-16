@@ -57,7 +57,7 @@ export function loadInitialPos(asyncStorage: AsyncStorage): Promise<Position> {
     height: sanitizeHeight(window.innerHeight - DEFAULT_POS.top - 40)
   };
   return asyncStorage.get(POSITION_KEY).then(
-    (loadedPosition: Position) => assign(defaultPos, loadedPosition),
+    (loadedPosition) => ({...defaultPos, ...loadedPosition}),
     (e: Error) => {
       console.error("Can't load saved sidebar position.", e);
       return defaultPos;
