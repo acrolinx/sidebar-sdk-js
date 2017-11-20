@@ -30,6 +30,7 @@ import {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
 import {createPluginMessageAdapter} from "./message-adapter/message-adapter";
 import {loadSidebarCode} from "./utils/sidebar-loader";
 import {getSelectionHtmlRanges} from "./utils/range";
+import {lookupMatches} from "./lookup/diff-based";
 
 
 export interface AcrolinxSidebarIntegration {
@@ -37,6 +38,7 @@ export interface AcrolinxSidebarIntegration {
   autoBindFloatingSidebar: typeof autoBindFloatingSidebar;
   createPluginMessageAdapter: typeof createPluginMessageAdapter;
   loadSidebarCode: typeof loadSidebarCode;
+  getSelectionHtmlRanges: typeof getSelectionHtmlRanges,
   adapter: {
     AbstractRichtextEditorAdapter: typeof AbstractRichtextEditorAdapter;
     AutoBindAdapter: typeof AutoBindAdapter;
@@ -47,6 +49,9 @@ export interface AcrolinxSidebarIntegration {
     TinyMCEAdapter: typeof TinyMCEAdapter;
     TinyMCEWordpressAdapter: typeof TinyMCEWordpressAdapter;
   };
+  lookup: {
+    lookupMatches: typeof lookupMatches;
+  }
 }
 
 declare global {
@@ -60,7 +65,8 @@ declare global {
 const augmentedWindow = window as any;
 
 augmentedWindow.acrolinx = augmentedWindow.acrolinx || ({} as any);
-augmentedWindow.acrolinx.plugins = {
+
+const exported: AcrolinxSidebarIntegration = {
   AcrolinxPlugin: AcrolinxPlugin,
   autoBindFloatingSidebar: autoBindFloatingSidebar,
   createPluginMessageAdapter: createPluginMessageAdapter,
@@ -75,5 +81,10 @@ augmentedWindow.acrolinx.plugins = {
     MultiEditorAdapter: MultiEditorAdapter,
     TinyMCEAdapter: TinyMCEAdapter,
     TinyMCEWordpressAdapter: TinyMCEWordpressAdapter,
+  },
+  lookup: {
+    lookupMatches: lookupMatches
   }
 };
+
+augmentedWindow.acrolinx.plugins = exported;

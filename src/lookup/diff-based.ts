@@ -62,6 +62,19 @@ function rangeContent(content: string, m: { range: [number, number] }) {
   return content.slice(m.range[0], m.range[1]);
 }
 
+/**
+ * @param {string} checkedDocument Text or HTML of the document (at check time)
+ * @param {string} currentDocument Text or HTML of the current document
+ *
+ * @param {T[]} matches
+ *
+ * @param {InputFormat} inputFormat
+ * If checkedDocument is the HTML of the document (at check time)
+ * and currentDocument is the extracted text of the current document then
+ * you should set inputFormat to 'HTML'.
+ *
+ * @return {AlignedMatch<T extends Match>[]}
+ */
 export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string,
                                                matches: T[], inputFormat: InputFormat = 'HTML'): AlignedMatch<T>[] {
   if (_.isEmpty(matches)) {
