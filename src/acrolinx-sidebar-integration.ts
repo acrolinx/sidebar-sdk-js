@@ -38,7 +38,7 @@ export interface AcrolinxSidebarIntegration {
   autoBindFloatingSidebar: typeof autoBindFloatingSidebar;
   createPluginMessageAdapter: typeof createPluginMessageAdapter;
   loadSidebarCode: typeof loadSidebarCode;
-  getSelectionHtmlRanges: typeof getSelectionHtmlRanges,
+  getSelectionHtmlRanges: typeof getSelectionHtmlRanges;
   adapter: {
     AbstractRichtextEditorAdapter: typeof AbstractRichtextEditorAdapter;
     AutoBindAdapter: typeof AutoBindAdapter;
@@ -51,7 +51,7 @@ export interface AcrolinxSidebarIntegration {
   };
   lookup: {
     lookupMatches: typeof lookupMatches;
-  }
+  };
 }
 
 declare global {
