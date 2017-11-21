@@ -7,7 +7,7 @@ See: [Getting Started with Custom Integrations](https://support.acrolinx.com/hc/
 
 ## Live Demo
 
-[Acrolinx Sidebar Live Demo](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.52/samples/index.html)
+[Acrolinx Sidebar Live Demo](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.57/samples/index.html)
 
 ## Table of Content
 
