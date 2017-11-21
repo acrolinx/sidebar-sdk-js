@@ -20882,9 +20882,10 @@ var MultiEditorAdapter_1 = require("./adapters/MultiEditorAdapter");
 var message_adapter_1 = require("./message-adapter/message-adapter");
 var sidebar_loader_1 = require("./utils/sidebar-loader");
 var range_1 = require("./utils/range");
+var diff_based_1 = require("./lookup/diff-based");
 var augmentedWindow = window;
 augmentedWindow.acrolinx = augmentedWindow.acrolinx || {};
-augmentedWindow.acrolinx.plugins = {
+var exported = {
     AcrolinxPlugin: acrolinx_plugin_1.AcrolinxPlugin,
     autoBindFloatingSidebar: acrolinx_plugin_1.autoBindFloatingSidebar,
     createPluginMessageAdapter: message_adapter_1.createPluginMessageAdapter,
@@ -20899,10 +20900,14 @@ augmentedWindow.acrolinx.plugins = {
         MultiEditorAdapter: MultiEditorAdapter_1.MultiEditorAdapter,
         TinyMCEAdapter: TinyMCEAdapter_1.TinyMCEAdapter,
         TinyMCEWordpressAdapter: TinyMCEWordpressAdapter_1.TinyMCEWordpressAdapter,
+    },
+    lookup: {
+        lookupMatches: diff_based_1.lookupMatches
     }
 };
+augmentedWindow.acrolinx.plugins = exported;
 
-},{"./acrolinx-plugin":5,"./adapters/AbstractRichtextEditorAdapter":7,"./adapters/AutoBindAdapter":9,"./adapters/CKEditorAdapter":10,"./adapters/ContentEditableAdapter":11,"./adapters/InputAdapter":12,"./adapters/MultiEditorAdapter":13,"./adapters/TinyMCEAdapter":14,"./adapters/TinyMCEWordpressAdapter":15,"./message-adapter/message-adapter":20,"./utils/range":26,"./utils/sidebar-loader":28}],7:[function(require,module,exports){
+},{"./acrolinx-plugin":5,"./adapters/AbstractRichtextEditorAdapter":7,"./adapters/AutoBindAdapter":9,"./adapters/CKEditorAdapter":10,"./adapters/ContentEditableAdapter":11,"./adapters/InputAdapter":12,"./adapters/MultiEditorAdapter":13,"./adapters/TinyMCEAdapter":14,"./adapters/TinyMCEWordpressAdapter":15,"./lookup/diff-based":19,"./message-adapter/message-adapter":20,"./utils/range":26,"./utils/sidebar-loader":28}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -21252,10 +21257,9 @@ var InputAdapter = (function () {
         return this.config.format || 'TEXT';
     };
     InputAdapter.prototype.extractContentForCheck = function (opts) {
-        this.html = this.getContent();
-        this.currentHtmlChecking = this.html;
+        this.currentContentChecking = this.getContent();
         return {
-            content: this.html,
+            content: this.currentContentChecking,
             selection: opts.checkSelection ? this.getSelection() : undefined
         };
     };
@@ -21300,7 +21304,7 @@ var InputAdapter = (function () {
     };
     InputAdapter.prototype.selectMatches = function (_checkId, matches) {
         utils_1.assertElementIsDisplayed(this.element);
-        var alignedMatches = diff_based_1.lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
+        var alignedMatches = diff_based_1.lookupMatches(this.currentContentChecking, this.getCurrentText(), matches, 'TEXT');
         if (_.isEmpty(alignedMatches)) {
             throw Error('Selected flagged content is modified.');
         }
@@ -21313,7 +21317,9 @@ var InputAdapter = (function () {
         var text = el.value;
         for (var _i = 0, reversedMatches_1 = reversedMatches; _i < reversedMatches_1.length; _i++) {
             var match = reversedMatches_1[_i];
-            text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
+            if (!isDangerousToReplace(this.currentContentChecking, match.originalMatch)) {
+                text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
+            }
         }
         el.value = text;
     };
@@ -21332,6 +21338,10 @@ var InputAdapter = (function () {
     return InputAdapter;
 }());
 exports.InputAdapter = InputAdapter;
+function isDangerousToReplace(checkedDocumentContent, originalMatch) {
+    return /^ *$/.test(originalMatch.content)
+        && (originalMatch.content != match_1.rangeContent(checkedDocumentContent, originalMatch));
+}
 
 },{"../lookup/diff-based":19,"../utils/adapter-utils":21,"../utils/match":25,"../utils/scrolling":27,"../utils/utils":31,"./AdapterInterface":8,"lodash":3}],13:[function(require,module,exports){
 "use strict";
@@ -21447,7 +21457,6 @@ var MultiEditorAdapter = (function () {
     MultiEditorAdapter.prototype.registerCheckCall = function (_checkInfo) {
     };
     MultiEditorAdapter.prototype.registerCheckResult = function (checkResult) {
-        this.checkResult = checkResult;
         this.adapters.forEach(function (entry) {
             entry.adapter.registerCheckResult(checkResult);
         });
@@ -21718,6 +21727,14 @@ exports.saveToLocalStorage = saveToLocalStorage;
 
 },{"es6-promise":2}],18:[function(require,module,exports){
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var utils_1 = require("../utils/utils");
@@ -21750,7 +21767,7 @@ function loadInitialPos(asyncStorage) {
         left: exports.DEFAULT_POS.left,
         height: sanitizeHeight(window.innerHeight - exports.DEFAULT_POS.top - 40)
     };
-    return asyncStorage.get(exports.POSITION_KEY).then(function (loadedPosition) { return utils_1.assign(defaultPos, loadedPosition); }, function (e) {
+    return asyncStorage.get(exports.POSITION_KEY).then(function (loadedPosition) { return (__assign({}, defaultPos, loadedPosition)); }, function (e) {
         console.error("Can't load saved sidebar position.", e);
         return defaultPos;
     });
@@ -21911,6 +21928,7 @@ var alignment_1 = require("../utils/alignment");
 var text_extraction_1 = require("../utils/text-extraction");
 var logging_1 = require("../utils/logging");
 var diff_match_patch_1 = require("diff-match-patch");
+var match_1 = require("../utils/match");
 var dmp = new diff_match_patch_1.diff_match_patch();
 dmp.Diff_Timeout = 5;
 function createOffsetMappingArray(diffs) {
@@ -21941,9 +21959,6 @@ function createOffsetMappingArray(diffs) {
     return offsetMappingArray;
 }
 exports.createOffsetMappingArray = createOffsetMappingArray;
-function rangeContent(content, m) {
-    return content.slice(m.range[0], m.range[1]);
-}
 function lookupMatches(checkedDocument, currentDocument, matches, inputFormat) {
     if (inputFormat === void 0) { inputFormat = 'HTML'; }
     if (_.isEmpty(matches)) {
@@ -21964,8 +21979,9 @@ function lookupMatches(checkedDocument, currentDocument, matches, inputFormat) {
             range: [alignedBegin, alignedEnd],
         };
     });
-    var containsModifiedMatches = _.some(alignedMatches, function (m) { return rangeContent(currentDocument, m) !== m.originalMatch.content; });
-    logging_1.log('checkedDocument', checkedDocument);
+    var containsModifiedMatches = inputFormat === 'HTML' ?
+        _.some(alignedMatches, function (m) { return match_1.rangeContent(currentDocument, m) !== m.originalMatch.content; }) :
+        _.some(alignedMatches, function (m) { return match_1.rangeContent(currentDocument, m) !== match_1.rangeContent(checkedDocument, m.originalMatch); });
     logging_1.log('cleanedCheckedDocument', cleanedCheckedDocument);
     logging_1.log('cleanedCheckedDocumentCodes', cleanedCheckedDocument.split('').map(function (c) { return c.charCodeAt(0); }));
     logging_1.log('currentDocument', currentDocument);
@@ -21973,12 +21989,12 @@ function lookupMatches(checkedDocument, currentDocument, matches, inputFormat) {
     logging_1.log('matches', matches);
     logging_1.log('diffs', diffs);
     logging_1.log('alignedMatches', alignedMatches);
-    logging_1.log('alignedMatchesContent', alignedMatches.map(function (m) { return rangeContent(currentDocument, m); }));
+    logging_1.log('alignedMatchesContent', alignedMatches.map(function (m) { return match_1.rangeContent(currentDocument, m); }));
     return containsModifiedMatches ? [] : alignedMatches;
 }
 exports.lookupMatches = lookupMatches;
 
-},{"../utils/alignment":22,"../utils/logging":24,"../utils/text-extraction":30,"diff-match-patch":1,"lodash":3}],20:[function(require,module,exports){
+},{"../utils/alignment":22,"../utils/logging":24,"../utils/match":25,"../utils/text-extraction":30,"diff-match-patch":1,"lodash":3}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function removeFunctions(object) {
@@ -22168,6 +22184,10 @@ function getCompleteFlagLength(matches) {
     return matches[matches.length - 1].range[1] - matches[0].range[0];
 }
 exports.getCompleteFlagLength = getCompleteFlagLength;
+function rangeContent(content, m) {
+    return content.slice(m.range[0], m.range[1]);
+}
+exports.rangeContent = rangeContent;
 
 },{}],26:[function(require,module,exports){
 "use strict";
