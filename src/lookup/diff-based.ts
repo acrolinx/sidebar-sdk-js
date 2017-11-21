@@ -24,6 +24,7 @@ import {OffSetAlign, findNewIndex, AlignedMatch} from "../utils/alignment";
 import {extractText} from "../utils/text-extraction";
 import {log} from "../utils/logging";
 import {diff_match_patch, DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT, Diff} from "diff-match-patch";
+import {rangeContent} from "../utils/match";
 
 export type InputFormat = 'HTML' | 'TEXT';
 
@@ -56,10 +57,6 @@ export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
     });
   });
   return offsetMappingArray;
-}
-
-function rangeContent(content: string, m: { range: [number, number] }) {
-  return content.slice(m.range[0], m.range[1]);
 }
 
 /**

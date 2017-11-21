@@ -25,7 +25,7 @@ import {
   AutobindWrapperAttributes, ExtractContentForCheckOpts,
 } from "./AdapterInterface";
 import {AlignedMatch} from "../utils/alignment";
-import {getCompleteFlagLength} from "../utils/match";
+import {getCompleteFlagLength, rangeContent} from "../utils/match";
 import {scrollIntoView} from "../utils/scrolling";
 import {lookupMatches} from "../lookup/diff-based";
 import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
@@ -42,8 +42,7 @@ export type InputAdapterConf = AdapterConf & {
 export class InputAdapter implements AdapterInterface {
   readonly element: ValidInputElement;
   config: InputAdapterConf;
-  html: string;
-  currentHtmlChecking: string;
+  private currentContentChecking: string;
 
   constructor(conf: InputAdapterConf) {
     this.element = getElementFromAdapterConf(conf) as ValidInputElement;
@@ -63,10 +62,9 @@ export class InputAdapter implements AdapterInterface {
   }
 
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult {
-    this.html = this.getContent();
-    this.currentHtmlChecking = this.html;
+    this.currentContentChecking = this.getContent();
     return {
-      content: this.html,
+      content: this.currentContentChecking,
       selection: opts.checkSelection ? this.getSelection() : undefined
     };
   }
@@ -119,7 +117,7 @@ export class InputAdapter implements AdapterInterface {
 
   selectMatches<T extends Match>(_checkId: string, matches: T[]): AlignedMatch<T>[] {
     assertElementIsDisplayed(this.element);
-    const alignedMatches = lookupMatches(this.currentHtmlChecking, this.getCurrentText(), matches, 'TEXT');
+    const alignedMatches = lookupMatches(this.currentContentChecking, this.getCurrentText(), matches, 'TEXT');
 
     if (_.isEmpty(alignedMatches)) {
       throw Error('Selected flagged content is modified.');
@@ -134,7 +132,9 @@ export class InputAdapter implements AdapterInterface {
     const el = this.element;
     let text = el.value;
     for (let match of reversedMatches) {
-      text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
+      if (!isDangerousToReplace(this.currentContentChecking, match.originalMatch)) {
+        text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
+      }
     }
     el.value = text;
   }
@@ -152,4 +152,12 @@ export class InputAdapter implements AdapterInterface {
   getAutobindWrapperAttributes(): AutobindWrapperAttributes {
     return getAutobindWrapperAttributes(this.element);
   }
+}
+
+/**
+ * We don't want to destroy markup/markdown.
+ */
+function isDangerousToReplace(checkedDocumentContent: string, originalMatch: Match) {
+  return /^ *$/.test(originalMatch.content)
+    && (originalMatch.content != rangeContent(checkedDocumentContent, originalMatch));
 }
