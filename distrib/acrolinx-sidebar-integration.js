@@ -20883,6 +20883,7 @@ var message_adapter_1 = require("./message-adapter/message-adapter");
 var sidebar_loader_1 = require("./utils/sidebar-loader");
 var range_1 = require("./utils/range");
 var diff_based_1 = require("./lookup/diff-based");
+var text_dom_mapping_1 = require("./utils/text-dom-mapping");
 var augmentedWindow = window;
 augmentedWindow.acrolinx = augmentedWindow.acrolinx || {};
 var exported = {
@@ -20903,11 +20904,12 @@ var exported = {
     },
     lookup: {
         lookupMatches: diff_based_1.lookupMatches
-    }
+    },
+    extractTextDomMapping: text_dom_mapping_1.extractTextDomMapping
 };
 augmentedWindow.acrolinx.plugins = exported;
 
-},{"./acrolinx-plugin":5,"./adapters/AbstractRichtextEditorAdapter":7,"./adapters/AutoBindAdapter":9,"./adapters/CKEditorAdapter":10,"./adapters/ContentEditableAdapter":11,"./adapters/InputAdapter":12,"./adapters/MultiEditorAdapter":13,"./adapters/TinyMCEAdapter":14,"./adapters/TinyMCEWordpressAdapter":15,"./lookup/diff-based":19,"./message-adapter/message-adapter":20,"./utils/range":26,"./utils/sidebar-loader":28}],7:[function(require,module,exports){
+},{"./acrolinx-plugin":5,"./adapters/AbstractRichtextEditorAdapter":7,"./adapters/AutoBindAdapter":9,"./adapters/CKEditorAdapter":10,"./adapters/ContentEditableAdapter":11,"./adapters/InputAdapter":12,"./adapters/MultiEditorAdapter":13,"./adapters/TinyMCEAdapter":14,"./adapters/TinyMCEWordpressAdapter":15,"./lookup/diff-based":19,"./message-adapter/message-adapter":20,"./utils/range":26,"./utils/sidebar-loader":28,"./utils/text-dom-mapping":29}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");

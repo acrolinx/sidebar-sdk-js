@@ -16,6 +16,7 @@ declare module 'acrolinx-sidebar-integration' {
     import { loadSidebarCode } from "acrolinx-sidebar-integration/utils/sidebar-loader";
     import { getSelectionHtmlRanges } from "acrolinx-sidebar-integration/utils/range";
     import { lookupMatches } from "acrolinx-sidebar-integration/lookup/diff-based";
+    import { extractTextDomMapping } from "acrolinx-sidebar-integration/utils/text-dom-mapping";
     export interface AcrolinxSidebarIntegration {
         AcrolinxPlugin: typeof AcrolinxPlugin;
         autoBindFloatingSidebar: typeof autoBindFloatingSidebar;
@@ -35,6 +36,7 @@ declare module 'acrolinx-sidebar-integration' {
         lookup: {
             lookupMatches: typeof lookupMatches;
         };
+        extractTextDomMapping: typeof extractTextDomMapping;
     }
     global  {
         const acrolinx: {
@@ -288,6 +290,22 @@ declare module 'acrolinx-sidebar-integration/lookup/diff-based' {
     export type InputFormat = 'HTML' | 'TEXT';
     export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[];
     export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string, matches: T[], inputFormat?: InputFormat): AlignedMatch<T>[];
+}
+
+declare module 'acrolinx-sidebar-integration/utils/text-dom-mapping' {
+    export interface TextDomMapping {
+        text: string;
+        domPositions: DomPosition[];
+    }
+    export interface DomPosition {
+        node: Node;
+        offset: number;
+    }
+    export function textMapping(text: string, domPositions: DomPosition[]): TextDomMapping;
+    export function concatTextMappings(textMappings: TextDomMapping[]): TextDomMapping;
+    export function domPosition(node: Node, offset: number): DomPosition;
+    export function extractTextDomMapping(node: Node): TextDomMapping;
+    export function getEndDomPos(endIndex: number, domPositions: DomPosition[]): DomPosition;
 }
 
 declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
