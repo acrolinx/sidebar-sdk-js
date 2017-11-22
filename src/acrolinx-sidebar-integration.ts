@@ -31,6 +31,7 @@ import {createPluginMessageAdapter} from "./message-adapter/message-adapter";
 import {loadSidebarCode} from "./utils/sidebar-loader";
 import {getSelectionHtmlRanges} from "./utils/range";
 import {lookupMatches} from "./lookup/diff-based";
+import {extractTextDomMapping} from "./utils/text-dom-mapping";
 
 
 export interface AcrolinxSidebarIntegration {
@@ -52,6 +53,7 @@ export interface AcrolinxSidebarIntegration {
   lookup: {
     lookupMatches: typeof lookupMatches;
   };
+  extractTextDomMapping: typeof extractTextDomMapping;
 }
 
 declare global {
@@ -84,7 +86,8 @@ const exported: AcrolinxSidebarIntegration = {
   },
   lookup: {
     lookupMatches: lookupMatches
-  }
+  },
+  extractTextDomMapping: extractTextDomMapping
 };
 
 augmentedWindow.acrolinx.plugins = exported;
