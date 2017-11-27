@@ -32,6 +32,7 @@ import {loadSidebarCode} from "./utils/sidebar-loader";
 import {getSelectionHtmlRanges} from "./utils/range";
 import {lookupMatches} from "./lookup/diff-based";
 import {extractTextDomMapping} from "./utils/text-dom-mapping";
+import {CodeMirrorAdapter} from "./adapters/CodeMirrorAdapter";
 
 
 export interface AcrolinxSidebarIntegration {
@@ -44,6 +45,7 @@ export interface AcrolinxSidebarIntegration {
     AbstractRichtextEditorAdapter: typeof AbstractRichtextEditorAdapter;
     AutoBindAdapter: typeof AutoBindAdapter;
     CKEditorAdapter: typeof CKEditorAdapter;
+    CodeMirrorAdapter: typeof CodeMirrorAdapter;
     ContentEditableAdapter: typeof ContentEditableAdapter;
     InputAdapter: typeof InputAdapter;
     MultiEditorAdapter: typeof MultiEditorAdapter;
@@ -78,6 +80,7 @@ const exported: AcrolinxSidebarIntegration = {
     AbstractRichtextEditorAdapter: AbstractRichtextEditorAdapter,
     AutoBindAdapter: AutoBindAdapter,
     CKEditorAdapter: CKEditorAdapter,
+    CodeMirrorAdapter: CodeMirrorAdapter,
     ContentEditableAdapter: ContentEditableAdapter,
     InputAdapter: InputAdapter,
     MultiEditorAdapter: MultiEditorAdapter,

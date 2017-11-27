@@ -11,6 +11,7 @@
     "tinymce": "~4.2.5",
     "mocha": "^2.4.5",
     "chai": "^3.5.0",
-    "jsverify": "https://github.com/jsverify/jsverify/raw/v0.7.1/dist/jsverify.standalone.js"
+    "jsverify": "https://github.com/jsverify/jsverify/raw/v0.7.1/dist/jsverify.standalone.js",
+    "codemirror": "5.32.0"
   }
 }
