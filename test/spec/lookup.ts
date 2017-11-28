@@ -1,7 +1,8 @@
 import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
 import editor = CKEDITOR.editor;
+import * as _ from 'lodash';
 import {getMatchesWithReplacement} from "../utils/test-utils";
-import {AdapterInterface, AdapterConf, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
+import {AdapterInterface, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
 
 const assert = chai.assert;
 
@@ -22,6 +23,8 @@ describe('adapter test', function() {
     inputFormat: string;
     setEditorContent: (text: string, done: DoneCallback) => void;
     init?: (done: DoneCallback) => void;
+    editor?: any;
+    createAdapterConf?: () => any;
     remove: () => void;
   }
 
@@ -55,6 +58,28 @@ describe('adapter test', function() {
         done();
       },
       remove: () => {
+        $('#editorId').remove();
+      }
+    },
+    {
+      name: 'CodeMirrorAdapter',
+      inputFormat: 'TEXT',
+      editorElement: '<textarea id="editorId">initial text</textarea>',
+      createAdapterConf() {
+        this.editor = CodeMirror.fromTextArea(document.getElementById('editorId') as HTMLTextAreaElement, {
+          lineNumbers: true,
+          mode: 'text/editor'
+        });
+        return {
+          editor: this.editor
+        };
+      },
+      setEditorContent(content: string, done: DoneCallback) {
+        this.editor.setValue(content);
+        done();
+      },
+      remove () {
+        this.editor.toTextArea();
         $('#editorId').remove();
       }
     },
@@ -110,8 +135,10 @@ describe('adapter test', function() {
     }
   ];
 
+  const testedAdapterNames: string[] = [];
+  const testedAdapters: AdapterSpec[] = adapters.filter(a => _.isEmpty(testedAdapterNames) ||  _.includes(testedAdapterNames, a.name));
 
-  adapters.forEach(adapterSpec => {
+  testedAdapters.forEach(adapterSpec => {
     inputEventWasTriggered = false;
 
     const adapterName = adapterSpec.name;
@@ -120,7 +147,7 @@ describe('adapter test', function() {
 
       beforeEach((done) => {
         $('body').append(adapterSpec.editorElement);
-        const adapterConf: AdapterConf = {editorId: 'editorId'};
+        const adapterConf: any = adapterSpec.createAdapterConf ? adapterSpec.createAdapterConf() : {editorId: 'editorId'};
         const adapterNameSpace = acrolinx.plugins.adapter as any;
         adapter = new adapterNameSpace[adapterName](adapterConf);
         if (adapterSpec.init) {
@@ -134,11 +161,11 @@ describe('adapter test', function() {
         adapterSpec.remove();
       });
 
-      const setEditorContent = adapterSpec.setEditorContent;
+      const setEditorContent = adapterSpec.setEditorContent.bind(adapterSpec);
 
       function assertEditorText(expectedText: string) {
         const editorContent = (adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult).content;
-        if (adapterSpec.name === 'InputAdapter') {
+        if (adapterSpec.name === 'InputAdapter' || adapterSpec.name === 'CodeMirrorAdapter') {
           assert.equal(editorContent, expectedText);
         }
         else {

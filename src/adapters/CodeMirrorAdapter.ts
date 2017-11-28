@@ -44,6 +44,12 @@ export class CodeMirrorAdapter implements AdapterInterface {
   private currentContentChecking: string;
 
   constructor(conf: CodeMirrorAdapterConf) {
+    if (!conf) {
+      throw new Error('CodeMirrorAdapter config is missing');
+    }
+    if (!conf.editor) {
+      throw new Error('CodeMirrorAdapter config is missing "editor"');
+    }
     this.config = _.clone(conf);
   }
 
