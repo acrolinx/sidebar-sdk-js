@@ -91,16 +91,29 @@ export class CodeMirrorAdapter implements AdapterInterface {
   replaceRanges(_checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
     const doc = this.getDoc();
     const alignedMatches = this.lookupMatchesOrThrow(matchesWithReplacement);
+    const escapeFunction = this.getEscapeFunction();
 
+    let replacementLength = 0;
     _.forEachRight(alignedMatches, match => {
       if (!isDangerousToReplace(this.currentContentChecking, match.originalMatch)) {
         const positionRange = this.selectRange(match.range);
-        doc.replaceRange(match.originalMatch.replacement, positionRange[0], positionRange[1]);
+        const escapedReplacement = escapeFunction(match.originalMatch.replacement);
+        doc.replaceRange(escapedReplacement, positionRange[0], positionRange[1]);
+        replacementLength += escapedReplacement.length
       }
     });
 
-    const completeReplacement = matchesWithReplacement.map(m => m.replacement).join('');
-    this.selectRangeAndScroll([alignedMatches[0].range[0], alignedMatches[0].range[0] + completeReplacement.length]);
+    this.selectRangeAndScroll([alignedMatches[0].range[0], alignedMatches[0].range[0] + replacementLength]);
+  }
+
+  private getEscapeFunction() : (s: string) => string {
+    switch (this.getFormat()) {
+      case 'XML':
+      case 'HTML':
+        return _.escape;
+      default:
+        return _.identity;
+    }
   }
 
   private getDoc() {
