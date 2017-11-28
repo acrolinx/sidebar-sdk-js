@@ -28,6 +28,7 @@ import {isDangerousToReplace} from "../utils/match";
 
 const FORMAT_BY_MODE: { [mime: string]: string } = {
   'text/html': 'HTML',
+  'text/xml': 'HTML',
   'application/xml': 'XML',
   'text/x-markdown': 'MARKDOWN',
   'text/plain': 'TEXT'
@@ -35,6 +36,7 @@ const FORMAT_BY_MODE: { [mime: string]: string } = {
 
 export type CodeMirrorAdapterConf = {
   editor: CodeMirror.Editor | EditorFromTextArea;
+  format?: string;  // See CheckOptions.inputFormat
 };
 
 export class CodeMirrorAdapter implements AdapterInterface {
@@ -50,7 +52,7 @@ export class CodeMirrorAdapter implements AdapterInterface {
   }
 
   getFormat() {
-    return FORMAT_BY_MODE[this.config.editor.getOption('mode')] || 'AUTO';
+    return this.config.format || FORMAT_BY_MODE[this.config.editor.getOption('mode')] || 'AUTO';
   }
 
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult {
