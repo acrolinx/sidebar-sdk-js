@@ -21,14 +21,18 @@
 import {Check, CheckResult, DocumentSelection, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import * as _ from "lodash";
 import {
-  getElementFromAdapterConf, AdapterInterface, AdapterConf, ContentExtractionResult,
-  AutobindWrapperAttributes, ExtractContentForCheckOpts,
+  AdapterConf,
+  AdapterInterface,
+  AutobindWrapperAttributes,
+  ContentExtractionResult,
+  ExtractContentForCheckOpts,
+  getElementFromAdapterConf,
 } from "./AdapterInterface";
 import {AlignedMatch} from "../utils/alignment";
-import {getCompleteFlagLength, rangeContent} from "../utils/match";
+import {getCompleteFlagLength, isDangerousToReplace} from "../utils/match";
 import {scrollIntoView} from "../utils/scrolling";
 import {lookupMatches} from "../lookup/diff-based";
-import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
+import {assertElementIsDisplayed, fakeInputEvent} from "../utils/utils";
 import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
 export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement;
@@ -152,12 +156,4 @@ export class InputAdapter implements AdapterInterface {
   getAutobindWrapperAttributes(): AutobindWrapperAttributes {
     return getAutobindWrapperAttributes(this.element);
   }
-}
-
-/**
- * We don't want to destroy markup/markdown.
- */
-function isDangerousToReplace(checkedDocumentContent: string, originalMatch: Match) {
-  return /^ *$/.test(originalMatch.content)
-    && (originalMatch.content != rangeContent(checkedDocumentContent, originalMatch));
 }

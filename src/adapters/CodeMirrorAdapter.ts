@@ -24,12 +24,13 @@ import {AdapterInterface, ContentExtractionResult, ExtractContentForCheckOpts} f
 import {AlignedMatch} from "../utils/alignment";
 import {EditorFromTextArea} from "codemirror";
 import {lookupMatches} from "../lookup/diff-based";
+import {isDangerousToReplace} from "../utils/match";
 
 const FORMAT_BY_MODE: { [mime: string]: string } = {
-  'xml/html': 'HTML',
   'text/html': 'HTML',
   'application/xml': 'XML',
-  'text/x-markdown': 'MARKDOWN'
+  'text/x-markdown': 'MARKDOWN',
+  'text/plain': 'TEXT'
 };
 
 export type CodeMirrorAdapterConf = {
@@ -73,7 +74,7 @@ export class CodeMirrorAdapter implements AdapterInterface {
   }
 
   private lookupMatchesOrThrow<T extends Match>(matches: T[]): AlignedMatch<T>[] {
-    const alignedMatches = lookupMatches(this.currentContentChecking, this.getContent(), matches);
+    const alignedMatches = lookupMatches(this.currentContentChecking, this.getContent(), matches, 'TEXT');
     if (_.isEmpty(alignedMatches)) {
       throw Error('Selected flagged content is modified.');
     }
@@ -90,8 +91,10 @@ export class CodeMirrorAdapter implements AdapterInterface {
     const alignedMatches = this.lookupMatchesOrThrow(matchesWithReplacement);
 
     _.forEachRight(alignedMatches, match => {
-      const positionRange = this.selectRange(match.range);
-      doc.replaceRange(match.originalMatch.replacement, positionRange[0], positionRange[1]);
+      if (!isDangerousToReplace(this.currentContentChecking, match.originalMatch)) {
+        const positionRange = this.selectRange(match.range);
+        doc.replaceRange(match.originalMatch.replacement, positionRange[0], positionRange[1]);
+      }
     });
 
     const completeReplacement = matchesWithReplacement.map(m => m.replacement).join('');

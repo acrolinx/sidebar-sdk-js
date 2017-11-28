@@ -26,51 +26,35 @@ For more information visit: http://www.acrolinx.com
 
   <style>
     .CodeMirror {
-      max-width: 500px;
+      max-width: 600px;
       border: 1px solid silver;
     }
+
+    #documentReferenceSection {
+      margin: 10px 0;
+    }
+
   </style>
 </head>
-<body onload="initAcrolinx()">
+<body>
 <div id="sidebarContainer"></div>
 
+
 <div id="app">
-  <h1>Acrolinx Sidebar CodeMirror Example</h1>
+  <h1>Acrolinx Sidebar CodeMirror Examples</h1>
 
   <p>
-    <a href="single-editor.html">Single-Editor Example</a> | <a href="multi-editor.html">Multi-Editor Example</a> | <a
-    href="https://support.acrolinx.com/hc/en-us/articles/205687652-Acrolinx-Sidebar-API-Reference" target="_blank">Open
-    Acrolinx Sidebar API Documentation</a>
+    <a href="index.html">Other Examples</a>
   </p>
-  <textarea rows="25" cols="80" id="editor" spellcheck="false"><h3>This texxt has a problemm.</h3>
-  <p>This is saad.</p>
 
-  <p>I need an <b>drink</b>.</p>
-  <p>I need an
-    linebreak.</p>
+  <select id="exampleSelector"></select>
 
+  <div id="documentReferenceSection" style="display: none">
+    <label for="documentReferenceInput">documentReference:</label>
+    <input type="text" id="documentReferenceInput" size="50"/>
+  </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-The end is nearr.
+  <textarea rows="25" cols="80" id="editor" spellcheck="false">
 </textarea>
 
 </div>
@@ -82,29 +66,8 @@ The end is nearr.
 <script src="../distrib/acrolinx-sidebar-integration.js"></script>
 <script src="config.js"></script>
 
+<script src="codemirror-example-data.js"></script>
+<script src="codemirror.js"></script>
 
-<script>
-  var codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("editor"), {
-    lineNumbers: true,
-    mode: "text/html"
-  });
-
-  function initAcrolinx() {
-    basicConf.checkSelection = true;
-
-    // Create the main Acrolinx plugin.
-    var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin(basicConf);
-
-
-    // Create an adapter for a text area.
-    var adapter = new acrolinx.plugins.adapter.CodeMirrorAdapter({editor: codeMirrorEditor});
-
-    // Register the single adapter to the main Acrolinx plugin.
-    acrolinxPlugin.registerAdapter(adapter);
-
-    acrolinxPlugin.init();
-  }
-
-</script>
 </body>
 </html>
