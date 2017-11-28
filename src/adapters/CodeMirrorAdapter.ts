@@ -99,7 +99,7 @@ export class CodeMirrorAdapter implements AdapterInterface {
         const positionRange = this.selectRange(match.range);
         const escapedReplacement = escapeFunction(match.originalMatch.replacement);
         doc.replaceRange(escapedReplacement, positionRange[0], positionRange[1]);
-        replacementLength += escapedReplacement.length
+        replacementLength += escapedReplacement.length;
       }
     });
 
