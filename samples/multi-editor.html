@@ -6,9 +6,17 @@
   <title>Acrolinx Sidebar Multi-Editor Example</title>
   <script src="https://cdn.ckeditor.com/4.5.7/basic/ckeditor.js"></script>
   <script src="https://cdn.rawgit.com/tinymce/tinymce-dist/4.2.5/tinymce.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/xml/xml.js"></script>
+
   <!-- instead the local bower version could be used:
   <script src="/bower_components/ckeditor/ckeditor.js"></script>
   <script src="/bower_components/tinymce/tinymce.js"></script>
+  <link rel="stylesheet" href="/bower_components/codemirror/lib/codemirror.css">
+  <script src="/bower_components/codemirror/lib/codemirror.js"></script>
+  <script src="/bower_components/codemirror/mode/xml/xml.js"></script>
 -->
   <script src="../distrib/acrolinx-sidebar-integration.js"></script>
   <link rel="stylesheet" href="style.css"/>
@@ -46,11 +54,11 @@
     <textarea name="TinyEditor" id="editor_tinymce" rows="10" cols="40">
             This textt has more then a errorr.
         </textarea>
-    <script>
-      CKEDITOR.disableAutoInline = true;
-      // Replace the <textarea id="editor1"> with a CKEditor
-      // instance, using default configuration.
-    </script>
+
+    <p>CodeMirror</p>
+    <textarea id="editor_codemirror" rows="10" cols="40"><p>This textt has more then a errorr.</p>
+    </textarea>
+
   </form>
 </div>
 
@@ -58,6 +66,10 @@
 <script type="text/javascript">
   'use strict';
 
+  var codeMirrorEditor = CodeMirror.fromTextArea(document.getElementById("editor_codemirror"), {
+    lineNumbers: true,
+    mode: 'text/html'
+  });
 
   function initAcrolinx() {
     // Create the main Acrolinx plugin.
@@ -71,6 +83,7 @@
 
     var ckEditorAdapter = new acrolinx.plugins.adapter.CKEditorAdapter({editorId: 'editor_ck'});
     var tinyMceAdapter = new acrolinx.plugins.adapter.TinyMCEAdapter({editorId: 'editor_tinymce'});
+    var codeMirrorAdapter = new acrolinx.plugins.adapter.CodeMirrorAdapter({editor: codeMirrorEditor});
 
     var multiAdapter = new acrolinx.plugins.adapter.MultiEditorAdapter({
       // Optional: Can be used to set the DOCTYPE
@@ -95,6 +108,7 @@
 
     multiAdapter.addSingleAdapter(ckEditorAdapter);
     multiAdapter.addSingleAdapter(tinyMceAdapter);
+    multiAdapter.addSingleAdapter(codeMirrorAdapter);
 
     // Register multiAdapter to the main Acrolinx plugin
     acrolinxPlugin.registerAdapter(multiAdapter);
@@ -102,6 +116,7 @@
     acrolinxPlugin.init();
   }
 
+  CKEDITOR.disableAutoInline = true;
   CKEDITOR.replace('editor_ck', {
     height: 50
   });

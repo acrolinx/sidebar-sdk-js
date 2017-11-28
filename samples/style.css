@@ -74,3 +74,8 @@ div[contenteditable=true] {
 ::selection {
   background: #ff0000;
 }
+
+.CodeMirror {
+  max-width: 600px;
+  border: 1px solid silver;
+}
