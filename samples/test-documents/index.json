@@ -1,0 +1,29 @@
+{
+  "documents": [
+    {
+      "name": "HTML",
+      "mimeType": "text/html",
+      "path": "test.html"
+    },
+    {
+      "name": "XML",
+      "mimeType": "application/xml",
+      "path": "test.xml"
+
+    },
+    {
+      "name": "Plain Text",
+      "mimeType": "text/plain",
+      "path": "test.txt"
+    },
+    {
+      "name": "Markdown",
+      "mimeType": "text/x-markdown",
+      "path": "test.md"
+    },
+    {
+      "name": "Auto",
+      "path": "auto.txt"
+    }
+  ]
+}
