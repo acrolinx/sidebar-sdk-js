@@ -20867,7 +20867,7 @@ function autoBindFloatingSidebar(basicConf) {
 }
 exports.autoBindFloatingSidebar = autoBindFloatingSidebar;
 
-},{"./adapters/AdapterInterface":8,"./adapters/AutoBindAdapter":9,"./floating-sidebar/async-storage":17,"./floating-sidebar/floating-sidebar":18,"./message-adapter/message-adapter":20,"./utils/sidebar-loader":28,"./utils/utils":31,"es6-promise":2,"lodash":3}],6:[function(require,module,exports){
+},{"./adapters/AdapterInterface":8,"./adapters/AutoBindAdapter":9,"./floating-sidebar/async-storage":18,"./floating-sidebar/floating-sidebar":19,"./message-adapter/message-adapter":21,"./utils/sidebar-loader":29,"./utils/utils":32,"es6-promise":2,"lodash":3}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var acrolinx_plugin_1 = require("./acrolinx-plugin");
@@ -20884,6 +20884,7 @@ var sidebar_loader_1 = require("./utils/sidebar-loader");
 var range_1 = require("./utils/range");
 var diff_based_1 = require("./lookup/diff-based");
 var text_dom_mapping_1 = require("./utils/text-dom-mapping");
+var CodeMirrorAdapter_1 = require("./adapters/CodeMirrorAdapter");
 var augmentedWindow = window;
 augmentedWindow.acrolinx = augmentedWindow.acrolinx || {};
 var exported = {
@@ -20896,6 +20897,7 @@ var exported = {
         AbstractRichtextEditorAdapter: AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter,
         AutoBindAdapter: AutoBindAdapter_1.AutoBindAdapter,
         CKEditorAdapter: CKEditorAdapter_1.CKEditorAdapter,
+        CodeMirrorAdapter: CodeMirrorAdapter_1.CodeMirrorAdapter,
         ContentEditableAdapter: ContentEditableAdapter_1.ContentEditableAdapter,
         InputAdapter: InputAdapter_1.InputAdapter,
         MultiEditorAdapter: MultiEditorAdapter_1.MultiEditorAdapter,
@@ -20909,7 +20911,7 @@ var exported = {
 };
 augmentedWindow.acrolinx.plugins = exported;
 
-},{"./acrolinx-plugin":5,"./adapters/AbstractRichtextEditorAdapter":7,"./adapters/AutoBindAdapter":9,"./adapters/CKEditorAdapter":10,"./adapters/ContentEditableAdapter":11,"./adapters/InputAdapter":12,"./adapters/MultiEditorAdapter":13,"./adapters/TinyMCEAdapter":14,"./adapters/TinyMCEWordpressAdapter":15,"./lookup/diff-based":19,"./message-adapter/message-adapter":20,"./utils/range":26,"./utils/sidebar-loader":28,"./utils/text-dom-mapping":29}],7:[function(require,module,exports){
+},{"./acrolinx-plugin":5,"./adapters/AbstractRichtextEditorAdapter":7,"./adapters/AutoBindAdapter":9,"./adapters/CKEditorAdapter":10,"./adapters/CodeMirrorAdapter":11,"./adapters/ContentEditableAdapter":12,"./adapters/InputAdapter":13,"./adapters/MultiEditorAdapter":14,"./adapters/TinyMCEAdapter":15,"./adapters/TinyMCEWordpressAdapter":16,"./lookup/diff-based":20,"./message-adapter/message-adapter":21,"./utils/range":27,"./utils/sidebar-loader":29,"./utils/text-dom-mapping":30}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -21041,7 +21043,7 @@ var AbstractRichtextEditorAdapter = (function () {
 }());
 exports.AbstractRichtextEditorAdapter = AbstractRichtextEditorAdapter;
 
-},{"../lookup/diff-based":19,"../utils/adapter-utils":21,"../utils/match":25,"../utils/text-dom-mapping":29,"../utils/utils":31,"lodash":3}],8:[function(require,module,exports){
+},{"../lookup/diff-based":20,"../utils/adapter-utils":22,"../utils/match":26,"../utils/text-dom-mapping":30,"../utils/utils":32,"lodash":3}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function hasError(a) {
@@ -21113,7 +21115,7 @@ var AutoBindAdapter = (function () {
 }());
 exports.AutoBindAdapter = AutoBindAdapter;
 
-},{"../autobind/autobind":16,"./MultiEditorAdapter":13}],10:[function(require,module,exports){
+},{"../autobind/autobind":17,"./MultiEditorAdapter":14}],10:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -21186,6 +21188,112 @@ exports.CKEditorAdapter = CKEditorAdapter;
 
 },{"./AbstractRichtextEditorAdapter":7}],11:[function(require,module,exports){
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _ = require("lodash");
+var diff_based_1 = require("../lookup/diff-based");
+var match_1 = require("../utils/match");
+var FORMAT_BY_MODE = {
+    'text/html': 'HTML',
+    'text/xml': 'HTML',
+    'application/xml': 'XML',
+    'text/x-markdown': 'MARKDOWN',
+    'text/plain': 'TEXT'
+};
+var CodeMirrorAdapter = (function () {
+    function CodeMirrorAdapter(conf) {
+        var _this = this;
+        this.cmSelectionToRange = function (selection) {
+            var doc = _this.getDoc();
+            return [doc.indexFromPos(selection.anchor), doc.indexFromPos(selection.head)];
+        };
+        if (!conf) {
+            throw new Error('CodeMirrorAdapter config is missing');
+        }
+        if (!conf.editor) {
+            throw new Error('CodeMirrorAdapter config is missing "editor"');
+        }
+        this.config = _.clone(conf);
+    }
+    CodeMirrorAdapter.prototype.getContent = function () {
+        return this.config.editor.getValue();
+    };
+    CodeMirrorAdapter.prototype.getFormat = function () {
+        return this.config.format || FORMAT_BY_MODE[this.config.editor.getOption('mode')] || 'AUTO';
+    };
+    CodeMirrorAdapter.prototype.extractContentForCheck = function (opts) {
+        this.currentContentChecking = this.getContent();
+        return {
+            content: this.currentContentChecking,
+            selection: opts.checkSelection ? this.getSelection() : undefined
+        };
+    };
+    CodeMirrorAdapter.prototype.getSelection = function () {
+        return {
+            ranges: this.getDoc().listSelections().map(this.cmSelectionToRange)
+        };
+    };
+    CodeMirrorAdapter.prototype.registerCheckResult = function (_checkResult) {
+    };
+    CodeMirrorAdapter.prototype.registerCheckCall = function (_checkInfo) {
+    };
+    CodeMirrorAdapter.prototype.lookupMatchesOrThrow = function (matches) {
+        var alignedMatches = diff_based_1.lookupMatches(this.currentContentChecking, this.getContent(), matches, 'TEXT');
+        if (_.isEmpty(alignedMatches)) {
+            throw Error('Selected flagged content is modified.');
+        }
+        return alignedMatches;
+    };
+    CodeMirrorAdapter.prototype.selectRanges = function (_checkId, matches) {
+        var alignedMatches = this.lookupMatchesOrThrow(matches);
+        this.selectRangeAndScroll([alignedMatches[0].range[0], alignedMatches[alignedMatches.length - 1].range[1]]);
+    };
+    CodeMirrorAdapter.prototype.replaceRanges = function (_checkId, matchesWithReplacement) {
+        var _this = this;
+        var doc = this.getDoc();
+        var alignedMatches = this.lookupMatchesOrThrow(matchesWithReplacement);
+        var escapeFunction = this.getEscapeFunction();
+        var replacementLength = 0;
+        _.forEachRight(alignedMatches, function (match) {
+            if (!match_1.isDangerousToReplace(_this.currentContentChecking, match.originalMatch)) {
+                var positionRange = _this.selectRange(match.range);
+                var escapedReplacement = escapeFunction(match.originalMatch.replacement);
+                doc.replaceRange(escapedReplacement, positionRange[0], positionRange[1]);
+                replacementLength += escapedReplacement.length;
+            }
+        });
+        this.selectRangeAndScroll([alignedMatches[0].range[0], alignedMatches[0].range[0] + replacementLength]);
+    };
+    CodeMirrorAdapter.prototype.getEscapeFunction = function () {
+        switch (this.getFormat()) {
+            case 'XML':
+            case 'HTML':
+                return _.escape;
+            default:
+                return _.identity;
+        }
+    };
+    CodeMirrorAdapter.prototype.getDoc = function () {
+        return this.config.editor.getDoc();
+    };
+    CodeMirrorAdapter.prototype.selectRange = function (range) {
+        var doc = this.getDoc();
+        var startPos = doc.posFromIndex(range[0]);
+        var endPos = doc.posFromIndex(range[1]);
+        doc.setSelection(startPos, endPos);
+        return [startPos, endPos];
+    };
+    CodeMirrorAdapter.prototype.selectRangeAndScroll = function (range) {
+        var positionRange = this.selectRange(range);
+        var editor = this.config.editor;
+        editor.scrollIntoView(positionRange[0]);
+        editor.focus();
+    };
+    return CodeMirrorAdapter;
+}());
+exports.CodeMirrorAdapter = CodeMirrorAdapter;
+
+},{"../lookup/diff-based":20,"../utils/match":26,"lodash":3}],12:[function(require,module,exports){
+"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -21234,7 +21342,7 @@ var ContentEditableAdapter = (function (_super) {
 }(AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter));
 exports.ContentEditableAdapter = ContentEditableAdapter;
 
-},{"../utils/range":26,"../utils/scrolling":27,"./AbstractRichtextEditorAdapter":7,"./AdapterInterface":8,"lodash":3}],12:[function(require,module,exports){
+},{"../utils/range":27,"../utils/scrolling":28,"./AbstractRichtextEditorAdapter":7,"./AdapterInterface":8,"lodash":3}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -21319,7 +21427,7 @@ var InputAdapter = (function () {
         var text = el.value;
         for (var _i = 0, reversedMatches_1 = reversedMatches; _i < reversedMatches_1.length; _i++) {
             var match = reversedMatches_1[_i];
-            if (!isDangerousToReplace(this.currentContentChecking, match.originalMatch)) {
+            if (!match_1.isDangerousToReplace(this.currentContentChecking, match.originalMatch)) {
                 text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
             }
         }
@@ -21340,12 +21448,8 @@ var InputAdapter = (function () {
     return InputAdapter;
 }());
 exports.InputAdapter = InputAdapter;
-function isDangerousToReplace(checkedDocumentContent, originalMatch) {
-    return /^ *$/.test(originalMatch.content)
-        && (originalMatch.content != match_1.rangeContent(checkedDocumentContent, originalMatch));
-}
 
-},{"../lookup/diff-based":19,"../utils/adapter-utils":21,"../utils/match":25,"../utils/scrolling":27,"../utils/utils":31,"./AdapterInterface":8,"lodash":3}],13:[function(require,module,exports){
+},{"../lookup/diff-based":20,"../utils/adapter-utils":22,"../utils/match":26,"../utils/scrolling":28,"../utils/utils":32,"./AdapterInterface":8,"lodash":3}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var AdapterInterface_1 = require("./AdapterInterface");
@@ -21502,7 +21606,7 @@ var MultiEditorAdapter = (function () {
 }());
 exports.MultiEditorAdapter = MultiEditorAdapter;
 
-},{"../utils/alignment":22,"../utils/escaping":23,"../utils/utils":31,"./AdapterInterface":8,"es6-promise":2,"lodash":3}],14:[function(require,module,exports){
+},{"../utils/alignment":23,"../utils/escaping":24,"../utils/utils":32,"./AdapterInterface":8,"es6-promise":2,"lodash":3}],15:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -21555,7 +21659,7 @@ var TinyMCEAdapter = (function (_super) {
 }(AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter));
 exports.TinyMCEAdapter = TinyMCEAdapter;
 
-},{"./AbstractRichtextEditorAdapter":7}],15:[function(require,module,exports){
+},{"./AbstractRichtextEditorAdapter":7}],16:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -21625,7 +21729,7 @@ var TinyMCEWordpressAdapter = (function (_super) {
 }(TinyMCEAdapter_1.TinyMCEAdapter));
 exports.TinyMCEWordpressAdapter = TinyMCEWordpressAdapter;
 
-},{"./TinyMCEAdapter":14}],16:[function(require,module,exports){
+},{"./TinyMCEAdapter":15}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -21693,7 +21797,7 @@ function bindAdaptersForCurrentPage(conf) {
 }
 exports.bindAdaptersForCurrentPage = bindAdaptersForCurrentPage;
 
-},{"../adapters/ContentEditableAdapter":11,"../adapters/InputAdapter":12,"../utils/utils":31,"lodash":3}],17:[function(require,module,exports){
+},{"../adapters/ContentEditableAdapter":12,"../adapters/InputAdapter":13,"../utils/utils":32,"lodash":3}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var es6_promise_1 = require("es6-promise");
@@ -21727,7 +21831,7 @@ function saveToLocalStorage(key, object) {
 }
 exports.saveToLocalStorage = saveToLocalStorage;
 
-},{"es6-promise":2}],18:[function(require,module,exports){
+},{"es6-promise":2}],19:[function(require,module,exports){
 "use strict";
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -21922,7 +22026,7 @@ function initFloatingSidebar(config) {
 }
 exports.initFloatingSidebar = initFloatingSidebar;
 
-},{"../utils/utils":31,"lodash":3}],19:[function(require,module,exports){
+},{"../utils/utils":32,"lodash":3}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -21996,7 +22100,7 @@ function lookupMatches(checkedDocument, currentDocument, matches, inputFormat) {
 }
 exports.lookupMatches = lookupMatches;
 
-},{"../utils/alignment":22,"../utils/logging":24,"../utils/match":25,"../utils/text-extraction":30,"diff-match-patch":1,"lodash":3}],20:[function(require,module,exports){
+},{"../utils/alignment":23,"../utils/logging":25,"../utils/match":26,"../utils/text-extraction":31,"diff-match-patch":1,"lodash":3}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function removeFunctions(object) {
@@ -22096,7 +22200,7 @@ function createPluginMessageAdapter() {
 }
 exports.createPluginMessageAdapter = createPluginMessageAdapter;
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -22111,7 +22215,7 @@ function getAutobindWrapperAttributes(element) {
 }
 exports.getAutobindWrapperAttributes = getAutobindWrapperAttributes;
 
-},{"lodash":3}],22:[function(require,module,exports){
+},{"lodash":3}],23:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -22128,7 +22232,7 @@ function findNewIndex(offsetMappingArray, originalIndex) {
 }
 exports.findNewIndex = findNewIndex;
 
-},{"lodash":3}],23:[function(require,module,exports){
+},{"lodash":3}],24:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var HTML_ESCAPES = {
@@ -22160,7 +22264,7 @@ function escapeHtmlCharacters(text) {
 }
 exports.escapeHtmlCharacters = escapeHtmlCharacters;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var isEnabled = false;
@@ -22179,7 +22283,7 @@ function enableLogging() {
 }
 exports.enableLogging = enableLogging;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 function getCompleteFlagLength(matches) {
@@ -22190,8 +22294,13 @@ function rangeContent(content, m) {
     return content.slice(m.range[0], m.range[1]);
 }
 exports.rangeContent = rangeContent;
+function isDangerousToReplace(checkedDocumentContent, originalMatch) {
+    return /^ *$/.test(originalMatch.content)
+        && (originalMatch.content != rangeContent(checkedDocumentContent, originalMatch));
+}
+exports.isDangerousToReplace = isDangerousToReplace;
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -22274,7 +22383,7 @@ function getSelectionHtmlRanges(editorElement) {
 }
 exports.getSelectionHtmlRanges = getSelectionHtmlRanges;
 
-},{"lodash":3}],27:[function(require,module,exports){
+},{"lodash":3}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function getRootElement(doc) {
@@ -22323,7 +22432,7 @@ function scrollIntoView(targetEl, windowTopOffset, localTopOffset) {
 }
 exports.scrollIntoView = scrollIntoView;
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -22443,7 +22552,7 @@ function injectSidebarHtml(sidebarHtml, sidebarIFrameElement) {
     sidebarContentWindow.document.close();
 }
 
-},{"./utils":31,"lodash":3}],29:[function(require,module,exports){
+},{"./utils":32,"lodash":3}],30:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -22518,7 +22627,7 @@ function getEndDomPos(endIndex, domPositions) {
 }
 exports.getEndDomPos = getEndDomPos;
 
-},{"./text-extraction":30,"./utils":31,"lodash":3}],30:[function(require,module,exports){
+},{"./text-extraction":31,"./utils":32,"lodash":3}],31:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
@@ -22563,7 +22672,7 @@ function decodeEntities(entity) {
     return el.textContent || '';
 }
 
-},{"./utils":31,"lodash":3}],31:[function(require,module,exports){
+},{"./utils":32,"lodash":3}],32:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
