@@ -1,4 +1,5 @@
-import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
+import {AdapterTestSetup, DoneCallback, InitAdapterCallback} from "./adapter-test-setup";
+import {CodeMirrorAdapter} from "../../../src/adapters/CodeMirrorAdapter";
 
 export class CodeMirrorTestSetup implements AdapterTestSetup {
   name = 'CodeMirrorAdapter';
@@ -6,14 +7,14 @@ export class CodeMirrorTestSetup implements AdapterTestSetup {
   editorElement = '<textarea id="editorId">initial text</textarea>';
   editor: CodeMirror.EditorFromTextArea;
 
-  createAdapterConf() {
-    this.editor = CodeMirror.fromTextArea(document.getElementById('editorId') as HTMLTextAreaElement, {
+  init(done: InitAdapterCallback) {
+    const editor = CodeMirror.fromTextArea(document.getElementById('editorId') as HTMLTextAreaElement, {
       lineNumbers: true,
       mode: 'text/plain'
     });
-    return {
-      editor: this.editor
-    };
+    this.editor = editor;
+    const adapter = new CodeMirrorAdapter({editor: editor});
+    done(adapter);
   }
 
   setEditorContent(content: string, done: DoneCallback) {

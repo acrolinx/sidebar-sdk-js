@@ -1,5 +1,6 @@
-import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
+import {AdapterTestSetup, DoneCallback, InitAdapterCallback} from "./adapter-test-setup";
 import editor = CKEDITOR.editor;
+import {TinyMCEAdapter} from "../../../src/adapters/TinyMCEAdapter";
 
 export function getCkEditorInstance(id: string): editor {
   return CKEDITOR.instances[id as any];
@@ -15,12 +16,12 @@ export class TinyMCETestSetup implements AdapterTestSetup {
     done();
   }
 
-  init(done: DoneCallback) {
+  init(done: InitAdapterCallback) {
     tinymce.init({
       selector: "#editorId",
       height: 50,
       init_instance_callback: () => {
-        done();
+        done(new TinyMCEAdapter({editorId: 'editorId'}));
       }
     });
   }

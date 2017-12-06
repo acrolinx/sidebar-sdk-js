@@ -27,7 +27,7 @@ describe('adapter test', function() {
     new TinyMCETestSetup()
   ];
 
-  const testedAdapterNames: string[] = [];
+  const testedAdapterNames: string[] = []; // empty = all
   const testedAdapters: AdapterTestSetup[] = adapters.filter(a => _.isEmpty(testedAdapterNames) || _.includes(testedAdapterNames, a.name));
 
   testedAdapters.forEach(adapterSpec => {
@@ -37,14 +37,11 @@ describe('adapter test', function() {
 
       beforeEach((done) => {
         $('body').append(adapterSpec.editorElement);
-        const adapterConf: any = adapterSpec.createAdapterConf ? adapterSpec.createAdapterConf() : {editorId: 'editorId'};
-        const adapterNameSpace = acrolinx.plugins.adapter as any;
-        adapter = new adapterNameSpace[adapterName](adapterConf);
-        if (adapterSpec.init) {
-          adapterSpec.init(done);
-        } else {
+        console.log('adapterSpec', adapterSpec);
+        adapterSpec.init(newAdapter => {
+          adapter = newAdapter;
           done();
-        }
+        });
       });
 
       afterEach(() => {
