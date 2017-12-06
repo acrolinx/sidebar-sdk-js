@@ -9,8 +9,6 @@ export interface AdapterTestSetup {
   inputFormat: string;
   setEditorContent: (text: string, done: DoneCallback) => void;
   init: (done: InitAdapterCallback) => void;
-  editor?: any;
-  createAdapterConf?: () => any;
   remove: () => void;
   inputEventWasTriggered?: boolean;
 }

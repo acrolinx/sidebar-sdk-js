@@ -409,11 +409,11 @@ describe('adapter test', function() {
         }
       });
 
-      if (adapterSpec.name === 'CodeMirrorAdapter') {
+      if (adapterSpec instanceof CodeMirrorTestSetup) {
         it('Escape entities in replacement if codemirror is in html mode', (done) => {
+          adapterSpec.editor.setOption('mode', 'text/html');
           givenAText('wordOne and wordThree', text => {
             const replacement = '&';
-            adapterSpec.editor.setOption('mode', 'text/html');
             const matchesWithReplacement = getMatchesWithReplacement(text, 'and', replacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
             assertEditorText(`wordOne &amp; wordThree`);
@@ -422,9 +422,9 @@ describe('adapter test', function() {
         });
 
         it('Escape entities in replacement if codemirror is in xml mode', (done) => {
+          adapterSpec.editor.setOption('mode', 'application/xml');
           givenAText('wordOne and wordThree', text => {
             const replacement = '&';
-            adapterSpec.editor.setOption('mode', 'application/xml');
             const matchesWithReplacement = getMatchesWithReplacement(text, 'and', replacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
             assertEditorText(`wordOne &amp; wordThree`);
