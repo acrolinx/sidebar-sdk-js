@@ -1,8 +1,14 @@
 import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
-import editor = CKEDITOR.editor;
+
 import * as _ from 'lodash';
 import {getMatchesWithReplacement} from "../utils/test-utils";
 import {AdapterInterface, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
+import {CodeMirrorTestSetup} from "./adapter-test-setups/codemirror";
+import {ContentEditableTestSetup} from "./adapter-test-setups/content-editable";
+import {AdapterTestSetup} from "./adapter-test-setups/adapter-test-setup";
+import {InputAdapterTestSetup} from "./adapter-test-setups/input";
+import {CKEditorTestSetup} from "./adapter-test-setups/ck-editor";
+import {TinyMCETestSetup} from "./adapter-test-setups/tinymce";
 
 const assert = chai.assert;
 
@@ -12,135 +18,19 @@ describe('adapter test', function() {
   let adapter: AdapterInterface;
 
   const dummyCheckId = 'dummyCheckId';
-  let inputEventWasTriggered = false;
 
-  type DoneCallback = () => void;
-
-
-  interface AdapterSpec {
-    name: string;
-    editorElement: string;
-    inputFormat: string;
-    setEditorContent: (text: string, done: DoneCallback) => void;
-    init?: (done: DoneCallback) => void;
-    editor?: any;
-    createAdapterConf?: () => any;
-    remove: () => void;
-  }
-
-  function getCkEditorInstance(id: string): editor {
-    return CKEDITOR.instances[id as any];
-  }
-
-  const adapters: AdapterSpec[] = [
-    {
-      name: 'ContentEditableAdapter',
-      inputFormat: 'HTML',
-      editorElement: '<div id="editorId" contenteditable="true">initial text</div>',
-      setEditorContent: (html: string, done: DoneCallback) => {
-        $('#editorId').html(html).on('input', () => {
-          inputEventWasTriggered = true;
-        });
-        done();
-      },
-      remove: () => {
-        $('#editorId').remove();
-      }
-    },
-    {
-      name: 'InputAdapter',
-      inputFormat: 'TEXT',
-      editorElement: '<textarea id="editorId">initial text</textarea>',
-      setEditorContent: (html: string, done: DoneCallback) => {
-        $('#editorId').val(html).on('input', () => {
-          inputEventWasTriggered = true;
-        });
-        done();
-      },
-      remove: () => {
-        $('#editorId').remove();
-      }
-    },
-    {
-      name: 'CodeMirrorAdapter',
-      inputFormat: 'TEXT',
-      editorElement: '<textarea id="editorId">initial text</textarea>',
-      createAdapterConf() {
-        this.editor = CodeMirror.fromTextArea(document.getElementById('editorId') as HTMLTextAreaElement, {
-          lineNumbers: true,
-          mode: 'text/plain'
-        });
-        return {
-          editor: this.editor
-        };
-      },
-      setEditorContent(content: string, done: DoneCallback) {
-        this.editor.setValue(content);
-        done();
-      },
-      remove () {
-        this.editor.toTextArea();
-        $('#editorId').remove();
-      }
-    },
-    {
-      name: 'CKEditorAdapter',
-      inputFormat: 'HTML',
-      editorElement: '<textarea name="editorId" id="editorId" rows="10" cols="40">initial text</textarea>',
-      setEditorContent: (html: string, done: DoneCallback) => {
-        getCkEditorInstance('editorId').setData(html, {
-          callback: () => {
-            done();
-          }
-        });
-      },
-      init: (done: DoneCallback) => {
-        CKEDITOR.disableAutoInline = true;
-        CKEDITOR.replace('editorId', {customConfig: ''});
-        getCkEditorInstance('editorId').on("instanceReady", () => {
-          // Timeout is needed for IE
-          setTimeout(() => {
-            done();
-          }, 10);
-        });
-      },
-      remove: () => {
-        getCkEditorInstance('editorId').destroy(true);
-        $('#editorId').remove();
-      }
-    },
-    {
-      name: 'TinyMCEAdapter',
-      inputFormat: 'HTML',
-      editorElement: '<textarea id="editorId" rows="10" cols="40">initial text</textarea>',
-      setEditorContent: (html: string, done: () => void) => {
-        tinymce.get("editorId").setContent(html);
-        done();
-      },
-      init: (done: Function) => {
-        tinymce.init({
-          selector: "#editorId",
-          height: 50,
-          init_instance_callback: () => {
-            done();
-          }
-        });
-      },
-      remove: () => {
-        if (tinymce) {
-          tinymce.get('editorId').remove();
-        }
-        $('#editorId').remove();
-      }
-    }
+  const adapters: AdapterTestSetup[] = [
+    new ContentEditableTestSetup(),
+    new InputAdapterTestSetup(),
+    new CodeMirrorTestSetup(),
+    new CKEditorTestSetup(),
+    new TinyMCETestSetup()
   ];
 
   const testedAdapterNames: string[] = [];
-  const testedAdapters: AdapterSpec[] = adapters.filter(a => _.isEmpty(testedAdapterNames) ||  _.includes(testedAdapterNames, a.name));
+  const testedAdapters: AdapterTestSetup[] = adapters.filter(a => _.isEmpty(testedAdapterNames) || _.includes(testedAdapterNames, a.name));
 
   testedAdapters.forEach(adapterSpec => {
-    inputEventWasTriggered = false;
-
     const adapterName = adapterSpec.name;
     describe('adapter ' + adapterName, function(this: any) {
       this.timeout(5000);
@@ -226,7 +116,7 @@ describe('adapter test', function() {
         it('Replacements should trigger an input event', function(done) {
           givenAText('wordOne wordTwo wordThree', (text) => {
             adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-            assert.isTrue(inputEventWasTriggered);
+            assert.isTrue(adapterSpec.inputEventWasTriggered);
             done();
           });
         });
@@ -565,7 +455,7 @@ describe('adapter test', function() {
 
         it("Don't replace markup/markdown", (done) => {
           givenAText('see  ![Acrolinx]', () => {
-            const matchesWithReplacement : MatchWithReplacement[] = [
+            const matchesWithReplacement: MatchWithReplacement[] = [
               {"content": "see", "range": [0, 3], "replacement": "see Acrolinx"},
               {"content": " ", "range": [3, 4], "replacement": ""},
               {"content": " ", "range": [4, 5], "replacement": ""},
