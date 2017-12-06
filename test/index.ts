@@ -3,7 +3,7 @@ require('./spec/lookup-unit-tests/diff-based');
 require('./spec/lookup-unit-tests/diff-based-performance');
 require('./spec/autobind');
 require('./spec/escaping');
-require('./spec/lookup');
+require('./spec/adapters');
 require('./spec/multi-plugin');
 require('./spec/multi-editor-adapter');
 require('./spec/floating-sidebar');

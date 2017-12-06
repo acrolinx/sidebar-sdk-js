@@ -37,7 +37,6 @@ describe('adapter test', function() {
 
       beforeEach((done) => {
         $('body').append(adapterSpec.editorElement);
-        console.log('adapterSpec', adapterSpec);
         adapterSpec.init(newAdapter => {
           adapter = newAdapter;
           done();
