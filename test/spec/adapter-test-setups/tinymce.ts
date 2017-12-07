@@ -9,7 +9,7 @@ export function getCkEditorInstance(id: string): editor {
 export class TinyMCETestSetup implements AdapterTestSetup {
   name = 'TinyMCEAdapter';
   inputFormat = 'HTML';
-  editorElement = '<textarea id="editorId" rows="10" cols="40">initial text</textarea>initial text</textarea>';
+  editorElement = '<textarea id="editorId" rows="10" cols="40">initial text</textarea>';
 
   setEditorContent(html: string, done: DoneCallback) {
     tinymce.get("editorId").setContent(html);
