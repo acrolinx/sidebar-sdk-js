@@ -14,7 +14,7 @@ function setupExampleSelector() {
     return '<option value="' + i + '">' + example.name + '</option>';
   });
   exampleSelector.innerHTML = options.join('');
-  exampleSelector.value = 0;
+  exampleSelector.value = query.selected ||  0;
 }
 
 function initSelectedExample() {
