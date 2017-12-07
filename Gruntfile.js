@@ -104,7 +104,7 @@ module.exports = function (grunt) {
         tsconfig: true,
       },
       allWithDeclarations: {
-        src: ['src/**/*.ts', 'test/**/*.ts'],
+        src: ['src/**/*.ts'],
         dest: 'tmp/compiled/',
         tsconfig: true,
         options: {

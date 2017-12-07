@@ -3,7 +3,7 @@ import {CodeMirrorAdapter} from "../../../src/adapters/CodeMirrorAdapter";
 import {EditorFromTextArea} from "codemirror";
 
 
-interface CodeMirrorTestSetupOpts {
+export interface CodeMirrorTestSetupOpts {
   mode: string;
   name: string;
   inputFormat: string;
