@@ -108,7 +108,7 @@ describe('adapter test', function() {
         });
       });
 
-      if (adapterSpec.name === 'ContentEditableAdapter' || adapterSpec.name == 'InputAdapter') {
+      if (adapterSpec instanceof ContentEditableTestSetup || adapterSpec instanceof InputAdapterTestSetup) {
         it('Replacements should trigger an input event', function(done) {
           givenAText('wordOne wordTwo wordThree', (text) => {
             adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
@@ -394,8 +394,6 @@ describe('adapter test', function() {
             assertEditorText(`wordOne ${replacement} wordThree`);
             done();
           });
-
-
         } else {
           givenAText('wordOne D&amp;D wordThree', text => {
             const replacement = 'Dungeons and Dragons';
@@ -495,9 +493,7 @@ describe('adapter test', function() {
             done();
           });
         });
-
       }
-
 
       it('Replace same word in correct order', function(done) {
         givenAText('before wordSame wordSame wordSame wordSame wordSame after', text => {

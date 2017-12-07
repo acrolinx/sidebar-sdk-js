@@ -22,4 +22,6 @@ export class ContentEditableTestSetup implements AdapterTestSetup {
   remove() {
     $('#editorId').remove();
   }
+
+
 }
