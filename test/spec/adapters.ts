@@ -1,7 +1,7 @@
 import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
 
 import * as _ from 'lodash';
-import {getMatchesWithReplacement} from "../utils/test-utils";
+import {assertDeepEqual, getMatchesWithReplacement} from "../utils/test-utils";
 import {AdapterInterface, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
 import {CodeMirrorTestSetup} from "./adapter-test-setups/codemirror";
 import {ContentEditableTestSetup} from "./adapter-test-setups/content-editable";
@@ -623,6 +623,34 @@ describe('adapter test', function() {
             const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
             $('#editorId').hide();
             assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
+            done();
+          });
+        });
+      }
+
+      if (adapterSpec instanceof ContentEditableTestSetup
+        || adapterSpec instanceof InputAdapterTestSetup
+        || adapterSpec instanceof CodeMirrorTestSetup
+      ) {
+        it('Return check selection if requested', (done) => {
+          const completeContent = 'begin selection end';
+          givenAText(completeContent, html => {
+            const matchesWithReplacement = getMatchesWithReplacement(html, 'selection');
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            const result = adapter.extractContentForCheck({checkSelection: true}) as SuccessfulContentExtractionResult;
+            const selectedRanges = result.selection!.ranges;
+            assert.equal(selectedRanges.length, 1);
+            assertDeepEqual(selectedRanges[0], matchesWithReplacement[0].range);
+            done();
+          });
+        });
+        it('Does not return check selection if not requested', (done) => {
+          const completeContent = 'begin selection end';
+          givenAText(completeContent, html => {
+            const matchesWithReplacement = getMatchesWithReplacement(html, 'selection');
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            const result = adapter.extractContentForCheck({checkSelection: false}) as SuccessfulContentExtractionResult;
+            assert.isUndefined(result.selection);
             done();
           });
         });
