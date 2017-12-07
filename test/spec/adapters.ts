@@ -22,7 +22,16 @@ describe('adapter test', function() {
   const adapters: AdapterTestSetup[] = [
     new ContentEditableTestSetup(),
     new InputAdapterTestSetup(),
-    new CodeMirrorTestSetup(),
+    new CodeMirrorTestSetup({
+      mode: 'text/plain',
+      name: 'CodeMirrorAdapter',
+      inputFormat: 'TEXT'
+    }),
+    new CodeMirrorTestSetup({
+      mode: 'text/html',
+      name: 'CodeMirrorAdapterHTML',
+      inputFormat: 'HTML'
+    }),
     new CKEditorTestSetup(),
     new TinyMCETestSetup()
   ];
@@ -49,9 +58,14 @@ describe('adapter test', function() {
 
       const setEditorContent = adapterSpec.setEditorContent.bind(adapterSpec);
 
+      function assertEditorRawContent(expectedContent: string) {
+        const editorContent = (adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult).content;
+        assert.equal(editorContent, expectedContent);
+      }
+
       function assertEditorText(expectedText: string) {
         const editorContent = (adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult).content;
-        if (adapterSpec.name === 'InputAdapter' || adapterSpec.name === 'CodeMirrorAdapter') {
+        if (adapterSpec.inputFormat === 'TEXT') {
           assert.equal(editorContent, expectedText);
         }
         else {
@@ -406,31 +420,20 @@ describe('adapter test', function() {
         }
       });
 
-      if (adapterSpec instanceof CodeMirrorTestSetup) {
+      if (adapterSpec instanceof CodeMirrorTestSetup && adapterSpec.inputFormat == 'HTML') {
         it('Escape entities in replacement if codemirror is in html mode', (done) => {
-          adapterSpec.editor.setOption('mode', 'text/html');
           givenAText('wordOne and wordThree', text => {
             const replacement = '&';
             const matchesWithReplacement = getMatchesWithReplacement(text, 'and', replacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assertEditorText(`wordOne &amp; wordThree`);
-            done();
-          });
-        });
-
-        it('Escape entities in replacement if codemirror is in xml mode', (done) => {
-          adapterSpec.editor.setOption('mode', 'application/xml');
-          givenAText('wordOne and wordThree', text => {
-            const replacement = '&';
-            const matchesWithReplacement = getMatchesWithReplacement(text, 'and', replacement);
-            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assertEditorText(`wordOne &amp; wordThree`);
+            assertEditorText(`wordOne & wordThree`);
+            assertEditorRawContent('wordOne &amp; wordThree');
             done();
           });
         });
       }
 
-      if (adapterSpec.name === 'InputAdapter') {
+      if (adapterSpec instanceof InputAdapterTestSetup || adapterSpec instanceof CodeMirrorTestSetup) {
         it('Replace word containing entity in case of markdown', (done) => {
           givenAText('wordOne D&amp;D wordThree', text => {
             const replacement = 'Dungeons and Dragons';
@@ -545,8 +548,12 @@ describe('adapter test', function() {
               {"content": "a", "range": [3, 4], "replacement": ""},
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent!()),
-              adapterSpec.name === 'ContentEditableAdapter' ? '<p></p>' : '');
+            const normalizedResultHtml = normalizeResultHtml(adapter.getContent!());
+            if (adapterSpec instanceof CKEditorTestSetup || adapterSpec instanceof TinyMCETestSetup) {
+              assert.equal(normalizedResultHtml, '');
+            } else {
+              assert.equal(normalizedResultHtml, '<p></p>');
+            }
             done();
           });
         });
@@ -599,7 +606,7 @@ describe('adapter test', function() {
         });
       });
 
-      if (adapterSpec.name === 'ContentEditableAdapter' || adapterSpec.name == 'InputAdapter') {
+      if (adapterSpec instanceof ContentEditableTestSetup || adapterSpec instanceof InputAdapterTestSetup) {
         it('SelectRanges throws exception if editor gets removed', function(done) {
           const completeContent = 'wordOne';
           givenAText(completeContent, html => {

@@ -2,16 +2,30 @@ import {AdapterTestSetup, DoneCallback, InitAdapterCallback} from "./adapter-tes
 import {CodeMirrorAdapter} from "../../../src/adapters/CodeMirrorAdapter";
 import {EditorFromTextArea} from "codemirror";
 
+
+interface CodeMirrorTestSetupOpts {
+  mode: string;
+  name: string;
+  inputFormat: string;
+}
+
 export class CodeMirrorTestSetup implements AdapterTestSetup {
-  name = 'CodeMirrorAdapter';
-  inputFormat = 'TEXT';
+  name: string;
+  inputFormat: string;
+  mode: string;
   editorElement = '<textarea id="editorId">initial text</textarea>';
   editor: EditorFromTextArea;
+
+  constructor(opts: CodeMirrorTestSetupOpts) {
+    this.name = opts.name;
+    this.inputFormat = opts.inputFormat;
+    this.mode = opts.mode;
+  }
 
   init(done: InitAdapterCallback) {
     const editor = CodeMirror.fromTextArea(document.getElementById('editorId') as HTMLTextAreaElement, {
       lineNumbers: true,
-      mode: 'text/plain'
+      mode: this.mode
     });
     this.editor = editor;
     const adapter = new CodeMirrorAdapter({editor: editor});
