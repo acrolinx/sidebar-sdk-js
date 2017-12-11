@@ -22005,6 +22005,7 @@ function initFloatingSidebar(config) {
     }
     function remove() {
         utils_1.removeElement(floatingSidebarElement);
+        utils_1.removeElement(glassPane);
         utils_1.removeElement(dragOverlay);
         window.removeEventListener('resize', onResize);
         document.removeEventListener('mouseup', onEndDrag);
