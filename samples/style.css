@@ -77,5 +77,6 @@ div[contenteditable=true] {
 
 .CodeMirror {
   max-width: 600px;
+  max-height: 200px;
   border: 1px solid silver;
 }

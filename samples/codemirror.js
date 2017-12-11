@@ -19,11 +19,8 @@ function setupExampleSelector() {
 
 function initSelectedExample() {
   selectedExample = EXAMPLES[exampleSelector.value];
-  var urlParts = parseUrl(indexUrl);
-  var urlWithoutQuery = urlParts.protocol + '//' + urlParts.host + urlParts.pathname;
-  var urlBase = urlWithoutQuery.replace(/[^\/]*$/, '');
-
-  jQuery.get(urlBase + selectedExample.path + urlParts.search).done(function (_documentContent, _status, xhr) {
+  var urlBase = indexUrl.replace(/[^\/]*$/, '');
+  jQuery.get(urlBase + selectedExample.path).done(function (_documentContent, _status, xhr) {
     codeMirrorEditor.setOption('mode', selectedExample.mimeType);
     codeMirrorEditor.setValue(xhr.responseText);
 
@@ -62,20 +59,6 @@ function initAcrolinxPlugin() {
 
 function isAutoExampleSelected() {
   return selectedExample.name === 'Auto';
-}
-
-function parseUrl(url) {
-  var parser = document.createElement('a');
-  parser.href = url;
-  return {
-    protocol: parser.protocol,
-    hostname: parser.hostname,
-    port: parser.port,
-    pathname: parser.pathname,
-    search: parser.search,
-    hash: parser.hash,
-    host: parser.host
-  };
 }
 
 function parseQuery(search) {
