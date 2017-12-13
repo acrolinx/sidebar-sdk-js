@@ -3,6 +3,27 @@
 
 const istanbul = require('browserify-istanbul');
 
+const win10 = ["Windows", "10"];
+const macOS = ["OSX", "Sierra"];
+
+const chromeLatest = ["chrome", "latest"];
+const firefoxLatest = ["firefox", "latest"];
+const firefoxEST = ["firefox", "45"];
+const ie11 = ["ie", "11"];
+const edge = ["edge", "latest"];
+const safari10 = ["Safari", "10"];
+
+function bsLauncher([os, os_version], [browser, browser_version]) {
+  return {
+    base: 'BrowserStack',
+    browser,
+    browser_version,
+    os,
+    os_version
+  };
+}
+
+
 module.exports = function (config) {
   config.set({
 
@@ -48,7 +69,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'coverage', 'dots', 'BrowserStack'],
 
     coverageReporter: {
       dir: 'tmp/reports/coverage/',
@@ -72,16 +93,40 @@ module.exports = function (config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false,
 
+    browserStack: {
+      // username: 'marcostahl2', // set by BROWSER_STACK_USERNAME
+      // accessKey: '*', // set by BROWSER_STACK_ACCESS_KEY
+      build: 'sidebar-js-sdk-' + (process.env.BUILD_NUMBER || 'local' + Date.now()),
+      name: 'sidebar-js-sdk',
+      project: 'Sidebar JS SDK',
+      retryLimit: 6,
+      captureTimeout: 3e5,
+      browserNoActivityTimeout: 3e5,
+      browserDisconnectTimeout: 3e5,
+      browserDisconnectTolerance: 3
+    },
+
+    concurrency: 1,
+
+    customLaunchers: {
+      bs_ie11_win: bsLauncher(win10, ie11),
+      bs_edge_win: bsLauncher(win10, edge),
+      bs_chrome_win: bsLauncher(win10, chromeLatest),
+      bs_firefox_win: bsLauncher(win10, firefoxLatest),
+      bs_firefox_est_win: bsLauncher(win10, firefoxEST),
+      bs_safari_macos: bsLauncher(macOS, safari10),
+    },
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS', 'bs_ie11_win', 'bs_edge_win', 'bs_chrome_win', 'bs_firefox_win', 'bs_firefox_est_win',
+      'bs_safari_macos'],
 
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: true
   });
 };

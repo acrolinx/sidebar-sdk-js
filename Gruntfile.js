@@ -164,13 +164,19 @@ module.exports = function (grunt) {
       }
     },
 
+
     karma: {
       options: {
         configFile: 'test/karma.conf.js'
       },
-      ci: {
+      phantom: {
         singleRun: true,
         browsers: ['PhantomJS']
+      },
+      browserStack: {
+        singleRun: true,
+        browsers: ['bs_ie11_win', 'bs_edge_win', 'bs_chrome_win', 'bs_firefox_win', 'bs_firefox_est_win',
+          'bs_safari_macos']
       },
       dev: {}
     },
@@ -210,7 +216,7 @@ module.exports = function (grunt) {
   grunt.registerTask('serve', ['configureProxies:livereload', 'connect:livereload', 'watch']);
   grunt.registerTask('build', ['prepareBuild', 'shell:tslint', 'ts:all', 'browserify']);
   grunt.registerTask('prepareBuild', ['bower:install', 'clean:distrib']);
-  grunt.registerTask('distrib', ['build', 'karma:ci', 'coverage', 'uglify', 'buildDeclarations', 'clean:tsSourceMap']);
+  grunt.registerTask('distrib', ['build', 'karma:phantom', 'coverage', 'karma:browserStack' , 'uglify', 'buildDeclarations', 'clean:tsSourceMap']);
 
   grunt.registerTask('release', 'Release the bower project', function () {
     var done = this.async();
@@ -273,7 +279,8 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('distribRelease', ['distrib', 'release']);
-  grunt.registerTask('karmaLocal', ['shell:tslint', 'karma:ci', 'coverage']);
+  grunt.registerTask('karmaLocal', ['shell:tslint', 'karma:phantom', 'coverage']);
+  grunt.registerTask('karmaBrowserStack', ['karma:browserStack']);
   grunt.registerTask('typescript', ['ts:all']);
   grunt.registerTask('typescriptWithDeclarations', ['ts:allWithDeclarations']);
   grunt.registerTask('buildDeclarations', ['typescriptWithDeclarations', 'bundleDeclarations']);
