@@ -27,7 +27,10 @@
 <script src="../distrib/acrolinx-sidebar-integration.js"></script>
 
 <script>
-  mocha.setup('bdd');
+  mocha.setup({
+    ui: 'bdd',
+    timeout: 5000
+  });
 </script>
 <script src="../distrib/tests.js"></script>
 <script>

@@ -99,7 +99,7 @@ describe('floating sidebar', function () {
         assert.equal(left, oldPos.left);
         // Can not check height easily (without a lot of mocking), because it depends on window size.
         done();
-      }, 10);
+      }, 1500);
     });
 
     it('restore on defaultPosition if stored position is crap', (done) => {

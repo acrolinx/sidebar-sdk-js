@@ -140,8 +140,20 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     const range = doc.createRange();
     const beginDomPosition = textMapping.domPositions[begin];
     const endDomPosition = getEndDomPos(begin + length, textMapping.domPositions);
-    range.setStart(beginDomPosition.node, beginDomPosition.offset);
-    range.setEnd(endDomPosition.node, endDomPosition.offset);
+
+    // TODO: Handle overflowing offsets more clever and safer
+    if (beginDomPosition.offset <= beginDomPosition.node.textContent!.length) {
+      range.setStart(beginDomPosition.node, beginDomPosition.offset);
+    } else {
+      console.warn(`Offset of range begin (${beginDomPosition.offset}) > node text length (${beginDomPosition.node.textContent!.length})`);
+    }
+
+    if (endDomPosition.offset <= endDomPosition.node.textContent!.length) {
+      range.setEnd(endDomPosition.node, endDomPosition.offset);
+    } else {
+      console.warn(`Offset of range end (${endDomPosition.offset}) > node text length (${endDomPosition.node.textContent!.length})`);
+    }
+
     return range;
   }
 

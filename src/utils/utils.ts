@@ -11,7 +11,7 @@ export function fetch(url: string, callback: (s: string) => void) {
   const request = new XMLHttpRequest();
   request.open('GET', url, true);
 
-  request.onload = function () {
+  request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
       callback(request.responseText);
     } else {
@@ -19,7 +19,7 @@ export function fetch(url: string, callback: (s: string) => void) {
     }
   };
 
-  request.onerror = function () {
+  request.onerror = function() {
     throw new Error(`Error while loading ${url}.`);
   };
 
@@ -31,7 +31,14 @@ export function isIFrame(el: HTMLElement): el is HTMLIFrameElement {
 }
 
 export function fakeInputEvent(el: Element) {
-  el.dispatchEvent(new CustomEvent('input'));
+  let customEvent: Event;
+  if (typeof  CustomEvent === 'function') {
+    customEvent = (new CustomEvent('input'));
+  } else {
+    customEvent = document.createEvent('CustomEvent');
+    customEvent.initEvent("input", true, true);
+  }
+  el.dispatchEvent(customEvent);
 }
 
 export function parseUrl(href: string) {
@@ -51,11 +58,11 @@ export function isFromSameOrigin(url: string) {
 }
 
 export function toSet(keys: string[]) {
-  return Object.freeze(_.zipObject(keys, keys.map(_.constant(true))) as {[key: string]: boolean});
+  return Object.freeze(_.zipObject(keys, keys.map(_.constant(true))) as { [key: string]: boolean });
 }
 
-export function assign<T, U>(obj: T, update: U) : T&U {
-  return _.assign({}, obj, update) as T&U;
+export function assign<T, U>(obj: T, update: U): T & U {
+  return _.assign({}, obj, update) as T & U;
 }
 
 function deepFreeze(o: any) {
@@ -64,9 +71,9 @@ function deepFreeze(o: any) {
   const oIsFunction = typeof o === "function";
   const hasOwnProp = Object.prototype.hasOwnProperty;
 
-  Object.getOwnPropertyNames(o).forEach(function (prop) {
+  Object.getOwnPropertyNames(o).forEach(function(prop) {
     if (hasOwnProp.call(o, prop)
-      && (oIsFunction ? prop !== 'caller' && prop !== 'callee' && prop !== 'arguments' : true )
+      && (oIsFunction ? prop !== 'caller' && prop !== 'callee' && prop !== 'arguments' : true)
       && o[prop] !== null
       && (typeof o[prop] === "object" || typeof o[prop] === "function")
       && !Object.isFrozen(o[prop])) {
@@ -81,7 +88,7 @@ export function deepFreezed<T>(o: T): T {
   return oClone;
 }
 
-export function isDisplayed(element: Element) : boolean {
+export function isDisplayed(element: Element): boolean {
   if (!element.parentNode) {
     return false;
   }
