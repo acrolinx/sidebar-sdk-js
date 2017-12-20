@@ -102,11 +102,13 @@ module.exports = function (config) {
       name: 'sidebar-js-sdk',
       project: 'Sidebar JS SDK',
       retryLimit: 6,
-      captureTimeout: 3e5,
-      browserNoActivityTimeout: 3e5,
-      browserDisconnectTimeout: 3e5,
-      browserDisconnectTolerance: 3
     },
+
+    // https://oligofren.wordpress.com/2014/05/27/running-karma-tests-on-browserstack/
+    browserDisconnectTimeout: 10000, // default 2000
+    browserDisconnectTolerance: 1, // default 0
+    browserNoActivityTimeout: 4 * 60 * 1000, //default 10000
+    captureTimeout: 4 * 60 * 1000, //default 60000
 
     concurrency: 1,
 
