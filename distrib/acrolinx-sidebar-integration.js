@@ -20726,6 +20726,9 @@ function initAcrolinxSamplePlugin(config, editorAdapter) {
                 }
             },
             onCheckResult: function (checkResult) {
+                if (checkResult.embedCheckInformation && config.onEmbedCheckData) {
+                    config.onEmbedCheckData(checkResult.embedCheckInformation, checkResult.inputFormat || "");
+                }
                 return adapter.registerCheckResult(checkResult);
             },
             selectRanges: function (checkId, matches) {
@@ -20999,8 +21002,18 @@ var AbstractRichtextEditorAdapter = (function () {
         var range = doc.createRange();
         var beginDomPosition = textMapping.domPositions[begin];
         var endDomPosition = text_dom_mapping_1.getEndDomPos(begin + length, textMapping.domPositions);
-        range.setStart(beginDomPosition.node, beginDomPosition.offset);
-        range.setEnd(endDomPosition.node, endDomPosition.offset);
+        if (beginDomPosition.offset <= beginDomPosition.node.textContent.length) {
+            range.setStart(beginDomPosition.node, beginDomPosition.offset);
+        }
+        else {
+            console.warn("Offset of range begin (" + beginDomPosition.offset + ") > node text length (" + beginDomPosition.node.textContent.length + ")");
+        }
+        if (endDomPosition.offset <= endDomPosition.node.textContent.length) {
+            range.setEnd(endDomPosition.node, endDomPosition.offset);
+        }
+        else {
+            console.warn("Offset of range end (" + endDomPosition.offset + ") > node text length (" + endDomPosition.node.textContent.length + ")");
+        }
         return range;
     };
     AbstractRichtextEditorAdapter.prototype.replaceAlignedMatches = function (matches) {
@@ -22706,7 +22719,15 @@ function isIFrame(el) {
 }
 exports.isIFrame = isIFrame;
 function fakeInputEvent(el) {
-    el.dispatchEvent(new CustomEvent('input'));
+    var customEvent;
+    if (typeof CustomEvent === 'function') {
+        customEvent = (new CustomEvent('input'));
+    }
+    else {
+        customEvent = document.createEvent('CustomEvent');
+        customEvent.initEvent("input", true, true);
+    }
+    el.dispatchEvent(customEvent);
 }
 exports.fakeInputEvent = fakeInputEvent;
 function parseUrl(href) {

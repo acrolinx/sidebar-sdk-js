@@ -49,7 +49,7 @@ declare module 'acrolinx-sidebar-integration' {
 }
 
 declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
-    import { SidebarConfiguration } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
+    import { SidebarConfiguration, CheckInformationKeyValuePair } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
     import { FloatingSidebar } from "acrolinx-sidebar-integration/floating-sidebar/floating-sidebar";
     import { AdapterInterface } from "acrolinx-sidebar-integration/adapters/AdapterInterface";
     import { AsyncStorage } from "acrolinx-sidebar-integration/floating-sidebar/async-storage";
@@ -70,6 +70,7 @@ declare module 'acrolinx-sidebar-integration/acrolinx-plugin' {
         onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
         getDocumentReference?: () => string;
         acrolinxStorage?: AcrolinxSimpleStorage;
+        onEmbedCheckData?: (checkData: CheckInformationKeyValuePair[], format: string) => void;
     }
     export class AcrolinxPlugin {
         constructor(conf: AcrolinxPluginConfig);
@@ -399,7 +400,13 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
     }
     export interface CheckResult {
         checkedPart: CheckedDocumentPart;
+        embedCheckInformation?: CheckInformationKeyValuePair[];
+        inputFormat?: string;
         error?: CheckError;
+    }
+    export interface CheckInformationKeyValuePair {
+        key: string;
+        value: string;
     }
     export interface CheckedDocumentPart {
         checkId: string;
