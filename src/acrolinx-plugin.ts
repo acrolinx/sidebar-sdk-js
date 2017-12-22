@@ -20,7 +20,7 @@
 import * as _ from "lodash";
 import {Promise} from "es6-promise";
 import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
-import {RequestGlobalCheckOptions, SidebarConfiguration} from "./acrolinx-libs/plugin-interfaces";
+import {RequestGlobalCheckOptions, SidebarConfiguration, CheckInformationKeyValuePair} from "./acrolinx-libs/plugin-interfaces";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
 import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
@@ -55,6 +55,7 @@ export interface AcrolinxPluginConfig {
   onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
   getDocumentReference?: () => string;
   acrolinxStorage?: AcrolinxSimpleStorage;
+  onEmbedCheckData?: (checkData: CheckInformationKeyValuePair[], format: string) => void;
 }
 
 const clientComponents = [
@@ -158,6 +159,9 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
       },
 
       onCheckResult(checkResult: CheckResult) {
+        if (checkResult.embedCheckInformation && config.onEmbedCheckData) {
+          config.onEmbedCheckData(checkResult.embedCheckInformation, checkResult.inputFormat || "");
+        }
         return adapter.registerCheckResult(checkResult);
       },
 

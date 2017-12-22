@@ -272,11 +272,36 @@ export interface CheckResult {
    */
   checkedPart: CheckedDocumentPart;
   /**
+   * The information passed on by the server.
+   */
+  embedCheckInformation?: CheckInformationKeyValuePair[];
+  /**
+   * Input Format of the document
+   */
+  inputFormat?: string;
+  /**
    * If an error occurs during the check the error object will be set.
    */
   error?: CheckError;
 }
 
+
+/**
+ * CheckInformationKeyValuePair has the check information sent by the server.
+ */
+export interface CheckInformationKeyValuePair  {
+  /**
+   * The id of the check information part.
+   *
+   */
+  key: string;
+
+  /**
+   * The value of the check information part.
+   *
+   */
+  value: string;
+}
 
 /**
  * CheckedDocumentPart describes a part of a previously checked document. All range offsets are only valid to that
