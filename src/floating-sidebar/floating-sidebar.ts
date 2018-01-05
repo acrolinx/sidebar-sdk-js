@@ -5,7 +5,7 @@ import {AsyncStorage} from "./async-storage";
 export const SIDEBAR_ID = 'acrolinxFloatingSidebar';
 export const TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
 export const CLOSE_ICON_CLASS = 'acrolinxFloatingSidebarCloseIcon';
-export const SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
+export let SIDEBAR_CONTAINER_ID = 'acrolinxSidebarContainer';
 export const SIDEBAR_DRAG_OVERLAY_ID = 'acrolinxDragOverlay';
 export const SIDEBAR_GLASS_PANE_ID = 'acrolinxFloatingSidebarGlassPane';
 export const FOOTER = 'acrolinxFloatingSidebarFooter';
@@ -212,7 +212,8 @@ function addStyles() {
   head.appendChild(styleTag);
 }
 
-const TEMPLATE = `
+function createTemplate() : string {
+  return `
     <div id="${SIDEBAR_ID}">
       <div class="${TITLE_BAR_CLASS}">Acrolinx <span class="${CLOSE_ICON_CLASS}" title="Hide"></span></div>
       <div id="${SIDEBAR_CONTAINER_ID}"></div>
@@ -220,6 +221,7 @@ const TEMPLATE = `
       <div class="${FOOTER}"><div class="${RESIZE_ICON_CLASS}" title="Drag to resize"></div></div>
     </div>
   `;
+}
 
 function createDiv(attributes: {[attribute: string]: string}): HTMLElement {
   const el = document.createElement('div');
@@ -246,11 +248,17 @@ export interface FloatingSidebar {
 
 export interface FloatingSidebarConfig {
   asyncStorage: AsyncStorage;
+  sidebarContainerId?: string;
 }
 
 export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSidebar {
+  if (config.sidebarContainerId) {
+    SIDEBAR_CONTAINER_ID = config.sidebarContainerId;
+  }
+
   let position = DEFAULT_POS;
-  const floatingSidebarElement = createNodeFromTemplate(TEMPLATE);
+  const template = createTemplate();
+  const floatingSidebarElement = createNodeFromTemplate(template);
   const dragOverlay = floatingSidebarElement.querySelector('#' + SIDEBAR_DRAG_OVERLAY_ID) as HTMLElement;
   const closeIcon = floatingSidebarElement.querySelector('.' + CLOSE_ICON_CLASS) as HTMLElement;
   const resizeIcon = floatingSidebarElement.querySelector('.' + RESIZE_ICON_CLASS) as HTMLElement;

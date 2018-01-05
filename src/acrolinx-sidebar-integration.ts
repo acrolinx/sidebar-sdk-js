@@ -33,11 +33,15 @@ import {getSelectionHtmlRanges} from "./utils/range";
 import {lookupMatches} from "./lookup/diff-based";
 import {extractTextDomMapping} from "./utils/text-dom-mapping";
 import {CodeMirrorAdapter} from "./adapters/CodeMirrorAdapter";
+import {initFloatingSidebar} from "./floating-sidebar/floating-sidebar";
+import {AsyncLocalStorage} from "./floating-sidebar/async-storage";
 
 
 export interface AcrolinxSidebarIntegration {
   AcrolinxPlugin: typeof AcrolinxPlugin;
   autoBindFloatingSidebar: typeof autoBindFloatingSidebar;
+  initFloatingSidebar: typeof initFloatingSidebar;
+  AsyncLocalStorage: typeof AsyncLocalStorage;
   createPluginMessageAdapter: typeof createPluginMessageAdapter;
   loadSidebarCode: typeof loadSidebarCode;
   getSelectionHtmlRanges: typeof getSelectionHtmlRanges;
@@ -74,6 +78,8 @@ const exported: AcrolinxSidebarIntegration = {
   AcrolinxPlugin: AcrolinxPlugin,
   autoBindFloatingSidebar: autoBindFloatingSidebar,
   createPluginMessageAdapter: createPluginMessageAdapter,
+  initFloatingSidebar: initFloatingSidebar,
+  AsyncLocalStorage: AsyncLocalStorage,
   loadSidebarCode: loadSidebarCode,
   getSelectionHtmlRanges: getSelectionHtmlRanges,
   adapter: {
