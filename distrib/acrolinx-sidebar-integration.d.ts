@@ -19,9 +19,13 @@ declare module 'acrolinx-sidebar-integration' {
     import { lookupMatches } from "acrolinx-sidebar-integration/lookup/diff-based";
     import { extractTextDomMapping } from "acrolinx-sidebar-integration/utils/text-dom-mapping";
     import { CodeMirrorAdapter } from "acrolinx-sidebar-integration/adapters/CodeMirrorAdapter";
+    import { initFloatingSidebar } from "acrolinx-sidebar-integration/floating-sidebar/floating-sidebar";
+    import { AsyncLocalStorage } from "acrolinx-sidebar-integration/floating-sidebar/async-storage";
     export interface AcrolinxSidebarIntegration {
         AcrolinxPlugin: typeof AcrolinxPlugin;
         autoBindFloatingSidebar: typeof autoBindFloatingSidebar;
+        initFloatingSidebar: typeof initFloatingSidebar;
+        AsyncLocalStorage: typeof AsyncLocalStorage;
         createPluginMessageAdapter: typeof createPluginMessageAdapter;
         loadSidebarCode: typeof loadSidebarCode;
         getSelectionHtmlRanges: typeof getSelectionHtmlRanges;
@@ -332,6 +336,57 @@ declare module 'acrolinx-sidebar-integration/adapters/CodeMirrorAdapter' {
     }
 }
 
+declare module 'acrolinx-sidebar-integration/floating-sidebar/floating-sidebar' {
+    import { AsyncStorage } from "acrolinx-sidebar-integration/floating-sidebar/async-storage";
+    export const SIDEBAR_ID = "acrolinxFloatingSidebar";
+    export const TITLE_BAR_CLASS = "acrolinxFloatingSidebarTitleBar";
+    export const CLOSE_ICON_CLASS = "acrolinxFloatingSidebarCloseIcon";
+    export let SIDEBAR_CONTAINER_ID: string;
+    export const SIDEBAR_DRAG_OVERLAY_ID = "acrolinxDragOverlay";
+    export const SIDEBAR_GLASS_PANE_ID = "acrolinxFloatingSidebarGlassPane";
+    export const FOOTER = "acrolinxFloatingSidebarFooter";
+    export const RESIZE_ICON_CLASS = "acrolinxFloatingSidebarResizeIcon";
+    export const IS_RESIZING_CLASS = "acrolinxFloatingSidebarIsResizing";
+    export const IS_DRAGGED_CLASS = "acrolinxFloatingSidebarIsDragged";
+    export const FOOTER_HEIGHT = 34;
+    export interface PositionUpdate {
+        top?: number;
+        left?: number;
+        height?: number;
+    }
+    export interface Position extends PositionUpdate {
+        top: number;
+        left: number;
+        height: number;
+    }
+    export const DEFAULT_POS: Position;
+    export const POSITION_KEY = "acrolinx.plugins.floatingSidebar.position";
+    export function loadInitialPos(asyncStorage: AsyncStorage): Promise<Position>;
+    export function keepVisible({left, top, height}: Position, windowWidth?: number, windowHeight?: number): Position;
+    export interface FloatingSidebar {
+        toggleVisibility(): void;
+        remove(): void;
+    }
+    export interface FloatingSidebarConfig {
+        asyncStorage: AsyncStorage;
+        sidebarContainerId?: string;
+    }
+    export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSidebar;
+}
+
+declare module 'acrolinx-sidebar-integration/floating-sidebar/async-storage' {
+    export interface AsyncStorage {
+        get<T>(key: string): Promise<T | null>;
+        set<T>(key: string, value: T): Promise<void>;
+    }
+    export class AsyncLocalStorage implements AsyncStorage {
+        get<T>(key: string): Promise<T | null>;
+        set<T>(key: string, value: T): Promise<undefined>;
+    }
+    export function loadFromLocalStorage<T>(key: string): T | null;
+    export function saveToLocalStorage<T>(key: string, object: T): void;
+}
+
 declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
     export interface SidebarConfiguration {
         readOnlySuggestions?: boolean;
@@ -481,43 +536,6 @@ declare module 'acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces' {
     };
 }
 
-declare module 'acrolinx-sidebar-integration/floating-sidebar/floating-sidebar' {
-    import { AsyncStorage } from "acrolinx-sidebar-integration/floating-sidebar/async-storage";
-    export const SIDEBAR_ID = "acrolinxFloatingSidebar";
-    export const TITLE_BAR_CLASS = "acrolinxFloatingSidebarTitleBar";
-    export const CLOSE_ICON_CLASS = "acrolinxFloatingSidebarCloseIcon";
-    export const SIDEBAR_CONTAINER_ID = "acrolinxSidebarContainer";
-    export const SIDEBAR_DRAG_OVERLAY_ID = "acrolinxDragOverlay";
-    export const SIDEBAR_GLASS_PANE_ID = "acrolinxFloatingSidebarGlassPane";
-    export const FOOTER = "acrolinxFloatingSidebarFooter";
-    export const RESIZE_ICON_CLASS = "acrolinxFloatingSidebarResizeIcon";
-    export const IS_RESIZING_CLASS = "acrolinxFloatingSidebarIsResizing";
-    export const IS_DRAGGED_CLASS = "acrolinxFloatingSidebarIsDragged";
-    export const FOOTER_HEIGHT = 34;
-    export interface PositionUpdate {
-        top?: number;
-        left?: number;
-        height?: number;
-    }
-    export interface Position extends PositionUpdate {
-        top: number;
-        left: number;
-        height: number;
-    }
-    export const DEFAULT_POS: Position;
-    export const POSITION_KEY = "acrolinx.plugins.floatingSidebar.position";
-    export function loadInitialPos(asyncStorage: AsyncStorage): Promise<Position>;
-    export function keepVisible({left, top, height}: Position, windowWidth?: number, windowHeight?: number): Position;
-    export interface FloatingSidebar {
-        toggleVisibility(): void;
-        remove(): void;
-    }
-    export interface FloatingSidebarConfig {
-        asyncStorage: AsyncStorage;
-    }
-    export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSidebar;
-}
-
 declare module 'acrolinx-sidebar-integration/adapters/AdapterInterface' {
     import { Match, MatchWithReplacement, Check, CheckResult, DocumentSelection } from "acrolinx-sidebar-integration/acrolinx-libs/plugin-interfaces";
     export interface CommonAdapterConf {
@@ -565,19 +583,6 @@ declare module 'acrolinx-sidebar-integration/adapters/AdapterInterface' {
     export function hasEditorID(a: AdapterConf): a is HasEditorID;
     export function hasElement(a: AdapterConf): a is HasElement;
     export function getElementFromAdapterConf(conf: AdapterConf): HTMLElement;
-}
-
-declare module 'acrolinx-sidebar-integration/floating-sidebar/async-storage' {
-    export interface AsyncStorage {
-        get<T>(key: string): Promise<T | null>;
-        set<T>(key: string, value: T): Promise<void>;
-    }
-    export class AsyncLocalStorage implements AsyncStorage {
-        get<T>(key: string): Promise<T | null>;
-        set<T>(key: string, value: T): Promise<undefined>;
-    }
-    export function loadFromLocalStorage<T>(key: string): T | null;
-    export function saveToLocalStorage<T>(key: string, object: T): void;
 }
 
 declare module 'acrolinx-sidebar-integration/utils/alignment' {
