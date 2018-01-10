@@ -21179,6 +21179,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var AbstractRichtextEditorAdapter_1 = require("./AbstractRichtextEditorAdapter");
+var scrolling_1 = require("../utils/scrolling");
 var CKEditorAdapter = (function (_super) {
     __extends(CKEditorAdapter, _super);
     function CKEditorAdapter(conf) {
@@ -21232,11 +21233,14 @@ var CKEditorAdapter = (function (_super) {
     CKEditorAdapter.prototype.isInWysiwygMode = function () {
         return this.getEditor().mode === 'wysiwyg';
     };
+    CKEditorAdapter.prototype.scrollElementIntoView = function (el) {
+        scrolling_1.scrollIntoView(el, this.config.scrollOffsetY);
+    };
     return CKEditorAdapter;
 }(AbstractRichtextEditorAdapter_1.AbstractRichtextEditorAdapter));
 exports.CKEditorAdapter = CKEditorAdapter;
 
-},{"./AbstractRichtextEditorAdapter":7}],11:[function(require,module,exports){
+},{"../utils/scrolling":28,"./AbstractRichtextEditorAdapter":7}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");

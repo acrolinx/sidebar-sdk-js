@@ -171,6 +171,7 @@ declare module 'acrolinx-sidebar-integration/adapters/CKEditorAdapter' {
         selectRanges(checkId: string, matches: Match[]): void;
         replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]): void;
         isInWysiwygMode(): boolean;
+        protected scrollElementIntoView(el: HTMLElement): void;
     }
 }
 
