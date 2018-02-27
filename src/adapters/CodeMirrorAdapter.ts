@@ -143,7 +143,9 @@ export class CodeMirrorAdapter implements AdapterInterface {
 
   private cmSelectionToRange = (selection: { anchor: CodeMirror.Position; head: CodeMirror.Position }): [number, number] => {
     const doc = this.getDoc();
-    return [doc.indexFromPos(selection.anchor), doc.indexFromPos(selection.head)];
+    const range: [number, number] = [doc.indexFromPos(selection.anchor), doc.indexFromPos(selection.head)];
+    range.sort((a, b) => a - b);
+    return range;
   }
 
 }
