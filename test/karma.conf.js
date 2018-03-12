@@ -37,14 +37,13 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     // (If you change this, you might want to change test/index.html too.)
     files: [
-      'bower_components/jquery/dist/jquery.js',
-      'bower_components/ckeditor/ckeditor.js',
-      {pattern: 'bower_components/ckeditor/**/*', included: false},
-      'bower_components/tinymce/tinymce.js',
-      {pattern: 'bower_components/tinymce/**/*', included: false},
-      'bower_components/codemirror/lib/codemirror.js',
+      'node_modules/jquery/dist/jquery.js',
+      'node_modules/ckeditor/ckeditor.js',
+      {pattern: 'node_modules/ckeditor/**/*', included: false},
+      'node_modules/tinymce/tinymce.js',
+      {pattern: 'node_modules/tinymce/**/*', included: false},
+      'node_modules/codemirror/lib/codemirror.js',
       {pattern: 'test/dummy-sidebar/**/*', included: false},
-      'bower_components/jsverify/index.js',
       'tmp/compiled/**/*.js',
     ],
 

@@ -1,6 +1,7 @@
 import {extractText} from "../../src/utils/text-extraction";
 import {findNewIndex} from "../../src/utils/alignment";
 import {extractTextDomMapping} from "../../src/utils/text-dom-mapping";
+import * as jsc from "jsverify";
 const assert = chai.assert;
 
 

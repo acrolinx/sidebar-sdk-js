@@ -13,3 +13,4 @@ tmp
 
 distrib/acrolinx-sidebar-integration.js.map
 **/.baseDir.ts
+/package-lock.json
