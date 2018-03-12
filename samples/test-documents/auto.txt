@@ -1,3 +1,0 @@
-The default value for documentReference is window.location.href.
-In a CMS the link to the article might be a good documentReference.
-In other cases the full file name might be a good option.

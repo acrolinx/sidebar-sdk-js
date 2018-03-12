@@ -11,6 +11,6 @@ npm-debug.log
 tmp
 .private
 
-distrib/acrolinx-sidebar-integration.js.map
 **/.baseDir.ts
 /package-lock.json
+/dist/
