@@ -63,8 +63,8 @@
     "webpack-dev-server": "^2.9.4"
   },
   "scripts": {
-    "jenkins": "",
     "buildDoc": "typedoc --out ./doc/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",
+    "jenkins": "npm run tsc && npm run test",
     "test": "npm run testKarmaPhantomJS",
     "testKarmaPhantomJS": "karma start test/karma.conf.js --browsers PhantomJS",
     "tsc": "tsc",
