@@ -113,6 +113,12 @@ export interface InitParameters extends SidebarConfiguration {
   enforceHTTPS?: boolean;
 
   /**
+   * Path to the log file of the integration.
+   * If this property is set, the integration should also support {@link AcrolinxPlugin.openLogFile}.
+   */
+  logFileLocation?: string;
+
+  /**
    * Extraordinary capabilities of the plugin.
    */
   supported?: {
@@ -271,10 +277,12 @@ export interface CheckResult {
    * are missing, only valid parts will be checked.
    */
   checkedPart: CheckedDocumentPart;
+
   /**
-   * The information passed on by the server.
+   * The integration can embed this information into the document or into a separate storage.
    */
   embedCheckInformation?: CheckInformationKeyValuePair[];
+
   /**
    * Input Format of the document
    */
@@ -601,6 +609,22 @@ export interface AcrolinxPlugin {
    * @param openWindowParameters
    */
   openWindow(openWindowParameters: OpenWindowParameters): void;
+
+  /**
+   * This method should open the log file.
+   */
+  openLogFile?(): void;
+}
+
+
+/**
+ * By default the Sidebar will use window.localStorage to store data.
+ * The integration can provide this interface in window.acrolinxStorage as replacement for window.localStorage.
+ */
+export interface AcrolinxStorage {
+  getItem(key: string): string | null;
+  removeItem(key: string): void;
+  setItem(key: string, data: string): void;
 }
 
 export const ErrorCodes = {
