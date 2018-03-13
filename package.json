@@ -57,10 +57,11 @@
   },
   "scripts": {
     "buildDoc": "typedoc --out ./doc/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",
-    "jenkins": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run dist",
+    "buildLocal": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run dist",
+    "jenkins": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run testKarmaBs && npm run dist",
     "dist": "cp -r tmp/compiled/src/* dist && npm run minify",
     "minify": "uglifyjs dist/acrolinx-sidebar-sdk.js -o dist/acrolinx-sidebar-sdk.min.js",
-    "test": "npm run testKarmaPhantomJS && npm run testKarmaBs",
+    "test": "npm run testKarmaPhantomJS",
     "testKarmaPhantomJS": "karma start test/karma.conf.js --browsers PhantomJS",
     "testKarmaChrome": "karma start test/karma.conf.js --browsers Chrome",
     "testKarmaBs": "karma start test/karma.conf.js --browsers bs_edge_win,bs_chrome_win,bs_firefox_win,bs_firefox_est_win,bs_safari_macos",
