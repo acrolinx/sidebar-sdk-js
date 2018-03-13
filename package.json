@@ -1,9 +1,9 @@
 {
-  "name": "sidebar-example",
+  "name": "acrolinx-sidebar-sdk",
   "description": "Acrolinx sidebar example",
-  "version": "13.0.0",
+  "version": "0.4.0",
   "license": "Apache-2.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "diff-match-patch": "1.0.0",
     "es6-promise": "^4.0.5",
@@ -37,14 +37,11 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "mocha": "^2.5.3",
     "phantomjs-prebuilt": "2.1.14",
-    "q-io": "^1.13.2",
-    "request": "^2.79.0",
-    "serve-static": "1.11.1",
     "tinymce": "^4.2.8",
     "ts-loader": "^3.1.1",
     "tslint": "5.8.0",
     "typedoc": "0.8.0",
-    "typescript": "2.6.1",
+    "typescript": "2.7.2",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.4"
   },
