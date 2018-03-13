@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    'acrolinx-sidebar-sdk': './src/acrolinx-sidebar-integration.ts',
+    'acrolinx-sidebar-sdk': './src/export-for-browser.ts',
     'tests': './test/index.ts'
   },
   module: {

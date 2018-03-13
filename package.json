@@ -1,9 +1,17 @@
 {
   "name": "acrolinx-sidebar-sdk",
-  "description": "Acrolinx sidebar example",
+  "description": "Acrolinx Sidebar SDK for JavaScript",
   "version": "0.4.0",
   "license": "Apache-2.0",
+  "author": "Acrolinx",
+  "url": "http://www.acrolinx.com",
   "private": false,
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "dependencies": {
     "diff-match-patch": "1.0.0",
     "es6-promise": "^4.0.5",
@@ -43,12 +51,15 @@
     "tslint": "5.8.0",
     "typedoc": "0.8.0",
     "typescript": "2.7.2",
+    "uglify-js": "^3.3.14",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.4"
   },
   "scripts": {
     "buildDoc": "typedoc --out ./doc/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",
-    "jenkins": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test",
+    "jenkins": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run dist",
+    "dist": "cp -r tmp/compiled/src/* dist && npm run minify",
+    "minify": "uglifyjs dist/acrolinx-sidebar-sdk.js -o dist/acrolinx-sidebar-sdk.min.js",
     "test": "npm run testKarmaPhantomJS && npm run testKarmaBs",
     "testKarmaPhantomJS": "karma start test/karma.conf.js --browsers PhantomJS",
     "testKarmaChrome": "karma start test/karma.conf.js --browsers Chrome",
