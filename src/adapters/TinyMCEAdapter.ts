@@ -18,7 +18,7 @@
  *
  */
 
-
+import {Editor} from 'tinymce';
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
 import {HasEditorID} from "./AdapterInterface";
 
@@ -30,7 +30,7 @@ export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
     this.editorId = conf.editorId;
   }
 
-  getEditor() {
+  getEditor(): Editor {
     return tinymce.get(this.editorId);
   }
 

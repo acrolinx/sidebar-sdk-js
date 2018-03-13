@@ -12,10 +12,12 @@
     "outDir": "tmp/compiled",
     "rootDir": ".",
     "sourceMap": true,
+    "declaration": true,
     "module": "commonjs"
   },
   "exclude": [
     "node_modules",
+    "dist",
     "tmp"
   ]
 }

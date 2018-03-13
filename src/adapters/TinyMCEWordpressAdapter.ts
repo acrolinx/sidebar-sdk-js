@@ -19,11 +19,13 @@
  */
 
 
+import {Editor} from 'tinymce';
 import {TinyMCEAdapter} from "./TinyMCEAdapter";
+
 
 export class TinyMCEWordpressAdapter extends TinyMCEAdapter {
 
-  getEditor() {
+  getEditor() : Editor {
     return tinymce.get(this.editorId);
   }
 
