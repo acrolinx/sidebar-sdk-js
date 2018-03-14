@@ -1,7 +1,7 @@
 {
   "name": "acrolinx-sidebar-sdk",
   "description": "Acrolinx Sidebar SDK for JavaScript",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "Apache-2.0",
   "author": "Acrolinx",
   "url": "http://www.acrolinx.com",
@@ -15,20 +15,20 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
+    "@types/ckeditor": "0.0.34",
+    "@types/codemirror": "0.0.52",
+    "@types/diff-match-patch": "^1.0.31",
+    "@types/tinymce": "^4.5.16",
     "diff-match-patch": "1.0.0",
     "es6-promise": "^4.0.5",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
-    "@types/ckeditor": "0.0.34",
-    "@types/codemirror": "0.0.52",
-    "@types/diff-match-patch": "^1.0.31",
     "@types/es6-promise": "0.0.32",
     "@types/jquery": "^2.0.37",
     "@types/lodash": "4.14.74",
     "@types/mocha": "2.2.35",
-    "@types/tinymce": "^4.5.16",
     "browserify": "^16.1.1",
     "browserify-istanbul": "2.0.0",
     "chai": "^3.5.0",
