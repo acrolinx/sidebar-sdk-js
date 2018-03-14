@@ -20,7 +20,10 @@
 import * as _ from "lodash";
 import {Promise} from "es6-promise";
 import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
-import {RequestGlobalCheckOptions, SidebarConfiguration, CheckInformationKeyValuePair} from "./acrolinx-libs/plugin-interfaces";
+import {
+  RequestGlobalCheckOptions, SidebarConfiguration, CheckInformationKeyValuePair,
+  InitParameters
+} from "./acrolinx-libs/plugin-interfaces";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
 import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
@@ -45,7 +48,7 @@ export interface AcrolinxSimpleStorage {
   clear(): void;
 }
 
-export interface AcrolinxPluginConfig {
+export interface AcrolinxPluginConfig extends InitParameters {
   sidebarContainerId: string;
   sidebarUrl?: string;
   sidebarHtml?: string;
