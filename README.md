@@ -7,17 +7,26 @@ The library contains adapters to use in your web integration. These are ready to
 
 See: [Getting Started with Custom Integrations](https://support.acrolinx.com/hc/en-us/articles/205687652-Getting-Started-with-Custom-Integrations)
 
+## Examples
+
+[https://github.com/acrolinx/acrolinx-sidebar-demo](https://github.com/acrolinx/acrolinx-sidebar-demo)
+
 ## Live Demo
 
 [Acrolinx Sidebar Live Demo](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.3.64/samples/index.html)
+
+## Installation
+
+```
+ npm i -S acrolinx-sidebar-sdk 
+```
+
 
 ## Table of Content
 
 [The Acrolinx Sidebar](#the-acrolinx-sidebar)
 
 [Prerequisites](#prerequisites)
-
-[Setting up the Sidebar Example](#setting-up-the-sidebar-example)
 
 [Getting started with your own integration](#getting-started-with-your-own-integration )
 
@@ -42,52 +51,6 @@ Please note that this an example for a integration into a web application only.
 Acrolinx offers different other SDKs for developing integrations. 
 
 Before you start developing your own integration, you might benefit from looking into the sidebar example.
-
-## Setting up the Sidebar Example
-
-### using nodejs and grunt-cli
-
-1. Make sure that git is in your PATH variable. You can verify that running 
-
-    ```
-    git
-    ```
-
-    in your console. If the command wasn't found, git is not in in your system's PATH variable.
-
-2. After check out, make sure, that you have installed nodejs (which includes npm).
-
-3. Install grunt-cli with
-
-    ```
-    npm install -g grunt-cli
-    ```
-
-4. In your console navigate into the projects root folder and install all required node modules with:
-
-    ```
-        npm install
-    ```
-
-5. Now you can start the development server by typing:
-  
-   ```
-       grunt
-   ```
-   
-   (If grunt complains while the bower:install task, you might have to execute "bower install" manually.)
-   
-   Now open [http://localhost:9002](http://localhost:9002) in your web-browser. Choose the sample, that you want to see.
-   You will see sidebars login page. If not already pre-filled type 'http://integration.acrolinx.com:8031' as the server 
-   address and choose a username and a password to login. 
-   
-   ![Screen Shot of Example](/doc/screenshot.png)
-   
-Within the sample client you can see how the sidebar interacts with different editors.
-There are adapters for simple editable divs, input elements and rich text editors like CKEditor and TinyMCE ready to go.
-You're integration can use these adapters and you'll won't have any headache about that.
-
-[back to top](#table-of-content)
 
 ## Getting started with your own integration 
 
