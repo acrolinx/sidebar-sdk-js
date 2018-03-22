@@ -18,24 +18,26 @@
  *
  */
 import * as _ from "lodash";
-import {Promise} from "es6-promise";
-import * as acrolinxSidebarInterfaces from "./acrolinx-libs/plugin-interfaces";
+import * as acrolinxSidebarInterfaces from './acrolinx-libs/plugin-interfaces';
 import {
-  RequestGlobalCheckOptions, SidebarConfiguration, CheckInformationKeyValuePair,
-  InitParameters
-} from "./acrolinx-libs/plugin-interfaces";
-import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
-import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
-import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
+  CheckInformationKeyValuePair,
+  InitParameters,
+  InitResult,
+  OpenWindowParameters,
+  RequestGlobalCheckOptions,
+  SidebarConfiguration
+} from './acrolinx-libs/plugin-interfaces';
 import {AdapterInterface, ContentExtractionResult, hasError} from "./adapters/AdapterInterface";
-import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter";
-import {assign} from "./utils/utils";
-import {AsyncLocalStorage, AsyncStorage} from "./floating-sidebar/async-storage";
+import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {MultiEditorAdapterConfig} from "./adapters/MultiEditorAdapter";
+import {AsyncLocalStorage, AsyncStorage} from "./floating-sidebar/async-storage";
+import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
+import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter";
+import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
+import {assign} from "./utils/utils";
 
 type DownloadInfo = acrolinxSidebarInterfaces.DownloadInfo;
 type MatchWithReplacement = acrolinxSidebarInterfaces.MatchWithReplacement;
-type InitResult = acrolinxSidebarInterfaces.InitResult;
 type AcrolinxPluginConfiguration = acrolinxSidebarInterfaces.AcrolinxPluginConfiguration;
 type CheckResult = acrolinxSidebarInterfaces.CheckResult;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
@@ -59,6 +61,7 @@ export interface AcrolinxPluginConfig extends InitParameters {
   getDocumentReference?: () => string;
   acrolinxStorage?: AcrolinxSimpleStorage;
   onEmbedCheckData?: (checkData: CheckInformationKeyValuePair[], format: string) => void;
+  onInitFinished?: (initFinishedResult: InitResult) => void;
 }
 
 const clientComponents = [
@@ -80,8 +83,142 @@ type IFrameWindowOfSidebar = Window & {
   acrolinxStorage?: AcrolinxSimpleStorage;
 };
 
-function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface): Promise<AcrolinxSidebar> {
-  let resolvePromise: (sidebar: AcrolinxSidebar) => void;
+class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
+  public acrolinxSidebar: AcrolinxSidebar;
+
+  constructor(private config: AcrolinxPluginConfig,
+              private adapter: AdapterInterface,
+              private onGotSidebar: (p: InternalAcrolinxSidebarPlugin) => void,
+              private sidebarContentWindow: IFrameWindowOfSidebar) {
+  }
+
+  private initSidebarOnPremise() {
+    this.acrolinxSidebar.init(_.assign({}, {
+      showServerSelector: true,
+      clientComponents: clientComponents,
+      supported: {
+        checkSelection: !!this.config.checkSelection
+      }
+    }, this.config));
+  }
+
+  private getDefaultDocumentReference() {
+    if (this.config.getDocumentReference) {
+      return this.config.getDocumentReference();
+    } else {
+      return window.location.href;
+    }
+  }
+
+  private requestGlobalCheckSync(extractionResult: ContentExtractionResult, format = 'HTML') {
+    if (hasError(extractionResult)) {
+      window.alert(extractionResult.error);
+    } else {
+      const checkInfo = this.acrolinxSidebar.checkGlobal(extractionResult.content, {
+        inputFormat: format || 'HTML',
+        requestDescription: {
+          documentReference: extractionResult.documentReference || this.getDefaultDocumentReference()
+        },
+        selection: this.config.checkSelection ? extractionResult.selection : undefined
+      });
+      this.adapter.registerCheckCall(checkInfo);
+    }
+  }
+
+  public configureSidebar(conf: SidebarConfiguration) {
+    // Old versions of the sidebar may not support the configure method.
+    try {
+      this.acrolinxSidebar.configure(conf);
+    } catch (e) {
+      console.error("Error while calling sidebar.configure: ", e);
+    }
+  }
+
+  requestInit(acrolinxSidebarArg?: AcrolinxSidebar) {
+    this.acrolinxSidebar = acrolinxSidebarArg || this.sidebarContentWindow.acrolinxSidebar;
+    this.onGotSidebar(this);
+    console.log('requestInit');
+    this.initSidebarOnPremise();
+  }
+
+  onInitFinished(initFinishedResult: InitResult) {
+    console.log('onInitFinished: ', initFinishedResult);
+    if (this.config.onInitFinished) {
+      this.config.onInitFinished(initFinishedResult);
+    } else if (initFinishedResult.error) {
+      window.alert(initFinishedResult.error.message);
+    }
+  }
+
+  configure(configuration: AcrolinxPluginConfiguration) {
+    console.log('configure: ', configuration);
+  }
+
+  requestGlobalCheck(options: RequestGlobalCheckOptions = {selection: false}) {
+    const adapter = this.adapter;
+    const contentExtractionResultOrPromise = adapter.extractContentForCheck({checkSelection: options.selection});
+    const pFormat = adapter.getFormat ? adapter.getFormat() : undefined;
+    if (isPromise(contentExtractionResultOrPromise)) {
+      contentExtractionResultOrPromise.then((contentExtractionResult: ContentExtractionResult) => {
+        this.requestGlobalCheckSync(contentExtractionResult, pFormat);
+      });
+    } else {
+      this.requestGlobalCheckSync(contentExtractionResultOrPromise, pFormat);
+    }
+  }
+
+  onCheckResult(checkResult: CheckResult) {
+    if (checkResult.embedCheckInformation && this.config.onEmbedCheckData) {
+      this.config.onEmbedCheckData(checkResult.embedCheckInformation, checkResult.inputFormat || "");
+    }
+    return this.adapter.registerCheckResult(checkResult);
+  }
+
+  selectRanges(checkId: string, matches: MatchWithReplacement[]) {
+    console.log('selectRanges: ', checkId, matches);
+    try {
+      this.adapter.selectRanges(checkId, matches);
+    } catch (msg) {
+      console.log(msg);
+
+      this.acrolinxSidebar.invalidateRanges(matches.map(function(match) {
+          return {
+            checkId: checkId,
+            range: match.range
+          };
+        }
+      ));
+    }
+
+  }
+
+  replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
+    console.log('replaceRanges: ', checkId, matchesWithReplacement);
+    try {
+      this.adapter.replaceRanges(checkId, matchesWithReplacement);
+    } catch (msg) {
+      console.log(msg);
+      this.acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function(match) {
+          return {
+            checkId: checkId,
+            range: match.range
+          };
+        }
+      ));
+    }
+  }
+
+  download(download: DownloadInfo) {
+    console.log('download: ', download.url, download);
+    window.open(download.url);
+  }
+
+  openWindow(opts: OpenWindowParameters) {
+    window.open(opts.url);
+  }
+}
+
+function initInternalAcrolinxSidebarPlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface, onGotSidebar: () => void): InternalAcrolinxSidebarPlugin {
   const sidebarContainer = document.getElementById(config.sidebarContainerId);
 
   if (!sidebarContainer) {
@@ -92,133 +229,9 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
   sidebarContainer.appendChild(sidebarIFrameElement);
   const sidebarContentWindow = sidebarIFrameElement.contentWindow as IFrameWindowOfSidebar;
 
-  const adapter = editorAdapter;
-
-  function createAcrolinxSidebarPlugin(): AcrolinxSidebarPlugin {
-    let acrolinxSidebar: AcrolinxSidebar;
-
-    function initSidebarOnPremise() {
-      acrolinxSidebar.init(_.assign({}, {
-        showServerSelector: true,
-        clientComponents: clientComponents,
-        supported: {
-          checkSelection: !!config.checkSelection
-        }
-      }, config));
-    }
-
-    function getDefaultDocumentReference() {
-      if (config.getDocumentReference) {
-        return config.getDocumentReference();
-      } else {
-        return window.location.href;
-      }
-    }
-
-    function requestGlobalCheckSync(extractionResult: ContentExtractionResult, format = 'HTML') {
-      if (hasError(extractionResult)) {
-        window.alert(extractionResult.error);
-      } else {
-        const checkInfo = acrolinxSidebar.checkGlobal(extractionResult.content, {
-          inputFormat: format || 'HTML',
-          requestDescription: {
-            documentReference: extractionResult.documentReference || getDefaultDocumentReference()
-          },
-          selection: config.checkSelection ? extractionResult.selection : undefined
-        });
-        adapter.registerCheckCall(checkInfo);
-      }
-    }
-
-    const acrolinxSidebarPlugin: AcrolinxSidebarPlugin = {
-      requestInit(acrolinxSidebarArg?: AcrolinxSidebar) {
-        acrolinxSidebar = acrolinxSidebarArg || sidebarContentWindow.acrolinxSidebar;
-        resolvePromise(acrolinxSidebar);
-        console.log('requestInit');
-        initSidebarOnPremise();
-      },
-
-      onInitFinished(initFinishedResult: InitResult) {
-        console.log('onInitFinished: ', initFinishedResult);
-        if (initFinishedResult.error) {
-          window.alert(initFinishedResult.error.message);
-        }
-      },
-
-      configure(configuration: AcrolinxPluginConfiguration) {
-        console.log('configure: ', configuration);
-      },
-
-      requestGlobalCheck(options: RequestGlobalCheckOptions = {selection: false}) {
-        const contentExtractionResultOrPromise = adapter.extractContentForCheck({checkSelection: options.selection});
-        const pFormat = adapter.getFormat ? adapter.getFormat() : undefined;
-        if (isPromise(contentExtractionResultOrPromise)) {
-          contentExtractionResultOrPromise.then((contentExtractionResult: ContentExtractionResult) => {
-            requestGlobalCheckSync(contentExtractionResult, pFormat);
-          });
-        } else {
-          requestGlobalCheckSync(contentExtractionResultOrPromise, pFormat);
-        }
-      },
-
-      onCheckResult(checkResult: CheckResult) {
-        if (checkResult.embedCheckInformation && config.onEmbedCheckData) {
-          config.onEmbedCheckData(checkResult.embedCheckInformation, checkResult.inputFormat || "");
-        }
-        return adapter.registerCheckResult(checkResult);
-      },
-
-      selectRanges(checkId: string, matches: MatchWithReplacement[]) {
-        console.log('selectRanges: ', checkId, matches);
-        try {
-          adapter.selectRanges(checkId, matches);
-        } catch (msg) {
-          console.log(msg);
-
-          acrolinxSidebar.invalidateRanges(matches.map(function(match) {
-              return {
-                checkId: checkId,
-                range: match.range
-              };
-            }
-          ));
-        }
-
-      },
-
-      replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
-        console.log('replaceRanges: ', checkId, matchesWithReplacement);
-        try {
-          adapter.replaceRanges(checkId, matchesWithReplacement);
-        } catch (msg) {
-          console.log(msg);
-          acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function(match) {
-              return {
-                checkId: checkId,
-                range: match.range
-              };
-            }
-          ));
-        }
-      },
-
-      download(download: DownloadInfo) {
-        console.log('download: ', download.url, download);
-        window.open(download.url);
-      },
-
-      openWindow({url}) {
-        window.open(url);
-      }
-
-    };
-
-    return acrolinxSidebarPlugin;
-  }
+  const acrolinxSidebarPlugin = new InternalAcrolinxSidebarPlugin(config, editorAdapter, onGotSidebar, sidebarContentWindow);
 
   function injectAcrolinxPluginInSidebar() {
-    const acrolinxSidebarPlugin = createAcrolinxSidebarPlugin();
-
     onSidebarLoaded();
 
     console.log('Install acrolinxPlugin in sidebar.');
@@ -229,8 +242,6 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
   }
 
   function loadSidebarUsingMessageAdapter() {
-    const acrolinxSidebarPlugin = createAcrolinxSidebarPlugin();
-
     console.log('Connect acrolinxPlugin in sidebar.');
     connectAcrolinxPluginToMessages(acrolinxSidebarPlugin, sidebarIFrameElement);
 
@@ -243,24 +254,20 @@ function initAcrolinxSamplePlugin(config: AcrolinxPluginConfig, editorAdapter: A
     }
   }
 
-  const result = new Promise<AcrolinxSidebar>((resolve, _reject) => {
-    resolvePromise = resolve;
-  });
-
   if (config.useMessageAdapter) {
     loadSidebarUsingMessageAdapter();
   } else {
     loadSidebarIntoIFrame(config, sidebarIFrameElement, injectAcrolinxPluginInSidebar);
   }
-  return result;
-}
 
+  return acrolinxSidebarPlugin;
+}
 
 export class AcrolinxPlugin {
   private readonly initConfig: AcrolinxPluginConfig;
   private adapter: AdapterInterface;
   private config: SidebarConfiguration;
-  private sidebar: AcrolinxSidebar;
+  private internalPlugin: InternalAcrolinxSidebarPlugin;
 
   constructor(conf: AcrolinxPluginConfig) {
     this.initConfig = conf;
@@ -273,15 +280,21 @@ export class AcrolinxPlugin {
 
   configure(conf: SidebarConfiguration) {
     this.config = _.assign(this.config, conf);
-    if (this.sidebar) {
-      this.configureSidebar();
+    // TODO: Move the this whole method into the internal plugin?
+    if (this.internalPlugin.acrolinxSidebar) {
+      this.internalPlugin.configureSidebar(this.config);
+    }
+  }
+
+  check() {
+    if (this.internalPlugin) {
+      this.internalPlugin.requestGlobalCheck();
     }
   }
 
   init() {
-    initAcrolinxSamplePlugin(this.initConfig, this.adapter).then(sidebar => {
-      this.sidebar = sidebar;
-      this.configureSidebar();
+    this.internalPlugin = initInternalAcrolinxSidebarPlugin(this.initConfig, this.adapter, () => {
+      this.internalPlugin.configureSidebar(this.config);
     });
   }
 
@@ -306,15 +319,6 @@ export class AcrolinxPlugin {
       } else {
         callback();
       }
-    }
-  }
-
-  private configureSidebar() {
-    // Old versions of the sidebar may not support the configure method.
-    try {
-      this.sidebar.configure(this.config);
-    } catch (e) {
-      console.error("Error while calling sidebar.configure: ", e);
     }
   }
 }

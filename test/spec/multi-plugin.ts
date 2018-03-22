@@ -3,7 +3,7 @@ import * as _ from "lodash";
 
 import {
   AcrolinxPlugin, AcrolinxSidebar, InitParameters, CheckOptions, Check, InvalidDocumentPart, CheckedDocumentRange,
-  SidebarConfiguration
+  SidebarConfiguration, InitResult
 } from '../../src/acrolinx-libs/plugin-interfaces';
 import {
   MultiEditorAdapterConfig,
@@ -20,12 +20,12 @@ import {AcrolinxPluginConfig} from "../../src/acrolinx-plugin";
 const DUMMY_CHECK_ID = 'dummyCheckId';
 
 interface InitMultiPluginOpts {
-  config?: AcrolinxPluginConfig;
+  config?: Partial<AcrolinxPluginConfig>;
   multiEditorAdapterConfig?: MultiEditorAdapterConfig;
   addInputAdapterOptions?: AddSingleAdapterOptions;
 }
 
-describe('multi plugin', function () {
+describe('multi plugin', function() {
   let injectedPlugin: AcrolinxPlugin;
 
   let lastDocumentContent: string;
@@ -36,12 +36,13 @@ describe('multi plugin', function () {
   let acrolinxPlugin: acrolinxPluginModule.AcrolinxPlugin;
 
   afterEach((done) => {
-    acrolinxPlugin.dispose(function () {});
+    acrolinxPlugin.dispose(function() {
+    });
     $('#multiPluginTest').remove();
     done();
   });
 
-  function initMultiPlugin(done: Function, {config = {sidebarContainerId: 'sidebarContainer'}, addInputAdapterOptions, multiEditorAdapterConfig}: InitMultiPluginOpts = {}) {
+  function initMultiPlugin(done: Function, {config, addInputAdapterOptions, multiEditorAdapterConfig}: InitMultiPluginOpts = {}) {
     $('body').append(`
         <div id="multiPluginTest">
           <div id="ContentEditableAdapter" contenteditable="true">Initial text of ContentEditableAdapter.</div>
@@ -52,7 +53,8 @@ describe('multi plugin', function () {
 
 
     const conf = assign({
-      sidebarUrl: location.pathname === '/test/' ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/'
+      sidebarUrl: location.pathname === '/test/' ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/',
+      sidebarContainerId: 'sidebarContainer',
     }, config);
 
     acrolinxPlugin = new acrolinxPluginModule.AcrolinxPlugin(conf);
@@ -98,11 +100,11 @@ describe('multi plugin', function () {
 
   function createMockSidebar(): AcrolinxSidebar {
     return {
-      init (_initParameters: InitParameters): void {
+      init(_initParameters: InitParameters): void {
         injectedPlugin.onInitFinished({});
         injectedPlugin.configure({supported: {base64EncodedGzippedDocumentContent: false}});
       },
-      configure (config: SidebarConfiguration): void {
+      configure(config: SidebarConfiguration): void {
         newConfig = config;
       },
       checkGlobal(documentContent: string, _options: CheckOptions): Check {
@@ -129,7 +131,7 @@ describe('multi plugin', function () {
       onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
       },
 
-      dispose ( _callback: () => void ) {
+      dispose(_callback: () => void) {
       }
     };
   }
@@ -228,7 +230,6 @@ describe('multi plugin', function () {
     beforeEach((done) => {
       initMultiPlugin(done, {
         config: {
-          sidebarContainerId: 'sidebarContainer',
           onSidebarWindowLoaded: (sidebarWindow: Window) => {
             assert.equal(sidebarWindow, getIFrameWindow());
             (sidebarWindow as any).injectedStuff = injectedStuff;
@@ -335,6 +336,22 @@ describe('multi plugin', function () {
       }
     });
 
+  });
+
+  describe('enforce check after sidebar is initialized', () => {
+    it('the check should work', (done) => {
+      initMultiPlugin(_.noop, {
+        config: {
+          onInitFinished: (initFinishedResult: InitResult) => {
+            assert.deepEqual(initFinishedResult, {});
+            afterCheckCallback = () => {
+              done();
+            };
+            acrolinxPlugin.check();
+          }
+        }
+      });
+    });
   });
 
 });
