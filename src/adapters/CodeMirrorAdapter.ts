@@ -26,12 +26,18 @@ import {EditorFromTextArea} from "codemirror";
 import {lookupMatches} from "../lookup/diff-based";
 import {isDangerousToReplace} from "../utils/match";
 
-const FORMAT_BY_MODE: { [mime: string]: string } = {
+const FORMAT_BY_MIME_TYPE: { [mime: string]: string } = {
   'text/html': 'HTML',
   'text/xml': 'HTML',
   'application/xml': 'XML',
   'text/x-markdown': 'MARKDOWN',
   'text/plain': 'TEXT'
+};
+
+const FORMAT_BY_MODE: { [mode: string]: string } = {
+  'htmlmixed': 'HTML',
+  'xml': 'XML',
+  'markdown': 'MARKDOWN'
 };
 
 export type CodeMirrorAdapterConf = {
@@ -58,7 +64,11 @@ export class CodeMirrorAdapter implements AdapterInterface {
   }
 
   getFormat() {
-    return this.config.format || FORMAT_BY_MODE[this.config.editor.getOption('mode')] || 'AUTO';
+    return this.config.format || this.getFormatFromCodeMirror() || 'AUTO';
+  }
+
+  private getFormatFromCodeMirror() {
+    return FORMAT_BY_MODE[this.config.editor.getDoc().getMode().name || ''] || FORMAT_BY_MIME_TYPE[this.config.editor.getOption('mode')];
   }
 
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult {
