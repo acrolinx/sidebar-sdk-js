@@ -25,7 +25,8 @@ import {
   InitResult,
   OpenWindowParameters,
   RequestGlobalCheckOptions,
-  SidebarConfiguration
+  SidebarConfiguration,
+  CheckResult
 } from './acrolinx-libs/plugin-interfaces';
 import {AdapterInterface, ContentExtractionResult, hasError} from "./adapters/AdapterInterface";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
@@ -39,7 +40,6 @@ import {assign} from "./utils/utils";
 type DownloadInfo = acrolinxSidebarInterfaces.DownloadInfo;
 type MatchWithReplacement = acrolinxSidebarInterfaces.MatchWithReplacement;
 type AcrolinxPluginConfiguration = acrolinxSidebarInterfaces.AcrolinxPluginConfiguration;
-type CheckResult = acrolinxSidebarInterfaces.CheckResult;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
 type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
 
@@ -62,6 +62,7 @@ export interface AcrolinxPluginConfig extends InitParameters {
   acrolinxStorage?: AcrolinxSimpleStorage;
   onEmbedCheckData?: (checkData: CheckInformationKeyValuePair[], format: string) => void;
   onInitFinished?: (initFinishedResult: InitResult) => void;
+  onCheckResult?: (checkResult: CheckResult) => void;
 }
 
 const clientComponents = [
@@ -168,6 +169,9 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
   }
 
   onCheckResult(checkResult: CheckResult) {
+    if (this.config.onCheckResult) {
+      this.config.onCheckResult(checkResult);
+    }
     if (checkResult.embedCheckInformation && this.config.onEmbedCheckData) {
       this.config.onEmbedCheckData(checkResult.embedCheckInformation, checkResult.inputFormat || "");
     }
