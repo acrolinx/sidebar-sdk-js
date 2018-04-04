@@ -12,7 +12,7 @@ const EDITABLE_ELEMENTS_SELECTOR = [
   'input[type=text]',
   '[contenteditable="true"]',
   '[contenteditable="plaintext-only"]',
-  '[contenteditable]'
+  '[contenteditable]',
   'textarea',
   'iframe'
 ].join(', ');
