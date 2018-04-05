@@ -74,8 +74,8 @@ function sanitizeHeight(floatingSidebarHeight: number) {
 export function keepVisible({left, top, height}: Position, windowWidth: number = window.innerWidth, windowHeight: number = window.innerHeight): Position {
   const minVerticalMargin = 30;
   const minHorizontalMargin = 150;
-  if(top <= 0){ top = 20; }
-  if(left <= 0){ left = 20; }
+  if (top <= 0) { top = 20; }
+  if (left <= 0) { left = 20; }
   return {
     left: left > (windowWidth - minHorizontalMargin) ? (windowWidth - minHorizontalMargin) : left,
     top: top > (windowHeight - minVerticalMargin) ? (windowHeight - minVerticalMargin) : top,
