@@ -46,17 +46,27 @@ export type CodeMirrorAdapterConf = {
 };
 
 export class CodeMirrorAdapter implements AdapterInterface {
-  private readonly config: CodeMirrorAdapterConf;
+  private config: CodeMirrorAdapterConf;
   private currentContentChecking: string;
+  private formatDetectedByCheck: string | undefined;
 
   constructor(conf: CodeMirrorAdapterConf) {
+    this.configure(conf);
+  }
+
+  configure(partialConfig: Partial<CodeMirrorAdapterConf>) {
+    const newConf = {...this.config, ...partialConfig};
+    this.validateConf(newConf);
+    this.config = newConf;
+  }
+
+  private validateConf(conf: CodeMirrorAdapterConf) {
     if (!conf) {
       throw new Error('CodeMirrorAdapter config is missing');
     }
     if (!conf.editor) {
       throw new Error('CodeMirrorAdapter config is missing "editor"');
     }
-    this.config = _.clone(conf);
   }
 
   getContent() {
@@ -85,7 +95,8 @@ export class CodeMirrorAdapter implements AdapterInterface {
     };
   }
 
-  registerCheckResult(_checkResult: CheckResult): void {
+  registerCheckResult(checkResult: CheckResult): void {
+    this.formatDetectedByCheck = checkResult.inputFormat;
   }
 
   registerCheckCall(_checkInfo: Check) {
@@ -122,8 +133,10 @@ export class CodeMirrorAdapter implements AdapterInterface {
     this.selectRangeAndScroll([alignedMatches[0].range[0], alignedMatches[0].range[0] + replacementLength]);
   }
 
-  private getEscapeFunction() : (s: string) => string {
-    switch (this.getFormat()) {
+  private getEscapeFunction(): (s: string) => string {
+    const configuredFormat = this.getFormat();
+    const format: string = (configuredFormat === 'AUTO' && this.formatDetectedByCheck) || configuredFormat;
+    switch (format) {
       case 'XML':
       case 'HTML':
         return _.escape;
