@@ -106,6 +106,6 @@ export function containsText(s: string) {
   return /\S/.test(s);
 }
 
-export function removeElement(el: Element) {
-  el.parentNode!.removeChild(el);
+export function removeNode(node: Node) {
+  node.parentNode!.removeChild(node);
 }

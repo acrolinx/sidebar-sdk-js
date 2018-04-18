@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import {assign, removeElement} from "../utils/utils";
+import {assign, removeNode} from "../utils/utils";
 import {AsyncStorage} from "./async-storage";
 
 export const SIDEBAR_ID = 'acrolinxFloatingSidebar';
@@ -359,9 +359,9 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
 
   // Currently only used for testing.
   function remove() {
-    removeElement(floatingSidebarElement);
-    removeElement(glassPane);
-    removeElement(dragOverlay);
+    removeNode(floatingSidebarElement);
+    removeNode(glassPane);
+    removeNode(dragOverlay);
     window.removeEventListener('resize', onResize);
     document.removeEventListener('mouseup', onEndDrag);
   }
