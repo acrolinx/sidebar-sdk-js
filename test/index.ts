@@ -2,6 +2,7 @@ require('es6-promise/auto');
 require('./spec/lookup-unit-tests/diff-based');
 require('./spec/lookup-unit-tests/diff-based-performance');
 require('./spec/autobind');
+require('./spec/empty-text-node-chrome-bug');
 require('./spec/escaping');
 require('./spec/adapters');
 require('./spec/multi-plugin');

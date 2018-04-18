@@ -19,7 +19,7 @@
  */
 
 import {Editor} from 'tinymce';
-import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
+import {AbstractRichtextEditorAdapter, removeEmptyTextNodesIfNeeded} from "./AbstractRichtextEditorAdapter";
 import {HasEditorID} from "./AdapterInterface";
 
 export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
@@ -59,6 +59,7 @@ export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
         selection.removeAllRanges();
         selection.addRange(restoredRange);
 
+        removeEmptyTextNodesIfNeeded(originalRange);
       } catch (error) {
         console.log('Scrolling Error: ', error);
       }

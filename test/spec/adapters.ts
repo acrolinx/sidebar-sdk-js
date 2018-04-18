@@ -1,7 +1,9 @@
+import {AbstractRichtextEditorAdapter} from '../../src';
 import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
 
 import * as _ from 'lodash';
-import {assertDeepEqual, getMatchesWithReplacement} from "../utils/test-utils";
+import {isChrome} from '../../src/utils/detect-browser';
+import {assertDeepEqual, containsEmptyTextNodes, getMatchesWithReplacement} from "../utils/test-utils";
 import {AdapterInterface, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
 import {CodeMirrorTestSetup} from "./adapter-test-setups/codemirror";
 import {ContentEditableTestSetup} from "./adapter-test-setups/content-editable";
@@ -54,7 +56,12 @@ describe('adapter test', function() {
       });
 
       afterEach(() => {
+        const containsUnwantedEmptyTextNodes = isChrome() && (adapter instanceof AbstractRichtextEditorAdapter) &&
+          containsEmptyTextNodes((adapter as any).getEditorElement());
+
         adapterSpec.remove();
+
+        assert.isFalse(containsUnwantedEmptyTextNodes, 'The editorElement should not contain empty text nodes');
       });
 
       const setEditorContent = adapterSpec.setEditorContent.bind(adapterSpec);

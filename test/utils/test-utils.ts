@@ -27,3 +27,44 @@ export function getMatchesWithReplacement(completeString: string, partialString:
 export function assertDeepEqual<T>(val: T, expected: T) {
   assert.equal(JSON.stringify(val), JSON.stringify(expected));
 }
+
+export function containsEmptyTextNodes(node: Node) {
+  const nodeIterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT);
+  let currentNode: Node;
+  while (currentNode = nodeIterator.nextNode()) {
+    if (currentNode.textContent === '') {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function createTextNode(text: string) {
+  return document.createTextNode(text);
+}
+
+export function createDiv(children: Node[]) {
+  const div = document.createElement('div');
+  children.forEach(node => div.appendChild(node));
+  appendChildren(div, children);
+  return div;
+}
+
+export function appendChildren(parent: Node, children: Node[]) {
+  children.forEach(node => parent.appendChild(node));
+}
+
+export function createRange(startNode: Node, endNode: Node) {
+  const range = new Range();
+  range.setStart(startNode, 0);
+  range.setEndAfter(endNode);
+  return range;
+}
+
+export function describeIf(condition: boolean | string | undefined, testName: string, f: () => void) {
+  if (condition) {
+    describe(testName, f as any);
+  } else {
+    describe.skip(testName, f as any);
+  }
+}

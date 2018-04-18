@@ -20,11 +20,12 @@
 
 import {Match, MatchWithReplacement, CheckResult, Check, DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
 import * as _ from "lodash";
+import {isChrome} from '../utils/detect-browser';
 import {TextDomMapping, extractTextDomMapping, getEndDomPos} from "../utils/text-dom-mapping";
 import {AlignedMatch} from "../utils/alignment";
 import {lookupMatches} from "../lookup/diff-based";
 import {getCompleteFlagLength} from "../utils/match";
-import {fakeInputEvent, assertElementIsDisplayed} from "../utils/utils";
+import {fakeInputEvent, assertElementIsDisplayed, removeNode} from "../utils/utils";
 import {
   AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes,
   ExtractContentForCheckOpts
@@ -82,6 +83,8 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     text.scrollIntoView();
     this.scrollElementIntoView(text);
     text.remove();
+
+    removeEmptyTextNodesIfNeeded(tmp);
   }
 
   scrollToCurrentSelection() {
@@ -169,10 +172,17 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
         tail.deleteContents();
         head.deleteContents();
         head.insertNode(doc.createTextNode(match.originalMatch.replacement));
+
+        removeEmptyTextNodesIfNeeded(tail);
+        if (tail.startContainer !== head.startContainer || tail.endContainer !== head.endContainer) {
+          removeEmptyTextNodesIfNeeded(head);
+        }
       } else {
         const range = this.createRange(match.range[0], rangeLength, textDomMapping);
         range.deleteContents();
         range.insertNode(doc.createTextNode(match.originalMatch.replacement));
+
+        removeEmptyTextNodesIfNeeded(range);
       }
     }
   }
@@ -196,5 +206,42 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   getAutobindWrapperAttributes(): AutobindWrapperAttributes {
     return getAutobindWrapperAttributes(this.getEditorElement());
   }
-
 }
+
+// Workaround for https://bugs.chromium.org/p/chromium/issues/detail?id=811630.
+export function removeEmptyTextNodesIfNeeded(range: Range) {
+  // This code is just an workaround for a hopefully temporally chrome browser bug.
+  // We don't want to risk, that it causes any problems, if not really necessary.
+  try {
+    if (isChrome()) {
+      removeEmptyTextNodes(range);
+    }
+  } catch (error) {
+    console.error('Error in removeEmptyTextNodesIfNeeded:', error);
+  }
+}
+
+export function removeEmptyTextNodes(range: Range) {
+  const nodeIterator = document.createNodeIterator(range.commonAncestorContainer);
+  let currentNode: Node;
+  let afterStartNode = false;
+  while (currentNode = nodeIterator.nextNode()) {
+    if (currentNode === range.startContainer) {
+      afterStartNode = true;
+    }
+
+    if (afterStartNode) {
+      removeIfEmptyTextNode(currentNode);
+      if (currentNode === range.endContainer) {
+        break;
+      }
+    }
+  }
+}
+
+function removeIfEmptyTextNode(node: Node) {
+  if (node.nodeType === Node.TEXT_NODE && node.textContent === '') {
+    removeNode(node);
+  }
+}
+

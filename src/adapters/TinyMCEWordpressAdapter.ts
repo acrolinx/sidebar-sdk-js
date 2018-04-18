@@ -20,6 +20,7 @@
 
 
 import {Editor} from 'tinymce';
+import {removeEmptyTextNodesIfNeeded} from './AbstractRichtextEditorAdapter';
 import {TinyMCEAdapter} from "./TinyMCEAdapter";
 
 
@@ -75,5 +76,7 @@ export class TinyMCEWordpressAdapter extends TinyMCEAdapter {
     const ypos = text.getClientRects()[0].top;
     window.scrollTo(0, ypos);
     text.parentNode!.removeChild(text);
+
+    removeEmptyTextNodesIfNeeded(tmp);
   }
 }
