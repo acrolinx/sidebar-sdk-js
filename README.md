@@ -22,6 +22,12 @@ See: [Getting Started with Custom Integrations](https://support.acrolinx.com/hc/
 ```
 
 
+## Instructions for Contributing Code
+
+[CONTRIBUTING.md](CONTRIBUTING.md)
+
+
+
 ## Table of Content
 
 [The Acrolinx Sidebar](#the-acrolinx-sidebar)
