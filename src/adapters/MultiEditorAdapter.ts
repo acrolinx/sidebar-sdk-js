@@ -28,7 +28,6 @@ import * as _ from "lodash";
 import {Promise} from "es6-promise";
 import {EscapeHtmlCharactersResult, escapeHtmlCharacters} from "../utils/escaping";
 import {findNewIndex} from "../utils/alignment";
-import {containsText} from "../utils/utils";
 
 
 export interface RemappedMatches<T extends Match> {
