@@ -159,7 +159,7 @@ export class MultiEditorAdapter implements AdapterInterface {
         for (let i = 0; i < this.adapters.length; i++) {
           const extractionResult = results[i];
           const registeredAdapter = this.adapters[i];
-          if (hasError(extractionResult) || !containsText(extractionResult.content)) {
+          if (hasError(extractionResult)) {
             registeredAdapter.checkedRange = undefined;
             continue;
           }
