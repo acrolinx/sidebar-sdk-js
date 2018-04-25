@@ -28,7 +28,6 @@ import * as _ from "lodash";
 import {Promise} from "es6-promise";
 import {EscapeHtmlCharactersResult, escapeHtmlCharacters} from "../utils/escaping";
 import {findNewIndex} from "../utils/alignment";
-import {containsText} from "../utils/utils";
 
 
 export interface RemappedMatches<T extends Match> {
@@ -159,7 +158,7 @@ export class MultiEditorAdapter implements AdapterInterface {
         for (let i = 0; i < this.adapters.length; i++) {
           const extractionResult = results[i];
           const registeredAdapter = this.adapters[i];
-          if (hasError(extractionResult) || !containsText(extractionResult.content)) {
+          if (hasError(extractionResult)) {
             registeredAdapter.checkedRange = undefined;
             continue;
           }

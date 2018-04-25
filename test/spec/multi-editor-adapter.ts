@@ -56,7 +56,7 @@ describe('multi-editor-adapter', () => {
       return assert.ok(false, 'Extraction should have no error');
     }
 
-    const expectedWrappedContent2 = `<div id="acrolinx_integration1">${adapter2Content}</div>`;
+    const expectedWrappedContent2 = `<div id="acrolinx_integration0"></div><div id="acrolinx_integration1">${adapter2Content}</div>`;
     assert.equal(extractionResult2.content, expectedWrappedContent2);
 
     const adapter2ContentPos = expectedWrappedContent2.indexOf(adapter2Content);
