@@ -45,8 +45,7 @@ function isProbablySearchField(el: HTMLElement) {
 }
 
 function getEditableElements(doc: Document = document): HTMLElement[] {
-  const visibleElements: HTMLElement[] = _.filter((doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR) as any) as List<HTMLElement>) as HTMLElement[];
-  return _(visibleElements).flatMap((el: HTMLElement) => {
+  return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR)).flatMap((el: HTMLElement) => {
     if (isIFrame(el)) {
       try {
         return el.contentDocument ? getEditableElements(el.contentDocument) : [];
