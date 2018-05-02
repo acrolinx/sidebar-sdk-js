@@ -3,7 +3,6 @@ import {isIFrame, assign} from "../utils/utils";
 import {InputAdapter} from "../adapters/InputAdapter";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
 import {AdapterInterface, AdapterConf, CommonAdapterConf} from "../adapters/AdapterInterface";
-import List = _.List;
 
 
 const EDITABLE_ELEMENTS_SELECTOR = [
