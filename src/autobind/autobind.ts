@@ -10,6 +10,7 @@ const EDITABLE_ELEMENTS_SELECTOR = [
   'input:not([type])', // type attribute not present in markup
   'input[type=""]', // type attribute present, but empty
   'input[type=text]',
+  'input[type=hidden]',
   '[contenteditable="true"]',
   '[contenteditable="plaintext-only"]',
   '[contenteditable=""]',

@@ -6,7 +6,8 @@ export function getAutobindWrapperAttributes(element: Element) {
     'original-id': element.id,
     'original-class': element.className,
     'original-name': (element as HTMLInputElement).name,
-    'original-source': element.tagName.toLowerCase()
+    'original-source': element.tagName.toLowerCase(),
+    'original-display': element.getAttribute("eleDisplay")
   };
   return _.omitBy(attributes, _.isEmpty) as AutobindWrapperAttributes;
 }
