@@ -1,15 +1,15 @@
 import * as _ from "lodash";
-import {isIFrame, assign, isDisplayed} from "../utils/utils";
+import {isIFrame, assign} from "../utils/utils";
 import {InputAdapter} from "../adapters/InputAdapter";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
 import {AdapterInterface, AdapterConf, CommonAdapterConf} from "../adapters/AdapterInterface";
-import List = _.List;
 
 
 const EDITABLE_ELEMENTS_SELECTOR = [
   'input:not([type])', // type attribute not present in markup
   'input[type=""]', // type attribute present, but empty
   'input[type=text]',
+  'input[type=hidden]',
   '[contenteditable="true"]',
   '[contenteditable="plaintext-only"]',
   '[contenteditable=""]',
@@ -44,8 +44,7 @@ function isProbablySearchField(el: HTMLElement) {
 }
 
 function getEditableElements(doc: Document = document): HTMLElement[] {
-  const visibleElements: HTMLElement[] = _.filter((doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR) as any) as List<HTMLElement>, isDisplayed) as HTMLElement[];
-  return _(visibleElements).flatMap((el: HTMLElement) => {
+  return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR)).flatMap((el: HTMLElement) => {
     if (isIFrame(el)) {
       try {
         return el.contentDocument ? getEditableElements(el.contentDocument) : [];
