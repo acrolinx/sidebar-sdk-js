@@ -93,10 +93,6 @@ export function isDisplayed(element: Element): boolean {
     return false;
   }
   const boundingBox = element.getBoundingClientRect();
-  if (!!boundingBox.width == false && !!boundingBox.height == false) {
-    element.setAttribute("eleDisplay", "hidden");
-    return true;
-  }
   return !!boundingBox.width && !!boundingBox.height;
 }
 

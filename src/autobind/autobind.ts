@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import {isIFrame, assign, isDisplayed} from "../utils/utils";
+import {isIFrame, assign} from "../utils/utils";
 import {InputAdapter} from "../adapters/InputAdapter";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
 import {AdapterInterface, AdapterConf, CommonAdapterConf} from "../adapters/AdapterInterface";
@@ -45,7 +45,7 @@ function isProbablySearchField(el: HTMLElement) {
 }
 
 function getEditableElements(doc: Document = document): HTMLElement[] {
-  const visibleElements: HTMLElement[] = _.filter((doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR) as any) as List<HTMLElement>, isDisplayed) as HTMLElement[];
+  const visibleElements: HTMLElement[] = _.filter((doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR) as any) as List<HTMLElement>) as HTMLElement[];
   return _(visibleElements).flatMap((el: HTMLElement) => {
     if (isIFrame(el)) {
       try {
