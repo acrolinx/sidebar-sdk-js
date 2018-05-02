@@ -44,7 +44,7 @@ describe('adapter test', function() {
   testedAdapters.forEach(adapterSpec => {
     const adapterName = adapterSpec.name;
     describe('adapter ' + adapterName, function(this: any) {
-      this.timeout(5000);
+      this.timeout(10000);
 
       beforeEach(function(done) {
         this.timeout(5000);
