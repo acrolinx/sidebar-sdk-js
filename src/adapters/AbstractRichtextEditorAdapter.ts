@@ -76,10 +76,11 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   private scrollIntoView(sel: Selection) {
     const range = sel.getRangeAt(0);
     const tmp = range.cloneRange();
-    tmp.collapse(false);
+    tmp.collapse(true);
 
     const text = document.createElement('span');
     tmp.insertNode(text);
+    text.focus();
     text.scrollIntoView();
     this.scrollElementIntoView(text);
     text.remove();
