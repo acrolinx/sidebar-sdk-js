@@ -83,7 +83,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     text.focus();
     text.scrollIntoView();
     this.scrollElementIntoView(text);
-    text.remove();
+    removeNode(text);
 
     removeEmptyTextNodesIfNeeded(tmp);
   }

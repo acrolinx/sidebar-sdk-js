@@ -82,7 +82,7 @@ describe('adapter test', function() {
         }
       }
 
-      function givenAText(text: string, callback: (text: string) => void) {
+      function givenAText(text: string, callback: (initialExtractedContent: string) => void) {
         setEditorContent(text, () => {
           adapter.registerCheckCall({checkId: dummyCheckId});
           const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
@@ -663,6 +663,24 @@ describe('adapter test', function() {
           });
         });
       }
+
+      if (adapterSpec instanceof ContentEditableTestSetup
+        || adapterSpec instanceof CKEditorTestSetup
+        || adapterSpec instanceof TinyMCETestSetup
+      ) {
+        // This test cares for a bug that caused an additional "span" tag
+        // in IE 11
+        it('selectRanges should not change the document', (done) => {
+          const completeContent = 'begin selection end';
+          givenAText(completeContent, initialExtractedContent => {
+            const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'selection');
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            assertEditorRawContent(initialExtractedContent);
+            done();
+          });
+        });
+      }
+
 
     });
   });
