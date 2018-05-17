@@ -80,8 +80,8 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
 
     const text = document.createElement('span');
     tmp.insertNode(text);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
+    sel.removeAllRanges();
+    sel.addRange(range);
     text.focus();
     text.scrollIntoView();
     this.scrollElementIntoView(text);
