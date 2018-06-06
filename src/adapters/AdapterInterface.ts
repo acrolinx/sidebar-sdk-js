@@ -1,4 +1,10 @@
-import {Match, MatchWithReplacement, Check, CheckResult, DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
+import {
+  Match,
+  MatchWithReplacement,
+  Check,
+  DocumentSelection,
+  CheckedDocumentPart, CheckInformationKeyValuePair
+} from "../acrolinx-libs/plugin-interfaces";
 
 export interface CommonAdapterConf {
   scrollOffsetY?: number;
@@ -38,13 +44,19 @@ export interface ExtractContentForCheckOpts {
   checkSelection?: boolean;
 }
 
+export interface SuccessfulCheckResult {
+  checkedPart: CheckedDocumentPart;
+  embedCheckInformation?: CheckInformationKeyValuePair[];
+  inputFormat?: string;
+}
+
 export interface AdapterInterface {
   getEditor?(): any;
   getFormat?(): string;
   getContent?(): string;
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult | Promise<ContentExtractionResult>;
   registerCheckCall(checkInfo: Check): void;
-  registerCheckResult(checkResult: CheckResult): void;
+  registerCheckResult(checkResult: SuccessfulCheckResult): void;
   selectRanges(checkId: string, matches: Match[]): void;
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void;
   getAutobindWrapperAttributes?(): AutobindWrapperAttributes;

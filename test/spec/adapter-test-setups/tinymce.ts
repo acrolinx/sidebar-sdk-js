@@ -32,4 +32,8 @@ export class TinyMCETestSetup implements AdapterTestSetup {
     }
     $('#editorId').remove();
   }
+
+  getSelectedText(): string {
+    return tinymce.get("editorId").selection.getContent();
+  }
 }

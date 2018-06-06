@@ -18,7 +18,7 @@
  *
  */
 
-import {Match, MatchWithReplacement, CheckResult, Check, DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
+import {Match, MatchWithReplacement, Check, DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
 import * as _ from "lodash";
 import {isChrome} from '../utils/detect-browser';
 import {TextDomMapping, extractTextDomMapping, getEndDomPos} from "../utils/text-dom-mapping";
@@ -28,7 +28,7 @@ import {getCompleteFlagLength} from "../utils/match";
 import {fakeInputEvent, assertElementIsDisplayed, removeNode} from "../utils/utils";
 import {
   AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes,
-  ExtractContentForCheckOpts
+  ExtractContentForCheckOpts, SuccessfulCheckResult
 } from "./AdapterInterface";
 import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 
@@ -36,13 +36,11 @@ import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
 type TextMapping = TextDomMapping;
 
 export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
-  html: string;
   config: AdapterConf;
-  currentHtmlChecking: string;
-  isCheckingNow: boolean;
-  prevCheckedHtml: string;
+  currentContentChecking: string;
+  lastContentChecked: string;
 
-  constructor(conf: AdapterConf) {
+  protected constructor(conf: AdapterConf) {
     this.config = conf;
   }
 
@@ -57,16 +55,14 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   registerCheckCall(_checkInfo: Check) {
   }
 
-  registerCheckResult(_checkResult: CheckResult): void {
-    this.isCheckingNow = false;
-    this.currentHtmlChecking = this.html;
-    this.prevCheckedHtml = this.currentHtmlChecking;
+  registerCheckResult(_checkResult: SuccessfulCheckResult): void {
+    this.lastContentChecked = this.currentContentChecking;
   }
 
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult {
-    this.html = this.getContent();
-    this.currentHtmlChecking = this.html;
-    return {content: this.html, selection: opts.checkSelection ? this.getSelection() : undefined};
+    const html = this.getContent();
+    this.currentContentChecking = html;
+    return {content: html, selection: opts.checkSelection ? this.getSelection() : undefined};
   }
 
   protected getSelection(): DocumentSelection | undefined {
@@ -115,7 +111,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
 
   private selectMatches<T extends Match>(_checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
     const textMapping: TextMapping = this.getTextDomMapping();
-    const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.currentHtmlChecking, textMapping.text, matches);
+    const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.lastContentChecked, textMapping.text, matches);
 
     if (_.isEmpty(alignedMatches)) {
       throw new Error('Selected flagged content is modified.');

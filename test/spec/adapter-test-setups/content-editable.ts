@@ -23,5 +23,7 @@ export class ContentEditableTestSetup implements AdapterTestSetup {
     $('#editorId').remove();
   }
 
-
+  getSelectedText(): string {
+    return window.getSelection().toString();
+  }
 }

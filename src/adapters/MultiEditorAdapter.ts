@@ -1,3 +1,5 @@
+import {Promise} from "es6-promise";
+import * as _ from "lodash";
 /*
  *
  * * Copyright 2015 Acrolinx GmbH
@@ -17,17 +19,17 @@
  * * For more information visit: http://www.acrolinx.com
  *
  */
-import {Check, CheckResult, DocumentRange, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, DocumentRange, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {findNewIndex} from "../utils/alignment";
+import {escapeHtmlCharacters, EscapeHtmlCharactersResult} from "../utils/escaping";
 import {
   AdapterInterface,
-  ContentExtractionResult, ExtractContentForCheckOpts,
+  ContentExtractionResult,
+  ExtractContentForCheckOpts,
   hasError,
+  SuccessfulCheckResult,
   SuccessfulContentExtractionResult
 } from "./AdapterInterface";
-import * as _ from "lodash";
-import {Promise} from "es6-promise";
-import {EscapeHtmlCharactersResult, escapeHtmlCharacters} from "../utils/escaping";
-import {findNewIndex} from "../utils/alignment";
 
 
 export interface RemappedMatches<T extends Match> {
@@ -122,6 +124,7 @@ export class MultiEditorAdapter implements AdapterInterface {
   private config: MultiEditorAdapterConfig;
   private rootElementWrapper?: WrapperConf;
   private adapters: RegisteredAdapter[];
+  private adaptersOfLastSuccessfulCheck: RegisteredAdapter[];
 
   constructor(config: MultiEditorAdapterConfig = {}) {
     this.config = config;
@@ -183,10 +186,12 @@ export class MultiEditorAdapter implements AdapterInterface {
   registerCheckCall(_checkInfo: Check) {
   }
 
-  registerCheckResult(checkResult: CheckResult): void {
+  registerCheckResult(checkResult: SuccessfulCheckResult): void {
     this.adapters.forEach(entry => {
       entry.adapter.registerCheckResult(checkResult);
     });
+    // Shallow clone of the registered adapters
+    this.adaptersOfLastSuccessfulCheck = this.adapters.map(registeredAdapter => ({...registeredAdapter}));
   }
 
   selectRanges(checkId: string, matches: Match[]) {
@@ -214,7 +219,10 @@ export class MultiEditorAdapter implements AdapterInterface {
   }
 
   getAdapterForMatch(match: Match): CheckedRegisteredAdapter {
-    return _.find(this.adapters,
+    if (!this.adaptersOfLastSuccessfulCheck) {
+      throw new Error("Expected previous successful check.");
+    }
+    return _.find(this.adaptersOfLastSuccessfulCheck,
       (adapter: RegisteredAdapter) => {
         const checkedRange = adapter.checkedRange;
         return !!checkedRange && (match.range[0] >= checkedRange[0]) && (match.range[1] <= checkedRange[1]);

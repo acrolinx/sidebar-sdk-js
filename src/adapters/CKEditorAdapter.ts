@@ -21,7 +21,7 @@
 import {Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
 import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
-import { scrollIntoView } from "../utils/scrolling";
+import {scrollIntoView} from "../utils/scrolling";
 
 
 export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
@@ -45,21 +45,12 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   }
 
   extractContentForCheck(): ContentExtractionResult {
-    this.html = this.getContent();
-    this.currentHtmlChecking = this.html;
     if (this.isInWysiwygMode()) {
-      // TODO: remove it after server side implementation. This is a workaround
-      if (this.html === '') {
-        this.html = '<span> </span>';
-      }
+      this.currentContentChecking = this.getContent();
+      return {content: this.currentContentChecking};
     } else {
-      if (this.isCheckingNow) {
-        this.isCheckingNow = false;
-      } else {
-        return {error: 'Action is not permitted in Source mode.'};
-      }
+      return {error: 'Action is not permitted in Source mode.'};
     }
-    return {content: this.html};
   }
 
   selectRanges(checkId: string, matches: Match[]) {

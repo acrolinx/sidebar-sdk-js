@@ -18,13 +18,16 @@
  *
  */
 
-import {Check, CheckResult, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {bindAdaptersForCurrentPage} from "../autobind/autobind";
 import {
-  AdapterInterface, CommonAdapterConf, ContentExtractionResult,
-  ExtractContentForCheckOpts
+  AdapterInterface,
+  CommonAdapterConf,
+  ContentExtractionResult,
+  ExtractContentForCheckOpts,
+  SuccessfulCheckResult
 } from "./AdapterInterface";
 import {MultiEditorAdapter, MultiEditorAdapterConfig} from "./MultiEditorAdapter";
-import {bindAdaptersForCurrentPage} from "../autobind/autobind";
 
 export class AutoBindAdapter implements AdapterInterface {
   private multiAdapter: MultiEditorAdapter;
@@ -53,7 +56,7 @@ export class AutoBindAdapter implements AdapterInterface {
   registerCheckCall(_checkInfo: Check) {
   }
 
-  registerCheckResult(_checkResult: CheckResult) {
+  registerCheckResult(_checkResult: SuccessfulCheckResult) {
   }
 
   selectRanges(checkId: string, matches: Match[]) {

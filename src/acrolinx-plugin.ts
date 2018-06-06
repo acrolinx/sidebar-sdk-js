@@ -175,7 +175,9 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
     if (checkResult.embedCheckInformation && this.config.onEmbedCheckData) {
       this.config.onEmbedCheckData(checkResult.embedCheckInformation, checkResult.inputFormat || "");
     }
-    return this.adapter.registerCheckResult(checkResult);
+    if (!checkResult.error) {
+      this.adapter.registerCheckResult(checkResult);
+    }
   }
 
   selectRanges(checkId: string, matches: MatchWithReplacement[]) {

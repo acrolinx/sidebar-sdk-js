@@ -3,7 +3,12 @@ import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
 
 import * as _ from 'lodash';
 import {isChrome} from '../../src/utils/detect-browser';
-import {assertDeepEqual, containsEmptyTextNodes, getMatchesWithReplacement} from "../utils/test-utils";
+import {
+  assertDeepEqual,
+  containsEmptyTextNodes,
+  getMatchesWithReplacement,
+  testIfWindowIsFocused
+} from "../utils/test-utils";
 import {AdapterInterface, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
 import {CodeMirrorTestSetup} from "./adapter-test-setups/codemirror";
 import {ContentEditableTestSetup} from "./adapter-test-setups/content-editable";
@@ -82,16 +87,28 @@ describe('adapter test', function() {
         }
       }
 
+      function registerCheckResult(text: string) {
+        adapter.registerCheckResult({
+          checkedPart: {
+            checkId: dummyCheckId,
+            range: [0, text.length]
+          }
+        });
+      }
+
       function givenAText(text: string, callback: (initialExtractedContent: string) => void) {
         setEditorContent(text, () => {
           adapter.registerCheckCall({checkId: dummyCheckId});
           const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
-          adapter.registerCheckResult({
-            checkedPart: {
-              checkId: dummyCheckId,
-              range: [0, text.length]
-            }
-          });
+          registerCheckResult(text);
+          callback(contentExtractionResult.content);
+        });
+      }
+
+      function givenATextWithoutCheckResult(text: string, callback: (initialExtractedContent: string) => void) {
+        setEditorContent(text, () => {
+          adapter.registerCheckCall({checkId: dummyCheckId});
+          const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
           callback(contentExtractionResult.content);
         });
       }
@@ -681,6 +698,35 @@ describe('adapter test', function() {
         });
       }
 
+      describe('previous successful check, but current check has not finished', () => {
+        let matchesWithReplacementOfFirstCheck: MatchWithReplacement[];
+        beforeEach((done) => {
+          const completeContent = 'begin selection end';
+          givenAText(completeContent, initialExtractedContent => {
+            matchesWithReplacementOfFirstCheck = getMatchesWithReplacement(initialExtractedContent, 'selection', 'replacement');
+            done();
+          });
+        });
+
+        testIfWindowIsFocused('selects ranges of previous check', (done) => {
+          const completeNewContent = 'change begin selection end';
+          givenATextWithoutCheckResult(completeNewContent, _initialExtractedContent => {
+            adapter.selectRanges(dummyCheckId, matchesWithReplacementOfFirstCheck);
+            const selectedText = adapterSpec.getSelectedText();
+            assert.equal(selectedText, 'selection');
+            done();
+          });
+        });
+
+        it('replaces ranges of previous check', (done) => {
+          const completeNewContent = 'change begin selection end';
+          givenATextWithoutCheckResult(completeNewContent, _initialExtractedContent => {
+            adapter.replaceRanges(dummyCheckId, matchesWithReplacementOfFirstCheck);
+            assertEditorText('change begin replacement end');
+            done();
+          });
+        });
+      });
 
     });
   });

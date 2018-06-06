@@ -68,3 +68,15 @@ export function describeIf(condition: boolean | string | undefined, testName: st
     describe.skip(testName, f as any);
   }
 }
+
+export function testIf(condition: boolean, testName: string, test: (done: () => void) => void) {
+  if (condition) {
+    it(testName, test);
+  } else {
+    it.skip(testName, test);
+  }
+}
+
+export function testIfWindowIsFocused(testName: string, test: (done: () => void) => void) {
+  testIf(document.hasFocus(), testName, test);
+}

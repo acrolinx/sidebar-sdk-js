@@ -41,4 +41,8 @@ export class CodeMirrorTestSetup implements AdapterTestSetup {
     this.editor.toTextArea();
     $('#editorId').remove();
   }
+
+  getSelectedText(): string {
+    return window.getSelection().toString();
+  }
 }

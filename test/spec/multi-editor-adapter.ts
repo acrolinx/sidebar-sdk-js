@@ -1,7 +1,11 @@
 import {MultiEditorAdapter} from "../../src/adapters/MultiEditorAdapter";
-import {AdapterInterface, ContentExtractionResult, isSuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
+import {
+  AdapterInterface,
+  ContentExtractionResult,
+  isSuccessfulContentExtractionResult, SuccessfulContentExtractionResult
+} from "../../src/adapters/AdapterInterface";
 import {Check, CheckResult, Match, MatchWithReplacement} from "../../src/acrolinx-libs/plugin-interfaces";
-import {assertDeepEqual} from "../utils/test-utils";
+import {assertDeepEqual, getMatchesWithReplacement} from "../utils/test-utils";
 
 const assert = chai.assert;
 
@@ -34,42 +38,69 @@ class MockedAdapter implements AdapterInterface {
 }
 
 describe('multi-editor-adapter', () => {
-  it('maps correctly if first adapter gets empty', async () => {
-    const multiAdapter = new MultiEditorAdapter({});
-    const adapter1 = new MockedAdapter('Content1');
+  describe('check 2 times, first adapter gets empty', async () => {
     const adapter2Content = 'Content2';
-    const adapter2 = new MockedAdapter(adapter2Content);
-    multiAdapter.addSingleAdapter(adapter1);
-    multiAdapter.addSingleAdapter(adapter2);
+    let multiAdapter: MultiEditorAdapter;
+    let extractionResult1: SuccessfulContentExtractionResult;
+    let extractionResult2: SuccessfulContentExtractionResult;
+    let adapter2: MockedAdapter;
+    let expectedWrappedContent2: string;
 
-    // Check the first time when adapter 1 has some content
-    const extractionResult = await multiAdapter.extractContentForCheck({});
-    if (!isSuccessfulContentExtractionResult(extractionResult)) {
-      return assert.ok(false, 'Extraction should have no error');
-    }
-    assert.equal(extractionResult.content, '<div id="acrolinx_integration0">Content1</div><div id="acrolinx_integration1">Content2</div>');
+    beforeEach(async () => {
+      multiAdapter = new MultiEditorAdapter({});
+      const adapter1 = new MockedAdapter('Content1');
+      adapter2 = new MockedAdapter(adapter2Content);
+      multiAdapter.addSingleAdapter(adapter1);
+      multiAdapter.addSingleAdapter(adapter2);
 
-    // Check the second time when adapter 1 has no content
-    adapter1.content = '';
-    const extractionResult2 = await multiAdapter.extractContentForCheck({});
-    if (!isSuccessfulContentExtractionResult(extractionResult2)) {
-      return assert.ok(false, 'Extraction should have no error');
-    }
+      // Check the first time when adapter 1 has some content
+      extractionResult1 = await multiAdapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
+      if (!isSuccessfulContentExtractionResult(extractionResult1)) {
+        return assert.ok(false, 'Extraction should have no error');
+      }
+      assert.equal(extractionResult1.content, `<div id="acrolinx_integration0">Content1</div><div id="acrolinx_integration1">${adapter2Content}</div>`);
+      multiAdapter.registerCheckResult({
+        checkedPart: {
+          checkId: 'dummyCheckId',
+          range: [0, extractionResult1.content.length]
+        }
+      });
 
-    const expectedWrappedContent2 = `<div id="acrolinx_integration0"></div><div id="acrolinx_integration1">${adapter2Content}</div>`;
-    assert.equal(extractionResult2.content, expectedWrappedContent2);
+      // Check the second time when adapter 1 has no content
+      adapter1.content = '';
+      extractionResult2 = await multiAdapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
+      if (!isSuccessfulContentExtractionResult(extractionResult2)) {
+        return assert.ok(false, 'Extraction should have no error');
+      }
 
-    const adapter2ContentPos = expectedWrappedContent2.indexOf(adapter2Content);
-    multiAdapter.selectRanges('dummyCheckId', [{
-      content: adapter2Content,
-      range: [adapter2ContentPos, adapter2ContentPos + adapter2Content.length]
-    }]);
+      expectedWrappedContent2 = `<div id="acrolinx_integration0"></div><div id="acrolinx_integration1">${adapter2Content}</div>`;
+      assert.equal(extractionResult2.content, expectedWrappedContent2);
+    });
 
-    assert.equal(adapter2.selectRangesCount, 1, 'selectRanges of adapter2 should be called once');
-    assertDeepEqual(adapter2.lastSelectedRanges, [{
-      content: adapter2Content,
-      range: [0, adapter2Content.length]
-    }]);
+
+    it('maps correctly based on first extraction, if second check check has not finished', async () => {
+      multiAdapter.selectRanges('dummyCheckId', getMatchesWithReplacement(extractionResult1.content, adapter2Content));
+
+      assert.equal(adapter2.selectRangesCount, 1, 'selectRanges of adapter2 should be called once');
+      assertDeepEqual(adapter2.lastSelectedRanges[0].content, adapter2Content);
+      assertDeepEqual(adapter2.lastSelectedRanges[0].range, [0, adapter2Content.length]);
+    });
+
+
+    it('maps correctly if first adapter gets empty', async () => {
+      multiAdapter.registerCheckResult({
+        checkedPart: {
+          checkId: 'dummyCheckId',
+          range: [0, extractionResult2.content.length]
+        }
+      });
+
+      multiAdapter.selectRanges('dummyCheckId', getMatchesWithReplacement(expectedWrappedContent2, adapter2Content));
+
+      assert.equal(adapter2.selectRangesCount, 1, 'selectRanges of adapter2 should be called once');
+      assertDeepEqual(adapter2.lastSelectedRanges[0].content, adapter2Content);
+      assertDeepEqual(adapter2.lastSelectedRanges[0].range, [0, adapter2Content.length]);
+    });
   });
 
   it('getFormat returns config.aggregateFormat', () => {

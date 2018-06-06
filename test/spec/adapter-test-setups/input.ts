@@ -22,4 +22,8 @@ export class InputAdapterTestSetup implements AdapterTestSetup {
   remove() {
     $('#editorId').remove();
   }
+
+  getSelectedText(): string {
+    return window.getSelection().toString();
+  }
 }

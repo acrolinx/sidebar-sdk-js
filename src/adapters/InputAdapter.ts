@@ -18,7 +18,7 @@
  *
  */
 
-import {Check, CheckResult, DocumentSelection, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, DocumentSelection, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import * as _ from "lodash";
 import {
   AdapterConf,
@@ -26,7 +26,7 @@ import {
   AutobindWrapperAttributes,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
-  getElementFromAdapterConf,
+  getElementFromAdapterConf, SuccessfulCheckResult,
 } from "./AdapterInterface";
 import {AlignedMatch} from "../utils/alignment";
 import {getCompleteFlagLength, isDangerousToReplace} from "../utils/match";
@@ -47,6 +47,7 @@ export class InputAdapter implements AdapterInterface {
   readonly element: ValidInputElement;
   config: InputAdapterConf;
   private currentContentChecking: string;
+  private lastContentChecked: string;
 
   constructor(conf: InputAdapterConf) {
     this.element = getElementFromAdapterConf(conf) as ValidInputElement;
@@ -86,7 +87,9 @@ export class InputAdapter implements AdapterInterface {
     }
   }
 
-  registerCheckResult(_checkResult: CheckResult): void {
+
+  registerCheckResult(_checkResult: SuccessfulCheckResult): void {
+    this.lastContentChecked = this.currentContentChecking;
   }
 
   registerCheckCall(_checkInfo: Check) {
@@ -121,7 +124,7 @@ export class InputAdapter implements AdapterInterface {
 
   selectMatches<T extends Match>(_checkId: string, matches: T[]): AlignedMatch<T>[] {
     assertElementIsDisplayed(this.element);
-    const alignedMatches = lookupMatches(this.currentContentChecking, this.getCurrentText(), matches, 'TEXT');
+    const alignedMatches = lookupMatches(this.lastContentChecked, this.getCurrentText(), matches, 'TEXT');
 
     if (_.isEmpty(alignedMatches)) {
       throw Error('Selected flagged content is modified.');
@@ -136,7 +139,7 @@ export class InputAdapter implements AdapterInterface {
     const el = this.element;
     let text = el.value;
     for (let match of reversedMatches) {
-      if (!isDangerousToReplace(this.currentContentChecking, match.originalMatch)) {
+      if (!isDangerousToReplace(this.lastContentChecked, match.originalMatch)) {
         text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
       }
     }

@@ -35,4 +35,8 @@ export class CKEditorTestSetup implements AdapterTestSetup {
     getCkEditorInstance('editorId').destroy(true);
     $('#editorId').remove();
   }
+
+  getSelectedText(): string {
+    return getCkEditorInstance('editorId').getSelection().getSelectedText();
+  }
 }

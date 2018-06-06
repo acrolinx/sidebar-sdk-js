@@ -18,13 +18,18 @@
  *
  */
 
-import {Check, CheckResult, DocumentSelection, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
-import * as _ from "lodash";
-import {AdapterInterface, ContentExtractionResult, ExtractContentForCheckOpts} from "./AdapterInterface";
-import {AlignedMatch} from "../utils/alignment";
 import {EditorFromTextArea} from "codemirror";
+import * as _ from "lodash";
+import {Check, DocumentSelection, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {lookupMatches} from "../lookup/diff-based";
+import {AlignedMatch} from "../utils/alignment";
 import {isDangerousToReplace} from "../utils/match";
+import {
+  AdapterInterface,
+  ContentExtractionResult,
+  ExtractContentForCheckOpts,
+  SuccessfulCheckResult
+} from "./AdapterInterface";
 
 const FORMAT_BY_MIME_TYPE: { [mime: string]: string } = {
   'text/html': 'HTML',
@@ -48,6 +53,7 @@ export type CodeMirrorAdapterConf = {
 export class CodeMirrorAdapter implements AdapterInterface {
   private config: CodeMirrorAdapterConf;
   private currentContentChecking: string;
+  private lastContentChecked: string;
   private formatDetectedByCheck: string | undefined;
 
   constructor(conf: CodeMirrorAdapterConf) {
@@ -95,20 +101,22 @@ export class CodeMirrorAdapter implements AdapterInterface {
     };
   }
 
-  registerCheckResult(checkResult: CheckResult): void {
+  registerCheckResult(checkResult: SuccessfulCheckResult): void {
     this.formatDetectedByCheck = checkResult.inputFormat;
+    this.lastContentChecked = this.currentContentChecking;
   }
 
   registerCheckCall(_checkInfo: Check) {
   }
 
   private lookupMatchesOrThrow<T extends Match>(matches: T[]): AlignedMatch<T>[] {
-    const alignedMatches = lookupMatches(this.currentContentChecking, this.getContent(), matches, 'TEXT');
+    const alignedMatches = lookupMatches(this.lastContentChecked!, this.getContent(), matches, 'TEXT');
     if (_.isEmpty(alignedMatches)) {
       throw Error('Selected flagged content is modified.');
     }
     return alignedMatches;
   }
+
 
   selectRanges(_checkId: string, matches: Match[]) {
     const alignedMatches = this.lookupMatchesOrThrow(matches);
@@ -122,7 +130,7 @@ export class CodeMirrorAdapter implements AdapterInterface {
 
     let replacementLength = 0;
     _.forEachRight(alignedMatches, match => {
-      if (!isDangerousToReplace(this.currentContentChecking, match.originalMatch)) {
+      if (!isDangerousToReplace(this.lastContentChecked!, match.originalMatch)) {
         const positionRange = this.selectRange(match.range);
         const escapedReplacement = escapeFunction(match.originalMatch.replacement);
         doc.replaceRange(escapedReplacement, positionRange[0], positionRange[1]);

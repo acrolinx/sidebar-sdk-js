@@ -10,4 +10,5 @@ export interface AdapterTestSetup {
   setEditorContent: (text: string, done: DoneCallback) => void;
   init: (done: InitAdapterCallback) => void;
   remove: () => void;
+  getSelectedText(): string;
 }
