@@ -8,7 +8,6 @@ const macOS = ["OSX", "Sierra"];
 
 const chromeLatest = ["chrome", "latest"];
 const firefoxLatest = ["firefox", "latest"];
-const firefoxEST = ["firefox", "45"];
 const ie11 = ["ie", "11"];
 const edge = ["edge", "latest"];
 const safari10 = ["Safari", "10"];
@@ -122,14 +121,12 @@ module.exports = function (config) {
       bs_edge_win: bsLauncher(win10, edge),
       bs_chrome_win: bsLauncher(win10, chromeLatest),
       bs_firefox_win: bsLauncher(win10, firefoxLatest),
-      bs_firefox_est_win: bsLauncher(win10, firefoxEST),
       bs_safari_macos: bsLauncher(macOS, safari10),
     },
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS', 'bs_ie11_win', 'bs_edge_win', 'bs_chrome_win', 'bs_firefox_win', 'bs_firefox_est_win',
-      'bs_safari_macos'],
+    browsers: ['PhantomJS', 'bs_ie11_win', 'bs_edge_win', 'bs_chrome_win', 'bs_firefox_win', 'bs_safari_macos'],
 
 
     // Continuous Integration mode
