@@ -287,10 +287,6 @@ export interface CheckResult {
    * Input Format of the document
    */
   inputFormat?: string;
-  /**
-   * If an error occurs during the check the error object will be set.
-   */
-  error?: CheckError;
 }
 
 
@@ -413,14 +409,6 @@ export interface SidebarError {
    * Log, read or display this message to get additional information about the occurred error.
    */
   message: string;
-}
-
-
-export interface CheckError extends SidebarError {
-  /**
-   * The id of the check corresponding the check id returned by AcrolinxSidebar.checkGlobal() calls.
-   */
-  checkId: string;
 }
 
 
@@ -626,14 +614,3 @@ export interface AcrolinxStorage {
   removeItem(key: string): void;
   setItem(key: string, data: string): void;
 }
-
-export const ErrorCodes = {
-  checkIsAlreadyRunning: 'checkIsAlreadyRunning',
-  userIsNotLoggedIn: 'userIsNotLoggedIn',
-  sidebarNotReadyForCheck: 'sidebarNotReadyForCheck',
-  checkCanceledByUser: 'checkCanceledByUser',
-  base64EncodedGzippedUnsupported: 'base64EncodedGzippedUnsupported'
-};
-
-
-

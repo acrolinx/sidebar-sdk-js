@@ -84,6 +84,11 @@ type IFrameWindowOfSidebar = Window & {
   acrolinxStorage?: AcrolinxSimpleStorage;
 };
 
+// For sidebars < 14.7
+interface DeprecatedCheckResult extends CheckResult {
+  error?: {};
+}
+
 class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
   public acrolinxSidebar: AcrolinxSidebar;
 
@@ -175,7 +180,7 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
     if (checkResult.embedCheckInformation && this.config.onEmbedCheckData) {
       this.config.onEmbedCheckData(checkResult.embedCheckInformation, checkResult.inputFormat || "");
     }
-    if (!checkResult.error) {
+    if (!(checkResult as DeprecatedCheckResult).error) {
       this.adapter.registerCheckResult(checkResult);
     }
   }
