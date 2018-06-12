@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>InputAdapter | sidebar-example</title>
+	<title>InputAdapter | acrolinx-sidebar-sdk</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">sidebar-example</a>
+					<a href="../index.html" class="title">acrolinx-sidebar-sdk</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -97,9 +97,9 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#config" class="tsd-kind-icon">config</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#currenthtmlchecking" class="tsd-kind-icon">current<wbr>Html<wbr>Checking</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_adapters_inputadapter_.inputadapter.html#currentcontentchecking" class="tsd-kind-icon">current<wbr>Content<wbr>Checking</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#element" class="tsd-kind-icon">element</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#html" class="tsd-kind-icon">html</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_adapters_inputadapter_.inputadapter.html#lastcontentchecked" class="tsd-kind-icon">last<wbr>Content<wbr>Checked</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -110,6 +110,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#getcontent" class="tsd-kind-icon">get<wbr>Content</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#getcurrenttext" class="tsd-kind-icon">get<wbr>Current<wbr>Text</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#getformat" class="tsd-kind-icon">get<wbr>Format</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_adapters_inputadapter_.inputadapter.html#getselection" class="tsd-kind-icon">get<wbr>Selection</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#registercheckcall" class="tsd-kind-icon">register<wbr>Check<wbr>Call</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#registercheckresult" class="tsd-kind-icon">register<wbr>Check<wbr>Result</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_adapters_inputadapter_.inputadapter.html#replacealignedmatches" class="tsd-kind-icon">replace<wbr>Aligned<wbr>Matches</a></li>
@@ -134,7 +135,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L46">src/adapters/InputAdapter.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L50">src/adapters/InputAdapter.ts:50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -156,17 +157,17 @@
 					<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <a href="../modules/_src_adapters_inputadapter_.html#inputadapterconf" class="tsd-signature-type">InputAdapterConf</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L44">src/adapters/InputAdapter.ts:44</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L48">src/adapters/InputAdapter.ts:48</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="currenthtmlchecking" class="tsd-anchor"></a>
-					<h3>current<wbr>Html<wbr>Checking</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Html<wbr>Checking<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="currentcontentchecking" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> current<wbr>Content<wbr>Checking</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Content<wbr>Checking<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L46">src/adapters/InputAdapter.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L49">src/adapters/InputAdapter.ts:49</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -176,17 +177,17 @@
 					<div class="tsd-signature tsd-kind-icon">element<span class="tsd-signature-symbol">:</span> <a href="../modules/_src_adapters_inputadapter_.html#validinputelement" class="tsd-signature-type">ValidInputElement</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L43">src/adapters/InputAdapter.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L47">src/adapters/InputAdapter.ts:47</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="html" class="tsd-anchor"></a>
-					<h3>html</h3>
-					<div class="tsd-signature tsd-kind-icon">html<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="lastcontentchecked" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> last<wbr>Content<wbr>Checked</h3>
+					<div class="tsd-signature tsd-kind-icon">last<wbr>Content<wbr>Checked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L45">src/adapters/InputAdapter.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L50">src/adapters/InputAdapter.ts:50</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -197,16 +198,22 @@
 					<a name="extractcontentforcheck" class="tsd-anchor"></a>
 					<h3>extract<wbr>Content<wbr>For<wbr>Check</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">extract<wbr>Content<wbr>For<wbr>Check<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_src_adapters_adapterinterface_.html#contentextractionresult" class="tsd-signature-type">ContentExtractionResult</a></li>
+						<li class="tsd-signature tsd-kind-icon">extract<wbr>Content<wbr>For<wbr>Check<span class="tsd-signature-symbol">(</span>opts<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_adapters_adapterinterface_.extractcontentforcheckopts.html" class="tsd-signature-type">ExtractContentForCheckOpts</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_src_adapters_adapterinterface_.html#contentextractionresult" class="tsd-signature-type">ContentExtractionResult</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#extractcontentforcheck">extractContentForCheck</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L65">src/adapters/InputAdapter.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L69">src/adapters/InputAdapter.ts:69</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>opts: <a href="../interfaces/_src_adapters_adapterinterface_.extractcontentforcheckopts.html" class="tsd-signature-type">ExtractContentForCheckOpts</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../modules/_src_adapters_adapterinterface_.html#contentextractionresult" class="tsd-signature-type">ContentExtractionResult</a></h4>
 						</li>
 					</ul>
@@ -222,7 +229,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#getautobindwrapperattributes">getAutobindWrapperAttributes</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L136">src/adapters/InputAdapter.ts:136</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L159">src/adapters/InputAdapter.ts:159</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_adapters_adapterinterface_.autobindwrapperattributes.html" class="tsd-signature-type">AutobindWrapperAttributes</a></h4>
@@ -240,7 +247,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#getcontent">getContent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L53">src/adapters/InputAdapter.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L57">src/adapters/InputAdapter.ts:57</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -257,7 +264,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L57">src/adapters/InputAdapter.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L61">src/adapters/InputAdapter.ts:61</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -275,12 +282,32 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#getformat">getFormat</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L61">src/adapters/InputAdapter.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L65">src/adapters/InputAdapter.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">"TEXT"</span>
 								<span class="tsd-signature-symbol"> | </span>
 								<span class="tsd-signature-type">"MARKDOWN"</span>
+							</h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="getselection" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Selection</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Selection<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_acrolinx_libs_plugin_interfaces_.documentselection.html" class="tsd-signature-type">DocumentSelection</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L77">src/adapters/InputAdapter.ts:77</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_acrolinx_libs_plugin_interfaces_.documentselection.html" class="tsd-signature-type">DocumentSelection</a>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
 							</h4>
 						</li>
 					</ul>
@@ -296,7 +323,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#registercheckcall">registerCheckCall</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L74">src/adapters/InputAdapter.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L95">src/adapters/InputAdapter.ts:95</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -313,20 +340,20 @@
 					<a name="registercheckresult" class="tsd-anchor"></a>
 					<h3>register<wbr>Check<wbr>Result</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">register<wbr>Check<wbr>Result<span class="tsd-signature-symbol">(</span>_checkResult<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_acrolinx_libs_plugin_interfaces_.checkresult.html" class="tsd-signature-type">CheckResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">register<wbr>Check<wbr>Result<span class="tsd-signature-symbol">(</span>_checkResult<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_adapters_adapterinterface_.successfulcheckresult.html" class="tsd-signature-type">SuccessfulCheckResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#registercheckresult">registerCheckResult</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L71">src/adapters/InputAdapter.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L91">src/adapters/InputAdapter.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>_checkResult: <a href="../interfaces/_src_acrolinx_libs_plugin_interfaces_.checkresult.html" class="tsd-signature-type">CheckResult</a></h5>
+									<h5>_checkResult: <a href="../interfaces/_src_adapters_adapterinterface_.successfulcheckresult.html" class="tsd-signature-type">SuccessfulCheckResult</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -343,7 +370,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L116">src/adapters/InputAdapter.ts:116</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L137">src/adapters/InputAdapter.ts:137</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -367,7 +394,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#replaceranges">replaceRanges</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L126">src/adapters/InputAdapter.ts:126</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L149">src/adapters/InputAdapter.ts:149</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -393,7 +420,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L77">src/adapters/InputAdapter.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L98">src/adapters/InputAdapter.ts:98</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -416,7 +443,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L104">src/adapters/InputAdapter.ts:104</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L125">src/adapters/InputAdapter.ts:125</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -449,7 +476,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#selectranges">selectRanges</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/InputAdapter.ts#L100">src/adapters/InputAdapter.ts:100</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/InputAdapter.ts#L121">src/adapters/InputAdapter.ts:121</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -491,14 +518,14 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_src_adapters_inputadapter_.inputadapter.html#config" class="tsd-kind-icon">config</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_adapters_inputadapter_.inputadapter.html#currenthtmlchecking" class="tsd-kind-icon">current<wbr>Html<wbr>Checking</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_adapters_inputadapter_.inputadapter.html#currentcontentchecking" class="tsd-kind-icon">current<wbr>Content<wbr>Checking</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_src_adapters_inputadapter_.inputadapter.html#element" class="tsd-kind-icon">element</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_adapters_inputadapter_.inputadapter.html#html" class="tsd-kind-icon">html</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_adapters_inputadapter_.inputadapter.html#lastcontentchecked" class="tsd-kind-icon">last<wbr>Content<wbr>Checked</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_src_adapters_inputadapter_.inputadapter.html#extractcontentforcheck" class="tsd-kind-icon">extract<wbr>Content<wbr>For<wbr>Check</a>
@@ -514,6 +541,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_src_adapters_inputadapter_.inputadapter.html#getformat" class="tsd-kind-icon">get<wbr>Format</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_adapters_inputadapter_.inputadapter.html#getselection" class="tsd-kind-icon">get<wbr>Selection</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_src_adapters_inputadapter_.inputadapter.html#registercheckcall" class="tsd-kind-icon">register<wbr>Check<wbr>Call</a>

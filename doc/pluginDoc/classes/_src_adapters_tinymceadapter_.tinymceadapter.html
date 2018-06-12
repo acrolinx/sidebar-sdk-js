@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>TinyMCEAdapter | sidebar-example</title>
+	<title>TinyMCEAdapter | acrolinx-sidebar-sdk</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">sidebar-example</a>
+					<a href="../index.html" class="title">acrolinx-sidebar-sdk</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -107,11 +107,9 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#config" class="tsd-kind-icon">config</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#currenthtmlchecking" class="tsd-kind-icon">current<wbr>Html<wbr>Checking</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#currentcontentchecking" class="tsd-kind-icon">current<wbr>Content<wbr>Checking</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#editorid" class="tsd-kind-icon">editor<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#html" class="tsd-kind-icon">html</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#ischeckingnow" class="tsd-kind-icon">is<wbr>Checking<wbr>Now</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#prevcheckedhtml" class="tsd-kind-icon">prev<wbr>Checked<wbr>Html</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#lastcontentchecked" class="tsd-kind-icon">last<wbr>Content<wbr>Checked</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -123,6 +121,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#geteditor" class="tsd-kind-icon">get<wbr>Editor</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#geteditordocument" class="tsd-kind-icon">get<wbr>Editor<wbr>Document</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#geteditorelement" class="tsd-kind-icon">get<wbr>Editor<wbr>Element</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#getselection" class="tsd-kind-icon">get<wbr>Selection</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#registercheckcall" class="tsd-kind-icon">register<wbr>Check<wbr>Call</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#registercheckresult" class="tsd-kind-icon">register<wbr>Check<wbr>Result</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_src_adapters_tinymceadapter_.tinymceadapter.html#replaceranges" class="tsd-kind-icon">replace<wbr>Ranges</a></li>
@@ -147,7 +146,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/TinyMCEAdapter.ts#L26">src/adapters/TinyMCEAdapter.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/TinyMCEAdapter.ts#L26">src/adapters/TinyMCEAdapter.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -170,18 +169,18 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#config">config</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L36">src/adapters/AbstractRichtextEditorAdapter.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L39">src/adapters/AbstractRichtextEditorAdapter.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="currenthtmlchecking" class="tsd-anchor"></a>
-					<h3>current<wbr>Html<wbr>Checking</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Html<wbr>Checking<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="currentcontentchecking" class="tsd-anchor"></a>
+					<h3>current<wbr>Content<wbr>Checking</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Content<wbr>Checking<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#currenthtmlchecking">currentHtmlChecking</a></p>
+						<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#currentcontentchecking">currentContentChecking</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L37">src/adapters/AbstractRichtextEditorAdapter.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L40">src/adapters/AbstractRichtextEditorAdapter.ts:40</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -191,40 +190,18 @@
 					<div class="tsd-signature tsd-kind-icon">editor<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/TinyMCEAdapter.ts#L26">src/adapters/TinyMCEAdapter.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/TinyMCEAdapter.ts#L26">src/adapters/TinyMCEAdapter.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="html" class="tsd-anchor"></a>
-					<h3>html</h3>
-					<div class="tsd-signature tsd-kind-icon">html<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="lastcontentchecked" class="tsd-anchor"></a>
+					<h3>last<wbr>Content<wbr>Checked</h3>
+					<div class="tsd-signature tsd-kind-icon">last<wbr>Content<wbr>Checked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#html">html</a></p>
+						<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#lastcontentchecked">lastContentChecked</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L35">src/adapters/AbstractRichtextEditorAdapter.ts:35</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="ischeckingnow" class="tsd-anchor"></a>
-					<h3>is<wbr>Checking<wbr>Now</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Checking<wbr>Now<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#ischeckingnow">isCheckingNow</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L38">src/adapters/AbstractRichtextEditorAdapter.ts:38</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="prevcheckedhtml" class="tsd-anchor"></a>
-					<h3>prev<wbr>Checked<wbr>Html</h3>
-					<div class="tsd-signature tsd-kind-icon">prev<wbr>Checked<wbr>Html<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#prevcheckedhtml">prevCheckedHtml</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L39">src/adapters/AbstractRichtextEditorAdapter.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L41">src/adapters/AbstractRichtextEditorAdapter.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -235,7 +212,7 @@
 					<a name="extractcontentforcheck" class="tsd-anchor"></a>
 					<h3>extract<wbr>Content<wbr>For<wbr>Check</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">extract<wbr>Content<wbr>For<wbr>Check<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_src_adapters_adapterinterface_.html#contentextractionresult" class="tsd-signature-type">ContentExtractionResult</a></li>
+						<li class="tsd-signature tsd-kind-icon">extract<wbr>Content<wbr>For<wbr>Check<span class="tsd-signature-symbol">(</span>opts<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_adapters_adapterinterface_.extractcontentforcheckopts.html" class="tsd-signature-type">ExtractContentForCheckOpts</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_src_adapters_adapterinterface_.html#contentextractionresult" class="tsd-signature-type">ContentExtractionResult</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -243,9 +220,15 @@
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#extractcontentforcheck">extractContentForCheck</a></p>
 								<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#extractcontentforcheck">extractContentForCheck</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L62">src/adapters/AbstractRichtextEditorAdapter.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L62">src/adapters/AbstractRichtextEditorAdapter.ts:62</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>opts: <a href="../interfaces/_src_adapters_adapterinterface_.extractcontentforcheckopts.html" class="tsd-signature-type">ExtractContentForCheckOpts</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../modules/_src_adapters_adapterinterface_.html#contentextractionresult" class="tsd-signature-type">ContentExtractionResult</a></h4>
 						</li>
 					</ul>
@@ -262,7 +245,7 @@
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#getautobindwrapperattributes">getAutobindWrapperAttributes</a></p>
 								<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#getautobindwrapperattributes">getAutobindWrapperAttributes</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L178">src/adapters/AbstractRichtextEditorAdapter.ts:178</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L205">src/adapters/AbstractRichtextEditorAdapter.ts:205</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_adapters_adapterinterface_.autobindwrapperattributes.html" class="tsd-signature-type">AutobindWrapperAttributes</a></h4>
@@ -281,7 +264,7 @@
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#getcontent">getContent</a></p>
 								<p>Overrides <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#getcontent">getContent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/TinyMCEAdapter.ts#L37">src/adapters/TinyMCEAdapter.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/TinyMCEAdapter.ts#L37">src/adapters/TinyMCEAdapter.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -292,17 +275,17 @@
 					<a name="geteditor" class="tsd-anchor"></a>
 					<h3>get<wbr>Editor</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Editor<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TinyMceEditor</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Editor<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Editor</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#geteditor">getEditor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/TinyMCEAdapter.ts#L33">src/adapters/TinyMCEAdapter.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/TinyMCEAdapter.ts#L33">src/adapters/TinyMCEAdapter.ts:33</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">TinyMceEditor</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Editor</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -317,7 +300,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#geteditordocument">getEditorDocument</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/TinyMCEAdapter.ts#L41">src/adapters/TinyMCEAdapter.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/TinyMCEAdapter.ts#L41">src/adapters/TinyMCEAdapter.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Document</span></h4>
@@ -335,10 +318,31 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#geteditorelement">getEditorElement</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L49">src/adapters/AbstractRichtextEditorAdapter.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L51">src/adapters/AbstractRichtextEditorAdapter.ts:51</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Element</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="getselection" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> get<wbr>Selection</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Selection<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_acrolinx_libs_plugin_interfaces_.documentselection.html" class="tsd-signature-type">DocumentSelection</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#getselection">getSelection</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L68">src/adapters/AbstractRichtextEditorAdapter.ts:68</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_acrolinx_libs_plugin_interfaces_.documentselection.html" class="tsd-signature-type">DocumentSelection</a>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">undefined</span>
+							</h4>
 						</li>
 					</ul>
 				</section>
@@ -354,7 +358,7 @@
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#registercheckcall">registerCheckCall</a></p>
 								<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#registercheckcall">registerCheckCall</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L53">src/adapters/AbstractRichtextEditorAdapter.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L55">src/adapters/AbstractRichtextEditorAdapter.ts:55</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -371,7 +375,7 @@
 					<a name="registercheckresult" class="tsd-anchor"></a>
 					<h3>register<wbr>Check<wbr>Result</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">register<wbr>Check<wbr>Result<span class="tsd-signature-symbol">(</span>_checkResult<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_acrolinx_libs_plugin_interfaces_.checkresult.html" class="tsd-signature-type">CheckResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">register<wbr>Check<wbr>Result<span class="tsd-signature-symbol">(</span>_checkResult<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_adapters_adapterinterface_.successfulcheckresult.html" class="tsd-signature-type">SuccessfulCheckResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -379,13 +383,13 @@
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#registercheckresult">registerCheckResult</a></p>
 								<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#registercheckresult">registerCheckResult</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L56">src/adapters/AbstractRichtextEditorAdapter.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L58">src/adapters/AbstractRichtextEditorAdapter.ts:58</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>_checkResult: <a href="../interfaces/_src_acrolinx_libs_plugin_interfaces_.checkresult.html" class="tsd-signature-type">CheckResult</a></h5>
+									<h5>_checkResult: <a href="../interfaces/_src_adapters_adapterinterface_.successfulcheckresult.html" class="tsd-signature-type">SuccessfulCheckResult</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -404,7 +408,7 @@
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#replaceranges">replaceRanges</a></p>
 								<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#replaceranges">replaceRanges</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L162">src/adapters/AbstractRichtextEditorAdapter.ts:162</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L189">src/adapters/AbstractRichtextEditorAdapter.ts:189</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -431,7 +435,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#scrollelementintoview">scrollElementIntoView</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L93">src/adapters/AbstractRichtextEditorAdapter.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L101">src/adapters/AbstractRichtextEditorAdapter.ts:101</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -455,7 +459,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#scrolltocurrentselection">scrollToCurrentSelection</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/TinyMCEAdapter.ts#L45">src/adapters/TinyMCEAdapter.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/TinyMCEAdapter.ts#L45">src/adapters/TinyMCEAdapter.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -474,7 +478,7 @@
 								<p>Implementation of <a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html">AdapterInterface</a>.<a href="../interfaces/_src_adapters_adapterinterface_.adapterinterface.html#selectranges">selectRanges</a></p>
 								<p>Inherited from <a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html">AbstractRichtextEditorAdapter</a>.<a href="_src_adapters_abstractrichtexteditoradapter_.abstractrichtexteditoradapter.html#selectranges">selectRanges</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L97">src/adapters/AbstractRichtextEditorAdapter.ts:97</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L105">src/adapters/AbstractRichtextEditorAdapter.ts:105</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -517,19 +521,13 @@
 								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#config" class="tsd-kind-icon">config</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#currenthtmlchecking" class="tsd-kind-icon">current<wbr>Html<wbr>Checking</a>
+								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#currentcontentchecking" class="tsd-kind-icon">current<wbr>Content<wbr>Checking</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#editorid" class="tsd-kind-icon">editor<wbr>Id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#html" class="tsd-kind-icon">html</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#ischeckingnow" class="tsd-kind-icon">is<wbr>Checking<wbr>Now</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#prevcheckedhtml" class="tsd-kind-icon">prev<wbr>Checked<wbr>Html</a>
+								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#lastcontentchecked" class="tsd-kind-icon">last<wbr>Content<wbr>Checked</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#extractcontentforcheck" class="tsd-kind-icon">extract<wbr>Content<wbr>For<wbr>Check</a>
@@ -548,6 +546,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#geteditorelement" class="tsd-kind-icon">get<wbr>Editor<wbr>Element</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#getselection" class="tsd-kind-icon">get<wbr>Selection</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_src_adapters_tinymceadapter_.tinymceadapter.html#registercheckcall" class="tsd-kind-icon">register<wbr>Check<wbr>Call</a>

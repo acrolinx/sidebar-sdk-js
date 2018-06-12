@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AcrolinxPlugin | sidebar-example</title>
+	<title>AcrolinxPlugin | acrolinx-sidebar-sdk</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">sidebar-example</a>
+					<a href="../index.html" class="title">acrolinx-sidebar-sdk</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -85,6 +85,12 @@
 					</li>
 				</ul>
 			</section>
+			<section class="tsd-panel">
+				<h3>Implemented by</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../classes/_src_acrolinx_plugin_.internalacrolinxsidebarplugin.html" class="tsd-signature-type">InternalAcrolinxSidebarPlugin</a></li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -96,6 +102,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#download" class="tsd-kind-icon">download</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#oncheckresult" class="tsd-kind-icon">on<wbr>Check<wbr>Result</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#oninitfinished" class="tsd-kind-icon">on<wbr>Init<wbr>Finished</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#openlogfile" class="tsd-kind-icon">open<wbr>Log<wbr>File</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#openwindow" class="tsd-kind-icon">open<wbr>Window</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#replaceranges" class="tsd-kind-icon">replace<wbr>Ranges</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#requestglobalcheck" class="tsd-kind-icon">request<wbr>Global<wbr>Check</a></li>
@@ -118,7 +125,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/acrolinx-libs/plugin-interfaces.ts#L476">src/acrolinx-libs/plugin-interfaces.ts:476</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L536">src/acrolinx-libs/plugin-interfaces.ts:536</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -147,7 +154,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/acrolinx-libs/plugin-interfaces.ts#L533">src/acrolinx-libs/plugin-interfaces.ts:533</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L594">src/acrolinx-libs/plugin-interfaces.ts:594</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -179,7 +186,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/acrolinx-libs/plugin-interfaces.ts#L488">src/acrolinx-libs/plugin-interfaces.ts:488</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L549">src/acrolinx-libs/plugin-interfaces.ts:549</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -208,7 +215,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/acrolinx-libs/plugin-interfaces.ts#L469">src/acrolinx-libs/plugin-interfaces.ts:469</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L529">src/acrolinx-libs/plugin-interfaces.ts:529</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -230,6 +237,28 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="openlogfile" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> open<wbr>Log<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">open<wbr>Log<wbr>File<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L604">src/acrolinx-libs/plugin-interfaces.ts:604</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>This method should open the log file.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="openwindow" class="tsd-anchor"></a>
 					<h3>open<wbr>Window</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
@@ -239,7 +268,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/acrolinx-libs/plugin-interfaces.ts#L538">src/acrolinx-libs/plugin-interfaces.ts:538</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L599">src/acrolinx-libs/plugin-interfaces.ts:599</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -266,7 +295,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/acrolinx-libs/plugin-interfaces.ts#L525">src/acrolinx-libs/plugin-interfaces.ts:525</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L586">src/acrolinx-libs/plugin-interfaces.ts:586</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -298,20 +327,28 @@
 					<a name="requestglobalcheck" class="tsd-anchor"></a>
 					<h3>request<wbr>Global<wbr>Check</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">request<wbr>Global<wbr>Check<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">request<wbr>Global<wbr>Check<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="_src_acrolinx_libs_plugin_interfaces_.requestglobalcheckoptions.html" class="tsd-signature-type">RequestGlobalCheckOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/acrolinx-libs/plugin-interfaces.ts#L482">src/acrolinx-libs/plugin-interfaces.ts:482</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L543">src/acrolinx-libs/plugin-interfaces.ts:543</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>The check button has been pushed and the AcrolinxPlugin is requested to call AcrolinxSidebar.checkGlobal().</p>
+									<p>The check button has been pushed and the AcrolinxPlugin is requested to call AcrolinxSidebar.checkGlobal().
+										If the plugin supports checkSelection (InitParameters.supported.checkSelection) options will be set
+									and contains a hint if the plugin should send the current selection when calling AcrolinxSidebar.checkGlobal().</p>
 								</div>
 							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <a href="_src_acrolinx_libs_plugin_interfaces_.requestglobalcheckoptions.html" class="tsd-signature-type">RequestGlobalCheckOptions</a></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
@@ -326,7 +363,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/acrolinx-libs/plugin-interfaces.ts#L459">src/acrolinx-libs/plugin-interfaces.ts:459</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L519">src/acrolinx-libs/plugin-interfaces.ts:519</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -348,7 +385,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/acrolinx-libs/plugin-interfaces.ts#L515">src/acrolinx-libs/plugin-interfaces.ts:515</a></li>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/acrolinx-libs/plugin-interfaces.ts#L576">src/acrolinx-libs/plugin-interfaces.ts:576</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -422,6 +459,9 @@
 								<a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#oninitfinished" class="tsd-kind-icon">on<wbr>Init<wbr>Finished</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#openlogfile" class="tsd-kind-icon">open<wbr>Log<wbr>File</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#openwindow" class="tsd-kind-icon">open<wbr>Window</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
@@ -447,10 +487,13 @@
 						<a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxsidebar.html" class="tsd-kind-icon">Acrolinx<wbr>Sidebar</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxstorage.html" class="tsd-kind-icon">Acrolinx<wbr>Storage</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_src_acrolinx_libs_plugin_interfaces_.check.html" class="tsd-kind-icon">Check</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.checkerror.html" class="tsd-kind-icon">Check<wbr>Error</a>
+						<a href="_src_acrolinx_libs_plugin_interfaces_.checkinformationkeyvaluepair.html" class="tsd-kind-icon">Check<wbr>Information<wbr>Key<wbr>Value<wbr>Pair</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_src_acrolinx_libs_plugin_interfaces_.checkoptions.html" class="tsd-kind-icon">Check<wbr>Options</a>
@@ -459,10 +502,16 @@
 						<a href="_src_acrolinx_libs_plugin_interfaces_.checkresult.html" class="tsd-kind-icon">Check<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.checksettings.html" class="tsd-kind-icon">Check<wbr>Settings</a>
+						<a href="_src_acrolinx_libs_plugin_interfaces_.checksettingsselection.html" class="tsd-kind-icon">Check<wbr>Settings<wbr>Selection</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_src_acrolinx_libs_plugin_interfaces_.checkeddocumentpart.html" class="tsd-kind-icon">Checked<wbr>Document<wbr>Part</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_src_acrolinx_libs_plugin_interfaces_.checkingprofileselection.html" class="tsd-kind-icon">Checking<wbr>Profile<wbr>Selection</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_src_acrolinx_libs_plugin_interfaces_.documentselection.html" class="tsd-kind-icon">Document<wbr>Selection</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_src_acrolinx_libs_plugin_interfaces_.downloadinfo.html" class="tsd-kind-icon">Download<wbr>Info</a>
@@ -486,6 +535,9 @@
 						<a href="_src_acrolinx_libs_plugin_interfaces_.openwindowparameters.html" class="tsd-kind-icon">Open<wbr>Window<wbr>Parameters</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_src_acrolinx_libs_plugin_interfaces_.requestglobalcheckoptions.html" class="tsd-kind-icon">Request<wbr>Global<wbr>Check<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="_src_acrolinx_libs_plugin_interfaces_.sidebarconfiguration.html" class="tsd-kind-icon">Sidebar<wbr>Configuration</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
@@ -495,13 +547,19 @@
 						<a href="_src_acrolinx_libs_plugin_interfaces_.softwarecomponent.html" class="tsd-kind-icon">Software<wbr>Component</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#checksettings" class="tsd-kind-icon">Check<wbr>Settings</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
 						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#checkeddocumentrange" class="tsd-kind-icon">Checked<wbr>Document<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#documentrange" class="tsd-kind-icon">Document<wbr>Range</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
 						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#invaliddocumentpart" class="tsd-kind-icon">Invalid<wbr>Document<wbr>Part</a>
 					</li>
-					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
-						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#errorcodes" class="tsd-kind-icon">Error<wbr>Codes</a>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#uimode" class="tsd-kind-icon">Ui<wbr>Mode</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
 						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#softwarecomponentcategory" class="tsd-kind-icon">Software<wbr>Component<wbr>Category</a>

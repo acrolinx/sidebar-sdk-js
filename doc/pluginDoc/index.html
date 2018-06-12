@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>sidebar-example</title>
+	<title>acrolinx-sidebar-sdk</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">sidebar-example</a>
+					<a href="index.html" class="title">acrolinx-sidebar-sdk</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -56,7 +56,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> sidebar-example</h1>
+			<h1> acrolinx-sidebar-sdk</h1>
 		</div>
 	</div>
 </header>
@@ -64,15 +64,21 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<h1 id="acrolinx-sidebar-demo">Acrolinx Sidebar Demo</h1>
-				<p>Showcase and library for an integration of the <a href="http://www.acrolinx.com/">Acrolinx</a> sidebar into a web application.
+				<h1 id="acrolinx-sidebar-sdk-js-build-status">Acrolinx Sidebar SDK JS <a href="https://travis-ci.org/acrolinx/sidebar-sdk-js"><img src="https://travis-ci.org/acrolinx/sidebar-sdk-js.svg?branch=master" alt="Build Status"></a></h1>
+				<p>Library for integration of the <a href="http://www.acrolinx.com/">Acrolinx</a> sidebar into a web application.
 				The library contains adapters to use in your web integration. These are ready to use for: Editable divs, input elements and rich text editors like CKEditor and TinyMCE.</p>
+				<p>See: <a href="https://support.acrolinx.com/hc/en-us/articles/205687652-Getting-Started-with-Custom-Integrations">Getting Started with Custom Integrations</a></p>
+				<h2 id="examples">Examples</h2>
+				<p><a href="https://github.com/acrolinx/acrolinx-sidebar-demo">https://github.com/acrolinx/acrolinx-sidebar-demo</a></p>
 				<h2 id="live-demo">Live Demo</h2>
-				<p><a href="https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/e99607abc61c923f36e926ecab29d4b15060630c/samples/index.html">Acrolinx Sidebar Live Demo</a></p>
+				<p><a href="https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.4.0/samples/index.html">Acrolinx Sidebar Live Demo</a></p>
+				<h2 id="installation">Installation</h2>
+				<pre><code> npm <span class="hljs-selector-tag">i</span> -S acrolinx-sidebar-sdk
+</code></pre><h2 id="instructions-for-contributing-code">Instructions for Contributing Code</h2>
+				<p><a href="CONTRIBUTING.md">CONTRIBUTING.md</a></p>
 				<h2 id="table-of-content">Table of Content</h2>
 				<p><a href="#the-acrolinx-sidebar">The Acrolinx Sidebar</a></p>
 				<p><a href="#prerequisites">Prerequisites</a></p>
-				<p><a href="#setting-up-the-sidebar-example">Setting up the Sidebar Example</a></p>
 				<p><a href="#getting-started-with-your-own-integration">Getting started with your own integration</a></p>
 				<p><a href="#sidebar-api-documentation">Sidebar API Documentation</a></p>
 				<p><a href="#license">License</a></p>
@@ -82,40 +88,12 @@
 					To get an impression what the sidebar looks like in other integration check the
 				<a href="https://support.acrolinx.com/hc/en-us/articles/205594781-Acrolinx-Sidebar-Edition-User-Interface-Reference">Acrolinx Support Center</a>.</p>
 				<h2 id="prerequisites">Prerequisites</h2>
-				<p>Please contact Acrolinx SDK support (sdk-support@acrolinx.com) for consulting and getting your integration certified.
+				<p>Please contact Acrolinx SDK support (<a href="mailto:sdk-support@acrolinx.com">sdk-support@acrolinx.com</a>) for consulting and getting your integration certified.
 					This sample works with a test license on an internal acrolinx server. This license is only meant for demonstration and developing purposes.
 				Once you finished your integration you&#39;ll have to get a license for your integration from Acrolinx.</p>
 				<p>Please note that this an example for a integration into a web application only.
 				Acrolinx offers different other SDKs for developing integrations. </p>
 				<p>Before you start developing your own integration, you might benefit from looking into the sidebar example.</p>
-				<h2 id="setting-up-the-sidebar-example">Setting up the Sidebar Example</h2>
-				<h3 id="using-nodejs-and-grunt-cli">using nodejs and grunt-cli</h3>
-				<ol>
-					<li><p>Make sure that git is in your PATH variable. You can verify that running </p>
-						<pre><code><span class="hljs-attribute"> git</span>
-</code></pre><p> in your console. If the command wasn&#39;t found, git is not in in your system&#39;s PATH variable.</p>
-					</li>
-					<li><p>After check out, make sure, that you have installed nodejs (which includes npm).</p>
-					</li>
-					<li><p>Install grunt-cli with</p>
-						<pre><code> npm install -g grunt-<span class="hljs-keyword">cli</span>
-</code></pre></li>
-					<li><p>In your console navigate into the projects root folder and install all required node modules with:</p>
-						<pre><code>     npm <span class="hljs-keyword">install</span>
-</code></pre></li>
-					<li><p>Now you can start the development server by typing:</p>
-						<pre><code><span class="hljs-attribute">    grunt</span>
-</code></pre><p>(If grunt complains while the bower:install task, you might have to execute &quot;bower install&quot; manually.)</p>
-						<p>Now open <a href="http://localhost:9002">http://localhost:9002</a> in your web-browser. Choose the sample, that you want to see.
-							You will see sidebars login page. If not already pre-filled type &#39;<a href="http://integration.acrolinx.com:8031">http://integration.acrolinx.com:8031</a>&#39; as the server
-						address and choose a username and a password to login. </p>
-						<p><img src="/doc/screenshot.png" alt="Screen Shot of Example"></p>
-					</li>
-				</ol>
-				<p>Within the sample client you can see how the sidebar interacts with different editors.
-					There are adapters for simple editable divs, input elements and rich text editors like CKEditor and TinyMCE ready to go.
-				You&#39;re integration can use these adapters and you&#39;ll won&#39;t have any headache about that.</p>
-				<p><a href="#table-of-content">back to top</a></p>
 				<h2 id="getting-started-with-your-own-integration">Getting started with your own integration</h2>
 				<p>The requirements to achieve this are:</p>
 				<ul>
@@ -199,9 +177,6 @@
 						<a href="modules/_src_acrolinx_plugin_.html">"src/acrolinx-<wbr>plugin"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_src_acrolinx_sidebar_integration_.html">"src/acrolinx-<wbr>sidebar-<wbr>integration"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_adapters_abstractrichtexteditoradapter_.html">"src/adapters/<wbr>Abstract<wbr>Richtext<wbr>Editor<wbr>Adapter"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -212,6 +187,9 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_adapters_ckeditoradapter_.html">"src/adapters/CKEditor<wbr>Adapter"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_adapters_codemirroradapter_.html">"src/adapters/<wbr>Code<wbr>Mirror<wbr>Adapter"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_adapters_contenteditableadapter_.html">"src/adapters/<wbr>Content<wbr>Editable<wbr>Adapter"</a>
@@ -232,10 +210,16 @@
 						<a href="modules/_src_autobind_autobind_.html">"src/autobind/autobind"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_export_for_browser_.html">"src/export-<wbr>for-<wbr>browser"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_floating_sidebar_async_storage_.html">"src/floating-<wbr>sidebar/async-<wbr>storage"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_floating_sidebar_floating_sidebar_.html">"src/floating-<wbr>sidebar/floating-<wbr>sidebar"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_index_.html">"src/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_lookup_diff_based_.html">"src/lookup/diff-<wbr>based"</a>
@@ -250,6 +234,9 @@
 						<a href="modules/_src_utils_alignment_.html">"src/utils/alignment"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_utils_detect_browser_.html">"src/utils/detect-<wbr>browser"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_utils_escaping_.html">"src/utils/escaping"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -257,6 +244,9 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_utils_match_.html">"src/utils/match"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_src_utils_range_.html">"src/utils/range"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_src_utils_scrolling_.html">"src/utils/scrolling"</a>
@@ -277,16 +267,37 @@
 						<a href="modules/_test_index_.html">"test/index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_test_spec_adapter_test_setups_adapter_test_setup_.html">"test/spec/adapter-<wbr>test-<wbr>setups/adapter-<wbr>test-<wbr>setup"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_test_spec_adapter_test_setups_ck_editor_.html">"test/spec/adapter-<wbr>test-<wbr>setups/ck-<wbr>editor"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_test_spec_adapter_test_setups_codemirror_.html">"test/spec/adapter-<wbr>test-<wbr>setups/codemirror"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_test_spec_adapter_test_setups_content_editable_.html">"test/spec/adapter-<wbr>test-<wbr>setups/content-<wbr>editable"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_test_spec_adapter_test_setups_input_.html">"test/spec/adapter-<wbr>test-<wbr>setups/input"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_test_spec_adapter_test_setups_tinymce_.html">"test/spec/adapter-<wbr>test-<wbr>setups/tinymce"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_test_spec_adapters_.html">"test/spec/adapters"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_test_spec_autobind_.html">"test/spec/autobind"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_test_spec_empty_text_node_chrome_bug_.html">"test/spec/empty-<wbr>text-<wbr>node-<wbr>chrome-<wbr>bug"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_test_spec_escaping_.html">"test/spec/escaping"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_test_spec_floating_sidebar_.html">"test/spec/floating-<wbr>sidebar"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_test_spec_lookup_.html">"test/spec/lookup"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_test_spec_lookup_unit_tests_diff_based_.html">"test/spec/lookup-<wbr>unit-<wbr>tests/diff-<wbr>based"</a>

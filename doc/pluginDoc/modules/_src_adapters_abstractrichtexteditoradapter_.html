@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;src/adapters/AbstractRichtextEditorAdapter&quot; | sidebar-example</title>
+	<title>&quot;src/adapters/AbstractRichtextEditorAdapter&quot; | acrolinx-sidebar-sdk</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">sidebar-example</a>
+					<a href="../index.html" class="title">acrolinx-sidebar-sdk</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -82,6 +82,14 @@
 								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_adapters_abstractrichtexteditoradapter_.html#textmapping" class="tsd-kind-icon">Text<wbr>Mapping</a></li>
 							</ul>
 						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_adapters_abstractrichtexteditoradapter_.html#removeemptytextnodes" class="tsd-kind-icon">remove<wbr>Empty<wbr>Text<wbr>Nodes</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_src_adapters_abstractrichtexteditoradapter_.html#removeemptytextnodesifneeded" class="tsd-kind-icon">remove<wbr>Empty<wbr>Text<wbr>Nodes<wbr>IfNeeded</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_src_adapters_abstractrichtexteditoradapter_.html#removeifemptytextnode" class="tsd-kind-icon">remove<wbr>IfEmpty<wbr>Text<wbr>Node</a></li>
+							</ul>
+						</section>
 					</div>
 				</section>
 			</section>
@@ -93,9 +101,81 @@
 					<div class="tsd-signature tsd-kind-icon">Text<wbr>Mapping<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_utils_text_dom_mapping_.textdommapping.html" class="tsd-signature-type">TextDomMapping</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/acrolinx-sidebar-demo/blob/66f70d7/src/adapters/AbstractRichtextEditorAdapter.ts#L32">src/adapters/AbstractRichtextEditorAdapter.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L36">src/adapters/AbstractRichtextEditorAdapter.ts:36</a></li>
 						</ul>
 					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="removeemptytextnodes" class="tsd-anchor"></a>
+					<h3>remove<wbr>Empty<wbr>Text<wbr>Nodes</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Empty<wbr>Text<wbr>Nodes<span class="tsd-signature-symbol">(</span>range<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Range</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L223">src/adapters/AbstractRichtextEditorAdapter.ts:223</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>range: <span class="tsd-signature-type">Range</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="removeemptytextnodesifneeded" class="tsd-anchor"></a>
+					<h3>remove<wbr>Empty<wbr>Text<wbr>Nodes<wbr>IfNeeded</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Empty<wbr>Text<wbr>Nodes<wbr>IfNeeded<span class="tsd-signature-symbol">(</span>range<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Range</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L211">src/adapters/AbstractRichtextEditorAdapter.ts:211</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>range: <span class="tsd-signature-type">Range</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="removeifemptytextnode" class="tsd-anchor"></a>
+					<h3>remove<wbr>IfEmpty<wbr>Text<wbr>Node</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>IfEmpty<wbr>Text<wbr>Node<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/f91ebc9/src/adapters/AbstractRichtextEditorAdapter.ts#L241">src/adapters/AbstractRichtextEditorAdapter.ts:241</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -117,6 +197,15 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_src_adapters_abstractrichtexteditoradapter_.html#textmapping" class="tsd-kind-icon">Text<wbr>Mapping</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_src_adapters_abstractrichtexteditoradapter_.html#removeemptytextnodes" class="tsd-kind-icon">remove<wbr>Empty<wbr>Text<wbr>Nodes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_src_adapters_abstractrichtexteditoradapter_.html#removeemptytextnodesifneeded" class="tsd-kind-icon">remove<wbr>Empty<wbr>Text<wbr>Nodes<wbr>IfNeeded</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_src_adapters_abstractrichtexteditoradapter_.html#removeifemptytextnode" class="tsd-kind-icon">remove<wbr>IfEmpty<wbr>Text<wbr>Node</a>
 					</li>
 				</ul>
 			</nav>
