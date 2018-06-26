@@ -122,6 +122,9 @@ export function createPluginMessageAdapter(): AcrolinxPlugin {
     },
 
     openWindow(_urlSpec) {
+    },
+
+    openLogFile() {
     }
 
   };

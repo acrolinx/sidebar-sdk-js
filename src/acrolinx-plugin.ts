@@ -63,6 +63,7 @@ export interface AcrolinxPluginConfig extends InitParameters {
   onEmbedCheckData?: (checkData: CheckInformationKeyValuePair[], format: string) => void;
   onInitFinished?: (initFinishedResult: InitResult) => void;
   onCheckResult?: (checkResult: CheckResult) => void;
+  openLogFile?: () => void;
 }
 
 const clientComponents = [
@@ -224,6 +225,12 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
 
   openWindow(opts: OpenWindowParameters) {
     window.open(opts.url);
+  }
+
+  openLogFile() {
+    if (this.config.openLogFile) {
+      this.config.openLogFile();
+    }
   }
 }
 
