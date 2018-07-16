@@ -9,3 +9,4 @@ import './spec/multi-plugin';
 import './spec/multi-editor-adapter';
 import './spec/floating-sidebar';
 import './spec/text-extraction';
+import './spec/sidebar-loader';

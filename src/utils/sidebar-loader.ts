@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as utils from "./utils";
 import {AcrolinxPluginConfig} from "../acrolinx-plugin";
 
@@ -6,6 +5,7 @@ export const SIDEBAR_URL = 'https://sidebar-classic.acrolinx-cloud.com/v14/prod/
 
 export class SidebarURLInvalidError extends Error {
   public details: string;
+
   constructor(public message: string, public configuredSidebarURL: string, public htmlLoaded: string) {
     super(message);
     this.configuredSidebarURL = configuredSidebarURL;
@@ -45,8 +45,6 @@ function createCompleteSidebarUrl(sidebarBaseUrl: string) {
 export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
   const sidebarBaseUrl = sidebarUrl;
 
-  const getAbsoluteAttributeValue = (s: string) => s.replace(/^.*"(.*)".*$/g, sidebarBaseUrl + '$1');
-  
   const completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
   utils.fetch(completeSidebarUrl, sidebarHtml => {
     if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
@@ -61,12 +59,14 @@ export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
     const withoutComments = sidebarHtml.replace(/<!--[\s\S]*?-->/g, '');
     const head = document.querySelector('head')!;
 
-    const css = _.map(withoutComments.match(/href=".*?"/g) || [], getAbsoluteAttributeValue);
+    const makeRelativeUrlsAbsolutToSidebar = (url: string) => rebaseRelativeUrl(url, sidebarBaseUrl);
+
+    const css = grepAttributeValues(withoutComments, 'href').map(makeRelativeUrlsAbsolutToSidebar);
     css.forEach(ref => {
       head.appendChild(createCSSLinkElement(ref));
     });
 
-    const scripts = _.map(withoutComments.match(/src=".*?"/g) || [], getAbsoluteAttributeValue);
+    const scripts = grepAttributeValues(withoutComments, 'src').map(makeRelativeUrlsAbsolutToSidebar);
     scripts.forEach(ref => {
       head.appendChild(createScriptElement(ref));
     });
@@ -74,11 +74,31 @@ export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
   });
 }
 
+// Exported only for testing
+export function grepAttributeValues(html: string, attribute: string): string[] {
+  const regexp = new RegExp(`${attribute}="(.*?)"`, 'g');
+  let matches;
+  const result = [];
+  while ((matches = regexp.exec(html)) !== null) {
+    result.push(matches[1]);
+  }
+  return result;
+}
+
+// Exported only for testing
+export function rebaseRelativeUrl(url: string, sidebarBaseUrl: string): string {
+  if (url.match(/^https?:/)) {
+    return url;
+  } else {
+    return sidebarBaseUrl + url;
+  }
+}
+
 export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFrameElement: HTMLIFrameElement, onSidebarLoaded: () => void) {
   if (config.sidebarHtml) {
-      injectSidebarHtml(config.sidebarHtml, sidebarIFrameElement);
-      onSidebarLoaded();
-      return;
+    injectSidebarHtml(config.sidebarHtml, sidebarIFrameElement);
+    onSidebarLoaded();
+    return;
   }
   const sidebarBaseUrl = config.sidebarUrl || SIDEBAR_URL;
   const completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
@@ -97,13 +117,19 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
           return;
         }
       }
-      const sidebarHtmlWithAbsoluteLinks = sidebarHtml
-        .replace(/src="/g, 'src="' + sidebarBaseUrl)
-        .replace(/href="/g, 'href="' + sidebarBaseUrl);
+
+      const sidebarHtmlWithAbsoluteLinks = rebaseRelativeUrls(sidebarHtml, sidebarBaseUrl);
       injectSidebarHtml(sidebarHtmlWithAbsoluteLinks, sidebarIFrameElement);
       onSidebarLoaded();
     });
   }
+}
+
+// Exported only for testing
+export function rebaseRelativeUrls(sidebarHtml: string, sidebarBaseUrl: string): string {
+  return sidebarHtml
+    .replace(/src="(?!https?:)/g, 'src="' + sidebarBaseUrl)
+    .replace(/href="(?!https?:)/g, 'href="' + sidebarBaseUrl);
 }
 
 function injectSidebarHtml(sidebarHtml: string, sidebarIFrameElement: HTMLIFrameElement) {
