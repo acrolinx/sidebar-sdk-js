@@ -41,6 +41,8 @@ function createCompleteSidebarUrl(sidebarBaseUrl: string) {
 /**
  * Loads the Styles and Scripts of the sidebar into the current window.
  * @param sidebarUrl must end with /
+ *
+ * TODO: Is this function currently used in any of our clients?
  */
 export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
   const sidebarBaseUrl = sidebarUrl;
