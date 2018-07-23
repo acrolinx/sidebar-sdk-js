@@ -60,7 +60,7 @@
     "webpack-dev-server": "^2.9.4"
   },
   "scripts": {
-    "buildDoc": "typedoc --out ./doc/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",
+    "buildDoc": "typedoc --out ./docs/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",
     "buildLocal": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run dist",
     "jenkins": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run testKarmaBs && npm run dist",
     "dist": "cp -r tmp/compiled/src/* dist && npm run minify",
