@@ -39,7 +39,7 @@
  *
  * For a minimal integration (not feature complete) you must implement {@link requestInit}, {@link requestGlobalCheck},
  * {@link configure},
- *   {@link selectRanges}, {@link replaceRanges} and {@link download}.
+ *   {@link selectRanges} and {@link replaceRanges}.
  */
 
 export interface SidebarConfiguration {
@@ -368,21 +368,6 @@ export interface MatchWithReplacement extends Match {
 }
 
 
-/**
- * An asset which should be downloaded by the integration and stored as the specified file name.
- */
-export interface DownloadInfo {
-  /**
-   * The URL for the file to download.
-   */
-  url: string;
-
-  /**
-   * The file name at which the file should be stored at the hard drive.
-   */
-  filename: string;
-}
-
 export interface OpenWindowParameters {
   url: string;
 }
@@ -584,14 +569,6 @@ export interface AcrolinxPlugin {
    * @param matchesWithReplacements The parts of the document, which should be replaced and its replacements.
    */
   replaceRanges(checkId: string, matchesWithReplacements: MatchWithReplacement[]): void;
-
-  /**
-   * This method is called if the sidebar needs to start a file download. Usually
-   * you just need to pop up the URL in the downloadInfo with existing browser functions.
-   *
-   * @param downloadInfo Contains the URL to download.
-   */
-  download(downloadInfo: DownloadInfo): void;
 
   /**
    * @param openWindowParameters

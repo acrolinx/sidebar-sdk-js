@@ -37,7 +37,6 @@ import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
 import {assign} from "./utils/utils";
 
-type DownloadInfo = acrolinxSidebarInterfaces.DownloadInfo;
 type MatchWithReplacement = acrolinxSidebarInterfaces.MatchWithReplacement;
 type AcrolinxPluginConfiguration = acrolinxSidebarInterfaces.AcrolinxPluginConfiguration;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
@@ -64,6 +63,7 @@ export interface AcrolinxPluginConfig extends InitParameters {
   onInitFinished?: (initFinishedResult: InitResult) => void;
   onCheckResult?: (checkResult: CheckResult) => void;
   openLogFile?: () => void;
+  openWindow?: (url: string) => void;
 }
 
 const clientComponents = [
@@ -218,13 +218,13 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
     }
   }
 
-  download(download: DownloadInfo) {
-    console.log('download: ', download.url, download);
-    window.open(download.url);
-  }
-
   openWindow(opts: OpenWindowParameters) {
-    window.open(opts.url);
+    if (this.config.openWindow) {
+      this.config.openWindow(opts.url);
+    }
+    else {
+      window.open(opts.url);
+    }
   }
 
   openLogFile() {

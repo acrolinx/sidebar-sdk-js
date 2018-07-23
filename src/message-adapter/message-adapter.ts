@@ -4,7 +4,6 @@ import {
   InitResult,
   AcrolinxPluginConfiguration,
   CheckResult,
-  DownloadInfo,
   MatchWithReplacement,
   InitParameters,
   CheckOptions,
@@ -116,9 +115,6 @@ export function createPluginMessageAdapter(): AcrolinxPlugin {
     },
 
     replaceRanges(_checkId: string, _matchesWithReplacement: MatchWithReplacement[]) {
-    },
-
-    download(_download: DownloadInfo) {
     },
 
     openWindow(_urlSpec) {
