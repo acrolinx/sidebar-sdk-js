@@ -38,8 +38,7 @@
  * 13) When the user selects a replacement {@link AcrolinxPlugin.replaceRanges|replaceRanges} is called.
  *
  * For a minimal integration (not feature complete) you must implement {@link requestInit}, {@link requestGlobalCheck},
- * {@link configure},
- *   {@link selectRanges} and {@link replaceRanges}.
+ * {@link configure}, {@link selectRanges} and {@link replaceRanges}.
  */
 
 export interface SidebarConfiguration {

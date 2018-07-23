@@ -191,12 +191,10 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
     } catch (msg) {
       console.log(msg);
 
-      this.acrolinxSidebar.invalidateRanges(matches.map(function(match) {
-          return {
-            checkId: checkId,
-            range: match.range
-          };
-        }
+      this.acrolinxSidebar.invalidateRanges(matches.map(match => ({
+          checkId: checkId,
+          range: match.range
+        })
       ));
     }
 
@@ -208,12 +206,10 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
       this.adapter.replaceRanges(checkId, matchesWithReplacement);
     } catch (msg) {
       console.log(msg);
-      this.acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(function(match) {
-          return {
-            checkId: checkId,
-            range: match.range
-          };
-        }
+      this.acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(match => ({
+          checkId: checkId,
+          range: match.range
+        })
       ));
     }
   }
@@ -221,8 +217,7 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
   openWindow(opts: OpenWindowParameters) {
     if (this.config.openWindow) {
       this.config.openWindow(opts.url);
-    }
-    else {
+    } else {
       window.open(opts.url);
     }
   }
