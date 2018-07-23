@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DownloadInfo | acrolinx-sidebar-sdk</title>
+	<title>ExtractContentForCheckOpts | acrolinx-sidebar-sdk</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,31 +56,24 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html">&quot;src/acrolinx-libs/plugin-interfaces&quot;</a>
+					<a href="../modules/_src_adapters_adapterinterface_.html">&quot;src/adapters/AdapterInterface&quot;</a>
 				</li>
 				<li>
-					<a href="_src_acrolinx_libs_plugin_interfaces_.downloadinfo.html">DownloadInfo</a>
+					<a href="_src_adapters_adapterinterface_.extractcontentforcheckopts.html">ExtractContentForCheckOpts</a>
 				</li>
 			</ul>
-			<h1>Interface DownloadInfo</h1>
+			<h1>Interface ExtractContentForCheckOpts</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>An asset which should be downloaded by the integration and stored as the specified file name.</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">DownloadInfo</span>
+						<span class="target">ExtractContentForCheckOpts</span>
 					</li>
 				</ul>
 			</section>
@@ -91,8 +84,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_acrolinx_libs_plugin_interfaces_.downloadinfo.html#filename" class="tsd-kind-icon">filename</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_acrolinx_libs_plugin_interfaces_.downloadinfo.html#url" class="tsd-kind-icon">url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_adapters_adapterinterface_.extractcontentforcheckopts.html#checkselection" class="tsd-kind-icon">check<wbr>Selection</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,34 +93,14 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="filename" class="tsd-anchor"></a>
-					<h3>filename</h3>
-					<div class="tsd-signature tsd-kind-icon">filename<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="checkselection" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> check<wbr>Selection</h3>
+					<div class="tsd-signature tsd-kind-icon">check<wbr>Selection<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/b32c4f5/src/acrolinx-libs/plugin-interfaces.ts#L383">src/acrolinx-libs/plugin-interfaces.ts:383</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/3d3b2b3/src/adapters/AdapterInterface.ts#L44">src/adapters/AdapterInterface.ts:44</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The file name at which the file should be stored at the hard drive.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="url" class="tsd-anchor"></a>
-					<h3>url</h3>
-					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/b32c4f5/src/acrolinx-libs/plugin-interfaces.ts#L378">src/acrolinx-libs/plugin-interfaces.ts:378</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The URL for the file to download.</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -139,110 +111,68 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html">"src/acrolinx-<wbr>libs/plugin-<wbr>interfaces"</a>
+						<a href="../modules/_src_adapters_adapterinterface_.html">"src/adapters/<wbr>Adapter<wbr>Interface"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html" class="tsd-kind-icon">Acrolinx<wbr>Plugin</a>
+						<a href="_src_adapters_adapterinterface_.adapterinterface.html" class="tsd-kind-icon">Adapter<wbr>Interface</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxpluginconfiguration.html" class="tsd-kind-icon">Acrolinx<wbr>Plugin<wbr>Configuration</a>
+						<a href="_src_adapters_adapterinterface_.autobindwrapperattributes.html" class="tsd-kind-icon">Autobind<wbr>Wrapper<wbr>Attributes</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxsidebar.html" class="tsd-kind-icon">Acrolinx<wbr>Sidebar</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.acrolinxstorage.html" class="tsd-kind-icon">Acrolinx<wbr>Storage</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.check.html" class="tsd-kind-icon">Check</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.checkinformationkeyvaluepair.html" class="tsd-kind-icon">Check<wbr>Information<wbr>Key<wbr>Value<wbr>Pair</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.checkoptions.html" class="tsd-kind-icon">Check<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.checkresult.html" class="tsd-kind-icon">Check<wbr>Result</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.checksettingsselection.html" class="tsd-kind-icon">Check<wbr>Settings<wbr>Selection</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.checkeddocumentpart.html" class="tsd-kind-icon">Checked<wbr>Document<wbr>Part</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.checkingprofileselection.html" class="tsd-kind-icon">Checking<wbr>Profile<wbr>Selection</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.documentselection.html" class="tsd-kind-icon">Document<wbr>Selection</a>
+						<a href="_src_adapters_adapterinterface_.commonadapterconf.html" class="tsd-kind-icon">Common<wbr>Adapter<wbr>Conf</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.downloadinfo.html" class="tsd-kind-icon">Download<wbr>Info</a>
+						<a href="_src_adapters_adapterinterface_.extractcontentforcheckopts.html" class="tsd-kind-icon">Extract<wbr>Content<wbr>For<wbr>Check<wbr>Opts</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_acrolinx_libs_plugin_interfaces_.downloadinfo.html#filename" class="tsd-kind-icon">filename</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_acrolinx_libs_plugin_interfaces_.downloadinfo.html#url" class="tsd-kind-icon">url</a>
+								<a href="_src_adapters_adapterinterface_.extractcontentforcheckopts.html#checkselection" class="tsd-kind-icon">check<wbr>Selection</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.initparameters.html" class="tsd-kind-icon">Init<wbr>Parameters</a>
+						<a href="_src_adapters_adapterinterface_.haseditorid.html" class="tsd-kind-icon">Has<wbr>EditorID</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.initresult.html" class="tsd-kind-icon">Init<wbr>Result</a>
+						<a href="_src_adapters_adapterinterface_.haselement.html" class="tsd-kind-icon">Has<wbr>Element</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.match.html" class="tsd-kind-icon">Match</a>
+						<a href="_src_adapters_adapterinterface_.haserror.html" class="tsd-kind-icon">Has<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.matchlocation.html" class="tsd-kind-icon">Match<wbr>Location</a>
+						<a href="_src_adapters_adapterinterface_.successfulcheckresult.html" class="tsd-kind-icon">Successful<wbr>Check<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.matchwithreplacement.html" class="tsd-kind-icon">Match<wbr>With<wbr>Replacement</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.openwindowparameters.html" class="tsd-kind-icon">Open<wbr>Window<wbr>Parameters</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.requestglobalcheckoptions.html" class="tsd-kind-icon">Request<wbr>Global<wbr>Check<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.sidebarconfiguration.html" class="tsd-kind-icon">Sidebar<wbr>Configuration</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.sidebarerror.html" class="tsd-kind-icon">Sidebar<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_src_acrolinx_libs_plugin_interfaces_.softwarecomponent.html" class="tsd-kind-icon">Software<wbr>Component</a>
+						<a href="_src_adapters_adapterinterface_.successfulcontentextractionresult.html" class="tsd-kind-icon">Successful<wbr>Content<wbr>Extraction<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#checksettings" class="tsd-kind-icon">Check<wbr>Settings</a>
+						<a href="../modules/_src_adapters_adapterinterface_.html#adapterconf" class="tsd-kind-icon">Adapter<wbr>Conf</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#checkeddocumentrange" class="tsd-kind-icon">Checked<wbr>Document<wbr>Range</a>
+						<a href="../modules/_src_adapters_adapterinterface_.html#contentextractionresult" class="tsd-kind-icon">Content<wbr>Extraction<wbr>Result</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#documentrange" class="tsd-kind-icon">Document<wbr>Range</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_adapters_adapterinterface_.html#getelementfromadapterconf" class="tsd-kind-icon">get<wbr>Element<wbr>From<wbr>Adapter<wbr>Conf</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#invaliddocumentpart" class="tsd-kind-icon">Invalid<wbr>Document<wbr>Part</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_adapters_adapterinterface_.html#haseditorid-1" class="tsd-kind-icon">has<wbr>EditorID</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#uimode" class="tsd-kind-icon">Ui<wbr>Mode</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_adapters_adapterinterface_.html#haselement-1" class="tsd-kind-icon">has<wbr>Element</a>
 					</li>
-					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
-						<a href="../modules/_src_acrolinx_libs_plugin_interfaces_.html#softwarecomponentcategory" class="tsd-kind-icon">Software<wbr>Component<wbr>Category</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_adapters_adapterinterface_.html#haserror-1" class="tsd-kind-icon">has<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_src_adapters_adapterinterface_.html#issuccessfulcontentextractionresult" class="tsd-kind-icon">is<wbr>Successful<wbr>Content<wbr>Extraction<wbr>Result</a>
 					</li>
 				</ul>
 			</nav>

@@ -73,7 +73,7 @@ Let's take a look at how the sidebar is loaded and the typical interactions with
 1. Load your host editor and your integration code.
  
 2. Register your integration as an Acrolinx Plugin (Check the API Documentation for the Acrolinx Plugin Interface.) 
- You'll find the API Documentation [here](https://cdn.rawgit.com/acrolinx/sidebar-sdk-js/v0.4.11/doc/pluginDoc/modules/_src_acrolinx_libs_plugin_interfaces_.html).
+ You'll find the API Documentation [here](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/_src_acrolinx_libs_plugin_interfaces_.html).
  ```
  var acrolinxPlugin = {...}
  ```
@@ -91,9 +91,9 @@ to initialize by calling `requestInit`.
 4. After initializing the sidebar will call `configure` and push the latest
  configuration to the plug-in.
  
- ![Initializing plug-in and sidebar](/docs/initSidebarPlugin.png)
+ ![Initializing plug-in and sidebar](docs/initSidebarPlugin.png)
  
-You'll find the API Documentation [here](https://cdn.rawgit.com/acrolinx/sidebar-sdk-js/v0.4.11/doc/pluginDoc/modules/_src_acrolinx_libs_plugin_interfaces_.html).
+You'll find the API Documentation [here](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/_src_acrolinx_libs_plugin_interfaces_.html).
 
 ### Checking
 
@@ -103,7 +103,7 @@ You'll find the API Documentation [here](https://cdn.rawgit.com/acrolinx/sidebar
 
 3. When the check finished, `onCheckResult` is called and the sidebar displays cards for the issues.
 
-![Checking with plug-in and sidebar](/docs/checking.png)
+![Checking with plug-in and sidebar](docs/checking.png)
  
 ### Other actions
 
@@ -111,13 +111,13 @@ You'll find the API Documentation [here](https://cdn.rawgit.com/acrolinx/sidebar
 - When the user clicks on a replacement the sidebar will call `replaceRanges`.
 
 These are the most important interactions between the Acrolinx sidebar and your integration. 
-Please check the [sidebar plugin API](https://cdn.rawgit.com/acrolinx/sidebar-sdk-js/v0.4.11/doc/pluginDoc/modules/_src_acrolinx_libs_plugin_interfaces_.html) for more information.
+Please check the [sidebar plugin API](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/_src_acrolinx_libs_plugin_interfaces_.html) for more information.
 
 [back to top](#table-of-content)
 
 ## Sidebar API Documentation
 
-Check our [sidebar plugin API](https://cdn.rawgit.com/acrolinx/sidebar-sdk-js/v0.4.11/doc/pluginDoc/modules/_src_acrolinx_libs_plugin_interfaces_.html).
+Check our [sidebar plugin API](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/_src_acrolinx_libs_plugin_interfaces_.html).
 
 ## License
 
