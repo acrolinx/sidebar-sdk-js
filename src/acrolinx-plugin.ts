@@ -59,7 +59,14 @@ export interface AcrolinxPluginConfig extends InitParameters {
   onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
   getDocumentReference?: () => string;
   acrolinxStorage?: AcrolinxSimpleStorage;
+
+  /**
+   * This optional function will be called after a successful check,
+   * if Embed Check Data is enabled on the Acrolinx core server.
+   * It’s the task of the integration to save the data in a suitable place.
+   */
   onEmbedCheckData?: (checkData: CheckInformationKeyValuePair[], format: string) => void;
+
   onInitFinished?: (initFinishedResult: InitResult) => void;
   onCheckResult?: (checkResult: CheckResult) => void;
   openLogFile?: () => void;
