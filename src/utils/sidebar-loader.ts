@@ -1,5 +1,6 @@
 import * as utils from "./utils";
 import {AcrolinxPluginConfig} from "../acrolinx-plugin";
+import {ACROLINX_STARTPAGE_INLINED_HTML} from "acrolinx-sidebar-startpage";
 
 export const SIDEBAR_URL = 'https://sidebar-classic.acrolinx-cloud.com/v14/prod/';
 
@@ -97,8 +98,8 @@ export function rebaseRelativeUrl(url: string, sidebarBaseUrl: string): string {
 }
 
 export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFrameElement: HTMLIFrameElement, onSidebarLoaded: () => void) {
-  if (config.sidebarHtml) {
-    injectSidebarHtml(config.sidebarHtml, sidebarIFrameElement);
+  if (config.sidebarHtml || !config.sidebarUrl) {
+    injectSidebarHtml(config.sidebarHtml || ACROLINX_STARTPAGE_INLINED_HTML, sidebarIFrameElement);
     onSidebarLoaded();
     return;
   }
