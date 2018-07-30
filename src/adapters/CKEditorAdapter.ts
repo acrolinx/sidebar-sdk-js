@@ -32,8 +32,12 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
     this.editorId = conf.editorId;
   }
 
-  getEditor() {
-    return CKEDITOR.instances[this.editorId as any];
+  getEditor(): CKEDITOR.editor {
+    const ckeditor = CKEDITOR.instances[this.editorId as any];
+    if (!ckeditor) {
+      throw new Error(`Can't find ckeditor with id '${this.editorId}'`);
+    }
+    return ckeditor;
   }
 
   getEditorDocument(): Document {

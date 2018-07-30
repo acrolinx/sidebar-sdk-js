@@ -1,10 +1,5 @@
 import {AdapterTestSetup, DoneCallback, InitAdapterCallback} from "./adapter-test-setup";
-import editor = CKEDITOR.editor;
 import {TinyMCEAdapter} from "../../../src/adapters/TinyMCEAdapter";
-
-export function getCkEditorInstance(id: string): editor {
-  return CKEDITOR.instances[id as any];
-}
 
 export class TinyMCETestSetup implements AdapterTestSetup {
   name = 'TinyMCEAdapter';

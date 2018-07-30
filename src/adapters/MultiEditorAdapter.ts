@@ -1,5 +1,3 @@
-import 'es6-promise/auto';
-import * as _ from "lodash";
 /*
  *
  * * Copyright 2015 Acrolinx GmbH
@@ -19,6 +17,8 @@ import * as _ from "lodash";
  * * For more information visit: http://www.acrolinx.com
  *
  */
+import 'es6-promise/auto';
+import * as _ from "lodash";
 import {Check, DocumentRange, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {findNewIndex} from "../utils/alignment";
 import {escapeHtmlCharacters, EscapeHtmlCharactersResult} from "../utils/escaping";

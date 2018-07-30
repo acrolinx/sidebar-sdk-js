@@ -1,8 +1,8 @@
 import * as _ from "lodash";
-import {isIFrame, assign} from "../utils/utils";
-import {InputAdapter} from "../adapters/InputAdapter";
+import {AdapterConf, AdapterInterface, CommonAdapterConf} from "../adapters/AdapterInterface";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
-import {AdapterInterface, AdapterConf, CommonAdapterConf} from "../adapters/AdapterInterface";
+import {InputAdapter} from "../adapters/InputAdapter";
+import {assign, isIFrame} from "../utils/utils";
 
 
 const EDITABLE_ELEMENTS_SELECTOR = [
@@ -44,7 +44,8 @@ function isProbablySearchField(el: HTMLElement) {
 }
 
 function getEditableElements(doc: Document = document): HTMLElement[] {
-  return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR)).flatMap((el: HTMLElement) => {
+  const editableElements: _.LoDashImplicitWrapper<ArrayLike<HTMLElement>> = _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR));
+  return editableElements.flatMap((el: HTMLElement) => {
     if (isIFrame(el)) {
       try {
         return el.contentDocument ? getEditableElements(el.contentDocument) : [];

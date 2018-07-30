@@ -3,7 +3,7 @@ import editor = CKEDITOR.editor;
 import {CKEditorAdapter} from "../../../src/adapters/CKEditorAdapter";
 
 export function getCkEditorInstance(id: string): editor {
-  return CKEDITOR.instances[id as any];
+  return CKEDITOR.instances[id as any]!;
 }
 
 export class CKEditorTestSetup implements AdapterTestSetup {
