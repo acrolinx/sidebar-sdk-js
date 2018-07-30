@@ -1,4 +1,5 @@
-import {AdapterTestSetup, DoneCallback, InitAdapterCallback} from "./adapter-test-setup";
+import {AdapterInterface} from "../../../src/adapters/AdapterInterface";
+import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
 import {TinyMCEAdapter} from "../../../src/adapters/TinyMCEAdapter";
 
 export class TinyMCETestSetup implements AdapterTestSetup {
@@ -11,14 +12,16 @@ export class TinyMCETestSetup implements AdapterTestSetup {
     done();
   }
 
-  init(done: InitAdapterCallback) {
-    tinymce.init({
-      selector: "#editorId",
-      height: 50,
-      init_instance_callback: () => {
-        done(new TinyMCEAdapter({editorId: 'editorId'}));
-      }
-    }).catch(done);
+  init() {
+    return new Promise<AdapterInterface>((resolve, reject) => {
+      tinymce.init({
+        selector: "#editorId",
+        height: 50,
+        init_instance_callback: () => {
+          resolve(new TinyMCEAdapter({editorId: 'editorId'}));
+        }
+      }).catch(reject);
+    });
   }
 
   remove() {
