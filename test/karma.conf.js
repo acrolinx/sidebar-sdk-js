@@ -33,6 +33,12 @@ module.exports = function (config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['browserify', 'mocha', 'chai'],
 
+    client: {
+      mocha: {
+        timeout: 5000
+      }
+    },
+
     // list of files / patterns to load in the browser
     // (If you change this, you might want to change test/index.html too.)
     files: [
