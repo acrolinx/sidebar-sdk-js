@@ -1,4 +1,4 @@
-import {Promise} from 'es6-promise';
+import 'es6-promise/auto';
 
 export interface AsyncStorage {
   get<T>(key: string): Promise<T | null>;

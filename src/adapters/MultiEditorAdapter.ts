@@ -1,4 +1,4 @@
-import {Promise} from "es6-promise";
+import 'es6-promise/auto';
 import * as _ from "lodash";
 /*
  *
