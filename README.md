@@ -1,4 +1,7 @@
-# Acrolinx Sidebar SDK JS [![Build Status](https://travis-ci.org/acrolinx/sidebar-sdk-js.svg?branch=master)](https://travis-ci.org/acrolinx/sidebar-sdk-js)
+# Acrolinx Sidebar SDK JS 
+[![Build Status](https://travis-ci.org/acrolinx/sidebar-sdk-js.svg?branch=master)](https://travis-ci.org/acrolinx/sidebar-sdk-js)
+[![dependencies Status](https://david-dm.org/acrolinx/sidebar-sdk-js/status.svg)](https://david-dm.org/acrolinx/sidebar-sdk-js)
+[![devDependencies Status](https://david-dm.org/acrolinx/sidebar-sdk-js/dev-status.svg)](https://david-dm.org/acrolinx/sidebar-sdk-js?type=dev)
 
 Library for integration of the [Acrolinx](http://www.acrolinx.com/) sidebar into a web application.
 The library contains adapters to use in your web integration. These are ready to use for: Editable divs, input elements and rich text editors like CKEditor and TinyMCE.
