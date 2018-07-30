@@ -150,36 +150,33 @@ export class MultiEditorAdapter implements AdapterInterface {
     if (this.config.beforeCheck) {
       this.config.beforeCheck(this);
     }
-    return new Promise((resolve, _reject) => {
-      const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck(opts));
-      Promise.all(contentExtractionResults).then((results: ContentExtractionResult[]) => {
-        let html = this.config.documentHeader || '';
-        let selectionRanges: DocumentRange[] = [];
-        if (this.rootElementWrapper) {
-          html += createStartTag(this.rootElementWrapper);
+    const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck(opts));
+    return Promise.all(contentExtractionResults).then((results: ContentExtractionResult[]): ContentExtractionResult => {
+      let html = this.config.documentHeader || '';
+      let selectionRanges: DocumentRange[] = [];
+      if (this.rootElementWrapper) {
+        html += createStartTag(this.rootElementWrapper);
+      }
+      for (let i = 0; i < this.adapters.length; i++) {
+        const extractionResult = results[i];
+        const registeredAdapter = this.adapters[i];
+        if (hasError(extractionResult)) {
+          registeredAdapter.checkedRange = undefined;
+          continue;
         }
-        for (let i = 0; i < this.adapters.length; i++) {
-          const extractionResult = results[i];
-          const registeredAdapter = this.adapters[i];
-          if (hasError(extractionResult)) {
-            registeredAdapter.checkedRange = undefined;
-            continue;
+        const {completeHtml, contentStart, contentEnd} = wrapAdapterContent(registeredAdapter, extractionResult);
+        registeredAdapter.checkedRange = [html.length + contentStart, html.length + contentEnd];
+        if (extractionResult.selection) {
+          for (let selectionRange of extractionResult.selection.ranges) {
+            selectionRanges.push([selectionRange[0] + registeredAdapter.checkedRange[0], selectionRange[1] + registeredAdapter.checkedRange[0]]);
           }
-          const {completeHtml, contentStart, contentEnd} = wrapAdapterContent(registeredAdapter, extractionResult);
-          registeredAdapter.checkedRange = [html.length + contentStart, html.length + contentEnd];
-          if (extractionResult.selection) {
-            for (let selectionRange of extractionResult.selection.ranges) {
-              selectionRanges.push([selectionRange[0] + registeredAdapter.checkedRange[0], selectionRange[1] + registeredAdapter.checkedRange[0]]);
-            }
-          }
-          html += completeHtml;
         }
-        if (this.rootElementWrapper) {
-          html += createEndTag(this.rootElementWrapper.tagName);
-        }
-        const contentExtractionResult: ContentExtractionResult = {content: html, selection: {ranges: selectionRanges}};
-        resolve(contentExtractionResult);
-      });
+        html += completeHtml;
+      }
+      if (this.rootElementWrapper) {
+        html += createEndTag(this.rootElementWrapper.tagName);
+      }
+      return {content: html, selection: {ranges: selectionRanges}};
     });
   }
 

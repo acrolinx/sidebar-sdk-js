@@ -73,8 +73,8 @@
     "testKarmaBs": "karma start test/karma.conf.js --browsers bs_edge_win,bs_chrome_win,bs_firefox_win,bs_safari_macos",
     "tsc": "tsc",
     "tscWatch": "tsc -w",
-    "tslint": "tslint 'src/**/*.ts' 'test/**/*.ts'",
-    "tslintFix": "tslint --fix 'src/**/*.ts' 'test/**/*.ts'",
+    "tslint": "tslint -p tsconfig.json 'src/**/*.ts' 'test/**/*.ts'",
+    "tslintFix": "tslint -p tsconfig.json --fix 'src/**/*.ts' 'test/**/*.ts'",
     "webpack": "webpack",
     "webpack-dev-server": "webpack-dev-server --host 0.0.0.0"
   }

@@ -18,7 +18,7 @@ export class TinyMCETestSetup implements AdapterTestSetup {
       init_instance_callback: () => {
         done(new TinyMCEAdapter({editorId: 'editorId'}));
       }
-    });
+    }).catch(done);
   }
 
   remove() {

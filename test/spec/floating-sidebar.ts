@@ -27,7 +27,7 @@ describe('async storage', () => {
           done();
         }).catch(done);
       }
-    );
+    ).catch(done);
   });
 
   it('set and get an string', (done) => {
@@ -38,7 +38,7 @@ describe('async storage', () => {
           done();
         }).catch(done);
       }
-    );
+    ).catch(done);
   });
 
   it('return null for undefined keys', (done) => {

@@ -291,7 +291,9 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
   }
 
   function savePosition() {
-    config.asyncStorage.set(POSITION_KEY, position);
+    config.asyncStorage.set(POSITION_KEY, position).catch(error => {
+      console.error("Error in FloatingSidebar.savePosition:", error);
+    });
   }
 
   function hideFloatingSidebar() {
@@ -381,6 +383,8 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
     show(floatingSidebarElement);
     move(loadedPosition);
     pullInAnimationIfNeeded();
+  }).catch(error => {
+    console.error("Error while trying to set initial position of FloatingSidebar:", error);
   });
 
 
