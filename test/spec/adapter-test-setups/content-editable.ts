@@ -1,5 +1,5 @@
-import {AdapterTestSetup, DoneCallback, InitAdapterCallback} from "./adapter-test-setup";
 import {ContentEditableAdapter} from "../../../src/adapters/ContentEditableAdapter";
+import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
 
 export class ContentEditableTestSetup implements AdapterTestSetup {
   name = 'ContentEditableAdapter';
@@ -7,9 +7,8 @@ export class ContentEditableTestSetup implements AdapterTestSetup {
   editorElement = '<div id="editorId" contenteditable="true">initial text</div>';
   inputEventWasTriggered: boolean;
 
-  init(done: InitAdapterCallback) {
-    const adapter = new ContentEditableAdapter({editorId: 'editorId'});
-    done(adapter);
+  init() {
+    return Promise.resolve(new ContentEditableAdapter({editorId: 'editorId'}));
   }
 
   setEditorContent(html: string, done: DoneCallback) {

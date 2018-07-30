@@ -51,13 +51,10 @@ describe('adapter test', function() {
     describe('adapter ' + adapterName, function(this: any) {
       this.timeout(10000);
 
-      beforeEach(function(done) {
+      beforeEach(async function() {
         this.timeout(5000);
         $('body').append(adapterSpec.editorElement);
-        adapterSpec.init(newAdapter => {
-          adapter = newAdapter;
-          done();
-        });
+        adapter = await adapterSpec.init();
       });
 
       afterEach(() => {
