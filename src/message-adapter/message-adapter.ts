@@ -64,7 +64,7 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: AcrolinxPlugin, 
     }
   };
 
-  injectPostCommandAsMessage(() => sidebarWindowIframe.contentWindow, sidebar);
+  injectPostCommandAsMessage(() => sidebarWindowIframe.contentWindow!, sidebar);
 
   function receiveMessage(event: MessageEvent) {
     const {command, args} = event.data;

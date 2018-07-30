@@ -30,7 +30,7 @@ export function assertDeepEqual<T>(val: T, expected: T) {
 
 export function containsEmptyTextNodes(node: Node) {
   const nodeIterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT);
-  let currentNode: Node;
+  let currentNode: Node | null;
   while (currentNode = nodeIterator.nextNode()) {
     if (currentNode.textContent === '') {
       return true;

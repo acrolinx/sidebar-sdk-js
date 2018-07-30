@@ -222,7 +222,7 @@ export function removeEmptyTextNodesIfNeeded(range: Range) {
 
 export function removeEmptyTextNodes(range: Range) {
   const nodeIterator = document.createNodeIterator(range.commonAncestorContainer);
-  let currentNode: Node;
+  let currentNode: Node | null;
   let afterStartNode = false;
   while (currentNode = nodeIterator.nextNode()) {
     if (currentNode === range.startContainer) {

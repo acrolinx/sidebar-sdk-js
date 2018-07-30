@@ -136,7 +136,7 @@ export function rebaseRelativeUrls(sidebarHtml: string, sidebarBaseUrl: string):
 }
 
 function injectSidebarHtml(sidebarHtml: string, sidebarIFrameElement: HTMLIFrameElement) {
-  const sidebarContentWindow = sidebarIFrameElement.contentWindow;
+  const sidebarContentWindow = sidebarIFrameElement.contentWindow!;
   sidebarContentWindow.document.open();
   sidebarContentWindow.document.write(sidebarHtml);
   sidebarContentWindow.document.close();
