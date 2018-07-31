@@ -1,4 +1,5 @@
 export {AcrolinxPlugin, autoBindFloatingSidebar} from "./acrolinx-plugin";
+export {AdapterInterface, AsyncAdapterInterface, CommonAdapterInterface} from "./adapters/AdapterInterface";
 export {InputAdapter} from "./adapters/InputAdapter";
 export {ContentEditableAdapter} from "./adapters/ContentEditableAdapter";
 export {AbstractRichtextEditorAdapter} from "./adapters/AbstractRichtextEditorAdapter";
