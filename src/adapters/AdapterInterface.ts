@@ -50,16 +50,29 @@ export interface SuccessfulCheckResult {
   inputFormat?: string;
 }
 
-export interface AdapterInterface {
-  getEditor?(): any;
+export interface CommonAdapterInterface {
   getFormat?(): string;
   getContent?(): string;
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult | Promise<ContentExtractionResult>;
   registerCheckCall(checkInfo: Check): void;
   registerCheckResult(checkResult: SuccessfulCheckResult): void;
+  getAutobindWrapperAttributes?(): AutobindWrapperAttributes;
+}
+
+export interface AdapterInterface extends CommonAdapterInterface {
   selectRanges(checkId: string, matches: Match[]): void;
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void;
-  getAutobindWrapperAttributes?(): AutobindWrapperAttributes;
+}
+
+export interface AsyncAdapterInterface extends AdapterInterface {
+  readonly isAsync: true;
+  readonly requiresSynchronization: boolean;
+  selectRanges(checkId: string, matches: Match[]): Promise<void>;
+  replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): Promise<void>;
+}
+
+export function isAsyncAdapterInterface(a: AdapterInterface | AsyncAdapterInterface): a is AsyncAdapterInterface {
+  return (a as AsyncAdapterInterface).isAsync;
 }
 
 export function hasError(a: ContentExtractionResult): a is HasError {

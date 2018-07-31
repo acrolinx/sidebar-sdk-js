@@ -21,21 +21,29 @@ import * as _ from "lodash";
 import * as acrolinxSidebarInterfaces from './acrolinx-libs/plugin-interfaces';
 import {
   CheckInformationKeyValuePair,
+  CheckResult,
   InitParameters,
   InitResult,
+  Match,
   OpenWindowParameters,
   RequestGlobalCheckOptions,
-  SidebarConfiguration,
-  CheckResult
+  SidebarConfiguration
 } from './acrolinx-libs/plugin-interfaces';
-import {AdapterInterface, ContentExtractionResult, hasError} from "./adapters/AdapterInterface";
+import {
+  AdapterInterface,
+  AsyncAdapterInterface,
+  ContentExtractionResult,
+  hasError,
+  isAsyncAdapterInterface
+} from "./adapters/AdapterInterface";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {MultiEditorAdapterConfig} from "./adapters/MultiEditorAdapter";
+import {SynchronizeAsyncAdapter} from "./adapters/SynchronizeAsyncAdapter";
 import {AsyncLocalStorage, AsyncStorage} from "./floating-sidebar/async-storage";
 import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
 import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter";
 import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
-import {assign} from "./utils/utils";
+import {assign, isPromise} from "./utils/utils";
 
 type MatchWithReplacement = acrolinxSidebarInterfaces.MatchWithReplacement;
 type AcrolinxPluginConfiguration = acrolinxSidebarInterfaces.AcrolinxPluginConfiguration;
@@ -82,10 +90,6 @@ const clientComponents = [
   }
 ];
 
-function isPromise(result: ContentExtractionResult | Promise<ContentExtractionResult>): result is Promise<ContentExtractionResult> {
-  return (<Promise<ContentExtractionResult>>result).then !== undefined;
-}
-
 type IFrameWindowOfSidebar = Window & {
   acrolinxSidebar: AcrolinxSidebar;
   acrolinxPlugin: AcrolinxSidebarPlugin;
@@ -97,7 +101,7 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
   public acrolinxSidebar: AcrolinxSidebar;
 
   constructor(private config: AcrolinxPluginConfig,
-              private adapter: AdapterInterface,
+              private adapter: AdapterInterface | AsyncAdapterInterface,
               private onGotSidebar: (p: InternalAcrolinxSidebarPlugin) => void,
               private sidebarContentWindow: IFrameWindowOfSidebar) {
   }
@@ -193,18 +197,13 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
     }
   }
 
-  selectRanges(checkId: string, matches: MatchWithReplacement[]) {
+  selectRanges(checkId: string, matches: Match[]) {
     console.log('selectRanges: ', checkId, matches);
     try {
-      this.adapter.selectRanges(checkId, matches);
-    } catch (msg) {
-      console.log(msg);
-
-      this.acrolinxSidebar.invalidateRanges(matches.map(match => ({
-          checkId: checkId,
-          range: match.range
-        })
-      ));
+      const result = this.adapter.selectRanges(checkId, matches);
+      this.handlePotentialPromiseError(result, checkId, matches);
+    } catch (error) {
+      this.handleRangeOperationError(error, checkId, matches);
     }
 
   }
@@ -212,15 +211,28 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
     console.log('replaceRanges: ', checkId, matchesWithReplacement);
     try {
-      this.adapter.replaceRanges(checkId, matchesWithReplacement);
-    } catch (msg) {
-      console.log(msg);
-      this.acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(match => ({
-          checkId: checkId,
-          range: match.range
-        })
-      ));
+      const result = this.adapter.replaceRanges(checkId, matchesWithReplacement);
+      this.handlePotentialPromiseError(result, checkId, matchesWithReplacement);
+    } catch (error) {
+      this.handleRangeOperationError(error, checkId, matchesWithReplacement);
     }
+  }
+
+  private handlePotentialPromiseError(result: Promise<void> | void, checkId: string, matchesWithReplacement: Match[]) {
+    if (isPromise(result)) {
+      result.catch(error => {
+        this.handleRangeOperationError(error, checkId, matchesWithReplacement);
+      });
+    }
+  }
+
+  private handleRangeOperationError(error: Error, checkId: string, matchesWithReplacement: Match[]) {
+    console.log(error);
+    this.acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(match => ({
+        checkId: checkId,
+        range: match.range
+      })
+    ));
   }
 
   openWindow(opts: OpenWindowParameters) {
@@ -238,7 +250,7 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
   }
 }
 
-function initInternalAcrolinxSidebarPlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface, onGotSidebar: () => void): InternalAcrolinxSidebarPlugin {
+function initInternalAcrolinxSidebarPlugin(config: AcrolinxPluginConfig, editorAdapter: AdapterInterface | AsyncAdapterInterface, onGotSidebar: () => void): InternalAcrolinxSidebarPlugin {
   const sidebarContainer = document.getElementById(config.sidebarContainerId);
 
   if (!sidebarContainer) {
@@ -285,7 +297,7 @@ function initInternalAcrolinxSidebarPlugin(config: AcrolinxPluginConfig, editorA
 
 export class AcrolinxPlugin {
   private readonly initConfig: AcrolinxPluginConfig;
-  private adapter: AdapterInterface;
+  private adapter: AdapterInterface | AsyncAdapterInterface;
   private config: SidebarConfiguration;
   private internalPlugin: InternalAcrolinxSidebarPlugin;
 
@@ -295,7 +307,11 @@ export class AcrolinxPlugin {
   }
 
   registerAdapter(adapter: AdapterInterface) {
-    this.adapter = adapter;
+    if (isAsyncAdapterInterface(adapter) && adapter.requiresSynchronization) {
+      this.adapter = new SynchronizeAsyncAdapter(adapter);
+    } else {
+      this.adapter = adapter;
+    }
   }
 
   configure(conf: SidebarConfiguration) {

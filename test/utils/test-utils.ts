@@ -80,3 +80,7 @@ export function testIf(condition: boolean, testName: string, test: (done: () => 
 export function testIfWindowIsFocused(testName: string, test: (done: () => void) => void) {
   testIf(document.hasFocus(), testName, test);
 }
+
+export function waitMs(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

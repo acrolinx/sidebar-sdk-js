@@ -6,6 +6,7 @@ import './spec/empty-text-node-chrome-bug';
 import './spec/escaping';
 import './spec/adapters';
 import './spec/multi-plugin';
+import './spec/async-adapter';
 import './spec/multi-editor-adapter';
 import './spec/floating-sidebar';
 import './spec/text-extraction';

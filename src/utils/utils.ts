@@ -109,3 +109,20 @@ export function containsText(s: string) {
 export function removeNode(node: Node) {
   node.parentNode!.removeChild(node);
 }
+
+export function isPromise<T>(result: T | Promise<T>): result is Promise<T> {
+  return (<Promise<T>>result).then !== undefined;
+}
+
+export class Deferred<T> {
+  resolve: (x: T) => void;
+  reject: (x: T) => void;
+  promise: Promise<T>;
+
+  constructor() {
+    this.promise = new Promise((resolve, reject) => {
+      this.resolve = resolve;
+      this.reject = reject;
+    });
+  }
+}
