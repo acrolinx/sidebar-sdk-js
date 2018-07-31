@@ -64,7 +64,7 @@ export interface AdapterInterface extends CommonAdapterInterface {
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void;
 }
 
-export interface AsyncAdapterInterface extends AdapterInterface {
+export interface AsyncAdapterInterface extends CommonAdapterInterface {
   readonly isAsync: true;
   readonly requiresSynchronization: boolean;
   selectRanges(checkId: string, matches: Match[]): Promise<void>;
