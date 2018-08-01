@@ -111,7 +111,7 @@ export function removeNode(node: Node) {
 }
 
 export function isPromise<T>(result: T | Promise<T>): result is Promise<T> {
-  return (<Promise<T>>result).then !== undefined;
+  return result && typeof (<Promise<T>>result).then === 'function';
 }
 
 export class Deferred<T> {
