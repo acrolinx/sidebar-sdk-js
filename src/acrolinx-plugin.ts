@@ -176,6 +176,7 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
       contentExtractionResultOrPromise.then((contentExtractionResult: ContentExtractionResult) => {
         this.requestGlobalCheckSync(contentExtractionResult, pFormat);
       }).catch(error => {
+        this.acrolinxSidebar.onGlobalCheckRejected();
         console.error('Error while adapter.extractContentForCheck:', error);
       });
     } else {
