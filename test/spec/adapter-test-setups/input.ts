@@ -5,7 +5,7 @@ export class InputAdapterTestSetup implements AdapterTestSetup {
   name = 'InputAdapter';
   inputFormat = 'TEXT';
   editorElement = '<textarea id="editorId">initial text</textarea>';
-  inputEventWasTriggered: boolean;
+  inputEventWasTriggered = false;
 
   init() {
     return Promise.resolve(new InputAdapter({editorId: 'editorId'}));

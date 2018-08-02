@@ -5,7 +5,7 @@ export class ContentEditableTestSetup implements AdapterTestSetup {
   name = 'ContentEditableAdapter';
   inputFormat = 'HTML';
   editorElement = '<div id="editorId" contenteditable="true">initial text</div>';
-  inputEventWasTriggered: boolean;
+  inputEventWasTriggered?: boolean;
 
   init() {
     return Promise.resolve(new ContentEditableAdapter({editorId: 'editorId'}));

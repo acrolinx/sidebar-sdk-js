@@ -11,7 +11,7 @@ const assert = chai.assert;
 
 class MockedAdapter implements AdapterInterface {
   selectRangesCount = 0;
-  lastSelectedRanges: Match[];
+  lastSelectedRanges!: Match[];
 
   constructor(public content = '') {
   }

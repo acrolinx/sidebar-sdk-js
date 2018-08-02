@@ -115,8 +115,8 @@ export function isPromise<T>(result: T | Promise<T>): result is Promise<T> {
 }
 
 export class Deferred<T> {
-  resolve: (x: T) => void;
-  reject: (x: T) => void;
+  resolve!: (x: T) => void;
+  reject!: (x: T) => void;
   promise: Promise<T>;
 
   constructor() {

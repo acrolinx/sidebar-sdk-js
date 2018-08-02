@@ -30,7 +30,7 @@ import {
 import {MultiEditorAdapter, MultiEditorAdapterConfig} from "./MultiEditorAdapter";
 
 export class AutoBindAdapter implements AdapterInterface {
-  private multiAdapter: MultiEditorAdapter;
+  private multiAdapter!: MultiEditorAdapter;
 
   constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf)) {
     this.initMultiAdapter();

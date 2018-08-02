@@ -124,7 +124,7 @@ export class MultiEditorAdapter implements AdapterInterface {
   private config: MultiEditorAdapterConfig;
   private rootElementWrapper?: WrapperConf;
   private adapters: RegisteredAdapter[];
-  private adaptersOfLastSuccessfulCheck: RegisteredAdapter[];
+  private adaptersOfLastSuccessfulCheck?: RegisteredAdapter[];
 
   constructor(config: MultiEditorAdapterConfig = {}) {
     this.config = config;

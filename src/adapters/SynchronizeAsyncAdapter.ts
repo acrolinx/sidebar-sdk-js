@@ -10,8 +10,8 @@ import {
 export class SynchronizeAsyncAdapter implements AsyncAdapterInterface {
   public readonly isAsync = true;
   public readonly requiresSynchronization = false;
-  public readonly getAutobindWrapperAttributes: () => AutobindWrapperAttributes;
-  public readonly getFormat: () => string;
+  public readonly getAutobindWrapperAttributes?: () => AutobindWrapperAttributes;
+  public readonly getFormat?: () => string;
 
   private workQueue = new WorkQueue();
 

@@ -33,8 +33,8 @@ class SlowMotionAsyncWrapper implements AsyncAdapterInterface {
   public readonly isAsync = true;
   public readonly requiresSynchronization = true;
 
-  public readonly getAutobindWrapperAttributes: () => AutobindWrapperAttributes;
-  public readonly getFormat: () => string;
+  public readonly getAutobindWrapperAttributes?: () => AutobindWrapperAttributes;
+  public readonly getFormat?: () => string;
 
   constructor(private readonly adapter: AdapterInterface) {
     if (adapter.getAutobindWrapperAttributes) {

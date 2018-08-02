@@ -98,7 +98,7 @@ type IFrameWindowOfSidebar = Window & {
 
 
 class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
-  public acrolinxSidebar: AcrolinxSidebar;
+  public acrolinxSidebar!: AcrolinxSidebar;
 
   constructor(private config: AcrolinxPluginConfig,
               private adapter: AdapterInterface | AsyncAdapterInterface,
@@ -298,9 +298,9 @@ function initInternalAcrolinxSidebarPlugin(config: AcrolinxPluginConfig, editorA
 
 export class AcrolinxPlugin {
   private readonly initConfig: AcrolinxPluginConfig;
-  private adapter: AdapterInterface | AsyncAdapterInterface;
+  private adapter?: AdapterInterface | AsyncAdapterInterface;
   private config: SidebarConfiguration;
-  private internalPlugin: InternalAcrolinxSidebarPlugin;
+  private internalPlugin?: InternalAcrolinxSidebarPlugin;
 
   constructor(conf: AcrolinxPluginConfig) {
     this.initConfig = conf;
@@ -318,7 +318,7 @@ export class AcrolinxPlugin {
   configure(conf: SidebarConfiguration) {
     this.config = _.assign(this.config, conf);
     // TODO: Move the this whole method into the internal plugin?
-    if (this.internalPlugin.acrolinxSidebar) {
+    if (this.internalPlugin && this.internalPlugin.acrolinxSidebar) {
       this.internalPlugin.configureSidebar(this.config);
     }
   }
@@ -330,8 +330,11 @@ export class AcrolinxPlugin {
   }
 
   init() {
+    if (!this.adapter) {
+      throw new Error('Missing registered adapter. Please use registerAdapter before init.');
+    }
     this.internalPlugin = initInternalAcrolinxSidebarPlugin(this.initConfig, this.adapter, () => {
-      this.internalPlugin.configureSidebar(this.config);
+      this.internalPlugin!.configureSidebar(this.config);
     });
   }
 

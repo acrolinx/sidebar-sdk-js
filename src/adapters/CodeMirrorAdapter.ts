@@ -51,9 +51,9 @@ export type CodeMirrorAdapterConf = {
 };
 
 export class CodeMirrorAdapter implements AdapterInterface {
-  private config: CodeMirrorAdapterConf;
-  private currentContentChecking: string;
-  private lastContentChecked: string;
+  private config!: CodeMirrorAdapterConf;
+  private currentContentChecking?: string;
+  private lastContentChecked?: string;
   private formatDetectedByCheck: string | undefined;
 
   constructor(conf: CodeMirrorAdapterConf) {

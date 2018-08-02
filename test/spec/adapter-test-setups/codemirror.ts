@@ -14,7 +14,7 @@ export class CodeMirrorTestSetup implements AdapterTestSetup {
   inputFormat: string;
   mode: string;
   editorElement = '<textarea id="editorId">initial text</textarea>';
-  editor: EditorFromTextArea;
+  editor!: EditorFromTextArea;
 
   constructor(opts: CodeMirrorTestSetupOpts) {
     this.name = opts.name;

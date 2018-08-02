@@ -37,8 +37,8 @@ type TextMapping = TextDomMapping;
 
 export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
   config: AdapterConf;
-  currentContentChecking: string;
-  lastContentChecked: string;
+  currentContentChecking?: string;
+  lastContentChecked?: string;
 
   protected constructor(conf: AdapterConf) {
     this.config = conf;
@@ -111,7 +111,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
 
   private selectMatches<T extends Match>(_checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
     const textMapping: TextMapping = this.getTextDomMapping();
-    const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.lastContentChecked, textMapping.text, matches);
+    const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.lastContentChecked!, textMapping.text, matches);
 
     if (_.isEmpty(alignedMatches)) {
       throw new Error('Selected flagged content is modified.');
