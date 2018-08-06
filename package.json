@@ -63,7 +63,7 @@
   "scripts": {
     "buildDoc": "typedoc --out ./docs/pluginDoc/ ./src/acrolinx-libs/plugin-interfaces.ts",
     "buildLocal": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run dist",
-    "jenkins": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run testKarmaBs && npm run dist",
+    "jenkins": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run testKarmaBsJenkins && npm run dist",
     "dist": "cp -r tmp/compiled/src/* dist && npm run minify",
     "minify": "uglifyjs dist/acrolinx-sidebar-sdk.js -o dist/acrolinx-sidebar-sdk.min.js",
     "test": "npm run testKarmaChromeHeadless",
@@ -71,6 +71,7 @@
     "testKarmaChrome": "karma start test/karma.conf.js --browsers Chrome",
     "testKarmaChromeHeadless": "karma start test/karma.conf.js --browsers ChromeHeadless",
     "testKarmaBs": "karma start test/karma.conf.js --browsers bs_edge_win,bs_chrome_win,bs_firefox_win,bs_safari_macos",
+    "testKarmaBsJenkins": "karma start test/karma.conf.js --browsers bs_edge_win,bs_chrome_win,bs_firefox_win",
     "tsc": "tsc",
     "tscWatch": "tsc -w",
     "tslint": "tslint -p tsconfig.json 'src/**/*.ts' 'test/**/*.ts'",
