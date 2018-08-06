@@ -8,6 +8,7 @@ export {TinyMCEAdapter} from "./adapters/TinyMCEAdapter";
 export {TinyMCEWordpressAdapter} from "./adapters/TinyMCEWordpressAdapter";
 export {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 export {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
+export {AsyncMultiEditorAdapter} from "./adapters/AsyncMultiEditorAdapter";
 export {createPluginMessageAdapter} from "./message-adapter/message-adapter";
 export {loadSidebarCode} from "./utils/sidebar-loader";
 export {getSelectionHtmlRanges} from "./utils/range";

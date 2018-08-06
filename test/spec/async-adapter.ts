@@ -8,65 +8,17 @@ import {
   CheckOptions,
   InitParameters,
   InvalidDocumentPart,
-  Match,
-  MatchWithReplacement,
   SidebarConfiguration
 } from '../../src/acrolinx-libs/plugin-interfaces';
 import * as acrolinxPluginModule from "../../src/acrolinx-plugin";
-import {
-  AdapterInterface,
-  AsyncAdapterInterface,
-  AutobindWrapperAttributes,
-  ContentExtractionResult,
-  ExtractContentForCheckOpts,
-  SuccessfulCheckResult
-} from "../../src/adapters/AdapterInterface";
 import {assign} from "../../src/utils/utils";
 import {getMatchesWithReplacement, waitMs} from "../utils/test-utils";
+import {SlowMotionAsyncWrapper} from "./fake/SlowMotionAsyncAdapter";
 
 const DUMMY_CHECK_ID = 'dummyCheckId';
 const INITIAL_DOCUMENT_CONTENT = 'word1 word2 word3';
 
 const DELAY_IN_MS = 50;
-
-class SlowMotionAsyncWrapper implements AsyncAdapterInterface {
-  public readonly isAsync = true;
-  public readonly requiresSynchronization = true;
-
-  public readonly getAutobindWrapperAttributes?: () => AutobindWrapperAttributes;
-  public readonly getFormat?: () => string;
-
-  constructor(private readonly adapter: AdapterInterface) {
-    if (adapter.getAutobindWrapperAttributes) {
-      this.getAutobindWrapperAttributes = adapter.getAutobindWrapperAttributes.bind(adapter);
-    }
-    if (adapter.getFormat) {
-      this.getFormat = adapter.getFormat.bind(adapter);
-    }
-  }
-
-  extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult | Promise<ContentExtractionResult> {
-    return this.adapter.extractContentForCheck(opts);
-  }
-
-  registerCheckCall(checkInfo: Check): void {
-    return this.adapter.registerCheckCall(checkInfo);
-  }
-
-  registerCheckResult(checkResult: SuccessfulCheckResult): void {
-    return this.adapter.registerCheckResult(checkResult);
-  }
-
-  async selectRanges(checkId: string, matches: Match[]): Promise<void> {
-    await waitMs(DELAY_IN_MS);
-    return this.adapter.selectRanges(checkId, matches);
-  }
-
-  async replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): Promise<void> {
-    await waitMs(DELAY_IN_MS);
-    return this.adapter.replaceRanges(checkId, matchesWithReplacement);
-  }
-}
 
 describe('async adapter', function () {
   let injectedPlugin: AcrolinxPlugin;
@@ -102,7 +54,8 @@ describe('async adapter', function () {
 
     acrolinxPlugin = new acrolinxPluginModule.AcrolinxPlugin(conf);
 
-    const slowMotionAdapter = new SlowMotionAsyncWrapper(new ContentEditableAdapter({editorId: 'ContentEditableAdapter'}));
+    const slowMotionAdapter = new SlowMotionAsyncWrapper(
+      new ContentEditableAdapter({editorId: 'ContentEditableAdapter'}), DELAY_IN_MS);
     acrolinxPlugin.registerAdapter(slowMotionAdapter);
     acrolinxPlugin.init();
 
@@ -210,7 +163,7 @@ describe('async adapter', function () {
       assert.equal(document.getSelection().toString(), replacement);
     });
 
-    it('trying to select modified ranges invalidated them', async() => {
+    it('trying to select modified ranges invalidated them', async () => {
       const selectedText = 'word2';
       const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
       $('#ContentEditableAdapter').html('Modified');
@@ -226,7 +179,7 @@ describe('async adapter', function () {
       }]);
     });
 
-    it('trying to replace modified ranges invalidated them', async() => {
+    it('trying to replace modified ranges invalidated them', async () => {
       const selectedText = 'word2';
       const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
       $('#ContentEditableAdapter').html('Modified');
@@ -242,7 +195,7 @@ describe('async adapter', function () {
       }]);
     });
 
-    it('trying to replace modified ranges invalidated them', async() => {
+    it('trying to replace modified ranges invalidated them', async () => {
       const selectedText = 'word2';
       const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
       $('#ContentEditableAdapter').html('Modified');

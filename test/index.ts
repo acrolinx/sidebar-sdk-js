@@ -7,6 +7,7 @@ import './spec/escaping';
 import './spec/adapters';
 import './spec/multi-plugin';
 import './spec/async-adapter';
+import './spec/async-multi-adapter.spec';
 import './spec/multi-editor-adapter';
 import './spec/floating-sidebar';
 import './spec/text-extraction';

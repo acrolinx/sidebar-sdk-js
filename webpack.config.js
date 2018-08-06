@@ -1,6 +1,6 @@
 const path = require('path');
 
-const MAX_SIZE_IN_BYTES = 900 * 1024;
+const MAX_SIZE_IN_BYTES = 1024 * 1024;
 
 module.exports = {
   mode: 'production',

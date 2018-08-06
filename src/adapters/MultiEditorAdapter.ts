@@ -23,7 +23,7 @@ import {Check, DocumentRange, Match, MatchWithReplacement} from "../acrolinx-lib
 import {findNewIndex} from "../utils/alignment";
 import {escapeHtmlCharacters, EscapeHtmlCharactersResult} from "../utils/escaping";
 import {
-  AdapterInterface,
+  AdapterInterface, AsyncAdapterInterface,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
   hasError,
@@ -53,7 +53,7 @@ export interface WrapperConf extends WrapperConfOptions {
 
 export interface RegisteredAdapter {
   id: string;
-  adapter: AdapterInterface;
+  adapter: AdapterInterface | AsyncAdapterInterface;
   wrapper: WrapperConf;
   checkedRange?: [number, number];
   escapeResult?: EscapeHtmlCharactersResult;
@@ -138,8 +138,12 @@ export class MultiEditorAdapter implements AdapterInterface {
     return this.config.aggregateFormat || 'HTML';
   }
 
-  addSingleAdapter(singleAdapter: AdapterInterface, opts: AddSingleAdapterOptions = {}, id = 'acrolinx_integration' + this.adapters.length) {
+  protected addSingleAdapterInternal(singleAdapter: AdapterInterface | AsyncAdapterInterface, opts: AddSingleAdapterOptions = {}, id = 'acrolinx_integration' + this.adapters.length) {
     this.adapters.push({id: id, adapter: singleAdapter, wrapper: wrapperConfWithDefaults(opts)});
+  }
+
+  addSingleAdapter(singleAdapter: AdapterInterface, opts: AddSingleAdapterOptions = {}, id?: string) {
+    this.addSingleAdapterInternal(singleAdapter, opts, id);
   }
 
   removeAllAdapters() {
