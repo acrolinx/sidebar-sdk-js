@@ -126,6 +126,7 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
 
   private requestGlobalCheckSync(extractionResult: ContentExtractionResult, format = 'HTML') {
     if (hasError(extractionResult)) {
+      this.acrolinxSidebar.onGlobalCheckRejected();
       window.alert(extractionResult.error);
     } else {
       const checkInfo = this.acrolinxSidebar.checkGlobal(extractionResult.content, {
