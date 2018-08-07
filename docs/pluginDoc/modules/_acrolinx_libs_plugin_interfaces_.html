@@ -66,6 +66,35 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>This document describes the interface of the Acrolinx Sidebar.</p>
+					</div>
+					<p>Let&#39;s understand how the typical bootstrapping of an integration and the Acrolinx Sidebar works:</p>
+					<p>1) Load the host editor of your integration.</p>
+					<p>2) Load your integration code.</p>
+					<p>3) Register your integration as an AcrolinxPlugin.</p>
+					<pre><code> <span class="hljs-keyword">var</span> acrolinxPlugin = <span class="hljs-meta">{...}</span>
+</code></pre><p> Check the <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html">AcrolinxPlugin</a> interface for required methods, that you have to implement.</p>
+					<p>4) Load the sidebar and the referenced libraries code (usually sidebar.js, libs.js, sidebar.css).</p>
+					<p>5) Once the sidebar has finished loading it will request the integration to initialize by calling
+					<a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#requestinit">requestInit</a>.</p>
+					<p>6) The AcrolinxPlugin now must call <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxsidebar.html#init">init</a>.</p>
+					<p>7) Once the init process has finished, the plug-in will be notified:
+					<a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#oninitfinished">onInitFinished</a>.</p>
+					<p>8) After initializing the sidebar will call <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#configure">configure</a> and push the latest
+					configuration to the plug-in.</p>
+					<p>9) If the user pushes the button &quot;Check&quot;, <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#requestglobalcheck">requestGlobalCheck</a> is called.</p>
+					<p>10) The acrolinxPlugin must call <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxsidebar.html#checkglobal">checkGlobal</a> to perform a check.</p>
+					<p>11) When the check finished, <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#oncheckresult">onCheckResult</a> is called and the sidebar displays
+					cards for the issues.</p>
+					<p>12) If the user clicks a card <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#selectranges">selectRanges</a> is called</p>
+					<p>13) When the user selects a replacement <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#replaceranges">replaceRanges</a> is called.</p>
+					<p>For a minimal integration (not feature complete) you must implement <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#requestinit">requestInit</a>, <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#requestglobalcheck">requestGlobalCheck</a>,
+					<a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxsidebar.html#configure">configure</a>, <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#selectranges">selectRanges</a> and <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#replaceranges">replaceRanges</a>.</p>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -124,7 +153,7 @@
 					<div class="tsd-signature tsd-kind-icon">Check<wbr>Settings<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.checksettingsselection.html" class="tsd-signature-type">CheckSettingsSelection</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_acrolinx_libs_plugin_interfaces_.checkingprofileselection.html" class="tsd-signature-type">CheckingProfileSelection</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L141">acrolinx-libs/plugin-interfaces.ts:141</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L160">acrolinx-libs/plugin-interfaces.ts:160</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -139,7 +168,7 @@
 					<div class="tsd-signature tsd-kind-icon">Checked<wbr>Document<wbr>Range<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.checkeddocumentpart.html" class="tsd-signature-type">CheckedDocumentPart</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L328">acrolinx-libs/plugin-interfaces.ts:328</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L347">acrolinx-libs/plugin-interfaces.ts:347</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -149,7 +178,7 @@
 					<div class="tsd-signature tsd-kind-icon">Document<wbr>Range<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L255">acrolinx-libs/plugin-interfaces.ts:255</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L274">acrolinx-libs/plugin-interfaces.ts:274</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -159,7 +188,7 @@
 					<div class="tsd-signature tsd-kind-icon">Invalid<wbr>Document<wbr>Part<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_acrolinx_libs_plugin_interfaces_.checkeddocumentpart.html" class="tsd-signature-type">CheckedDocumentPart</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L327">acrolinx-libs/plugin-interfaces.ts:327</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L346">acrolinx-libs/plugin-interfaces.ts:346</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -169,7 +198,7 @@
 					<div class="tsd-signature tsd-kind-icon">Ui<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"default"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"noOptions"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L136">acrolinx-libs/plugin-interfaces.ts:136</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L155">acrolinx-libs/plugin-interfaces.ts:155</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -182,7 +211,7 @@
 					<div class="tsd-signature tsd-kind-icon">Software<wbr>Component<wbr>Category<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L193">acrolinx-libs/plugin-interfaces.ts:193</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L212">acrolinx-libs/plugin-interfaces.ts:212</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -191,7 +220,7 @@
 						<div class="tsd-signature tsd-kind-icon">DEFAULT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;DEFAULT&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L205">acrolinx-libs/plugin-interfaces.ts:205</a></li>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L224">acrolinx-libs/plugin-interfaces.ts:224</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -207,7 +236,7 @@
 						<div class="tsd-signature tsd-kind-icon">DETAIL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;DETAIL&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L211">acrolinx-libs/plugin-interfaces.ts:211</a></li>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L230">acrolinx-libs/plugin-interfaces.ts:230</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -223,7 +252,7 @@
 						<div class="tsd-signature tsd-kind-icon">MAIN<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;MAIN&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L199">acrolinx-libs/plugin-interfaces.ts:199</a></li>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L218">acrolinx-libs/plugin-interfaces.ts:218</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">

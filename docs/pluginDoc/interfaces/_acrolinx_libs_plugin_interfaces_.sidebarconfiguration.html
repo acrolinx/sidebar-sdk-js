@@ -72,30 +72,8 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>This document describes the interface of the Acrolinx Sidebar.</p>
+						<p>The subset of <a href="_acrolinx_libs_plugin_interfaces_.initparameters.html">InitParameters</a>, that can be reconfigured by <a href="_acrolinx_libs_plugin_interfaces_.acrolinxsidebar.html#configure">AcrolinxSidebar.configure</a>.</p>
 					</div>
-					<p>Let&#39;s understand how the typical bootstrapping of an integration and the Acrolinx Sidebar works:</p>
-					<p>1) Load the host editor of your integration.</p>
-					<p>2) Load your integration code.</p>
-					<p>3) Register your integration as an AcrolinxPlugin.</p>
-					<pre><code> <span class="hljs-keyword">var</span> acrolinxPlugin = <span class="hljs-meta">{...}</span>
-</code></pre><p> Check the <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html">AcrolinxPlugin</a> interface for required methods, that you have to implement.</p>
-					<p>4) Load the sidebar and the referenced libraries code (usually sidebar.js, libs.js, sidebar.css).</p>
-					<p>5) Once the sidebar has finished loading it will request the integration to initialize by calling
-					<a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#requestinit">requestInit</a>.</p>
-					<p>6) The AcrolinxPlugin now must call <a href="_acrolinx_libs_plugin_interfaces_.acrolinxsidebar.html#init">init</a>.</p>
-					<p>7) Once the init process has finished, the plug-in will be notified:
-					<a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#oninitfinished">onInitFinished</a>.</p>
-					<p>8) After initializing the sidebar will call <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#configure">configure</a> and push the latest
-					configuration to the plug-in.</p>
-					<p>9) If the user pushes the button &quot;Check&quot;, <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#requestglobalcheck">requestGlobalCheck</a> is called.</p>
-					<p>10) The acrolinxPlugin must call <a href="_acrolinx_libs_plugin_interfaces_.acrolinxsidebar.html#checkglobal">checkGlobal</a> to perform a check.</p>
-					<p>11) When the check finished, <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#oncheckresult">onCheckResult</a> is called and the sidebar displays
-					cards for the issues.</p>
-					<p>12) If the user clicks a card <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#selectranges">selectRanges</a> is called</p>
-					<p>13) When the user selects a replacement <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#replaceranges">replaceRanges</a> is called.</p>
-					<p>For a minimal integration (not feature complete) you must implement <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#requestinit">requestInit</a>, <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#requestglobalcheck">requestGlobalCheck</a>,
-					<a href="_acrolinx_libs_plugin_interfaces_.acrolinxsidebar.html#configure">configure</a>, <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#selectranges">selectRanges</a> and <a href="_acrolinx_libs_plugin_interfaces_.acrolinxplugin.html#replaceranges">replaceRanges</a>.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -132,7 +110,7 @@
 					<div class="tsd-signature tsd-kind-icon">read<wbr>Only<wbr>Suggestions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/acdd168/src/acrolinx-libs/plugin-interfaces.ts#L49">acrolinx-libs/plugin-interfaces.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/548272b/src/acrolinx-libs/plugin-interfaces.ts#L68">acrolinx-libs/plugin-interfaces.ts:68</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
