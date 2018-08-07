@@ -41,6 +41,9 @@
  * {@link configure}, {@link selectRanges} and {@link replaceRanges}.
  */
 
+/**
+ * The subset of {@link InitParameters}, that can be reconfigured by {@link AcrolinxSidebar.configure}.
+ */
 export interface SidebarConfiguration {
   /**
    * This setting will render cards with suggestions in read-only mode. This means the sidebar won't trigger suggestion
