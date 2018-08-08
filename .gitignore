@@ -12,5 +12,4 @@ tmp
 .private
 
 **/.baseDir.ts
-/package-lock.json
 /dist/
