@@ -287,7 +287,7 @@ export interface Check {
 
 
 /**
- * After a check the sidebar will tell the plug-in which parts of the document had been checked.
+ * After a check, the sidebar will tell the plug-in which parts of the document had been checked.
  */
 export interface CheckResult {
   /**
