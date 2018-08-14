@@ -134,7 +134,6 @@ export class XeditorAdapter implements AdapterInterface {
 
     // Replacement will remove the selection, so we need to restore it again.
     this.selectText(alignedMatches[0].range[0], replacement.length);
-    // this.scrollToCurrentSelection();
   }
 
   /**
