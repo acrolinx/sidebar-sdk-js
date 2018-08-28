@@ -16,6 +16,7 @@
 import * as _ from "lodash";
 import * as acrolinxSidebarInterfaces from './acrolinx-libs/plugin-interfaces';
 import {
+  AcrolinxStorage,
   CheckInformationKeyValuePair,
   CheckResult,
   InitParameters,
@@ -46,13 +47,6 @@ type AcrolinxPluginConfiguration = acrolinxSidebarInterfaces.AcrolinxPluginConfi
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
 type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
 
-export interface AcrolinxSimpleStorage {
-  getItem(key: string): string | null;
-  removeItem(key: string): void;
-  setItem(key: string, data: string): void;
-  clear(): void;
-}
-
 export interface AcrolinxPluginConfig extends InitParameters {
   sidebarContainerId: string;
   sidebarUrl?: string;
@@ -62,7 +56,7 @@ export interface AcrolinxPluginConfig extends InitParameters {
   useSidebarFromSameOriginDirectly?: boolean;
   onSidebarWindowLoaded?: (sidebarWindow: Window) => void;
   getDocumentReference?: () => string;
-  acrolinxStorage?: AcrolinxSimpleStorage;
+  acrolinxStorage?: AcrolinxStorage;
 
   /**
    * This optional function will be called after a successful check,
@@ -89,7 +83,7 @@ const clientComponents = [
 type IFrameWindowOfSidebar = Window & {
   acrolinxSidebar: AcrolinxSidebar;
   acrolinxPlugin: AcrolinxSidebarPlugin;
-  acrolinxStorage?: AcrolinxSimpleStorage;
+  acrolinxStorage?: AcrolinxStorage;
 };
 
 
