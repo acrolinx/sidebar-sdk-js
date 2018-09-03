@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "author": "Acrolinx",
   "url": "http://www.acrolinx.com",
+  "repository": "https://github.com/acrolinx/sidebar-sdk-js",
   "private": false,
   "files": [
     "dist"
