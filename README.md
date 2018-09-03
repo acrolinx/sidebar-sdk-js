@@ -94,7 +94,7 @@ to initialize by calling `requestInit`.
 4. After initializing the sidebar will call `configure` and push the latest
  configuration to the plug-in.
  
- ![Initializing plug-in and sidebar](docs/initSidebarPlugin.png)
+ ![Initializing plug-in and sidebar](media/init-sidebar-plugin.png)
  
 You'll find the API Documentation [here](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/_acrolinx_libs_plugin_interfaces_.html).
 
@@ -106,7 +106,7 @@ You'll find the API Documentation [here](https://acrolinx.github.io/sidebar-sdk-
 
 3. When the check finished, `onCheckResult` is called and the sidebar displays cards for the issues.
 
-![Checking with plug-in and sidebar](docs/checking.png)
+![Checking with plug-in and sidebar](media/checking.png)
  
 ### Other actions
 

@@ -66,7 +66,7 @@
     "webpack-dev-server": "^3.1.7"
   },
   "scripts": {
-    "buildDoc": "typedoc --out ./docs/pluginDoc/ src/",
+    "buildDoc": "typedoc --media media --out ./docs/pluginDoc/ src/",
     "buildLocal": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run dist",
     "jenkins": "npm run tsc &&  npm run tslint &&  npm run webpack && npm run test && npm run testKarmaBsJenkins && npm run dist",
     "dist": "cp -r tmp/compiled/src/* dist && npm run minify",
