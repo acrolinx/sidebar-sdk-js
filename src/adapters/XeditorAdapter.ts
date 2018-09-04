@@ -145,6 +145,13 @@ export class XeditorAdapter implements AdapterInterface {
    * @protected
    */
   replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]): void {
+    // sort matches by reverted range
+    matches = matches.sort((a, b) => {
+      return b.range[0] - a.range[0];
+    });
+
+    console.log("SORTED", matches);
+
     for (const match of matches) {
       this.document.replaceTextByOffsetRanges([{
         from: match.range[0],
