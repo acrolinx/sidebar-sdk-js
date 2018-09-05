@@ -150,8 +150,6 @@ export class XeditorAdapter implements AdapterInterface {
       return b.range[0] - a.range[0];
     });
 
-    console.log("SORTED", matches);
-
     for (const match of matches) {
       this.document.replaceTextByOffsetRanges([{
         from: match.range[0],
