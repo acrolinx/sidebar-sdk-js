@@ -14,7 +14,7 @@ See: [Getting Started with Custom Integrations](https://support.acrolinx.com/hc/
 
 ## Live Demo
 
-[Acrolinx Sidebar Live Demo](https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.4.0/samples/index.html)
+[Acrolinx Sidebar Live Demo](https://acrolinx.github.io/acrolinx-sidebar-demo/samples/index.html)
 
 ## Installation
 
