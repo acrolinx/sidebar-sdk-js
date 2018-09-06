@@ -32,6 +32,7 @@ import {extractTextDomMapping} from "./utils/text-dom-mapping";
 import {CodeMirrorAdapter} from "./adapters/CodeMirrorAdapter";
 import {initFloatingSidebar} from "./floating-sidebar/floating-sidebar";
 import {AsyncLocalStorage} from "./floating-sidebar/async-storage";
+import { XeditorAdapter } from './adapters/XeditorAdapter';
 
 
 export interface AcrolinxSidebarIntegration {
@@ -53,6 +54,7 @@ export interface AcrolinxSidebarIntegration {
     AsyncMultiEditorAdapter: typeof AsyncMultiEditorAdapter;
     TinyMCEAdapter: typeof TinyMCEAdapter;
     TinyMCEWordpressAdapter: typeof TinyMCEWordpressAdapter;
+    XeditorAdapter: typeof XeditorAdapter;
   };
   lookup: {
     lookupMatches: typeof lookupMatches;
@@ -91,6 +93,7 @@ const exported: AcrolinxSidebarIntegration = {
     AsyncMultiEditorAdapter: AsyncMultiEditorAdapter,
     TinyMCEAdapter: TinyMCEAdapter,
     TinyMCEWordpressAdapter: TinyMCEWordpressAdapter,
+    XeditorAdapter: XeditorAdapter
   },
   lookup: {
     lookupMatches: lookupMatches
