@@ -71,7 +71,7 @@ If not, implement the [`AdapterInterface`](https://github.com/acrolinx/sidebar-s
 
 ## References
 
-* A DEMO built based on this SDK [Sidebar DEMO JS](https://github.com/acrolinx/acrolinx-sdk-js).
+* A DEMO built based on this SDK [Sidebar DEMO JS](https://github.com/acrolinx/acrolinx-sdk-demo).
 * The Sidebar SDKs are based on the [Acrolinx Sidebar Interface](https://acrolinx.github.io/sidebar-sdk-js/).
 
 ## License
