@@ -1,14 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Acrolinx Sidebar SDK JS - API Documentation</title>
+  <meta charset="UTF-8">
+  <title>Acrolinx Sidebar Interface Documentation</title>
+  <link rel="stylesheet" href="./pluginDoc/assets/css/main.css">
 </head>
+
 <body>
+  <header>
+    <div class="tsd-page-title">
+      <div class="container">
+        <h1>Acrolinx Sidebar Interface Documentation</h1>
+        <div>
+          This page describes the interaction between the Acrolinx Sidebar and the integration.
+          Typically you don't have to deal with these internal interfaces.
+        </div>
+        <div>
+          If feasible, base your integration on one of the SDKs provided by Acrolinx
+          (See: <a href="https://support.acrolinx.com/hc/en-us/articles/205687652-Getting-Started-with-Custom-Integrations">Getting
+            Started
+            with Custom Integrations</a>).
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="container container-main">
+    <div class="tsd-panel">
+      <h2>Acrolinx Sidebar API Reference</h2>
 
-<h1>Acrolinx Sidebar SDK JS</h1>
+      <div>
+        <a href="./pluginDoc/index.html">Acrolinx Sidebar API Reference</a>
+      </div>
+      <h2>Loading</h2>
 
-<a href="./pluginDoc/index.html">API Documentation</a>
+      <ol>
+        <li>Load your host editor and your integration code.</li>
+        <li>Register your integration as an <code>acrolinxPlugin</code> (See <code>AcrolinxPluginInterface</code>).
+          <code>
+    var acrolinxPlugin = {...}
+    </code>
+        </li>
+        <li>
+          Load the Sidebar and the referenced libraries code (usually sidebar.js, libs.js, sidebar.css).
+        </li>
+      </ol>
+      <h2>Initializing</h2>
 
+      <ol>
+        <li>
+          Once the Sidebar has finished loading, it will request the integration
+          to initialize by calling <code>requestInit</code>.
+        </li>
+        <li>
+          The AcrolinxPlugin now must call <code>init</code>.
+        </li>
+        <li>
+          Once the init process has finished, the integration will be notified <code>onInitFinished</code>.
+        </li>
+        <li>
+          After initializing, the Sidebar will call <code>configure</code> and push the latest
+          configuration to the integration.
+
+          <img src="./media/init-sidebar-plugin.png" alt="Initializing Acrolinx Integration and Sidebar." />
+        </li>
+      </ol>
+
+      <h2>Checking</h2>
+      <li>
+        If the user pushes the button "Check" (in the Acrolinx Sidebar), <code>requestGlobalCheck</code> is called.
+      </li>
+      <li>
+        The acrolinxPlugin must call <code>checkGlobal</code> to perform a check.
+
+      </li>
+      <li> When the check finished, <code>onCheckResult</code> is called and the Sidebar displays cards for the issues.
+
+        <img src="./media/checking.png" alt="Checking with Acrolinx Integration and Sidebar." />
+      </li>
+
+      <h2>Other Actions</h2>
+
+      <ul>
+        <li>When the user clicks on a card the Sidebar will invoke <code>selectRanges</code> on the Acrolinx
+          Integration.</li>
+        <li>When the user clicks on a replacement the Sidebar will call <code>replaceRanges</code>.
+        </li>
+      </ul>
+      <div>
+        These are the most important interactions between the Acrolinx Sidebar and your integration.
+        See: <a href="./pluginDoc/index.html">Acrolinx Sidebar API Reference</a> for more details.
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

@@ -1,23 +1,25 @@
 # Instructions for Contributing Code
 
-## Build Locally (includes Compiling, Linting, Testing)
+## Build Locally (Includes Compiling, Linting, Testing)
 
-```
+```bash
    npm run buildLocal
 ```
 
 ## Interactive Development
 
 Watch for compile errors:
-```
+
+```bash
    npm run tscWatch
 ```
 
-Run the dev sever:
-```
+Run the dev server:
+
+```bash
    npm run webpack-dev-server
 ```
 
- * Open [http://localhost:8080/test/](http://localhost:8080/test/)
- * Change the code
- * The tests should automatically run for every code change
+* Open [http://localhost:8080/test/](http://localhost:8080/test/)
+* Change the code
+* The tests should automatically run for every code change
