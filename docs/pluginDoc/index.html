@@ -66,95 +66,62 @@
 			<div class="tsd-panel tsd-typography">
 				<h1 id="acrolinx-sidebar-sdk-js">Acrolinx Sidebar SDK JS</h1>
 				<p><a href="https://travis-ci.org/acrolinx/sidebar-sdk-js"><img src="https://travis-ci.org/acrolinx/sidebar-sdk-js.svg?branch=master" alt="Build Status"></a>
-					<a href="https://david-dm.org/acrolinx/sidebar-sdk-js"><img src="https://david-dm.org/acrolinx/sidebar-sdk-js/status.svg" alt="dependencies Status"></a>
-				<a href="https://david-dm.org/acrolinx/sidebar-sdk-js?type=dev"><img src="https://david-dm.org/acrolinx/sidebar-sdk-js/dev-status.svg" alt="devDependencies Status"></a></p>
-				<p>Library for integration of the <a href="http://www.acrolinx.com/">Acrolinx</a> sidebar into a web application.
-				The library contains adapters to use in your web integration. These are ready to use for: Editable divs, input elements and rich text editors like CKEditor and TinyMCE.</p>
+					<a href="https://david-dm.org/acrolinx/sidebar-sdk-js"><img src="https://david-dm.org/acrolinx/sidebar-sdk-js/status.svg" alt="Dependencies Status"></a>
+				<a href="https://david-dm.org/acrolinx/sidebar-sdk-js?type=dev"><img src="https://david-dm.org/acrolinx/sidebar-sdk-js/dev-status.svg" alt="DevDependencies Status"></a></p>
+				<p>This is a library for integrating the <a href="http://www.acrolinx.com/">Acrolinx</a> Sidebar into a web application.</p>
 				<p>See: <a href="https://support.acrolinx.com/hc/en-us/articles/205687652-Getting-Started-with-Custom-Integrations">Getting Started with Custom Integrations</a></p>
-				<h2 id="examples">Examples</h2>
-				<p><a href="https://github.com/acrolinx/acrolinx-sidebar-demo">https://github.com/acrolinx/acrolinx-sidebar-demo</a></p>
 				<h2 id="live-demo">Live Demo</h2>
-				<p><a href="https://cdn.rawgit.com/acrolinx/acrolinx-sidebar-demo/v0.4.0/samples/index.html">Acrolinx Sidebar Live Demo</a></p>
-				<h2 id="installation">Installation</h2>
-				<pre><code> npm <span class="hljs-selector-tag">i</span> -S acrolinx-sidebar-sdk </code></pre><h2 id="instructions-for-contributing-code">Instructions for Contributing Code</h2>
-				<p><a href="CONTRIBUTING.md">CONTRIBUTING.md</a></p>
-				<h2 id="table-of-content">Table of Content</h2>
-				<p><a href="#the-acrolinx-sidebar">The Acrolinx Sidebar</a></p>
-				<p><a href="#prerequisites">Prerequisites</a></p>
-				<p><a href="#getting-started-with-your-own-integration">Getting started with your own integration</a></p>
-				<p><a href="#sidebar-api-documentation">Sidebar API Documentation</a></p>
-				<p><a href="#license">License</a></p>
+				<p><a href="https://acrolinx.github.io/acrolinx-sidebar-demo/samples/index.html">Acrolinx Sidebar Web Live Demo</a></p>
+				<h2 id="examples">Examples</h2>
+				<p><a href="https://github.com/acrolinx/acrolinx-sidebar-demo">Acrolinx Sidebar Web Demo</a></p>
 				<h2 id="the-acrolinx-sidebar">The Acrolinx Sidebar</h2>
-				<p>The Acrolinx sidebar is designed to show up beside the window where you edit your content.
+				<p>The Acrolinx Sidebar is designed to show up beside the window where you edit your content.
 					You use it for checking, reviewing, and correcting your content.
-					To get an impression what the sidebar looks like in other integration check the
-				<a href="https://support.acrolinx.com/hc/en-us/articles/205594781-Acrolinx-Sidebar-Edition-User-Interface-Reference">Acrolinx Support Center</a>.</p>
+					To get an impression what the Sidebar looks like in existing integrations, have a look at
+				<a href="https://support.acrolinx.com/hc/en-us/articles/205697451-Get-Started-With-the-Sidebar">Get Started With the Sidebar</a>.</p>
 				<h2 id="prerequisites">Prerequisites</h2>
-				<p>Please contact Acrolinx SDK support (<a href="mailto:sdk-support@acrolinx.com">sdk-support@acrolinx.com</a>) for consulting and getting your integration certified.
-					This sample works with a test license on an internal acrolinx server. This license is only meant for demonstration and developing purposes.
-				Once you finished your integration you&#39;ll have to get a license for your integration from Acrolinx.</p>
-				<p>Please note that this an example for a integration into a web application only.
-				Acrolinx offers different other SDKs for developing integrations. </p>
-				<p>Before you start developing your own integration, you might benefit from looking into the sidebar example.</p>
-				<h2 id="getting-started-with-your-own-integration">Getting started with your own integration</h2>
-				<p>The requirements to achieve this are:</p>
+				<p>Please contact <a href="https://github.com/acrolinx/acrolinx-coding-guidance/blob/master/topics/sdk-support.md">Acrolinx SDK support</a>
+					for consulting and getting your integration certified.
+					This sample works with a test license on an internal Acrolinx URL.
+					This license is only meant for demonstration and developing purposes.
+				Once you finished your integration, you&#39;ll have to get a license for your integration from Acrolinx.</p>
+				<p>Acrolinx offers different other SDKs, and examples for developing integrations.</p>
+				<p>Before you start developing your own integration, you might benefit from looking into:</p>
 				<ul>
-					<li>a mechanism and a container that can display the Acrolinx sidebar (usually JavaScript plugin mechanism)</li>
-					<li>a mechanism that allows the sidebar to retrieve the text to be checked</li>
-					<li>a mechanism that will allow the sidebar to replace specific parts of the text</li>
+					<li><a href="https://support.acrolinx.com/hc/en-us/articles/205687652-Getting-Started-with-Custom-Integrations">Getting Started with Custom Integrations</a>,</li>
+					<li>the <a href="https://github.com/acrolinx/acrolinx-coding-guidance">Guidance for the Development of Acrolinx Integrations</a>,</li>
+					<li>the <a href="https://github.com/acrolinx?q=sdk">Acrolinx SDKs</a>, and</li>
+					<li>the <a href="https://github.com/acrolinx?q=demo">Acrolinx Demo Projects</a>.</li>
 				</ul>
-				<p>All of the above are required by the Acrolinx Sidebar API and need to be provided by your integration.
-				However Acrolinx provides some reference integrations with TinyMCE and CKEditor.</p>
-				<p>Let&#39;s take a look at how the sidebar is loaded and the typical interactions with an integration.</p>
-				<h3 id="loading">Loading</h3>
-				<ol>
-					<li><p>Load your host editor and your integration code.</p>
-					</li>
-					<li><p>Register your integration as an Acrolinx Plugin (Check the API Documentation for the Acrolinx Plugin Interface.)
-						You&#39;ll find the API Documentation <a href="https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/_acrolinx_libs_plugin_interfaces_.html">here</a>.</p>
-					<pre><code><span class="hljs-keyword">var</span> acrolinxPlugin = <span class="hljs-meta">{...}</span></code></pre></li>
-					<li>Load the sidebar and the referenced libraries code (usually sidebar.js, libs.js, sidebar.css).</li>
-				</ol>
-				<h3 id="initializing">Initializing</h3>
-				<ol>
-					<li><p>Once the sidebar has finished loading it will request the integration
-						to initialize by calling <code>requestInit</code>.</p>
-					</li>
-					<li><p>The AcrolinxPlugin now must call <code>init</code>.</p>
-					</li>
-					<li><p>Once the init process has finished, the plug-in will be notified <code>onInitFinished</code>.</p>
-					</li>
-					<li><p>After initializing the sidebar will call <code>configure</code> and push the latest
-						configuration to the plug-in.</p>
-						<p><img src="media/init-sidebar-plugin.png" alt="Initializing plug-in and sidebar"></p>
-					</li>
-				</ol>
-				<p>You&#39;ll find the API Documentation <a href="https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/_acrolinx_libs_plugin_interfaces_.html">here</a>.</p>
-				<h3 id="checking">Checking</h3>
-				<ol>
-					<li><p>If the user pushes the button &quot;Check&quot; (in the Acrolinx sidebar), <code>requestGlobalCheck</code> is called.</p>
-					</li>
-					<li><p>The acrolinxPlugin must call <code>checkGlobal</code> to perform a check.</p>
-					</li>
-					<li><p>When the check finished, <code>onCheckResult</code> is called and the sidebar displays cards for the issues.</p>
-					</li>
-				</ol>
-				<p><img src="media/checking.png" alt="Checking with plug-in and sidebar"></p>
-				<h3 id="other-actions">Other actions</h3>
+				<h2 id="getting-started">Getting Started</h2>
+				<h3 id="installation">Installation</h3>
+				<p>To install the SDK to your npm-based Acrolinx Integration project call:</p>
+				<pre><code class="language-bash">npm install acrolinx-sidebar-sdk</code></pre>
+				<h3 id="instructions-for-contributing-code">Instructions for Contributing Code</h3>
+				<p><a href="CONTRIBUTING.md">CONTRIBUTING.md</a></p>
+				<h2 id="sdk-features">SDK Features</h2>
+				<p>The SDK provides <a href="https://github.com/acrolinx/sidebar-sdk-js/tree/master/src/adapters">adapters</a> for:</p>
 				<ul>
-					<li>When the user clicks on a card the sidebar will invoke <code>selectRanges</code> on the plugin.</li>
-					<li>When the user clicks on a replacement the sidebar will call <code>replaceRanges</code>.</li>
+					<li><code>contentEditable</code> <code>div</code>-elements,</li>
+					<li><code>input</code> text elements,</li>
+					<li>CodeMirror,</li>
+					<li>CKEditor,</li>
+					<li>Xeditor,</li>
+					<li>TinyMCE, and a</li>
+					<li><code>MultiEditorAdapter</code> that can be used to combine different adapters as one document.</li>
 				</ul>
-				<p>These are the most important interactions between the Acrolinx sidebar and your integration.
-				Please check the <a href="https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/_acrolinx_libs_plugin_interfaces_.html">sidebar plugin API</a> for more information.</p>
-				<p><a href="#table-of-content">back to top</a></p>
-				<h2 id="sidebar-api-documentation">Sidebar API Documentation</h2>
-				<p>Check our <a href="https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/_acrolinx_libs_plugin_interfaces_.html">sidebar plugin API</a>.</p>
+				<p>If you need to support other editors, sometimes the <code>ContentEditableAdapter</code> works without any changes.
+				If not, implement the <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/master/src/adapters/AdapterInterface.ts"><code>AdapterInterface</code></a>.</p>
+				<h2 id="references">References</h2>
+				<ul>
+					<li>The <a href="https://github.com/acrolinx/acrolinx-sidebar-demo">Sidebar DEMO JS</a> is built based on this SDK.</li>
+					<li>The Sidebar SDKs are based on the <a href="https://acrolinx.github.io/sidebar-sdk-js/">Acrolinx Sidebar Interface</a>.</li>
+				</ul>
 				<h2 id="license">License</h2>
 				<p>Copyright 2015-present Acrolinx GmbH</p>
 				<p>Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
 					you may not use this file except in compliance with the License.
-				You may obtain a copy of the License at</p>
+				You may obtain a copy of the License at:</p>
 				<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
 				<p>Unless required by applicable law or agreed to in writing, software
 					distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
@@ -162,7 +129,6 @@
 					See the License for the specific language governing permissions and
 				limitations under the License.</p>
 				<p>For more information visit: <a href="http://www.acrolinx.com">http://www.acrolinx.com</a></p>
-				<p><a href="#table-of-content">back to top</a></p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -212,6 +178,9 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_adapters_tinymcewordpressadapter_.html">"adapters/<wbr>TinyMCEWordpress<wbr>Adapter"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_adapters_xeditoradapter_.html">"adapters/<wbr>Xeditor<wbr>Adapter"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_autobind_autobind_.html">"autobind/autobind"</a>
