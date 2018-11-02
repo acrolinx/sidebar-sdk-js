@@ -53,6 +53,7 @@ export class AutoBindAdapter implements AdapterInterface {
   }
 
   registerCheckResult(_checkResult: SuccessfulCheckResult) {
+    this.multiAdapter.registerCheckResult(_checkResult);
   }
 
   selectRanges(checkId: string, matches: Match[]) {
