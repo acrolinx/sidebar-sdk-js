@@ -15,9 +15,6 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "// dependencies comments": {
-    "ckeditor": "Newer version (4.9.0) caused compile errors"
-  },
   "dependencies": {
     "@types/ckeditor": "4.9.4",
     "@types/codemirror": "0.0.70",
