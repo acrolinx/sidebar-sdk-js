@@ -18,6 +18,11 @@ import * as _ from "lodash";
 
 function getRangesOfCurrentSelection(): Range[] {
   const selection = document.getSelection();
+
+  if (!selection) {
+    return [];
+  }
+
   const ranges = [];
   for (let i = 0; i < selection.rangeCount; i++) {
     ranges.push(selection.getRangeAt(i));

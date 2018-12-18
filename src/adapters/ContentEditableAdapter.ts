@@ -51,7 +51,7 @@ export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditorDocument(): Document {
-    return this.element.ownerDocument;
+    return this.element.ownerDocument!;
   }
 
   protected scrollElementIntoView(el: HTMLElement) {

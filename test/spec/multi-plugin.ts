@@ -179,7 +179,7 @@ describe('multi plugin', function() {
         const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
 
         injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.equal(document.getSelection().toString(), selectedText);
+        assert.equal(document.getSelection()!.toString(), selectedText);
         done();
       });
     });
@@ -202,7 +202,7 @@ describe('multi plugin', function() {
         const replacement = 'ContentEditableAdapterReplacement';
         const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, textToReplace, replacement);
         injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.equal(document.getSelection().toString(), replacement);
+        assert.equal(document.getSelection()!.toString(), replacement);
         done();
       });
     });

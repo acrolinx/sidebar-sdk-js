@@ -129,6 +129,12 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     }
     const doc = this.getEditorDocument();
     const selection = doc.getSelection();
+
+    if (!selection) {
+      console.warn('AbstractRichtextEditorAdapter.selectText: Missing selection');
+      return;
+    }
+
     selection.removeAllRanges();
     selection.addRange(this.createRange(begin, length, textMapping));
   }
