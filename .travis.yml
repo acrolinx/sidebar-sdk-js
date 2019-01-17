@@ -7,7 +7,7 @@ dist: trusty # needs Ubuntu Trusty
 # See https://github.com/travis-ci/travis-ci/issues/8836
 sudo: required
 os:
-- windows
+#- windows
 - linux
 - osx
 addons:
