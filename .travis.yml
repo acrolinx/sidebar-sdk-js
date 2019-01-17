@@ -6,6 +6,10 @@ dist: trusty # needs Ubuntu Trusty
 # Note: if you switch to sudo: false, you'll need to launch chrome with --no-sandbox.
 # See https://github.com/travis-ci/travis-ci/issues/8836
 sudo: required
+os:
+- windows
+- linux
+- osx
 addons:
   chrome: stable # have Travis install chrome stable.
 script:
