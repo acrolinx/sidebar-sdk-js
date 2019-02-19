@@ -92,6 +92,9 @@ describe('chrome bug affects only chrome', () => {
     removeNode(testContainer);
   });
 
+  // TODO: Investigate if really fixed.
+  const isProbablyFixedInChrome = true;
+
   // This test should fail as soon the bug in chrome is fixed.
   it('verify that the chrome bug still exist, but only in chrome', () => {
     testContainer.style.cssFloat = 'left'; // set float = left, to measure width
@@ -109,7 +112,7 @@ describe('chrome bug affects only chrome', () => {
     assert.equal(divWithBugHtml, divWithoutBugHtml);
 
     // Normally both divs should render in same way and have the same width.
-    if (isChrome()) {
+    if (isChrome() && !isProbablyFixedInChrome) {
       assert.isFalse(divWithBugWidth === divWithoutBugWidth);
     } else {
       assert.isTrue(divWithBugWidth === divWithoutBugWidth);
