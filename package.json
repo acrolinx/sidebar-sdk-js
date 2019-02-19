@@ -20,7 +20,7 @@
     "@types/codemirror": "0.0.71",
     "@types/diff-match-patch": "^1.0.31",
     "@types/tinymce": "^4.5.16",
-    "acrolinx-sidebar-startpage": "^2.0.5",
+    "acrolinx-sidebar-startpage": "^2.0.6",
     "diff-match-patch": "1.0.4",
     "es6-promise": "^4.2.5",
     "lodash": "^4.17.11",
