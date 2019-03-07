@@ -29,7 +29,7 @@ import {
 import {ContentEditableAdapter} from "../../src/adapters/ContentEditableAdapter";
 import {InputAdapter} from "../../src/adapters/InputAdapter";
 import * as acrolinxPluginModule from "../../src/acrolinx-plugin";
-import {getMatchesWithReplacement} from "../utils/test-utils";
+import {getDummySidebarPath, getMatchesWithReplacement} from '../utils/test-utils';
 import {assign} from "../../src/utils/utils";
 import {AcrolinxPluginConfig} from "../../src/acrolinx-plugin";
 
@@ -69,7 +69,7 @@ describe('multi plugin', function() {
 
 
     const conf = assign({
-      sidebarUrl: location.pathname === '/test/' ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/',
+      sidebarUrl: getDummySidebarPath(),
       sidebarContainerId: 'sidebarContainer',
     }, config);
 

@@ -53,7 +53,7 @@ describe('autobind', function () {
     const adapters = bindAdaptersForCurrentPage();
     assert.equal(adapters.length, 6);
 
-    const adaptersContent = adapters.map(a => a.getContent!());
+    const adaptersContent = adapters.map(a => a.getContent!({}));
     assert.equal(adaptersContent[0], 'input 1 content');
     assert.equal(adaptersContent[1], 'contentEditable content');
     assert.equal(adaptersContent[2], 'textarea content');
@@ -77,7 +77,7 @@ describe('autobind', function () {
       const adapters = bindAdaptersForCurrentPage();
       assert.equal(adapters.length, 2);
 
-      const adaptersContent = adapters.map(a => a.getContent!());
+      const adaptersContent = adapters.map(a => a.getContent!({}));
       assert.equal(adaptersContent[0], 'input 1 content');
       assert.equal(adaptersContent[1], 'input 2 content');
       done();

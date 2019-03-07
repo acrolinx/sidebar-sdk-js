@@ -23,6 +23,9 @@ export class TinyMCETestSetup implements AdapterTestSetup {
   inputFormat = 'HTML';
   editorElement = '<textarea id="editorId" rows="10" cols="40">initial text</textarea>';
 
+  getTinyMceEditor = () => tinymce.get("editorId");
+
+
   setEditorContent(html: string, done: DoneCallback) {
     tinymce.get("editorId").setContent(html);
     done();

@@ -42,9 +42,9 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
 
   abstract getEditorDocument(): Document;
 
-  abstract getContent(): string;
+  abstract getContent(opts: ExtractContentForCheckOpts): string;
 
-  protected getEditorElement(): Element {
+  protected getEditorElement(): HTMLElement {
     return this.getEditorDocument().querySelector('body')!;
   }
 
@@ -56,13 +56,13 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   }
 
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult {
-    const html = this.getContent();
+    const html = this.getContent(opts);
     this.currentContentChecking = html;
     return {content: html, selection: opts.checkSelection ? this.getSelection() : undefined};
   }
 
-  protected getSelection(): DocumentSelection | undefined {
-    return undefined;
+  protected getSelection(): DocumentSelection {
+    return {ranges: []};
   }
 
   private scrollIntoView(sel: Selection) {

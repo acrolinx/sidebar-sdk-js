@@ -15,8 +15,10 @@
  */
 
 import {Editor} from 'tinymce';
-import {AbstractRichtextEditorAdapter, removeEmptyTextNodesIfNeeded} from "./AbstractRichtextEditorAdapter";
-import {HasEditorID} from "./AdapterInterface";
+import {DocumentSelection} from '../acrolinx-libs/plugin-interfaces';
+import {getSelectionHtmlRanges} from '../utils/check-selection';
+import {AbstractRichtextEditorAdapter, removeEmptyTextNodesIfNeeded} from './AbstractRichtextEditorAdapter';
+import {ExtractContentForCheckOpts, HasEditorID} from './AdapterInterface';
 
 export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
   editorId: string;
@@ -30,8 +32,19 @@ export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
     return tinymce.get(this.editorId);
   }
 
-  getContent() {
-    return this.getEditor().getContent();
+  getContent(opts: ExtractContentForCheckOpts) {
+    if (opts.checkSelection) {
+      return this.getContentForCheckSelection(this.getEditorElement());
+    } else {
+      return this.getEditor().getContent({});
+    }
+  }
+
+  getContentForCheckSelection = (el: HTMLElement) =>
+    this.getEditor().serializer.serialize(el, {}) as unknown as string
+
+  protected getSelection(): DocumentSelection {
+    return {ranges: getSelectionHtmlRanges(this.getEditorElement(), this.getContentForCheckSelection)};
   }
 
   getEditorDocument() {
@@ -46,6 +59,7 @@ export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
         const {startContainer, startOffset, endContainer, endOffset} = originalRange;
         selection.collapseToStart();
 
+        // TODO: Does this line cause a failing selection in IE11 sometimes?
         (this.getEditor() as any).insertContent('');
 
         const restoredRange = this.getEditorDocument().createRange();
@@ -61,5 +75,4 @@ export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
       }
     }
   }
-
 }

@@ -28,7 +28,7 @@ import {
 } from '../../src/acrolinx-libs/plugin-interfaces';
 import * as acrolinxPluginModule from "../../src/acrolinx-plugin";
 import {assign} from "../../src/utils/utils";
-import {getMatchesWithReplacement, waitMs} from "../utils/test-utils";
+import {getDummySidebarPath, getMatchesWithReplacement, waitMs} from '../utils/test-utils';
 import {SlowMotionAsyncWrapper} from "./fake/SlowMotionAsyncAdapter";
 
 const DUMMY_CHECK_ID = 'dummyCheckId';
@@ -64,7 +64,7 @@ describe('async adapter', function () {
 
 
     const conf = assign({
-      sidebarUrl: location.pathname === '/test/' ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/',
+      sidebarUrl: getDummySidebarPath(),
       sidebarContainerId: 'sidebarContainer',
     }, {});
 

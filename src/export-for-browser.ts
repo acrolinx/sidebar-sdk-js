@@ -26,7 +26,7 @@ import {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
 import {AsyncMultiEditorAdapter} from "./adapters/AsyncMultiEditorAdapter";
 import {createPluginMessageAdapter} from "./message-adapter/message-adapter";
 import {loadSidebarCode} from "./utils/sidebar-loader";
-import {getSelectionHtmlRanges} from "./utils/range";
+import {getSelectionHtmlRanges} from "./utils/check-selection";
 import {lookupMatches} from "./lookup/diff-based";
 import {extractTextDomMapping} from "./utils/text-dom-mapping";
 import {CodeMirrorAdapter} from "./adapters/CodeMirrorAdapter";

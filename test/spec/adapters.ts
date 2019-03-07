@@ -24,14 +24,14 @@ import {
   containsEmptyTextNodes,
   getMatchesWithReplacement,
   testIfWindowIsFocused
-} from "../utils/test-utils";
-import {AdapterInterface, SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
-import {CodeMirrorTestSetup} from "./adapter-test-setups/codemirror";
-import {ContentEditableTestSetup} from "./adapter-test-setups/content-editable";
-import {AdapterTestSetup} from "./adapter-test-setups/adapter-test-setup";
-import {InputAdapterTestSetup} from "./adapter-test-setups/input";
-import {CKEditorTestSetup} from "./adapter-test-setups/ck-editor";
-import {TinyMCETestSetup} from "./adapter-test-setups/tinymce";
+} from '../utils/test-utils';
+import {AdapterInterface, SuccessfulContentExtractionResult} from '../../src/adapters/AdapterInterface';
+import {CodeMirrorTestSetup} from './adapter-test-setups/codemirror';
+import {ContentEditableTestSetup} from './adapter-test-setups/content-editable';
+import {AdapterTestSetup} from './adapter-test-setups/adapter-test-setup';
+import {InputAdapterTestSetup} from './adapter-test-setups/input';
+import {CKEditorTestSetup} from './adapter-test-setups/ck-editor';
+import {TinyMCETestSetup} from './adapter-test-setups/tinymce';
 
 const assert = chai.assert;
 
@@ -93,8 +93,7 @@ describe('adapter test', function() {
         const editorContent = (adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult).content;
         if (adapterSpec.inputFormat === 'TEXT') {
           assert.equal(editorContent, expectedText);
-        }
-        else {
+        } else {
           const actualText = $('<div>' + editorContent + '</div>').text().replace('\n', '');
           assert.equal(actualText, expectedText);
         }
@@ -271,11 +270,11 @@ describe('adapter test', function() {
 
       it('Replace continues multi range', function(done) {
         givenAText('word0 blub mist word3', text => {
-          const word1 = getMatchesWithReplacement(text, 'blub', "a")[0];
-          const word2 = getMatchesWithReplacement(text, 'mist', "b")[0];
+          const word1 = getMatchesWithReplacement(text, 'blub', 'a')[0];
+          const word2 = getMatchesWithReplacement(text, 'mist', 'b')[0];
           const space = {
-            content: " ",
-            replacement: "",
+            content: ' ',
+            replacement: '',
             range: [word1.range[1], word2.range[0]] as [number, number]
           };
 
@@ -288,11 +287,11 @@ describe('adapter test', function() {
       it('Replace continues multi range with number in words', function(done) {
         givenAText('word0 blub1 mist2 word3', text => {
 
-          const word1 = getMatchesWithReplacement(text, 'blub1', "a")[0];
-          const word2 = getMatchesWithReplacement(text, 'mist2', "b")[0];
+          const word1 = getMatchesWithReplacement(text, 'blub1', 'a')[0];
+          const word2 = getMatchesWithReplacement(text, 'mist2', 'b')[0];
           const space = {
-            content: " ",
-            replacement: "",
+            content: ' ',
+            replacement: '',
             range: [word1.range[1], word2.range[0]] as [number, number]
           };
 
@@ -396,7 +395,7 @@ describe('adapter test', function() {
 
       it('Replace with and after strange chars', function(done) {
         givenAText('wordOne wordTwo wordThree wordFour', text => {
-          const strangeChars = "[]()/&%$§\"!'*+~öäü:,;-<>|^°´`òê€@ß?={}µコンピュータ";
+          const strangeChars = '[]()/&%$§"!\'*+~öäü:,;-<>|^°´`òê€@ß?={}µコンピュータ';
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', strangeChars));
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'c'));
           // TODO: Depending on the document type, we should test for correct escaping.
@@ -407,7 +406,7 @@ describe('adapter test', function() {
 
       it('Replace with text looking like entities', function(done) {
         givenAText('wordOne wordTwo wordThree', text => {
-          const entities = "&uuml;";
+          const entities = '&uuml;';
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', entities));
           assertEditorText(`wordOne ${entities} wordThree`);
           done();
@@ -416,7 +415,7 @@ describe('adapter test', function() {
 
       it('Replace with text looking like html tags', function(done) {
         givenAText('wordOne wordTwo wordThree', text => {
-          const replacement = "<tagish>";
+          const replacement = '<tagish>';
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', replacement));
           assertEditorText(`wordOne ${replacement} wordThree`);
           done();
@@ -426,7 +425,7 @@ describe('adapter test', function() {
       if (adapterSpec.inputFormat === 'TEXT') {
         it('Replace text inside tags', function(done) {
           givenAText('wordOne <part1 part2 part3/> wordThree', text => {
-            const replacement = "replacement";
+            const replacement = 'replacement';
             adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'part3', replacement));
             assertEditorText(`wordOne <part1 part2 ${replacement}/> wordThree`);
             done();
@@ -488,14 +487,14 @@ describe('adapter test', function() {
           });
         });
 
-        it("Don't replace markup/markdown", (done) => {
+        it('Don\'t replace markup/markdown', (done) => {
           givenAText('see  ![Acrolinx]', () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
-              {"content": "see", "range": [0, 3], "replacement": "see Acrolinx"},
-              {"content": " ", "range": [3, 4], "replacement": ""},
-              {"content": " ", "range": [4, 5], "replacement": ""},
-              {"content": " ", "range": [5, 7], "replacement": ""},
-              {"content": "Acrolinx", "range": [7, 15], "replacement": ""}
+              {'content': 'see', 'range': [0, 3], 'replacement': 'see Acrolinx'},
+              {'content': ' ', 'range': [3, 4], 'replacement': ''},
+              {'content': ' ', 'range': [4, 5], 'replacement': ''},
+              {'content': ' ', 'range': [5, 7], 'replacement': ''},
+              {'content': 'Acrolinx', 'range': [7, 15], 'replacement': ''}
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
             // Actually we would like to get "see ![Acrolinx]" but this would need a better server response.
@@ -539,7 +538,7 @@ describe('adapter test', function() {
       it('Replace same word in correct order', function(done) {
         givenAText('before wordSame wordSame wordSame wordSame wordSame after', text => {
           // The diff approach can not always handle ["a", "b", "c", "d", "e"] correctly.
-          const replacements = ["replacement1", "replacement2", "replacement3", "replacement4", "replacement5"];
+          const replacements = ['replacement1', 'replacement2', 'replacement3', 'replacement4', 'replacement5'];
 
           function replace(i: number) {
             adapter.replaceRanges(dummyCheckId, [getMatchesWithReplacement(text, 'wordSame', replacements[i])[i]]);
@@ -565,13 +564,13 @@ describe('adapter test', function() {
           });
 
           adapter.selectRanges(dummyCheckId, [
-            getMatchesWithReplacement(text, words[0], "")[0],
-            getMatchesWithReplacement(text, words[words.length - 1], "")[0]
+            getMatchesWithReplacement(text, words[0], '')[0],
+            getMatchesWithReplacement(text, words[words.length - 1], '')[0]
           ]);
 
           adapter.selectRanges(dummyCheckId, [
-            getMatchesWithReplacement(text, words[1], "")[0],
-            getMatchesWithReplacement(text, words[2], "")[0]
+            getMatchesWithReplacement(text, words[1], '')[0],
+            getMatchesWithReplacement(text, words[2], '')[0]
           ]);
 
           assertEditorText(editorText);
@@ -583,7 +582,7 @@ describe('adapter test', function() {
         it('Remove complete text content', function(done) {
           givenAText('<p>a</p>', () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
-              {"content": "a", "range": [3, 4], "replacement": ""},
+              {'content': 'a', 'range': [3, 4], 'replacement': ''},
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
             // const normalizedResultHtml = normalizeResultHtml(adapter.getContent!());
@@ -600,11 +599,11 @@ describe('adapter test', function() {
         it('Missing space within divs', function(done) {
           givenAText('<div>a b ?</div><div>c</div>', () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
-              {"content": "b", "range": [7, 8], "replacement": "b?"},
-              {"content": " ", "range": [8, 9], "replacement": ""},
-              {"content": "?", "range": [9, 10], "replacement": ""}];
+              {'content': 'b', 'range': [7, 8], 'replacement': 'b?'},
+              {'content': ' ', 'range': [8, 9], 'replacement': ''},
+              {'content': '?', 'range': [9, 10], 'replacement': ''}];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent!()), '<div>a b?</div><div>c</div>');
+            assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
             done();
           });
         });
@@ -612,12 +611,12 @@ describe('adapter test', function() {
         it('Replace partially tagged text', function(done) {
           givenAText('<p><strong>a b</strong> .</p>', () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
-              {"content": "b", "range": [13, 14], "replacement": "b."},
-              {"content": " ", "range": [23, 24], "replacement": ""},
-              {"content": ".", "range": [24, 25], "replacement": ""}
+              {'content': 'b', 'range': [13, 14], 'replacement': 'b.'},
+              {'content': ' ', 'range': [23, 24], 'replacement': ''},
+              {'content': '.', 'range': [24, 25], 'replacement': ''}
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent!()), '<p><strong>a b.</strong></p>');
+            assert.equal(normalizeResultHtml(adapter.getContent!({})), '<p><strong>a b.</strong></p>');
             done();
           });
         });
@@ -669,15 +668,19 @@ describe('adapter test', function() {
       if (adapterSpec instanceof ContentEditableTestSetup
         || adapterSpec instanceof InputAdapterTestSetup
         || adapterSpec instanceof CodeMirrorTestSetup
+        || adapterSpec instanceof TinyMCETestSetup
       ) {
         it('Return check selection if requested', (done) => {
           const completeContent = 'begin selection end';
           givenAText(completeContent, html => {
             const matchesWithReplacement = getMatchesWithReplacement(html, 'selection');
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            // TODO: Investigate why we need a second selectRanges in IE11 (TinyMCEAdapter.scrollToCurrentSelection ?)
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+
             const result = adapter.extractContentForCheck({checkSelection: true}) as SuccessfulContentExtractionResult;
             const selectedRanges = result.selection!.ranges;
-            assert.equal(selectedRanges.length, 1);
+            assert.equal(selectedRanges.length, 1, 'One range is selected for checking');
             assertDeepEqual(selectedRanges[0], matchesWithReplacement[0].range);
             done();
           });
@@ -691,6 +694,31 @@ describe('adapter test', function() {
             assert.isUndefined(result.selection);
             done();
           });
+        });
+      }
+
+      if (adapterSpec instanceof TinyMCETestSetup) {
+        it('Return correct check selection if tags are filtered by tinyMCE', () => {
+          const SELECTED_TEXT = 'selection';
+          // The blink tag will be filter by setContent/getContent of tinyMCE, so we must set it with this trick.
+          adapterSpec.getTinyMceEditor().getBody().innerHTML = '<blink>begin</blink> selection end';
+
+          // We simulate a check only to set a selection.
+          adapter.registerCheckCall({checkId: dummyCheckId});
+          const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
+          registerCheckResult(contentExtractionResult.content);
+          const matchesWithReplacement = getMatchesWithReplacement(contentExtractionResult.content, SELECTED_TEXT, SELECTED_TEXT);
+          // TODO: Investigate why we need replaceRanges instead of selectRanges in IE11 (TinyMCEAdapter.scrollToCurrentSelection ?)
+          // in order to select.
+          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+          assert.equal(adapterSpec.getSelectedText(), SELECTED_TEXT);
+
+          // If we now extract content for checkSelection, the selection should be what we have set before.
+          const result = adapter.extractContentForCheck({checkSelection: true}) as SuccessfulContentExtractionResult;
+          const selectedRanges = result.selection!.ranges;
+          assert.equal(selectedRanges.length, 1, 'One range is selected for checking');
+          assertDeepEqual(selectedRanges[0], matchesWithReplacement[0].range);
+          assert.equal(result.content.slice(selectedRanges[0][0], selectedRanges[0][1]), SELECTED_TEXT);
         });
       }
 

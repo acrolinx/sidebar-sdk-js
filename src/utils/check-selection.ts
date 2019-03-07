@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
-function getRangesOfCurrentSelection(): Range[] {
-  const selection = document.getSelection();
+function getRangesOfCurrentSelection(doc: Document): Range[] {
+  const selection = doc.getSelection();
 
   if (!selection) {
     return [];
@@ -31,7 +31,10 @@ function getRangesOfCurrentSelection(): Range[] {
 }
 
 function getNonEmptySelectedRangesInsideOf(editorElement: HTMLElement): Range[] {
-  const ranges = getRangesOfCurrentSelection();
+  if (!editorElement.ownerDocument) {
+    return [];
+  }
+  const ranges = getRangesOfCurrentSelection(editorElement.ownerDocument);
   return ranges.filter(range =>
     containsOrIs(editorElement, range.commonAncestorContainer) &&
     range.toString().trim() !== ''
@@ -50,10 +53,8 @@ function containsOrIs(ancestor: HTMLElement, descendant: Node) {
 function getNodePath(ancestor: HTMLElement, node: Node): number[] {
   const result: number[] = [];
   let currentNode = node;
-  // console.log('getNodePath');
   while (currentNode !== ancestor) {
     const parent = currentNode.parentNode;
-    // console.log(currentNode, parent);
     if (!parent) {
       break;
     }
@@ -80,46 +81,64 @@ function findNodeByPath(ancestor: Node, path: number[]): Node | undefined {
   return currentNode;
 }
 
-const RANGE_MARKER_START = 'ACRO_ßELECTION_START';
-const RANGE_MARKER_END = 'ACRO_ßELECTION_END';
+// These markers should never appear in a real document and they should not contain any chars that need escaping.
+const RANGE_MARKER_START = 'ACROOO_SELECTION_START';
+const RANGE_MARKER_END = 'ACROOO_SELECTION_END';
 
-function mapDomRangeToHtmlRange(editorElement: HTMLElement, range: Range): [number, number] | undefined {
+type ElementHtmlGetter = (el: HTMLElement) => string;
+
+function mapDomRangeToHtmlRange(editorElement: HTMLElement,
+                                range: Range,
+                                getElementHtml: ElementHtmlGetter): [number, number] | undefined {
+  const doc = editorElement.ownerDocument;
+  if (!doc) {
+    return undefined;
+  }
+
+  // Find node-path of range.
   const rangeStartElementPath = getNodePath(editorElement, range.startContainer);
   const rangeEndElementPath = getNodePath(editorElement, range.endContainer);
-  // console.log('range elements path', rangeStartElementPath, rangeEndElementPath);
+
   const clonedEditorElement = editorElement.cloneNode(true) as HTMLElement;
+
+  // Find start and end elements of range in clonedEditorElement again.
   const clonedStartElement = findNodeByPath(clonedEditorElement, rangeStartElementPath);
   const clonedEndElement = findNodeByPath(clonedEditorElement, rangeEndElementPath);
   if (!clonedStartElement || !clonedEndElement) {
     return undefined;
   }
-  // console.log('cloned nodes', clonedStartElement, clonedEndElement);
 
-  const clonedRange = document.createRange();
+  // Construct range in clonedEditorElement.
+  const clonedRange = doc.createRange();
   clonedRange.setStart(clonedStartElement, range.startOffset);
   clonedRange.setEnd(clonedEndElement, range.endOffset);
 
-  clonedRange.insertNode(document.createTextNode(RANGE_MARKER_START));
+  // Insert markers.
+  clonedRange.insertNode(doc.createTextNode(RANGE_MARKER_START));
   clonedRange.collapse(false); // collapse to End
-  clonedRange.insertNode(document.createTextNode(RANGE_MARKER_END));
+  clonedRange.insertNode(doc.createTextNode(RANGE_MARKER_END));
 
-  const htmlWithMarkers = clonedEditorElement.innerHTML;
-  // console.log('htmlWithMarkers', htmlWithMarkers);
+  // Find position of markers in HTML of clonedEditorElement.
+  const htmlWithMarkers = getElementHtml(clonedEditorElement);
   const htmlStartOffset = htmlWithMarkers.indexOf(RANGE_MARKER_START);
   const htmlEndOffset = htmlWithMarkers.indexOf(RANGE_MARKER_END);
   if (htmlStartOffset === -1 || htmlEndOffset === -1) {
-    // console.log('where are the markers?');
+    // Markers not found.
     return undefined;
   }
 
   return [htmlStartOffset, htmlEndOffset - RANGE_MARKER_START.length];
 }
 
+function getInnerHtml(el: HTMLElement): string {
+  return el.innerHTML;
+}
 
-export function getSelectionHtmlRanges(editorElement: HTMLElement): [number, number][] {
+export function getSelectionHtmlRanges(editorElement: HTMLElement,
+                                       getElementHtml: ElementHtmlGetter = getInnerHtml): [number, number][] {
   const ranges = getNonEmptySelectedRangesInsideOf(editorElement);
   // We could optimize this mapping of individual ranges by implementing a function
   // which maps all ranges at once, but this would probably increase code complexity just
   // to speed up the rare corner case of multiple ranges in a selection.
-  return _.compact(ranges.map(range => mapDomRangeToHtmlRange(editorElement, range)));
+  return _.compact(ranges.map(range => mapDomRangeToHtmlRange(editorElement, range, getElementHtml)));
 }

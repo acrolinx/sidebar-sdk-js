@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
 import {getElementFromAdapterConf, AdapterConf} from "./AdapterInterface";
 import {scrollIntoView} from "../utils/scrolling";
 import {DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
-import {getSelectionHtmlRanges} from "../utils/range";
-import * as _ from "lodash";
-
+import {getSelectionHtmlRanges} from "../utils/check-selection";
 
 export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
-  element: Element;
+  element: HTMLElement;
 
   constructor(conf: AdapterConf) {
     super(conf);
     this.element = getElementFromAdapterConf(conf);
   }
 
-  getEditorElement(): Element {
+  getEditorElement(): HTMLElement {
     return this.element;
   }
 
@@ -39,15 +36,8 @@ export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
     return this.element.innerHTML;
   }
 
-  protected getSelection(): DocumentSelection | undefined {
-    const htmlRanges = getSelectionHtmlRanges(this.getEditorElement() as HTMLElement);
-    if (_.isEmpty(htmlRanges)) {
-      return undefined;
-    }
-    // console.log('selected content: ', htmlRanges.map(r => this.getContent().slice(r[0], r[1])));
-    return {
-      ranges: htmlRanges
-    };
+  protected getSelection(): DocumentSelection  {
+    return {ranges: getSelectionHtmlRanges(this.getEditorElement() as HTMLElement)};
   }
 
   getEditorDocument(): Document {
@@ -57,6 +47,5 @@ export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
   protected scrollElementIntoView(el: HTMLElement) {
     scrollIntoView(el, this.config.scrollOffsetY);
   }
-
 }
 

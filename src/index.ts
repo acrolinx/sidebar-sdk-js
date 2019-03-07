@@ -27,7 +27,7 @@ export {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
 export {AsyncMultiEditorAdapter} from "./adapters/AsyncMultiEditorAdapter";
 export {createPluginMessageAdapter} from "./message-adapter/message-adapter";
 export {loadSidebarCode} from "./utils/sidebar-loader";
-export {getSelectionHtmlRanges} from "./utils/range";
+export {getSelectionHtmlRanges} from "./utils/check-selection";
 export {lookupMatches} from "./lookup/diff-based";
 export {extractTextDomMapping} from "./utils/text-dom-mapping";
 export {CodeMirrorAdapter} from "./adapters/CodeMirrorAdapter";

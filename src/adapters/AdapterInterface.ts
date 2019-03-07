@@ -68,7 +68,7 @@ export interface SuccessfulCheckResult {
 
 export interface CommonAdapterInterface {
   getFormat?(): string;
-  getContent?(): string;
+  getContent?(opts: ExtractContentForCheckOpts): string;
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult | Promise<ContentExtractionResult>;
   registerCheckCall(checkInfo: Check): void;
   registerCheckResult(checkResult: SuccessfulCheckResult): void;

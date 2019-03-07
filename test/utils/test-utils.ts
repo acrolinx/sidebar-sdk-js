@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
+import * as _ from 'lodash';
+
 const assert = chai.assert;
 
-import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
+export function getDummySidebarPath() {
+  return _.startsWith(location.pathname, '/test/') ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/';
+}
 
 export function getMatchesWithReplacement(completeString: string, partialString: string, replacement = ''): MatchWithReplacement[] {
   const matches: MatchWithReplacement[] = [];
