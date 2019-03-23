@@ -18,8 +18,6 @@ import * as utils from "./utils";
 import {AcrolinxPluginConfig} from "../acrolinx-plugin";
 import {ACROLINX_STARTPAGE_INLINED_HTML} from "acrolinx-sidebar-startpage";
 
-export const SIDEBAR_URL = 'https://sidebar-classic.acrolinx-cloud.com/v14/prod/';
-
 export class SidebarURLInvalidError extends Error {
   public details: string;
 
@@ -61,9 +59,7 @@ function createCompleteSidebarUrl(sidebarBaseUrl: string) {
  *
  * TODO: Is this function currently used in any of our clients?
  */
-export function loadSidebarCode(sidebarUrl = SIDEBAR_URL) {
-  const sidebarBaseUrl = sidebarUrl;
-
+export function loadSidebarCode(sidebarBaseUrl: string) {
   const completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
   utils.fetch(completeSidebarUrl, sidebarHtml => {
     if (sidebarHtml.indexOf("<meta name=\"sidebar-version\"") < 0) {
@@ -119,7 +115,7 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
     onSidebarLoaded();
     return;
   }
-  const sidebarBaseUrl = config.sidebarUrl || SIDEBAR_URL;
+  const sidebarBaseUrl = config.sidebarUrl;
   const completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
   if (config.useMessageAdapter || (config.useSidebarFromSameOriginDirectly && utils.isFromSameOrigin(sidebarBaseUrl))) {
     sidebarIFrameElement.addEventListener('load', onSidebarLoaded);
