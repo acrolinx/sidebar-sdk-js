@@ -103,7 +103,7 @@ export interface InitParameters extends SidebarConfiguration {
   serverAddress?: string;
 
   /**
-   * This property enables the user to manually change the serverAddress on the log-in screen.
+   * This property enables the user to manually change the serverAddress on the sidebar start page.
    */
   showServerSelector?: boolean;
 
@@ -150,6 +150,13 @@ export interface InitParameters extends SidebarConfiguration {
    * If this property is omitted, the sidebar opens the Acrolinx default help.
    */
   helpUrl?: string;
+
+  /**
+   * The sidebar tries to sign in the user with this optional accessToken.
+   * The sidebar start page forwards this accessToken to the sidebar only if showServerSelector === false.
+   * New since sidebar version 14.11.0.
+   */
+  accessToken?: string;
 }
 
 export type UiMode = 'default' | 'noOptions';
