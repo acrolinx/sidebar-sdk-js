@@ -32,5 +32,8 @@ module.exports = {
     hints: "error",
     maxEntrypointSize: MAX_SIZE_IN_BYTES,
     maxAssetSize: MAX_SIZE_IN_BYTES
-  }
+  },
+  optimization: {
+    minimize: true
+  },
 };
