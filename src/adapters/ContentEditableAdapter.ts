@@ -45,7 +45,11 @@ export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
   }
 
   protected scrollElementIntoView(el: HTMLElement) {
-    scrollIntoView(el, this.config.scrollOffsetY);
+    if (('scrollBehavior' in document.body.style) && this.config.scrollIntoViewOptions) {
+      el.scrollIntoView(this.config.scrollIntoViewOptions);
+    } else {
+      scrollIntoView(el, this.config.scrollOffsetY);
+    }
   }
 }
 

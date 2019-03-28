@@ -24,6 +24,13 @@ import {
 
 export interface CommonAdapterConf {
   scrollOffsetY?: number;
+
+  /**
+   *  Options forwarded to scrollIntoView in some adapters.
+   *  If set, scrollOffsetY might be ignored.
+   *  Experimental.
+   */
+  scrollIntoViewOptions?: ScrollIntoViewOptions;
 }
 
 export interface HasEditorID extends CommonAdapterConf {
