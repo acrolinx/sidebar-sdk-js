@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
-import {getElementFromAdapterConf, AdapterConf} from "./AdapterInterface";
-import {scrollIntoView} from "../utils/scrolling";
-import {DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
-import {getSelectionHtmlRanges} from "../utils/check-selection";
+import {AbstractRichtextEditorAdapter} from './AbstractRichtextEditorAdapter';
+import {getElementFromAdapterConf, AdapterConf} from './AdapterInterface';
+import {DocumentSelection} from '../acrolinx-libs/plugin-interfaces';
+import {getSelectionHtmlRanges} from '../utils/check-selection';
 
 export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
   element: HTMLElement;
@@ -36,20 +35,12 @@ export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
     return this.element.innerHTML;
   }
 
-  protected getSelection(): DocumentSelection  {
+  protected getSelection(): DocumentSelection {
     return {ranges: getSelectionHtmlRanges(this.getEditorElement() as HTMLElement)};
   }
 
   getEditorDocument(): Document {
     return this.element.ownerDocument!;
-  }
-
-  protected scrollElementIntoView(el: HTMLElement) {
-    if (('scrollBehavior' in document.body.style) && this.config.scrollIntoViewOptions) {
-      el.scrollIntoView(this.config.scrollIntoViewOptions);
-    } else {
-      scrollIntoView(el, this.config.scrollOffsetY);
-    }
   }
 }
 

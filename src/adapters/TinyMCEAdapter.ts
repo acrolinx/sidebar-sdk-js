@@ -17,7 +17,7 @@
 import {Editor} from 'tinymce';
 import {DocumentSelection} from '../acrolinx-libs/plugin-interfaces';
 import {getSelectionHtmlRanges} from '../utils/check-selection';
-import {AbstractRichtextEditorAdapter, removeEmptyTextNodesIfNeeded} from './AbstractRichtextEditorAdapter';
+import {AbstractRichtextEditorAdapter} from './AbstractRichtextEditorAdapter';
 import {ExtractContentForCheckOpts, HasEditorID} from './AdapterInterface';
 
 export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
@@ -49,30 +49,5 @@ export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
 
   getEditorDocument() {
     return this.getEditor().getDoc();
-  }
-
-  scrollToCurrentSelection() {
-    const selection = this.getEditorDocument().getSelection();
-    if (selection) {
-      try {
-        const originalRange = selection.getRangeAt(0);
-        const {startContainer, startOffset, endContainer, endOffset} = originalRange;
-        selection.collapseToStart();
-
-        // TODO: Does this line cause a failing selection in IE11 sometimes?
-        (this.getEditor() as any).insertContent('');
-
-        const restoredRange = this.getEditorDocument().createRange();
-        restoredRange.setStart(startContainer, startOffset);
-        restoredRange.setEnd(endContainer, endOffset);
-
-        selection.removeAllRanges();
-        selection.addRange(restoredRange);
-
-        removeEmptyTextNodesIfNeeded(originalRange);
-      } catch (error) {
-        console.log('Scrolling Error: ', error);
-      }
-    }
   }
 }

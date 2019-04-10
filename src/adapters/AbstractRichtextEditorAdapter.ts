@@ -17,6 +17,7 @@
 import {Match, MatchWithReplacement, Check, DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
 import * as _ from "lodash";
 import {isChrome} from '../utils/detect-browser';
+import {scrollIntoView} from '../utils/scrolling';
 import {TextDomMapping, extractTextDomMapping, getEndDomPos} from "../utils/text-dom-mapping";
 import {AlignedMatch} from "../utils/alignment";
 import {lookupMatches} from "../lookup/diff-based";
@@ -75,7 +76,6 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     sel.removeAllRanges();
     sel.addRange(range);
     text.focus();
-    text.scrollIntoView();
     this.scrollElementIntoView(text);
     removeNode(text);
 
@@ -95,7 +95,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   }
 
   protected scrollElementIntoView(el: HTMLElement) {
-    el.scrollIntoView();
+    scrollIntoView(el, this.config.scrollOffsetY);
   }
 
   selectRanges(checkId: string, matches: Match[]) {

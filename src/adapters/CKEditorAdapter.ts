@@ -17,8 +17,6 @@
 import {Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
 import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
-import {scrollIntoView} from "../utils/scrolling";
-
 
 export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   editorId: string;
@@ -71,9 +69,5 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
 
   isInWysiwygMode() {
     return this.getEditor().mode === 'wysiwyg';
-  }
-
-  protected scrollElementIntoView(el: HTMLElement) {
-    scrollIntoView(el, this.config.scrollOffsetY);
   }
 }

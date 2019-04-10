@@ -41,8 +41,24 @@ function findScrollableAncestors(startEl: Element): Element[] {
 }
 
 export function scrollIntoView(targetEl: HTMLElement, windowTopOffset = 0, localTopOffset = 0) {
+  // Detect if ScrollIntoViewOptions are supported.
+  // Should be supported currently (April 2019) in chrome and firefox.
+  if (('scrollBehavior' in document.body.style)) {
+    try {
+      // For Chrome and Firefox (currently).
+      targetEl.scrollIntoView({block: 'center'});
+      return;
+    } catch (e) {
+      // According to https://stackoverflow.com/questions/46919627/is-it-possible-to-test-for-scrollintoview-browser-compatibility
+      // it might still fail in strange browsers like "WaterFox".
+    }
+  }
+
+  // Here begins a dubious workaround for not-so-modern browsers.
+
+  targetEl.scrollIntoView();
+
   if (!windowTopOffset) {
-    targetEl.scrollIntoView();
     return;
   }
 
