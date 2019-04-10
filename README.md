@@ -74,6 +74,12 @@ If not, implement the [`AdapterInterface`](https://github.com/acrolinx/sidebar-s
 * The [Sidebar DEMO JS](https://github.com/acrolinx/acrolinx-sidebar-demo) is built based on this SDK.
 * The Sidebar SDKs are based on the [Acrolinx Sidebar Interface](https://acrolinx.github.io/sidebar-sdk-js/).
 
+## Running this project
+
+* Make sure you have a chrome or chromium version later then 72.0.0. This is needed to execute the tests successfully.
+* Run `npm i`
+* Run `npm run buildLocal` to run all tests and build distribution
+
 ## License
 
 Copyright 2015-present Acrolinx GmbH
