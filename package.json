@@ -51,6 +51,7 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "mocha": "^5.2.0",
     "phantomjs-prebuilt": "2.1.16",
+    "shx": "^0.3.2",
     "tinymce": "^4.9.3",
     "ts-loader": "^5.3.3",
     "tslint": "5.12.0",
@@ -62,11 +63,11 @@
     "webpack-dev-server": "^3.2.1"
   },
   "scripts": {
-    "clean": "rm -rf tmp dist",
+    "clean": "shx rm -rf tmp dist",
     "buildDoc": "typedoc --out ./docs/pluginDoc/ src/",
     "buildLocal": "npm run tsc && npm run tslint && npm run webpack && npm run test && npm run dist",
     "jenkins": "npm run tsc && npm run tslint && npm run webpack && npm run test && npm run dist",
-    "dist": "cp -r tmp/compiled/src/* dist && npm run minify",
+    "dist": "shx cp -r tmp/compiled/src/* dist && npm run minify",
     "minify": "uglifyjs dist/acrolinx-sidebar-sdk.js -o dist/acrolinx-sidebar-sdk.min.js",
     "test": "npm run testKarmaChromeHeadless",
     "testKarmaPhantomJS": "karma start test/karma.conf.js --browsers PhantomJS",
