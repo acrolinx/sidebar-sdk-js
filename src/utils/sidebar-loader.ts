@@ -16,7 +16,7 @@
 
 import * as utils from "./utils";
 import {AcrolinxPluginConfig} from "../acrolinx-plugin";
-import {ACROLINX_STARTPAGE_INLINED_HTML} from "acrolinx-sidebar-startpage";
+import {ACROLINX_STARTPAGE_INLINED_HTML} from "@acrolinx/sidebar-startpage";
 
 export class SidebarURLInvalidError extends Error {
   public details: string;
