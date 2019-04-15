@@ -1,5 +1,5 @@
 {
-  "name": "acrolinx-sidebar-sdk",
+  "name": "@acrolinx/sidebar-sdk",
   "description": "Acrolinx Sidebar SDK for JavaScript",
   "version": "0.4.34",
   "license": "Apache-2.0",
