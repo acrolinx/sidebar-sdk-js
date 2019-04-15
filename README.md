@@ -47,7 +47,7 @@ Before you start developing your own integration, you might benefit from looking
 To install the SDK to your npm-based Acrolinx Integration project call:
 
 ```bash
-npm install acrolinx-sidebar-sdk
+npm install @acrolinx/sidebar-sdk
 ```
 
 ### Instructions for Contributing Code
