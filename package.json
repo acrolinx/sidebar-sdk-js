@@ -68,7 +68,7 @@
     "buildLocal": "npm run tsc && npm run tslint && npm run webpack && npm run test && npm run dist",
     "jenkins": "npm run tsc && npm run tslint && npm run webpack && npm run test && npm run dist",
     "dist": "shx cp -r tmp/compiled/src/* dist && npm run minify",
-    "minify": "uglifyjs dist/sidebar-sdk.js -o dist/sidebar-sdk.min.js",
+    "minify": "uglifyjs dist/acrolinx-sidebar-sdk.js -o dist/acrolinx-sidebar-sdk.min.js",
     "test": "npm run testKarmaChromeHeadless",
     "testKarmaPhantomJS": "karma start test/karma.conf.js --browsers PhantomJS",
     "testKarmaChrome": "karma start test/karma.conf.js --browsers Chrome",
