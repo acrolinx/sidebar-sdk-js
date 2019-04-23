@@ -101,7 +101,26 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   selectRanges(checkId: string, matches: Match[]) {
     assertElementIsDisplayed(this.getEditorElement());
     this.selectMatches(checkId, matches);
-    this.scrollToCurrentSelection();
+    // Simple workaround for quill editor, as 'scrollIntoView' is messing up the selection range there.
+    if (this.isQuillEditor()) {
+      let selection = this.getEditorDocument().getSelection();
+      if (selection) {
+        let parentElement = selection.anchorNode.parentElement;
+        if (parentElement) {
+          parentElement.scrollIntoView();
+        }
+      }
+    } else {
+      this.scrollToCurrentSelection();
+    }
+  }
+
+  private isQuillEditor(): boolean {
+    let editorClassName = this.getEditorElement().className;
+    let elementsByClassName = this.getEditorElement().getElementsByClassName('ql-editor');
+    const isQuill = (editorClassName.indexOf('ql-editor') >= 0 || elementsByClassName.length > 0);
+    console.log('IS QUILL? ' + isQuill);
+    return isQuill;
   }
 
 
