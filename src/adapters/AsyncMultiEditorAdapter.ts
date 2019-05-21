@@ -21,7 +21,7 @@ import {AddSingleAdapterOptions, MultiEditorAdapter} from "./MultiEditorAdapter"
 
 export class AsyncMultiEditorAdapter extends MultiEditorAdapter implements AsyncAdapterInterface {
   readonly isAsync: true = true;
-  readonly requiresSynchronization = true;
+  readonly requiresSynchronization: true = true;
 
   addSingleAdapter(singleAdapter: AsyncAdapterInterface | AdapterInterface, opts: AddSingleAdapterOptions = {}, id?: string) {
     this.addSingleAdapterInternal(singleAdapter, opts, id);
