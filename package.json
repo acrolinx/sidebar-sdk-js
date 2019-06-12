@@ -54,7 +54,7 @@
     "shx": "^0.3.2",
     "tinymce": "^4.9.3",
     "ts-loader": "^5.3.3",
-    "tslint": "5.12.0",
+    "tslint": "5.17.0",
     "typedoc": "0.14.2",
     "typescript": "3.5.1",
     "uglify-js": "^3.4.9",
@@ -77,8 +77,8 @@
     "testKarmaBsJenkins": "karma start test/karma.conf.js --browsers bs_edge_win,bs_chrome_win,bs_firefox_win",
     "tsc": "tsc",
     "tscWatch": "tsc -w",
-    "tslint": "tslint -p tsconfig.json \"src/**/*.ts\" \"test/**/*.ts\"",
-    "tslintFix": "tslint -p tsconfig.json --fix \"src/**/*.ts\" \"test/**/*.ts\"",
+    "tslint": "tslint -p tsconfig.json -t stylish  \"src/**/*.ts\" \"test/**/*.ts\"",
+    "tslintFix": "tslint --fix -p tsconfig.json -t stylish \"src/**/*.ts\" \"test/**/*.ts\"",
     "webpack": "webpack",
     "webpack-dev-server": "webpack-dev-server --host 0.0.0.0"
   }
