@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
-import {assign, removeNode} from "../utils/utils";
-import {AsyncStorage} from "./async-storage";
+import * as _ from 'lodash';
+import {assign, removeNode} from '../utils/utils';
+import {AsyncStorage} from './async-storage';
 
 export const SIDEBAR_ID = 'acrolinxFloatingSidebar';
 export const TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
@@ -72,7 +72,7 @@ export function loadInitialPos(asyncStorage: AsyncStorage): Promise<Position> {
     left: DEFAULT_POS.left,
     height: sanitizeHeight(window.innerHeight - DEFAULT_POS.top - 40)
   };
-  return asyncStorage.get(POSITION_KEY).then(
+  return asyncStorage.get<Position>(POSITION_KEY).then(
     (loadedPosition) => ({...defaultPos, ...loadedPosition}),
     (e: Error) => {
       console.error("Can't load saved sidebar position.", e);
@@ -90,8 +90,12 @@ function sanitizeHeight(floatingSidebarHeight: number) {
 export function keepVisible({left, top, height}: Position, windowWidth: number = window.innerWidth, windowHeight: number = window.innerHeight): Position {
   const minVerticalMargin = 30;
   const minHorizontalMargin = 150;
-  if (top <= 0) { top = 20; }
-  if (left <= 0) { left = 20; }
+  if (top <= 0) {
+    top = 20;
+  }
+  if (left <= 0) {
+    left = 20;
+  }
   return {
     left: left > (windowWidth - minHorizontalMargin) ? (windowWidth - minHorizontalMargin) : left,
     top: top > (windowHeight - minVerticalMargin) ? (windowHeight - minVerticalMargin) : top,
@@ -230,7 +234,7 @@ function addStyles() {
   head.appendChild(styleTag);
 }
 
-function createTemplate() : string {
+function createTemplate(): string {
   return `
     <div id="${SIDEBAR_ID}">
       <div class="${TITLE_BAR_CLASS}">Acrolinx <span class="${CLOSE_ICON_CLASS}" title="Hide"></span></div>
@@ -241,7 +245,7 @@ function createTemplate() : string {
   `;
 }
 
-function createDiv(attributes: {[attribute: string]: string}): HTMLElement {
+function createDiv(attributes: { [attribute: string]: string }): HTMLElement {
   const el = document.createElement('div');
   _.assign(el, attributes);
   return el;
@@ -308,7 +312,7 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
 
   function savePosition() {
     config.asyncStorage.set(POSITION_KEY, position).catch(error => {
-      console.error("Error in FloatingSidebar.savePosition:", error);
+      console.error('Error in FloatingSidebar.savePosition:', error);
     });
   }
 
@@ -400,7 +404,7 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
     move(loadedPosition);
     pullInAnimationIfNeeded();
   }).catch(error => {
-    console.error("Error while trying to set initial position of FloatingSidebar:", error);
+    console.error('Error while trying to set initial position of FloatingSidebar:', error);
   });
 
 

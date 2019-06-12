@@ -39,6 +39,6 @@ export class InputAdapterTestSetup implements AdapterTestSetup {
   }
 
   getSelectedText(): string {
-    return window.getSelection().toString();
+    return window.getSelection()!.toString();
   }
 }

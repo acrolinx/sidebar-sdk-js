@@ -104,8 +104,8 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     // Simple workaround for quill editor, as 'scrollIntoView' is messing up the selection range there.
     if (this.isQuillEditor()) {
       let selection = this.getEditorDocument().getSelection();
-      if (selection) {
-        let parentElement = selection.anchorNode.parentElement;
+      if (selection && selection.anchorNode) {
+        const parentElement = selection.anchorNode.parentElement;
         if (parentElement) {
           parentElement.scrollIntoView();
         }
