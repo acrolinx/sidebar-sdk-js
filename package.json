@@ -23,7 +23,7 @@
     "@types/tinymce": "^4.5.19",
     "diff-match-patch": "1.0.4",
     "es6-promise": "^4.2.6",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.14",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
