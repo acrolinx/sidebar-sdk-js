@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import {extractText} from "../../src/utils/text-extraction";
-import {findNewIndex} from "../../src/utils/alignment";
-import {extractTextDomMapping} from "../../src/utils/text-dom-mapping";
-import * as jsc from "jsverify";
+import * as entities from 'entities';
+import * as jsc from 'jsverify';
+import {findNewIndex} from '../../src/utils/alignment';
+import {extractTextDomMapping} from '../../src/utils/text-dom-mapping';
+import {extractText} from '../../src/utils/text-extraction';
+
 const assert = chai.assert;
 
 
@@ -114,7 +116,7 @@ describe('text-extraction', () => {
       assertSameExtractedText('</\u0000', 'this ends up as a comment');
     });
 
-    it('random strings', function (this: any) {
+    it('random strings', function(this: any) {
       this.timeout(2000);
 
       const JS_VERIFY_OPTS = {
@@ -122,7 +124,7 @@ describe('text-extraction', () => {
         rngState: '0123456789abcdef01'
       };
 
-      jsc.assert(jsc.forall("string",
+      jsc.assert(jsc.forall('string',
         (html: string) => {
           const htmlElement = toHtmlElement(html);
           const textDomMapping = extractTextDomMapping(htmlElement);
@@ -132,6 +134,38 @@ describe('text-extraction', () => {
       ), JS_VERIFY_OPTS);
     });
 
+  });
+
+
+  describe('entities.decodeHTMLStrict', () => {
+    /**
+     * Formerly we used this DOM based entity decoding.
+     */
+    function decodeEntityOld(entity: string): string {
+      const el = document.createElement('div');
+      el.innerHTML = entity;
+      return el.textContent || '';
+    }
+
+    const executionCount = 10000;
+    const testEntities = '&amp;';
+    const expectedDecodedEntities = `&`;
+
+    it('should be faster then the old DOM based code', () => {
+      const startTimeOld = Date.now();
+      for (let i = 0; i < executionCount; i++) {
+        assert.equal(decodeEntityOld(testEntities), expectedDecodedEntities);
+      }
+      const durationOld = Date.now() - startTimeOld;
+
+      const startTimeNew = Date.now();
+      for (let i = 0; i < executionCount; i++) {
+        assert.equal(entities.decodeHTMLStrict(testEntities), expectedDecodedEntities);
+      }
+      const durationNew = Date.now() - startTimeNew;
+
+      assert.ok(durationNew < durationOld);
+    });
   });
 });
 

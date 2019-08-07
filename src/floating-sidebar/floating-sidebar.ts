@@ -106,7 +106,7 @@ export function keepVisible({left, top, height}: Position, windowWidth: number =
 function addStyles() {
   const styleTag = document.createElement('style');
   const head = document.querySelector('head')!;
-  styleTag.innerHTML = `
+  styleTag.textContent = `
       #${SIDEBAR_ID} {
         top: ${DEFAULT_POS.top}px;
         left: ${DEFAULT_POS.left}px;

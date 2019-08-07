@@ -17,6 +17,7 @@
 import * as _ from "lodash";
 import {toSet} from "./utils";
 import {OffSetAlign} from "./alignment";
+import * as entities from 'entities';
 
 const REPLACE_SCRIPTS_REGEXP = '<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\/script>';
 const REPLACE_STYLES_REGEXP = '<style\\b[^<]*(?:(?!<\\/style>)<[^<]*)*<\/style>';
@@ -47,7 +48,7 @@ export function extractText(s: string): [string, OffSetAlign[]] {
   const offsetMapping: OffSetAlign[] = [];
   let currentDiffOffset = 0;
   const resultText = s.replace(regExp, (tagOrEntity, _p1, _p2, offset) => {
-    const rep = _.startsWith(tagOrEntity, '&') ? decodeEntities(tagOrEntity) : getTagReplacement(tagOrEntity);
+    const rep = _.startsWith(tagOrEntity, '&') ? entities.decodeHTMLStrict(tagOrEntity) : getTagReplacement(tagOrEntity);
     currentDiffOffset -= tagOrEntity.length - rep.length;
     offsetMapping.push({
       oldPosition: offset + tagOrEntity.length,
@@ -57,10 +58,3 @@ export function extractText(s: string): [string, OffSetAlign[]] {
   });
   return [resultText, offsetMapping];
 }
-
-function decodeEntities(entity: string): string {
-  const el = document.createElement('div');
-  el.innerHTML = entity;
-  return el.textContent || '';
-}
-
