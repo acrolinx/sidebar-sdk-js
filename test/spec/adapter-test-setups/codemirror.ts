@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import {EditorFromTextArea} from "codemirror";
-import {CodeMirrorAdapter} from "../../../src/adapters/CodeMirrorAdapter";
-import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
-
+import CodeMirror, {EditorFromTextArea} from 'codemirror';
+import {CodeMirrorAdapter} from '../../../src/adapters/CodeMirrorAdapter';
+import {AdapterTestSetup, DoneCallback} from './adapter-test-setup';
 
 export interface CodeMirrorTestSetupOpts {
   mode: string;
@@ -58,6 +57,6 @@ export class CodeMirrorTestSetup implements AdapterTestSetup {
   }
 
   getSelectedText(): string {
-    return window.getSelection()!.toString();
+    return this.editor.getDoc().getSelection();
   }
 }

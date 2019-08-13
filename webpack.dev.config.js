@@ -1,13 +1,10 @@
 const path = require('path');
 
-// MAX_SIZE_IN_BYTES is set here as a warning to avoid avoid accidental bloat.
-// If it gets bigger and there is no way to avoid it, we must increase this number sadly.
-const MAX_SIZE_IN_BYTES = 485 * 1024;
-
 module.exports = {
-  mode: 'production',
+  mode: 'development',
   entry: {
     'acrolinx-sidebar-sdk': './src/export-for-browser.ts',
+    'tests': './test/index.ts'
   },
   module: {
     rules: [
@@ -28,13 +25,5 @@ module.exports = {
     filename: '[name].js',
     publicPath: "/dist/",
     path: path.resolve(__dirname, 'dist')
-  },
-  performance: {
-    hints: "error",
-    maxEntrypointSize: MAX_SIZE_IN_BYTES,
-    maxAssetSize: MAX_SIZE_IN_BYTES
-  },
-  optimization: {
-    minimize: true
   },
 };

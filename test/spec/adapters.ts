@@ -31,6 +31,7 @@ import {ContentEditableTestSetup} from './adapter-test-setups/content-editable';
 import {AdapterTestSetup} from './adapter-test-setups/adapter-test-setup';
 import {InputAdapterTestSetup} from './adapter-test-setups/input';
 import {CKEditorTestSetup} from './adapter-test-setups/ck-editor';
+import {QuillContentEditableTestSetup} from './adapter-test-setups/quill';
 import {TinyMCETestSetup} from './adapter-test-setups/tinymce';
 
 const assert = chai.assert;
@@ -56,10 +57,12 @@ describe('adapter test', function() {
       inputFormat: 'HTML'
     }),
     new CKEditorTestSetup(),
-    new TinyMCETestSetup()
+    new TinyMCETestSetup(),
+    new QuillContentEditableTestSetup(),
   ];
 
   const testedAdapterNames: string[] = []; // empty = all
+  // const testedAdapterNames: string[] = ['QuillContentEditableAdapter']; // empty = all
   const testedAdapters: AdapterTestSetup[] = adapters.filter(a => _.isEmpty(testedAdapterNames) || _.includes(testedAdapterNames, a.name));
 
   testedAdapters.forEach(adapterSpec => {
@@ -595,18 +598,31 @@ describe('adapter test', function() {
           });
         });
 
-
-        it('Missing space within divs', function(done) {
-          givenAText('<div>a b ?</div><div>c</div>', () => {
-            const matchesWithReplacement: MatchWithReplacement[] = [
-              {'content': 'b', 'range': [7, 8], 'replacement': 'b?'},
-              {'content': ' ', 'range': [8, 9], 'replacement': ''},
-              {'content': '?', 'range': [9, 10], 'replacement': ''}];
-            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
-            done();
+        if (adapterSpec instanceof QuillContentEditableTestSetup) {
+          it('Missing space within p elements', function(done) {
+            givenAText('<p>a b ?</p><p>c</p>', () => {
+              const matchesWithReplacement: MatchWithReplacement[] = [
+                {'content': 'b', 'range': [5, 6], 'replacement': 'b?'},
+                {'content': ' ', 'range': [6, 7], 'replacement': ''},
+                {'content': '?', 'range': [7, 8], 'replacement': ''}];
+              adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+              assert.equal(normalizeResultHtml(adapter.getContent!({})), '<p>a b?</p><p>c</p>');
+              done();
+            });
           });
-        });
+        } else {
+          it('Missing space within divs', function(done) {
+            givenAText('<div>a b ?</div><div>c</div>', () => {
+              const matchesWithReplacement: MatchWithReplacement[] = [
+                {'content': 'b', 'range': [7, 8], 'replacement': 'b?'},
+                {'content': ' ', 'range': [8, 9], 'replacement': ''},
+                {'content': '?', 'range': [9, 10], 'replacement': ''}];
+              adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+              assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
+              done();
+            });
+          });
+        }
 
         it('Replace partially tagged text', function(done) {
           givenAText('<p><strong>a b</strong> .</p>', () => {
@@ -725,6 +741,7 @@ describe('adapter test', function() {
       if (adapterSpec instanceof ContentEditableTestSetup
         || adapterSpec instanceof CKEditorTestSetup
         || adapterSpec instanceof TinyMCETestSetup
+        || adapterSpec instanceof QuillContentEditableTestSetup
       ) {
         // This test cares for a bug that caused an additional "span" tag
         // in IE 11
@@ -738,6 +755,23 @@ describe('adapter test', function() {
           });
         });
       }
+
+      describe('selectRanges', () => {
+        testIfWindowIsFocused('should select the correct text', (done) => {
+          const completeContent = '<p>begin selection end</p>';
+          givenAText(completeContent, initialExtractedContent => {
+            const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'selection');
+            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+
+            // We wait because some editors (Quill) modify the document/selection after the recognize changes.
+            // If we would not wait everything would seems fine, but it reality it would be broken.
+            setTimeout(() => {
+              assert.equal(adapterSpec.getSelectedText(), 'selection');
+              done();
+            }, 100);
+          });
+        });
+      });
 
       describe('previous successful check, but current check has not finished', () => {
         let matchesWithReplacementOfFirstCheck: MatchWithReplacement[];

@@ -99,7 +99,7 @@ export function testIf(condition: boolean, testName: string, test: (done: () => 
 }
 
 export function testIfWindowIsFocused(testName: string, test: (done: () => void) => void) {
-  testIf(document.hasFocus(), testName, test);
+  testIf(document.hasFocus() || navigator.webdriver, testName, test);
 }
 
 export function waitMs(ms: number) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
 import {AdapterConf, AdapterInterface, CommonAdapterConf} from "../adapters/AdapterInterface";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
 import {InputAdapter} from "../adapters/InputAdapter";

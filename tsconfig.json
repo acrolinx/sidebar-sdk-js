@@ -12,7 +12,8 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": true,
-    "module": "commonjs"
+    "module": "commonjs",
+    "esModuleInterop": true
   },
   "exclude": [
     "node_modules",

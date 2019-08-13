@@ -62,7 +62,6 @@ module.exports = function (config) {
       {pattern: 'node_modules/ckeditor/**/*', included: false},
       'node_modules/tinymce/tinymce.js',
       {pattern: 'node_modules/tinymce/**/*', included: false},
-      'node_modules/codemirror/lib/codemirror.js',
       {pattern: 'test/dummy-sidebar/**/*', included: false},
       'tmp/compiled/**/*.js',
     ],

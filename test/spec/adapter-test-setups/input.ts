@@ -39,6 +39,7 @@ export class InputAdapterTestSetup implements AdapterTestSetup {
   }
 
   getSelectedText(): string {
-    return window.getSelection()!.toString();
+    const textarea = document.querySelector<HTMLTextAreaElement>('#editorId')!;
+    return textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
   }
 }
