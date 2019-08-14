@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-import {Match, MatchWithReplacement, Check, DocumentSelection} from "../acrolinx-libs/plugin-interfaces";
-import * as _ from "lodash";
+import * as _ from 'lodash';
+import {Check, DocumentSelection, Match, MatchWithReplacement} from '../acrolinx-libs/plugin-interfaces';
+import {lookupMatches} from '../lookup/diff-based';
+import {getAutobindWrapperAttributes} from '../utils/adapter-utils';
+import {AlignedMatch} from '../utils/alignment';
 import {isChrome} from '../utils/detect-browser';
+import {getCompleteFlagLength} from '../utils/match';
 import {scrollIntoView} from '../utils/scrolling';
-import {TextDomMapping, extractTextDomMapping, getEndDomPos} from "../utils/text-dom-mapping";
-import {AlignedMatch} from "../utils/alignment";
-import {lookupMatches} from "../lookup/diff-based";
-import {getCompleteFlagLength} from "../utils/match";
-import {fakeInputEvent, assertElementIsDisplayed, removeNode} from "../utils/utils";
+import {extractTextDomMapping, getEndDomPos, TextDomMapping} from '../utils/text-dom-mapping';
+import {assertElementIsDisplayed, fakeInputEvent, removeNode} from '../utils/utils';
 import {
-  AdapterInterface, AdapterConf, ContentExtractionResult, AutobindWrapperAttributes,
-  ExtractContentForCheckOpts, SuccessfulCheckResult
-} from "./AdapterInterface";
-import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
+  AdapterConf,
+  AdapterInterface,
+  AutobindWrapperAttributes,
+  ContentExtractionResult,
+  ExtractContentForCheckOpts,
+  SuccessfulCheckResult
+} from './AdapterInterface';
 
 
 type TextMapping = TextDomMapping;
@@ -103,12 +107,9 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     this.selectMatches(checkId, matches);
     // Simple workaround for quill editor, as 'scrollIntoView' is messing up the selection range there.
     if (this.isQuillEditor()) {
-      let selection = this.getEditorDocument().getSelection();
-      if (selection && selection.anchorNode) {
-        const parentElement = selection.anchorNode.parentElement;
-        if (parentElement) {
-          parentElement.scrollIntoView();
-        }
+      const selection = this.getEditorDocument().getSelection();
+      if (selection && selection.anchorNode && selection.anchorNode.parentElement) {
+        selection.anchorNode.parentElement.scrollIntoView();
       }
     } else {
       this.scrollToCurrentSelection();
@@ -116,11 +117,9 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   }
 
   private isQuillEditor(): boolean {
-    let editorClassName = this.getEditorElement().className;
-    let elementsByClassName = this.getEditorElement().getElementsByClassName('ql-editor');
-    const isQuill = (editorClassName.indexOf('ql-editor') >= 0 || elementsByClassName.length > 0);
-    console.log('IS QUILL? ' + isQuill);
-    return isQuill;
+    const editorElementIsQuill = this.getEditorElement().classList.contains('ql-editor');
+    const editorElementContainsQuill = !!this.getEditorElement().querySelector('.ql-editor');
+    return editorElementIsQuill || editorElementContainsQuill;
   }
 
 
@@ -146,8 +145,8 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     if (!textMapping.text) {
       return;
     }
-    const doc = this.getEditorDocument();
-    const selection = doc.getSelection();
+
+    const selection = this.getEditorDocument().getSelection();
 
     if (!selection) {
       console.warn('AbstractRichtextEditorAdapter.selectText: Missing selection');
