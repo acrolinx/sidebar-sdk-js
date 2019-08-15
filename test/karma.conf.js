@@ -57,6 +57,7 @@ module.exports = function (config) {
     // list of files / patterns to load in the browser
     // (If you change this, you might want to change test/index.html too.)
     files: [
+      'node_modules/quill/dist/quill.snow.css',
       'node_modules/jquery/dist/jquery.js',
       'node_modules/ckeditor/ckeditor.js',
       {pattern: 'node_modules/ckeditor/**/*', included: false},

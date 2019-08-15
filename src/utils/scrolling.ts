@@ -41,17 +41,10 @@ function findScrollableAncestors(startEl: Element): Element[] {
 }
 
 export function scrollIntoView(targetEl: HTMLElement, windowTopOffset = 0, localTopOffset = 0) {
-  // Detect if ScrollIntoViewOptions are supported.
-  // Should be supported currently (April 2019) in chrome and firefox.
-  if (('scrollBehavior' in document.body.style)) {
-    try {
-      // For Chrome and Firefox (currently).
-      targetEl.scrollIntoView({block: 'center'});
-      return;
-    } catch (e) {
-      // According to https://stackoverflow.com/questions/46919627/is-it-possible-to-test-for-scrollintoview-browser-compatibility
-      // it might still fail in strange browsers like "WaterFox".
-    }
+  const success = scrollIntoViewCenteredIfPossible(targetEl);
+
+  if (success) {
+    return;
   }
 
   // Here begins a dubious workaround for not-so-modern browsers.
@@ -78,5 +71,41 @@ export function scrollIntoView(targetEl: HTMLElement, windowTopOffset = 0, local
   const scrollTop = getScrollTop();
   if (pos.top < windowTopOffset || pos.bottom > window.innerHeight) {
     window.scrollTo(0, scrollTop + pos.top - windowTopOffset);
+  }
+}
+
+/**
+ * Detect if ScrollIntoViewOptions are supported, which indicated that it's possible to scroll to center.
+ * Should be supported currently (April 2019) in Chrome and Firefox.
+ */
+export function isScrollIntoViewCenteredAvailable(): boolean {
+  return 'scrollBehavior' in document.body.style;
+}
+
+/**
+ * @return indicates if it succeeded
+ */
+export function scrollIntoViewCenteredIfPossible(targetEl: HTMLElement): boolean {
+  if (!isScrollIntoViewCenteredAvailable()) {
+    return false;
+  }
+
+  try {
+    // For Chrome and Firefox (currently).
+    targetEl.scrollIntoView({block: 'center'});
+    return true;
+  } catch (e) {
+    // According to https://stackoverflow.com/questions/46919627/is-it-possible-to-test-for-scrollintoview-browser-compatibility
+    // it might still fail in strange browsers like "WaterFox".
+    return false;
+  }
+}
+
+
+export function scrollIntoViewCenteredWithFallback(targetEl: HTMLElement) {
+  const success = scrollIntoViewCenteredIfPossible(targetEl);
+
+  if (!success) {
+    targetEl.scrollIntoView(); // Fallback.
   }
 }

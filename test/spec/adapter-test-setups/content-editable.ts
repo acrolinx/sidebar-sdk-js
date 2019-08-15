@@ -16,11 +16,12 @@
 
 import {ContentEditableAdapter} from "../../../src/adapters/ContentEditableAdapter";
 import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
+import {EDITOR_HEIGHT} from './constants';
 
 export class ContentEditableTestSetup implements AdapterTestSetup {
   name = 'ContentEditableAdapter';
   inputFormat = 'HTML';
-  editorElement = '<div id="editorId" contenteditable="true">initial text</div>';
+  editorElement = `<div id="editorId" style="height: ${EDITOR_HEIGHT}px; overflow-x: scroll; position: relative; font-size: 10px">initial text</div>`;
   inputEventWasTriggered?: boolean;
 
   init() {

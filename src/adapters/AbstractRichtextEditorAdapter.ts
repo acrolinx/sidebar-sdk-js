@@ -21,7 +21,7 @@ import {getAutobindWrapperAttributes} from '../utils/adapter-utils';
 import {AlignedMatch} from '../utils/alignment';
 import {isChrome} from '../utils/detect-browser';
 import {getCompleteFlagLength} from '../utils/match';
-import {scrollIntoView} from '../utils/scrolling';
+import {scrollIntoView, scrollIntoViewCenteredWithFallback} from '../utils/scrolling';
 import {extractTextDomMapping, getEndDomPos, TextDomMapping} from '../utils/text-dom-mapping';
 import {assertElementIsDisplayed, fakeInputEvent, removeNode} from '../utils/utils';
 import {
@@ -105,11 +105,11 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   selectRanges(checkId: string, matches: Match[]) {
     assertElementIsDisplayed(this.getEditorElement());
     this.selectMatches(checkId, matches);
-    // Simple workaround for quill editor, as 'scrollIntoView' is messing up the selection range there.
     if (this.isQuillEditor()) {
+      // Simple workaround for quill editor, as 'scrollIntoView' is messing up the selection range there.
       const selection = this.getEditorDocument().getSelection();
       if (selection && selection.anchorNode && selection.anchorNode.parentElement) {
-        selection.anchorNode.parentElement.scrollIntoView();
+        scrollIntoViewCenteredWithFallback(selection.anchorNode.parentElement);
       }
     } else {
       this.scrollToCurrentSelection();

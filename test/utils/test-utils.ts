@@ -98,8 +98,13 @@ export function testIf(condition: boolean, testName: string, test: (done: () => 
   }
 }
 
+export function isWindowFocused() {
+  // navigator.webdriver indicated a headless chrome in which focus related stuff (like selection) works.
+  return document.hasFocus() || navigator.webdriver;
+}
+
 export function testIfWindowIsFocused(testName: string, test: (done: () => void) => void) {
-  testIf(document.hasFocus() || navigator.webdriver, testName, test);
+  testIf(isWindowFocused(), testName, test);
 }
 
 export function waitMs(ms: number) {

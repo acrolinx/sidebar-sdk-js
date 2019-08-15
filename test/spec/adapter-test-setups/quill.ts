@@ -17,11 +17,12 @@
 import Quill from 'quill';
 import {ContentEditableAdapter} from '../../../src/adapters/ContentEditableAdapter';
 import {AdapterTestSetup, DoneCallback} from './adapter-test-setup';
+import {EDITOR_HEIGHT} from './constants';
 
 export class QuillContentEditableTestSetup implements AdapterTestSetup {
   name = 'QuillContentEditableAdapter';
   inputFormat = 'HTML';
-  editorElement = '<div id="editorId">initial text</div>';
+  editorElement = `<div id="editorId" style="height: ${EDITOR_HEIGHT}px">initial text</div>`;
   quill!: Quill;
 
   async init() {

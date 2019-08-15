@@ -19,14 +19,16 @@ import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
 
 import * as _ from 'lodash';
 import {isChrome} from '../../src/utils/detect-browser';
+import {isScrollIntoViewCenteredAvailable} from '../../src/utils/scrolling';
 import {
   assertDeepEqual,
   containsEmptyTextNodes,
-  getMatchesWithReplacement,
+  getMatchesWithReplacement, isWindowFocused, testIf,
   testIfWindowIsFocused
 } from '../utils/test-utils';
 import {AdapterInterface, SuccessfulContentExtractionResult} from '../../src/adapters/AdapterInterface';
 import {CodeMirrorTestSetup} from './adapter-test-setups/codemirror';
+import {EDITOR_HEIGHT} from './adapter-test-setups/constants';
 import {ContentEditableTestSetup} from './adapter-test-setups/content-editable';
 import {AdapterTestSetup} from './adapter-test-setups/adapter-test-setup';
 import {InputAdapterTestSetup} from './adapter-test-setups/input';
@@ -62,7 +64,6 @@ describe('adapter test', function() {
   ];
 
   const testedAdapterNames: string[] = []; // empty = all
-  // const testedAdapterNames: string[] = ['QuillContentEditableAdapter']; // empty = all
   const testedAdapters: AdapterTestSetup[] = adapters.filter(a => _.isEmpty(testedAdapterNames) || _.includes(testedAdapterNames, a.name));
 
   testedAdapters.forEach(adapterSpec => {
@@ -763,7 +764,7 @@ describe('adapter test', function() {
             const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'selection');
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
 
-            // We wait because some editors (Quill) modify the document/selection after the recognize changes.
+            // We wait because some editors (Quill) modify the document/selection after they recognize changes.
             // If we would not wait everything would seems fine, but it reality it would be broken.
             setTimeout(() => {
               assert.equal(adapterSpec.getSelectedText(), 'selection');
@@ -772,6 +773,33 @@ describe('adapter test', function() {
           });
         });
       });
+
+      if (adapterSpec instanceof ContentEditableTestSetup || adapterSpec instanceof QuillContentEditableTestSetup) {
+        testIf(isWindowFocused(),
+          'selectRanges in quill centers in good browsers', (done) => {
+            const dummyLines = _.repeat('<p>dummy line</p>', 100);
+            const completeContent = dummyLines + '<p>middle</p>' + dummyLines;
+            givenAText(completeContent, initialExtractedContent => {
+              const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'middle');
+              adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+
+              // We wait because some editors (Quill) modify the document/selection after they recognize changes.
+              // If we would not wait everything would seems fine, but it reality it would be broken.
+              setTimeout(() => {
+                assert.equal(adapterSpec.getSelectedText(), 'middle');
+                const relativeTop = jQuery('p:contains("middle")').position().top;
+                console.warn(relativeTop);
+
+                if (isScrollIntoViewCenteredAvailable()) {
+                  assert.approximately(relativeTop, EDITOR_HEIGHT / 2, 30, 'position should be vertically centered');
+                } else {
+                  assert.approximately(relativeTop, 10, 10, 'position should be at top');
+                }
+                done();
+              }, 100);
+            });
+          });
+      }
 
       describe('previous successful check, but current check has not finished', () => {
         let matchesWithReplacementOfFirstCheck: MatchWithReplacement[];
