@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/acrolinx/sidebar-sdk-js.svg?branch=master)](https://travis-ci.org/acrolinx/sidebar-sdk-js)
 [![Dependencies Status](https://david-dm.org/acrolinx/sidebar-sdk-js/status.svg)](https://david-dm.org/acrolinx/sidebar-sdk-js)
 [![DevDependencies Status](https://david-dm.org/acrolinx/sidebar-sdk-js/dev-status.svg)](https://david-dm.org/acrolinx/sidebar-sdk-js?type=dev)
-![Acrolinx Score](https://writers.acrolinx.com/autocheck/badges/aHR0cHM6Ly9naXRodWIuY29tL2Fjcm9saW54L3NpZGViYXItc2RrLWpz.svg)[]()
+[![Acrolinx Score](https://writers.acrolinx.com/autocheck/badges/aHR0cHM6Ly9naXRodWIuY29tL2Fjcm9saW54L3NpZGViYXItc2RrLWpz.svg)](https://writers.acrolinx.com/autocheck/badges/aHR0cHM6Ly9naXRodWIuY29tL2Fjcm9saW54L3NpZGViYXItc2RrLWpz.html)
 
 This is a library for integrating the [Acrolinx](https://www.acrolinx.com/) Sidebar into a web application.
 
