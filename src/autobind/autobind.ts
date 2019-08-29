@@ -18,6 +18,7 @@ import _ from "lodash";
 import {AdapterConf, AdapterInterface, CommonAdapterConf} from "../adapters/AdapterInterface";
 import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
 import {InputAdapter} from "../adapters/InputAdapter";
+import {isQuip, QuipAdapter} from '../adapters/QuipAdapter';
 import {assign, isIFrame} from "../utils/utils";
 
 
@@ -75,11 +76,16 @@ function getEditableElements(doc: Document = document): HTMLElement[] {
   }).reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el)).value();
 }
 
+export interface AutobindConfig extends CommonAdapterConf {
+  enableQuipAdapter?: boolean;
+}
 
-export function bindAdaptersForCurrentPage(conf: CommonAdapterConf = {}): AdapterInterface[] {
+export function bindAdaptersForCurrentPage(conf: AutobindConfig = {}): AdapterInterface[] {
   return getEditableElements().map(function (editable) {
     const adapterConf = assign(conf, {element: editable}) as AdapterConf;
-    if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {
+    if (conf.enableQuipAdapter && isQuip(editable)) {
+      return new QuipAdapter(adapterConf);
+    } else if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {
       return new InputAdapter(adapterConf);
     } else {
       return new ContentEditableAdapter(adapterConf);

@@ -36,6 +36,7 @@ import {
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
 import {MultiEditorAdapterConfig} from "./adapters/MultiEditorAdapter";
 import {SynchronizeAsyncAdapter} from "./adapters/SynchronizeAsyncAdapter";
+import {AutobindConfig} from './autobind/autobind';
 import {AsyncLocalStorage, AsyncStorage} from "./floating-sidebar/async-storage";
 import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
 import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter";
@@ -354,7 +355,7 @@ export class AcrolinxPlugin {
   }
 }
 
-export interface AutoBindFloatingSidebarConfig extends AcrolinxPluginConfig, MultiEditorAdapterConfig {
+export interface AutoBindFloatingSidebarConfig extends AcrolinxPluginConfig, MultiEditorAdapterConfig, AutobindConfig {
   asyncStorage?: AsyncStorage;
 }
 

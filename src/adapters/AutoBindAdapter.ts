@@ -15,7 +15,7 @@
  */
 
 import {Check, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
-import {bindAdaptersForCurrentPage} from "../autobind/autobind";
+import {AutobindConfig, bindAdaptersForCurrentPage} from '../autobind/autobind';
 import {
   AdapterInterface,
   CommonAdapterConf,
@@ -28,7 +28,7 @@ import {MultiEditorAdapter, MultiEditorAdapterConfig} from "./MultiEditorAdapter
 export class AutoBindAdapter implements AdapterInterface {
   private multiAdapter!: MultiEditorAdapter;
 
-  constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf)) {
+  constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf & AutobindConfig)) {
     this.initMultiAdapter();
   }
 
