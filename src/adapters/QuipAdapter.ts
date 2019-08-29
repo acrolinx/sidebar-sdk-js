@@ -52,7 +52,7 @@ export class QuipAdapter extends AbstractRichtextEditorAdapter {
 
     const selectedNode = selection && selection.focusNode;
     if (!selectedNode) {
-      console.warn('No selection after replacement.')
+      console.warn('No selection after replacement.');
       return;
     }
 
