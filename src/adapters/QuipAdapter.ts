@@ -15,6 +15,7 @@
  */
 
 import {DocumentSelection, MatchWithReplacement} from '../acrolinx-libs/plugin-interfaces';
+import {waitMs} from '../utils/utils';
 import {AbstractRichtextEditorAdapter} from './AbstractRichtextEditorAdapter';
 import {AdapterConf, getElementFromAdapterConf} from './AdapterInterface';
 
@@ -62,21 +63,30 @@ export class QuipAdapter extends AbstractRichtextEditorAdapter {
     switch (quipSectionType) {
       case QuipSectionType.cell:
         console.log('Found cell');
-        const innerTextFromDom = htmlElement.innerText;
+        const cell = htmlElement.closest('.' + SPREADSHEET_CELL_CLASS)! as HTMLElement;
+        const cellTextFromDom = cell.innerText;
 
-        // Open cell editor
+        // Open cell editor.
         simulateDoubleClick(htmlElement);
 
-        // Delete everything
-        for (let i = 0; i < innerTextFromDom.length; i++) {
-          document.execCommand('delete', false);
+        // Wait until cell editor is opened.
+        // TODO: Make less brittle and make Adapter async
+        await waitMs(100);
+
+        const cellEditor = document.activeElement;
+        if (!cellEditor || !cellEditor.classList.contains('spreadsheet-cell-editor')) {
+          console.warn('Found no cell editor', htmlElement, cellEditor);
+          return;
         }
 
-        // Simulate typing of the content
-        document.execCommand('InsertHTML', false, innerTextFromDom);
+        // Select all text of cell editor.
+        selection!.selectAllChildren(cellEditor);
 
-        // Close cell editor
-        simulateKeyboardEvent(document.activeElement!, 'keydown', 'Enter', 13);
+        // Replace selection in a way that is recognized by Quip.
+        document.execCommand('InsertHTML', false, cellTextFromDom);
+
+        // Close cell editor.
+        simulateKeyboardEvent(cellEditor, 'keydown', 'Enter', 13);
         break;
       case QuipSectionType.paragraph:
         console.log('Found paragraph');
@@ -131,12 +141,14 @@ function simulateKeyboardEvent(element: Element, type: string, key: string, keyC
   element.dispatchEvent(new KeyboardEvent(type, keyboardEventProps));
 }
 
+const SPREADSHEET_CELL_CLASS = 'spreadsheet-cell';
+
 function getQuipSectionType(el: HTMLElement): QuipSectionType {
-  const ancestor = el.closest('.spreadsheet-cell, .content');
+  const ancestor = el.closest(`.${SPREADSHEET_CELL_CLASS}, .content`);
   if (!ancestor) {
     return QuipSectionType.none;
   }
-  return ancestor.classList.contains('spreadsheet-cell') ? QuipSectionType.cell : QuipSectionType.paragraph;
+  return ancestor.classList.contains(SPREADSHEET_CELL_CLASS) ? QuipSectionType.cell : QuipSectionType.paragraph;
 }
 
 export function isQuip(el: HTMLElement) {
