@@ -309,7 +309,7 @@ export interface ExternalContent {
  */
 export interface DocumentContentWithReferences {
   content: string;
-  externalContent: ExternalContent;
+  externalContent?: ExternalContent;
 }
 
 
