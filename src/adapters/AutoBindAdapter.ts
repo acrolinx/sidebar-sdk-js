@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Check, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {AutobindConfig, bindAdaptersForCurrentPage} from '../autobind/autobind';
 import {
   AdapterInterface,

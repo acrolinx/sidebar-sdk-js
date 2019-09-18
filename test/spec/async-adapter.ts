@@ -25,7 +25,7 @@ import {
   InitParameters,
   InvalidDocumentPart,
   SidebarConfiguration
-} from '../../src/acrolinx-libs/plugin-interfaces';
+} from '@acrolinx/sidebar-interface';
 import * as acrolinxPluginModule from "../../src/acrolinx-plugin";
 import {assign} from "../../src/utils/utils";
 import {getDummySidebarPath, getMatchesWithReplacement, waitMs} from '../utils/test-utils';

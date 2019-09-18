@@ -20,7 +20,7 @@ import * as _ from "lodash";
 import {
   AcrolinxPlugin, AcrolinxSidebar, InitParameters, CheckOptions, Check, InvalidDocumentPart, CheckedDocumentRange,
   SidebarConfiguration, InitResult
-} from '../../src/acrolinx-libs/plugin-interfaces';
+} from '@acrolinx/sidebar-interface';
 import {
   MultiEditorAdapterConfig,
   AddSingleAdapterOptions,

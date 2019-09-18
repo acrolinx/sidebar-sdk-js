@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Check, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {WorkQueue} from "../utils/work-queue";
 import {
   AsyncAdapterInterface, AutobindWrapperAttributes,

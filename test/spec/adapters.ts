@@ -15,7 +15,7 @@
  */
 
 import {AbstractRichtextEditorAdapter} from '../../src';
-import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
+import {MatchWithReplacement} from '@acrolinx/sidebar-interface';
 
 import * as _ from 'lodash';
 import {isChrome} from '../../src/utils/detect-browser';

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {DocumentSelection, MatchWithReplacement} from '../acrolinx-libs/plugin-interfaces';
+import {DocumentSelection, MatchWithReplacement} from '@acrolinx/sidebar-interface';
 import {waitMs} from '../utils/utils';
 import {AbstractRichtextEditorAdapter} from './AbstractRichtextEditorAdapter';
 import {AdapterConf, getElementFromAdapterConf} from './AdapterInterface';

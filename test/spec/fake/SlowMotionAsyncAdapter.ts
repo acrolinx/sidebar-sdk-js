@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Check, Match, MatchWithReplacement} from "../../../src/acrolinx-libs/plugin-interfaces";
+import {Check, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {
   AdapterInterface,
   AsyncAdapterInterface,

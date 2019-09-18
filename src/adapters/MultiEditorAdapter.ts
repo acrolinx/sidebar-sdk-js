@@ -15,7 +15,7 @@
  */
 import 'es6-promise/auto';
 import * as _ from "lodash";
-import {Check, DocumentRange, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, DocumentRange, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {findNewIndex} from "../utils/alignment";
 import {escapeHtmlCharacters, EscapeHtmlCharactersResult} from "../utils/escaping";
 import {

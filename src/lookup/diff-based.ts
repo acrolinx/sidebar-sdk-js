@@ -15,7 +15,7 @@
  */
 
 import * as _ from "lodash";
-import {Match} from "../acrolinx-libs/plugin-interfaces";
+import {Match} from "@acrolinx/sidebar-interface";
 import {OffSetAlign, findNewIndex, AlignedMatch} from "../utils/alignment";
 import {extractText} from "../utils/text-extraction";
 import {log} from "../utils/logging";

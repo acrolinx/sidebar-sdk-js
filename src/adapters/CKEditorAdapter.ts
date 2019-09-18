@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
 import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
 

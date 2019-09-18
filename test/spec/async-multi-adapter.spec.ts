@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {MatchWithReplacement} from "../../src/acrolinx-libs/plugin-interfaces";
+import {MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
 import {AsyncMultiEditorAdapter} from "../../src/adapters/AsyncMultiEditorAdapter";
 import {getMatchesWithReplacement, waitMs} from "../utils/test-utils";

@@ -15,7 +15,7 @@
  */
 
 import {Editor} from 'tinymce';
-import {DocumentSelection} from '../acrolinx-libs/plugin-interfaces';
+import {DocumentSelection} from '@acrolinx/sidebar-interface';
 import {getSelectionHtmlRanges} from '../utils/check-selection';
 import {AbstractRichtextEditorAdapter} from './AbstractRichtextEditorAdapter';
 import {ExtractContentForCheckOpts, HasEditorID} from './AdapterInterface';

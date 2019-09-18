@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as _ from "lodash";
-import * as acrolinxSidebarInterfaces from './acrolinx-libs/plugin-interfaces';
+import * as acrolinxSidebarInterfaces from '@acrolinx/sidebar-interface';
 import {
   AcrolinxStorage,
   CheckInformationKeyValuePair,
@@ -25,7 +25,7 @@ import {
   OpenWindowParameters,
   RequestGlobalCheckOptions,
   SidebarConfiguration
-} from './acrolinx-libs/plugin-interfaces';
+} from '@acrolinx/sidebar-interface';
 import {
   AdapterInterface,
   AsyncAdapterInterface,

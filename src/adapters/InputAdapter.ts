@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Check, DocumentSelection, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, DocumentSelection, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import * as _ from "lodash";
 import {
   AdapterConf,

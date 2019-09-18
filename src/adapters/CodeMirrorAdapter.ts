@@ -16,7 +16,7 @@
 
 import {EditorFromTextArea} from "codemirror";
 import * as _ from "lodash";
-import {Check, DocumentSelection, Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Check, DocumentSelection, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {lookupMatches} from "../lookup/diff-based";
 import {AlignedMatch} from "../utils/alignment";
 import {isDangerousToReplace} from "../utils/match";

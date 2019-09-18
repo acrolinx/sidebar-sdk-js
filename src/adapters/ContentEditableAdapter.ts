@@ -16,7 +16,7 @@
 
 import {AbstractRichtextEditorAdapter} from './AbstractRichtextEditorAdapter';
 import {getElementFromAdapterConf, AdapterConf} from './AdapterInterface';
-import {DocumentSelection} from '../acrolinx-libs/plugin-interfaces';
+import {DocumentSelection} from '@acrolinx/sidebar-interface';
 import {getSelectionHtmlRanges} from '../utils/check-selection';
 
 export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {

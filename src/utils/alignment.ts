@@ -15,7 +15,7 @@
  */
 
 import * as _ from "lodash";
-import {Match} from "../acrolinx-libs/plugin-interfaces";
+import {Match} from "@acrolinx/sidebar-interface";
 
 
 export interface OffSetAlign {

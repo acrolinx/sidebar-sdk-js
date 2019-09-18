@@ -15,7 +15,7 @@
  */
 
 import 'es6-promise/auto';
-import {Match, MatchWithReplacement} from "../acrolinx-libs/plugin-interfaces";
+import {Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {AdapterInterface, AsyncAdapterInterface} from "./AdapterInterface";
 import {AddSingleAdapterOptions, MultiEditorAdapter} from "./MultiEditorAdapter";
 

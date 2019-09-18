@@ -20,7 +20,7 @@ import {
   Check,
   DocumentSelection,
   CheckedDocumentPart, CheckInformationKeyValuePair
-} from "../acrolinx-libs/plugin-interfaces";
+} from "@acrolinx/sidebar-interface";
 
 export interface CommonAdapterConf {
   scrollOffsetY?: number;

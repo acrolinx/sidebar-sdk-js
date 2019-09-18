@@ -20,7 +20,7 @@ import {
   ContentExtractionResult,
   isSuccessfulContentExtractionResult, SuccessfulContentExtractionResult
 } from "../../src/adapters/AdapterInterface";
-import {Check, CheckResult, Match, MatchWithReplacement} from "../../src/acrolinx-libs/plugin-interfaces";
+import {Check, CheckResult, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {assertDeepEqual, getMatchesWithReplacement} from "../utils/test-utils";
 
 const assert = chai.assert;

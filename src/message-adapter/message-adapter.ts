@@ -25,8 +25,8 @@ import {
   CheckOptions,
   Check,
   InvalidDocumentPart,
-  CheckedDocumentRange, SidebarConfiguration, DocumentContentWithReferences
-} from "../acrolinx-libs/plugin-interfaces";
+  CheckedDocumentRange, SidebarConfiguration
+} from "@acrolinx/sidebar-interface";
 
 // Functions are not cloneable and don't work with postMessage.
 function removeFunctions(object: any) {
@@ -65,7 +65,7 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: AcrolinxPlugin, 
     },
     configure (_initParameters: SidebarConfiguration): void {
     },
-    checkGlobal(_documentContent: string | DocumentContentWithReferences, _options: CheckOptions): Check {
+    checkGlobal(_documentContent: string, _options: CheckOptions): Check {
       return {checkId: 'dummyCheckId'};
     },
     onGlobalCheckRejected(): void {

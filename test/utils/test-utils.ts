@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {MatchWithReplacement} from '../../src/acrolinx-libs/plugin-interfaces';
+import {MatchWithReplacement} from '@acrolinx/sidebar-interface';
 import * as _ from 'lodash';
 
 const assert = chai.assert;
