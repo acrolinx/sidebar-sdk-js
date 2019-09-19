@@ -56,7 +56,7 @@ npm install @acrolinx/sidebar-sdk
 
 ## SDK Features
 
-The SDK provides [adapters](https://github.com/acrolinx/sidebar-sdk-js/tree/master/src/adapters) for:
+The SDK provides [adapters](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/interfaces/adapterinterface.html) for:
 
 * `contentEditable` `div`-elements,
 * `input` text elements,
@@ -67,12 +67,12 @@ The SDK provides [adapters](https://github.com/acrolinx/sidebar-sdk-js/tree/mast
 * `MultiEditorAdapter` that can be used to combine different adapters as one document.
 
 If you need to support other editors, sometimes the `ContentEditableAdapter` works without any changes.
-If not, implement the [`AdapterInterface`](https://github.com/acrolinx/sidebar-sdk-js/blob/master/src/adapters/AdapterInterface.ts).
+If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/interfaces/adapterinterface.html).
 
 ## References
 
 * The [Sidebar DEMO JS](https://github.com/acrolinx/acrolinx-sidebar-demo) is built based on this SDK.
-* The Sidebar SDKs are based on the [Acrolinx Sidebar Interface](https://acrolinx.github.io/sidebar-sdk-js/).
+* The Sidebar SDKs are based on the [Acrolinx Sidebar Interface](https://acrolinx.github.io/sidebar-interface/).
 
 ## Running this project
 
