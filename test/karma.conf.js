@@ -17,6 +17,7 @@
 // Karma configuration
 
 const istanbul = require('browserify-istanbul');
+const coverageTargets = require('../.coverage.json');
 
 const win10 = ["Windows", "10"];
 const macOS = ["OSX", "Sierra"];
@@ -96,7 +97,10 @@ module.exports = function (config) {
         {type: 'html'},
         {type: 'json'},
         {type: 'cobertura'},
-      ]
+      ],
+      check: {
+        global: coverageTargets
+      }
     },
 
     // the default configuration

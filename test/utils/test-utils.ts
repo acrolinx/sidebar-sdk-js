@@ -110,3 +110,15 @@ export function testIfWindowIsFocused(testName: string, test: (done: () => void)
 export function waitMs(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export function addIFrame() {
+  const iFrameElement = document.createElement('iframe');
+  document.body.appendChild(iFrameElement);
+  return iFrameElement;
+}
+
+export function removeEl(el: HTMLElement | undefined) {
+  if (el) {
+    el.parentNode!.removeChild(el);
+  }
+}

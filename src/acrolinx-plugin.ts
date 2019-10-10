@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as _ from "lodash";
+import * as _ from 'lodash';
 import * as acrolinxSidebarInterfaces from '@acrolinx/sidebar-interface';
 import {
   AcrolinxStorage,
@@ -32,16 +32,16 @@ import {
   ContentExtractionResult,
   hasError,
   isAsyncAdapterInterface
-} from "./adapters/AdapterInterface";
-import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
-import {MultiEditorAdapterConfig} from "./adapters/MultiEditorAdapter";
-import {SynchronizeAsyncAdapter} from "./adapters/SynchronizeAsyncAdapter";
+} from './adapters/AdapterInterface';
+import {AutoBindAdapter} from './adapters/AutoBindAdapter';
+import {MultiEditorAdapterConfig} from './adapters/MultiEditorAdapter';
+import {SynchronizeAsyncAdapter} from './adapters/SynchronizeAsyncAdapter';
 import {AutobindConfig} from './autobind/autobind';
-import {AsyncLocalStorage, AsyncStorage} from "./floating-sidebar/async-storage";
-import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from "./floating-sidebar/floating-sidebar";
-import {connectAcrolinxPluginToMessages} from "./message-adapter/message-adapter";
-import {loadSidebarIntoIFrame} from "./utils/sidebar-loader";
-import {assign, isPromise} from "./utils/utils";
+import {AsyncLocalStorage, AsyncStorage} from './floating-sidebar/async-storage';
+import {FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID} from './floating-sidebar/floating-sidebar';
+import {connectAcrolinxPluginToMessages} from './message-adapter/message-adapter';
+import {loadSidebarIntoIFrame} from './utils/sidebar-loader';
+import {assign, isPromise} from './utils/utils';
 
 type MatchWithReplacement = acrolinxSidebarInterfaces.MatchWithReplacement;
 type AcrolinxPluginConfiguration = acrolinxSidebarInterfaces.AcrolinxPluginConfiguration;
@@ -87,8 +87,11 @@ type IFrameWindowOfSidebar = Window & {
   acrolinxStorage?: AcrolinxStorage;
 };
 
+export interface InternalAcrolinxSidebarPluginInterface extends AcrolinxSidebarPlugin {
+  requestInit(acrolinxSidebarArg?: AcrolinxSidebar): void;
+}
 
-class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
+class InternalAcrolinxSidebarPlugin implements InternalAcrolinxSidebarPluginInterface {
   public acrolinxSidebar!: AcrolinxSidebar;
 
   constructor(private config: AcrolinxPluginConfig,
@@ -136,7 +139,7 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
     try {
       this.acrolinxSidebar.configure(conf);
     } catch (e) {
-      console.error("Error while calling sidebar.configure: ", e);
+      console.error('Error while calling sidebar.configure: ', e);
     }
   }
 
@@ -181,7 +184,7 @@ class InternalAcrolinxSidebarPlugin implements AcrolinxSidebarPlugin {
       this.config.onCheckResult(checkResult);
     }
     if (checkResult.embedCheckInformation && this.config.onEmbedCheckData) {
-      this.config.onEmbedCheckData(checkResult.embedCheckInformation, checkResult.inputFormat || "");
+      this.config.onEmbedCheckData(checkResult.embedCheckInformation, checkResult.inputFormat || '');
     }
 
     // This test is needed for the sidebars < 14.7

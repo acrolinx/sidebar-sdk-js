@@ -26,5 +26,6 @@ import './spec/async-adapter';
 import './spec/async-multi-adapter.spec';
 import './spec/multi-editor-adapter';
 import './spec/floating-sidebar';
+import './spec/message-adapter';
 import './spec/text-extraction';
 import './spec/sidebar-loader';

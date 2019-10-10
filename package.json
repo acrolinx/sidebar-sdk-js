@@ -58,6 +58,7 @@
     "shx": "^0.3.2",
     "tinymce": "^4.9.3",
     "ts-loader": "^5.3.3",
+    "ts-mockito": "^2.5.0",
     "tslint": "5.17.0",
     "typedoc": "^0.15.0",
     "typescript": "3.5.1",
