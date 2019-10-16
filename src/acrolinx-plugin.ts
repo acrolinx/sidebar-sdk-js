@@ -128,7 +128,8 @@ class InternalAcrolinxSidebarPlugin implements InternalAcrolinxSidebarPluginInte
         requestDescription: {
           documentReference: extractionResult.documentReference || this.getDefaultDocumentReference()
         },
-        selection: this.config.checkSelection ? extractionResult.selection : undefined
+        selection: this.config.checkSelection ? extractionResult.selection : undefined,
+        externalContent: extractionResult.externalContent
       });
       this.adapter.registerCheckCall(checkInfo);
     }

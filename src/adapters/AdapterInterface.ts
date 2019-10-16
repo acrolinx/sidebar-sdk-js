@@ -19,7 +19,7 @@ import {
   MatchWithReplacement,
   Check,
   DocumentSelection,
-  CheckedDocumentPart, CheckInformationKeyValuePair
+  CheckedDocumentPart, CheckInformationKeyValuePair, ExternalContent
 } from "@acrolinx/sidebar-interface";
 
 export interface CommonAdapterConf {
@@ -44,6 +44,7 @@ export interface SuccessfulContentExtractionResult {
   content: string;
   documentReference?: string;
   selection?: DocumentSelection;
+  externalContent?: ExternalContent;
 }
 
 export interface AutobindWrapperAttributes {
