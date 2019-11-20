@@ -136,9 +136,6 @@ describe('async adapter', function () {
 
       onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
       },
-
-      dispose(_callback: () => void) {
-      }
     };
   }
 

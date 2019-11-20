@@ -146,9 +146,6 @@ describe('multi plugin', function() {
 
       onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
       },
-
-      dispose(_callback: () => void) {
-      }
     };
   }
 

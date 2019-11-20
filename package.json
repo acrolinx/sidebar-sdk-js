@@ -16,7 +16,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@acrolinx/sidebar-interface": "^14.16.0",
+    "@acrolinx/sidebar-interface": "^14.16.1",
     "@acrolinx/sidebar-startpage": "^3.0.2",
     "@types/ckeditor": "4.9.7",
     "@types/codemirror": "0.0.72",
