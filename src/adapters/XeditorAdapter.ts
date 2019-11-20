@@ -232,6 +232,9 @@ export class XeditorAdapter implements AdapterInterface {
       text: ''
     };
 
+    // Ignore space after for versions over 6
+    const ignoreSpaceAfter = (this.editor.getVersion().major >= 6);
+
     // use inner function for recursion to share the result
     const scope = this;
     function getContentForCheckInner(elementInner: any, resultParent: any) {
@@ -263,7 +266,7 @@ export class XeditorAdapter implements AdapterInterface {
           const element = scope.getAcrolinxElement(childElement, role, resultParent);
 
           // check if space must be added
-          if (insertSpaceAfter) {
+          if (insertSpaceAfter && !ignoreSpaceAfter) {
             const textNode = document.createTextNode(' ');
             element.appendChild(textNode);
           }
