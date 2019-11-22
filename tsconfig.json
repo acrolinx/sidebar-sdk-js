@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["ES5","ES2015.Promise", "DOM"],
+    "lib": ["es5","es2015.promise", "es2015.collection", "es2015.proxy", "es2015.core", "dom"],
     "importHelpers": true,
     "strict": true,
     "noImplicitReturns": true,
