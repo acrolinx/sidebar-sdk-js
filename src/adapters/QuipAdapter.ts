@@ -151,6 +151,6 @@ function getQuipSectionType(el: HTMLElement): QuipSectionType {
   return ancestor.classList.contains(SPREADSHEET_CELL_CLASS) ? QuipSectionType.cell : QuipSectionType.paragraph;
 }
 
-export function isQuip(el: HTMLElement) {
+export function isQuip(el: Element) {
   return document.location.host.endsWith('.quip.com') && el.classList.contains('document-content');
 }

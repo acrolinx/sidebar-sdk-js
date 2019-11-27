@@ -42,7 +42,7 @@ export function fetch(url: string, callback: (s: string) => void) {
   request.send();
 }
 
-export function isIFrame(el: HTMLElement): el is HTMLIFrameElement {
+export function isIFrame(el: Element): el is HTMLIFrameElement {
   return el.nodeName === 'IFRAME';
 }
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
-import {AdapterConf, AdapterInterface, CommonAdapterConf} from "../adapters/AdapterInterface";
-import {ContentEditableAdapter} from "../adapters/ContentEditableAdapter";
-import {InputAdapter} from "../adapters/InputAdapter";
+import _ from 'lodash';
+import {AdapterConf, AdapterInterface, CommonAdapterConf} from '../adapters/AdapterInterface';
+import {ContentEditableAdapter} from '../adapters/ContentEditableAdapter';
+import {InputAdapter} from '../adapters/InputAdapter';
 import {isQuip, QuipAdapter} from '../adapters/QuipAdapter';
-import {assign, isIFrame} from "../utils/utils";
+import {assign, isIFrame} from '../utils/utils';
 
 
 const EDITABLE_ELEMENTS_SELECTOR = [
@@ -35,22 +35,23 @@ const EDITABLE_ELEMENTS_SELECTOR = [
 ].join(', ');
 
 
-function isReadOnly(el: HTMLElement) {
+function isReadOnly(el: Element) {
   return (el as HTMLInputElement).readOnly;
 }
 
-function isAutoCompleteOff(el: HTMLElement) {
+function isAutoCompleteOff(el: Element) {
   const autocomplete = el.getAttribute('autocomplete');
   return autocomplete === 'off' || autocomplete === 'false';
 }
 
-function isProbablyCombobox(el: HTMLElement) {
+function isProbablyCombobox(el: Element) {
   const role = el.getAttribute('role');
   return role === 'combobox' && isAutoCompleteOff(el);
 }
 
 const PROBABLE_SEARCH_FIELD_NAMES = ['search_query', 'q'];
-function isProbablySearchField(el: HTMLElement) {
+
+function isProbablySearchField(el: Element) {
   if (el.nodeName !== 'INPUT') {
     return false;
   }
@@ -60,20 +61,24 @@ function isProbablySearchField(el: HTMLElement) {
   return _.includes(PROBABLE_SEARCH_FIELD_NAMES, el.getAttribute('name')) && isAutoCompleteOff(el);
 }
 
-function getEditableElements(doc: Document = document): HTMLElement[] {
-  const editableElements: _.LoDashImplicitWrapper<ArrayLike<HTMLElement>> = _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR));
-  return editableElements.flatMap((el: HTMLElement) => {
-    if (isIFrame(el)) {
-      try {
-        return el.contentDocument ? getEditableElements(el.contentDocument) : [];
-      } catch (err) {
-        // Caused by same origin policy problems.
-        return [];
-      }
-    } else {
-      return [el];
+function traverseIFrames(el: Element): Element[] {
+  if (isIFrame(el)) {
+    try {
+      return el.contentDocument ? getEditableElements(el.contentDocument) : [];
+    } catch (err) {
+      // Caused by same origin policy problems.
+      return [];
     }
-  }).reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el)).value();
+  } else {
+    return [el];
+  }
+}
+
+function getEditableElements(doc: Document = document): Element[] {
+  return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
+    .flatMap(traverseIFrames)
+    .reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el))
+    .value();
 }
 
 export interface AutobindConfig extends CommonAdapterConf {
@@ -81,7 +86,7 @@ export interface AutobindConfig extends CommonAdapterConf {
 }
 
 export function bindAdaptersForCurrentPage(conf: AutobindConfig = {}): AdapterInterface[] {
-  return getEditableElements().map(function (editable) {
+  return getEditableElements().map(function(editable) {
     const adapterConf = assign(conf, {element: editable}) as AdapterConf;
     if (conf.enableQuipAdapter && isQuip(editable)) {
       return new QuipAdapter(adapterConf);
