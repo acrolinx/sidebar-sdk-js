@@ -36,6 +36,9 @@ import {
 
 type TextMapping = TextDomMapping;
 
+// TODO: if you want to extend this adapter with asynchronous methods,
+//  then you will have to implement AsyncAdapterInterface at the same time
+
 export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
   config: AdapterConf;
   currentContentChecking?: string;
@@ -60,7 +63,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     this.lastContentChecked = this.currentContentChecking;
   }
 
-  extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult {
+  extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult | Promise<ContentExtractionResult> {
     const html = this.getContent(opts);
     this.currentContentChecking = html;
     return {content: html, selection: opts.checkSelection ? this.getSelection() : undefined};
@@ -102,7 +105,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     scrollIntoView(el, this.config.scrollOffsetY);
   }
 
-  selectRanges(checkId: string, matches: Match[]) {
+  selectRanges(checkId: string, matches: Match[]): void | Promise<void> {
     assertElementIsDisplayed(this.getEditorElement());
     this.selectMatches(checkId, matches);
     if (this.isQuillEditor()) {
@@ -206,7 +209,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     }
   }
 
-  replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
+  replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void | Promise<void> {
     assertElementIsDisplayed(this.getEditorElement());
     const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
     const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
