@@ -13,4 +13,4 @@ os:
 addons:
   chrome: stable # have Travis install chrome stable.
 script:
-  - npm run buildLocal
+  - npm run build
