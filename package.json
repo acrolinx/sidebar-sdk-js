@@ -70,9 +70,9 @@
   "scripts": {
     "clean": "shx rm -rf tmp dist",
     "buildDoc": "typedoc --out ./docs/pluginDoc/ src/",
-    "buildLocal": "npm run tsc && npm run tslint && npm run webpack && npm run test && npm run dist",
-    "jenkins": "npm run tsc && npm run tslint && npm run webpack && npm run test && npm run dist",
-    "dist": "shx cp -r tmp/compiled/src/* dist && npm run minify",
+    "build": "npm run tsc && npm run tslint && npm run webpack && npm run test && npm run dist",
+    "jenkins": "npm run build",
+    "dist": "shx cp -r tmp/compiled/src/* dist && node tools/inject-version.js && npm run minify",
     "minify": "uglifyjs dist/acrolinx-sidebar-sdk.js -o dist/acrolinx-sidebar-sdk.min.js",
     "test": "npm run testKarmaChromeHeadless",
     "testKarmaPhantomJS": "karma start test/karma.conf.js --browsers PhantomJS",

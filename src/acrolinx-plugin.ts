@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as _ from 'lodash';
 import * as acrolinxSidebarInterfaces from '@acrolinx/sidebar-interface';
 import {
   AcrolinxStorage,
@@ -26,6 +25,7 @@ import {
   RequestGlobalCheckOptions,
   SidebarConfiguration
 } from '@acrolinx/sidebar-interface';
+import * as _ from 'lodash';
 import {
   AdapterInterface,
   AsyncAdapterInterface,
@@ -72,7 +72,7 @@ export interface AcrolinxPluginConfig extends InitParameters {
   openWindow?: (url: string) => void;
 }
 
-const clientComponents = [
+const CLIENT_COMPONENT_MAIN_FALLBACK = [
   {
     id: 'com.acrolinx.sidebarexample',
     name: 'Acrolinx Sidebar Example Client',
@@ -80,6 +80,12 @@ const clientComponents = [
     category: 'MAIN'
   }
 ];
+
+const SIDEBAR_SDK_COMPONENT = {
+  id: 'com.acrolinx.sidebar-sdk-js',
+  name: 'Sidebar SDK JS',
+  version: '§SIDEBAR_SDK_VERSION'
+};
 
 type IFrameWindowOfSidebar = Window & {
   acrolinxSidebar: AcrolinxSidebar;
@@ -101,13 +107,14 @@ class InternalAcrolinxSidebarPlugin implements InternalAcrolinxSidebarPluginInte
   }
 
   private initSidebarOnPremise() {
-    this.acrolinxSidebar.init(_.assign({}, {
+    this.acrolinxSidebar.init({
       showServerSelector: true,
-      clientComponents: clientComponents,
       supported: {
         checkSelection: !!this.config.checkSelection
-      }
-    }, this.config));
+      },
+      ...this.config,
+      clientComponents: (this.config.clientComponents || CLIENT_COMPONENT_MAIN_FALLBACK).concat(SIDEBAR_SDK_COMPONENT)
+    });
   }
 
   private getDefaultDocumentReference() {
