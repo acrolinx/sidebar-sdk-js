@@ -1,7 +1,7 @@
 # See https://developers.google.com/web/updates/2017/06/headless-karma-mocha-chai
 language: node_js
 node_js:
-  - "10"
+  - "12"
 dist: trusty # needs Ubuntu Trusty
 # Note: if you switch to sudo: false, you'll need to launch chrome with --no-sandbox.
 # See https://github.com/travis-ci/travis-ci/issues/8836
