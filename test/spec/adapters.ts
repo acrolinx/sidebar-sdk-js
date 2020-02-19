@@ -72,7 +72,6 @@ describe('adapter test', function() {
       this.timeout(10000);
 
       beforeEach(async function() {
-        this.timeout(5000);
         $('body').append(adapterSpec.editorElement);
         adapter = await adapterSpec.init();
       });
