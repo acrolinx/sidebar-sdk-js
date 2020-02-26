@@ -18,6 +18,7 @@ import {AdapterInterface} from "../../../src/adapters/AdapterInterface";
 import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
 import {CKEditorAdapter} from "../../../src/adapters/CKEditorAdapter";
 import editor = CKEDITOR.editor;
+import {waitMs} from '../../utils/test-utils';
 
 export function getCkEditorInstance(id: string): editor {
   return CKEDITOR.instances[id as any]!;
@@ -37,7 +38,7 @@ export class CKEditorTestSetup implements AdapterTestSetup {
   }
 
   async init() {
-    return new Promise<AdapterInterface>(async (resolve) => {
+    return new Promise<AdapterInterface>(async (resolve, reject) => {
       const adapter = new CKEditorAdapter({editorId: 'editorId'});
       CKEDITOR.disableAutoInline = true;
       CKEDITOR.replace('editorId', {customConfig: ''});
@@ -47,6 +48,7 @@ export class CKEditorTestSetup implements AdapterTestSetup {
           resolve(adapter);
         }, 30);
       });
+      waitMs(5000).then(() => reject('Instance ready was never called by CK Editor.'));
     });
   }
 
