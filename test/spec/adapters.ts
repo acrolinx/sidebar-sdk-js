@@ -75,7 +75,8 @@ describe('adapter test', function () {
 
       beforeEach('The before each hook', function (done) {
         $('body').append(adapterSpec.editorElement);
-        adapterSpec.init().then(() => {
+        adapterSpec.init().then((res) => {
+          adapter = res;
           done();
         }).catch((res) => {
           assert(false, 'Before each hook failed. ' + res);
