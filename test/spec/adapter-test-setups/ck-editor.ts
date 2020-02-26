@@ -15,10 +15,9 @@
  */
 
 import {AdapterInterface} from "../../../src/adapters/AdapterInterface";
-import {waitMs} from "../../utils/test-utils";
 import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
-import editor = CKEDITOR.editor;
 import {CKEditorAdapter} from "../../../src/adapters/CKEditorAdapter";
+import editor = CKEDITOR.editor;
 
 export function getCkEditorInstance(id: string): editor {
   return CKEDITOR.instances[id as any]!;
@@ -38,11 +37,10 @@ export class CKEditorTestSetup implements AdapterTestSetup {
   }
 
   async init() {
-    const adapter = new CKEditorAdapter({editorId: 'editorId'});
-    CKEDITOR.disableAutoInline = true;
-    CKEDITOR.replace('editorId', {customConfig: ''});
-    await waitMs(30);
     return new Promise<AdapterInterface>(async (resolve) => {
+      const adapter = new CKEditorAdapter({editorId: 'editorId'});
+      CKEDITOR.disableAutoInline = true;
+      CKEDITOR.replace('editorId', {customConfig: ''});
       getCkEditorInstance('editorId').on("instanceReady", () => {
         // Timeout is needed for IE
         setTimeout(() => {
