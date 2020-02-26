@@ -23,7 +23,9 @@ import {isScrollIntoViewCenteredAvailable} from '../../src/utils/scrolling';
 import {
   assertDeepEqual,
   containsEmptyTextNodes,
-  getMatchesWithReplacement, isWindowFocused, testIf,
+  getMatchesWithReplacement,
+  isWindowFocused,
+  testIf,
   testIfWindowIsFocused
 } from '../utils/test-utils';
 import {AdapterInterface, SuccessfulContentExtractionResult} from '../../src/adapters/AdapterInterface';
@@ -38,7 +40,7 @@ import {TinyMCETestSetup} from './adapter-test-setups/tinymce';
 
 const assert = chai.assert;
 
-describe('adapter test', function() {
+describe('adapter test', function () {
   const NON_BREAKING_SPACE = '\u00a0';
 
   let adapter: AdapterInterface;
@@ -68,13 +70,20 @@ describe('adapter test', function() {
 
   testedAdapters.forEach(adapterSpec => {
     const adapterName = adapterSpec.name;
-    describe('adapter ' + adapterName, function(this: any) {
+    describe('adapter ' + adapterName, function (this: any) {
       this.timeout(10000);
 
-      beforeEach(async function() {
+      // noinspection TypeScriptValidateTypes
+      // @ts-ignore
+      beforeEach(function (done) {
         $('body').append(adapterSpec.editorElement);
-        adapter = await adapterSpec.init();
-      });
+        adapterSpec.init().then(() => {
+          done();
+        }).catch((reason: any) => {
+          assert(false, "Setup Hook Failed " + reason);
+          done();
+        });
+      }, 10000);
 
       afterEach(() => {
         const containsUnwantedEmptyTextNodes = isChrome() && (adapter instanceof AbstractRichtextEditorAdapter) &&
@@ -132,29 +141,29 @@ describe('adapter test', function() {
         return html.replace(/\n|<span><\/span>/g, '');
       }
 
-      it('Get initial text from editor element', function() {
+      it('Get initial text from editor element', function () {
         assertEditorText('initial text');
       });
 
-      it('Get current text from editor element', function(done) {
+      it('Get current text from editor element', function (done) {
         givenAText('current text', () => {
           assertEditorText('current text');
           done();
         });
       });
 
-      it('Extract initial HTML from editor element', function() {
+      it('Extract initial HTML from editor element', function () {
         assertEditorText('initial text');
       });
 
-      it('Extract current HTML from editor element', function(done) {
+      it('Extract current HTML from editor element', function (done) {
         givenAText('current text', () => {
           assertEditorText('current text');
           done();
         });
       });
 
-      it('Don\'t change surrounding words when replacing', function(done) {
+      it('Don\'t change surrounding words when replacing', function (done) {
         givenAText('wordOne wordTwo wordThree', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
           assertEditorText('wordOne wordTwoReplacement wordThree');
@@ -163,7 +172,7 @@ describe('adapter test', function() {
       });
 
       if (adapterSpec instanceof ContentEditableTestSetup || adapterSpec instanceof InputAdapterTestSetup) {
-        it('Replacements should trigger an input event', function(done) {
+        it('Replacements should trigger an input event', function (done) {
           givenAText('wordOne wordTwo wordThree', (text) => {
             adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
             assert.isTrue(adapterSpec.inputEventWasTriggered);
@@ -172,7 +181,7 @@ describe('adapter test', function() {
         });
       }
 
-      it('Replace words in reverse order', function(done) {
+      it('Replace words in reverse order', function (done) {
         givenAText('wordOne wordTwo wordThree', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
@@ -181,7 +190,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace words in order', function(done) {
+      it('Replace words in order', function (done) {
         givenAText('wordOne wordTwo wordThree', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
@@ -190,7 +199,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace second of the same word', function(done) {
+      it('Replace second of the same word', function (done) {
         givenAText('wordOne wordSame wordSame wordThree', text => {
           const matchWithReplacement = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement');
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement[1]]);
@@ -199,7 +208,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace first of the same word', function(done) {
+      it('Replace first of the same word', function (done) {
         givenAText('wordOne wordSame wordSame wordThree', text => {
           const matchWithReplacement = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement');
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement[0]]);
@@ -208,7 +217,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace the same word with word in between two times with different replacements', function(done) {
+      it('Replace the same word with word in between two times with different replacements', function (done) {
         givenAText('wordOne wordSame blubb wordSame wordThree', text => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement2');
@@ -219,7 +228,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace the same word two times with different replacements', function(done) {
+      it('Replace the same word two times with different replacements', function (done) {
         givenAText('wordOne wordSame wordSame wordThree', text => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
@@ -231,7 +240,7 @@ describe('adapter test', function() {
       });
 
 
-      it('Replace the same word two times with different replacements, where the first replacement is kinda long', function(done) {
+      it('Replace the same word two times with different replacements, where the first replacement is kinda long', function (done) {
         givenAText('wordOne wordSame wordSame wordThree', text => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSamelonglonglonglong1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
@@ -242,7 +251,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace the same word two times with different replacements in reverse oder', function(done) {
+      it('Replace the same word two times with different replacements in reverse oder', function (done) {
         givenAText('wordOne wordSame wordSame wordThree', text => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
@@ -253,7 +262,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace single character ","', function(done) {
+      it('Replace single character ","', function (done) {
         givenAText('wordOne, wordTwo', text => {
           const matchWithReplacement = getMatchesWithReplacement(text, ',', '');
           adapter.replaceRanges(dummyCheckId, matchWithReplacement);
@@ -262,7 +271,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace single character space', function(done) {
+      it('Replace single character space', function (done) {
         givenAText('wordOne wordTwo', text => {
           const matchWithReplacement = getMatchesWithReplacement(text, ' ', '');
           adapter.replaceRanges(dummyCheckId, matchWithReplacement);
@@ -271,7 +280,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace continues multi range', function(done) {
+      it('Replace continues multi range', function (done) {
         givenAText('word0 blub mist word3', text => {
           const word1 = getMatchesWithReplacement(text, 'blub', 'a')[0];
           const word2 = getMatchesWithReplacement(text, 'mist', 'b')[0];
@@ -287,7 +296,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace continues multi range with number in words', function(done) {
+      it('Replace continues multi range with number in words', function (done) {
         givenAText('word0 blub1 mist2 word3', text => {
 
           const word1 = getMatchesWithReplacement(text, 'blub1', 'a')[0];
@@ -304,7 +313,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace first and only char', function(done) {
+      it('Replace first and only char', function (done) {
         givenAText('x', text => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
           assertEditorText('aa');
@@ -312,7 +321,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace first and only word', function(done) {
+      it('Replace first and only word', function (done) {
         givenAText('xyz', text => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
           assertEditorText('aa');
@@ -320,7 +329,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace first char', function(done) {
+      it('Replace first char', function (done) {
         givenAText('x after', text => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
           assertEditorText('aa after');
@@ -328,7 +337,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace first word', function(done) {
+      it('Replace first word', function (done) {
         givenAText('xyz after', text => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
           assertEditorText('aa after');
@@ -336,7 +345,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace single chars', function(done) {
+      it('Replace single chars', function (done) {
         givenAText('y x f z u', text => {
 
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
@@ -349,7 +358,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace inside a word', function(done) {
+      it('Replace inside a word', function (done) {
         givenAText('InsideAllWord', text => {
 
           const matchWithReplacement = getMatchesWithReplacement(text, 'All', '12345');
@@ -360,7 +369,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace last word', function(done) {
+      it('Replace last word', function (done) {
         givenAText('wordOne wordTwo', text => {
 
           let matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'wordTw');
@@ -371,7 +380,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace last word with short word', function(done) {
+      it('Replace last word with short word', function (done) {
         givenAText('wordOne wordTwo', text => {
 
           const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'beer');
@@ -383,7 +392,7 @@ describe('adapter test', function() {
       });
 
 
-      it('Replace discontinues multi range', function(done) {
+      it('Replace discontinues multi range', function (done) {
         givenAText('wordOne wordTwo wordThree wordFour', text => {
           const matchesWithReplacement = [
             getMatchesWithReplacement(text, 'wordOne', 'a')[0],
@@ -396,48 +405,48 @@ describe('adapter test', function() {
         });
       });
 
-      it('Replace with and after strange chars', function(done) {
+      it('Replace with and after strange chars', function (done) {
         givenAText('wordOne wordTwo wordThree wordFour', text => {
           const strangeChars = '[]()/&%$§"!\'*+~öäü:,;-<>|^°´`òê€@ß?={}µコンピュータ';
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', strangeChars));
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'c'));
           // TODO: Depending on the document type, we should test for correct escaping.
-          assertEditorText(`wordOne ${strangeChars} c wordFour`);
+          assertEditorText(`wordOne ${ strangeChars } c wordFour`);
           done();
         });
       });
 
-      it('Replace with text looking like entities', function(done) {
+      it('Replace with text looking like entities', function (done) {
         givenAText('wordOne wordTwo wordThree', text => {
           const entities = '&uuml;';
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', entities));
-          assertEditorText(`wordOne ${entities} wordThree`);
+          assertEditorText(`wordOne ${ entities } wordThree`);
           done();
         });
       });
 
-      it('Replace with text looking like html tags', function(done) {
+      it('Replace with text looking like html tags', function (done) {
         givenAText('wordOne wordTwo wordThree', text => {
           const replacement = '<tagish>';
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', replacement));
-          assertEditorText(`wordOne ${replacement} wordThree`);
+          assertEditorText(`wordOne ${ replacement } wordThree`);
           done();
         });
       });
 
       if (adapterSpec.inputFormat === 'TEXT') {
-        it('Replace text inside tags', function(done) {
+        it('Replace text inside tags', function (done) {
           givenAText('wordOne <part1 part2 part3/> wordThree', text => {
             const replacement = 'replacement';
             adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'part3', replacement));
-            assertEditorText(`wordOne <part1 part2 ${replacement}/> wordThree`);
+            assertEditorText(`wordOne <part1 part2 ${ replacement }/> wordThree`);
             done();
           });
         });
       }
 
 
-      it('Replace word containing entity', function(done) {
+      it('Replace word containing entity', function (done) {
         if (adapterSpec.inputFormat === 'HTML') {
           givenAText('wordOne D&amp;D wordThree', html => {
             const replacement = 'Dungeons and Dragons';
@@ -445,7 +454,7 @@ describe('adapter test', function() {
             matchesWithReplacement[0].content = 'D&D';
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assertEditorText(`wordOne ${replacement} wordThree`);
+            assertEditorText(`wordOne ${ replacement } wordThree`);
             done();
           });
         } else {
@@ -454,7 +463,7 @@ describe('adapter test', function() {
             const matchesWithReplacement = getMatchesWithReplacement(text, 'D&amp;D', replacement);
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assertEditorText(`wordOne ${replacement} wordThree`);
+            assertEditorText(`wordOne ${ replacement } wordThree`);
             done();
           });
         }
@@ -485,7 +494,7 @@ describe('adapter test', function() {
 
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assertEditorText(`wordOne ${replacement} wordThree`);
+            assertEditorText(`wordOne ${ replacement } wordThree`);
             done();
           });
         });
@@ -509,18 +518,18 @@ describe('adapter test', function() {
       }
 
       if (adapterSpec.inputFormat === 'HTML') {
-        it('Replace word before entity &nbsp;', function(done) {
+        it('Replace word before entity &nbsp;', function (done) {
           givenAText('Southh&nbsp;is warm.', html => {
             const replacement = 'South';
             const matchesWithReplacement = getMatchesWithReplacement(html, 'Southh', replacement);
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
+            assertEditorText(`${ replacement }${ NON_BREAKING_SPACE }is warm.`);
             done();
           });
         });
 
-        it('Replace words containing entity &nbsp;', function(done) {
+        it('Replace words containing entity &nbsp;', function (done) {
           givenAText('South&nbsp;is warm&nbsp;.', html => {
             const replacement = 'South';
             // Some editors wrap the html inside e.g. <p>
@@ -532,13 +541,13 @@ describe('adapter test', function() {
             ] as MatchWithReplacement[];
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
+            assertEditorText(`${ replacement }${ NON_BREAKING_SPACE }is warm.`);
             done();
           });
         });
       }
 
-      it('Replace same word in correct order', function(done) {
+      it('Replace same word in correct order', function (done) {
         givenAText('before wordSame wordSame wordSame wordSame wordSame after', text => {
           // The diff approach can not always handle ["a", "b", "c", "d", "e"] correctly.
           const replacements = ['replacement1', 'replacement2', 'replacement3', 'replacement4', 'replacement5'];
@@ -553,12 +562,12 @@ describe('adapter test', function() {
           replace(3);
           replace(1);
 
-          assertEditorText(`before ${replacements.join(' ')} after`);
+          assertEditorText(`before ${ replacements.join(' ') } after`);
           done();
         });
       });
 
-      it('selectRanges does not change text', function(done) {
+      it('selectRanges does not change text', function (done) {
         const words = ['wordOne', 'wordTwo', 'wordThree', 'wordFour'];
         let editorText = words.join(' ');
         givenAText(editorText, text => {
@@ -582,7 +591,7 @@ describe('adapter test', function() {
       });
 
       if (adapterSpec.inputFormat === 'HTML') {
-        it('Remove complete text content', function(done) {
+        it('Remove complete text content', function (done) {
           givenAText('<p>a</p>', () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
               {'content': 'a', 'range': [3, 4], 'replacement': ''},
@@ -599,7 +608,7 @@ describe('adapter test', function() {
         });
 
         if (adapterSpec instanceof QuillContentEditableTestSetup) {
-          it('Missing space within p elements', function(done) {
+          it('Missing space within p elements', function (done) {
             givenAText('<p>a b ?</p><p>c</p>', () => {
               const matchesWithReplacement: MatchWithReplacement[] = [
                 {'content': 'b', 'range': [5, 6], 'replacement': 'b?'},
@@ -611,7 +620,7 @@ describe('adapter test', function() {
             });
           });
         } else {
-          it('Missing space within divs', function(done) {
+          it('Missing space within divs', function (done) {
             givenAText('<div>a b ?</div><div>c</div>', () => {
               const matchesWithReplacement: MatchWithReplacement[] = [
                 {'content': 'b', 'range': [7, 8], 'replacement': 'b?'},
@@ -624,7 +633,7 @@ describe('adapter test', function() {
           });
         }
 
-        it('Replace partially tagged text', function(done) {
+        it('Replace partially tagged text', function (done) {
           givenAText('<p><strong>a b</strong> .</p>', () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
               {'content': 'b', 'range': [13, 14], 'replacement': 'b.'},
@@ -639,7 +648,7 @@ describe('adapter test', function() {
 
       }
 
-      it('SelectRanges throws exception if matched document part has changed', function(done) {
+      it('SelectRanges throws exception if matched document part has changed', function (done) {
         givenAText('wordOne wordTwo wordThree', html => {
           const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
           setEditorContent('wordOne wordXTwo wordThree', () => {
@@ -649,7 +658,7 @@ describe('adapter test', function() {
         });
       });
 
-      it('ReplaceRanges throws exception if matched document part has changed', function(done) {
+      it('ReplaceRanges throws exception if matched document part has changed', function (done) {
         givenAText('wordOne wordTwo wordThree', html => {
           const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo', 'replacement');
           setEditorContent('wordOne wordXTwo wordThree', () => {
@@ -660,7 +669,7 @@ describe('adapter test', function() {
       });
 
       if (adapterSpec instanceof ContentEditableTestSetup || adapterSpec instanceof InputAdapterTestSetup) {
-        it('SelectRanges throws exception if editor gets removed', function(done) {
+        it('SelectRanges throws exception if editor gets removed', function (done) {
           const completeContent = 'wordOne';
           givenAText(completeContent, html => {
             const matchesWithReplacement = getMatchesWithReplacement(html, 'wordOne');
@@ -670,7 +679,7 @@ describe('adapter test', function() {
           });
         });
 
-        it('SelectRanges throws exception if editor gets hidden', function(done) {
+        it('SelectRanges throws exception if editor gets hidden', function (done) {
           const completeContent = 'wordOne wordTwo wordThree';
           givenAText(completeContent, html => {
             const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
