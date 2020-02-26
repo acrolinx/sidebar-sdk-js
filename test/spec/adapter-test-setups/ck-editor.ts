@@ -17,8 +17,8 @@
 import {AdapterInterface} from "../../../src/adapters/AdapterInterface";
 import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
 import {CKEditorAdapter} from "../../../src/adapters/CKEditorAdapter";
-import editor = CKEDITOR.editor;
 import {waitMs} from '../../utils/test-utils';
+import editor = CKEDITOR.editor;
 
 export function getCkEditorInstance(id: string): editor {
   return CKEDITOR.instances[id as any]!;
@@ -48,7 +48,9 @@ export class CKEditorTestSetup implements AdapterTestSetup {
           resolve(adapter);
         }, 30);
       });
-      waitMs(5000).then(() => reject('Instance ready was never called by CK Editor.'));
+      waitMs(5000).then(() => reject('Instance ready was never called by CK Editor.')).catch(() => {
+        reject();
+      });
     });
   }
 
