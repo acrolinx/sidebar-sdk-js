@@ -77,6 +77,9 @@ describe('adapter test', function () {
         $('body').append(adapterSpec.editorElement);
         adapterSpec.init().then(() => {
           done();
+        }).catch((res) => {
+          assert(false, 'Before each hook failed. ' + res);
+          done();
         });
       });
 
