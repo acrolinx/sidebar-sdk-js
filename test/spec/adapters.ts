@@ -73,17 +73,12 @@ describe('adapter test', function () {
     describe('adapter ' + adapterName, function (this: any) {
       this.timeout(10000);
 
-      // noinspection TypeScriptValidateTypes
-      // @ts-ignore
-      beforeEach(function (done) {
+      beforeEach('The before each hook', function (done) {
         $('body').append(adapterSpec.editorElement);
         adapterSpec.init().then(() => {
           done();
-        }).catch((reason: any) => {
-          assert(false, "Setup Hook Failed " + reason);
-          done();
         });
-      }, 10000);
+      });
 
       afterEach(() => {
         const containsUnwantedEmptyTextNodes = isChrome() && (adapter instanceof AbstractRichtextEditorAdapter) &&
