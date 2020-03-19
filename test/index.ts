@@ -21,6 +21,7 @@ import './spec/autobind';
 import './spec/empty-text-node-chrome-bug';
 import './spec/escaping';
 import './spec/adapters';
+import './spec/adapter-utils';
 import './spec/multi-plugin';
 import './spec/async-adapter';
 import './spec/async-multi-adapter.spec';

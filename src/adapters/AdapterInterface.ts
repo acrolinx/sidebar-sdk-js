@@ -48,10 +48,11 @@ export interface SuccessfulContentExtractionResult {
 }
 
 export interface AutobindWrapperAttributes {
-  'orginal-id'?: string;
-  'orginal-class'?: string;
-  'orginal-name'?: string;
-  'orginal-source'?: string;
+  'original-id'?: string;
+  'original-class'?: string;
+  'original-name'?: string;
+  'original-source': string;
+  'original-display'?: string;
   [key: string]: string | undefined;
 }
 

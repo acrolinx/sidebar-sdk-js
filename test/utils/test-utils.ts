@@ -45,8 +45,15 @@ export function getMatchesWithReplacement(completeString: string, partialString:
   return matches;
 }
 
+/**
+ * Better error message in mocha webrunner compared to original assert.deepEqual.
+ */
 export function assertDeepEqual<T>(val: T, expected: T) {
-  assert.equal(JSON.stringify(val), JSON.stringify(expected));
+  try {
+    assert.deepEqual(val, expected);
+  } catch (e) {
+    assert.equal(JSON.stringify(val), JSON.stringify(expected));
+  }
 }
 
 export function containsEmptyTextNodes(node: Node) {
