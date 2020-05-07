@@ -3,7 +3,7 @@
 ## Build Locally (Includes Compiling, Linting, Testing)
 
 ```bash
-   npm run buildLocal
+   npm run build
 ```
 
 ## Interactive Development
