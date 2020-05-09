@@ -74,8 +74,18 @@ function traverseIFrames(el: Element): Element[] {
   }
 }
 
-function getEditableElements(doc: Document = document): Element[] {
+function traverseShadowRoots(el: Element): Element[] {
+  if (el.shadowRoot) {
+    return el.shadowRoot ? getEditableElements(el.shadowRoot) : [];
+  } else {
+    return [];
+  }
+}
+
+function getEditableElements(doc: Document | ShadowRoot = document): Element[] {
   return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
+    .union(_(doc.querySelectorAll('*'))
+    .flatMap(traverseShadowRoots).value())
     .flatMap(traverseIFrames)
     .reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el))
     .value();
