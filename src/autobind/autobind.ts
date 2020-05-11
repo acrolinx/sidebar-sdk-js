@@ -74,18 +74,16 @@ function traverseIFrames(el: Element): Element[] {
   }
 }
 
-function traverseShadowRoots(el: Element): Element[] {
-  if (el.shadowRoot) {
-    return el.shadowRoot ? getEditableElements(el.shadowRoot) : [];
-  } else {
-    return [];
-  }
+function traverseShadowRoots(doc: Document | ShadowRoot): Element[] {
+  return _(doc.querySelectorAll('*'))
+    .flatMap(el => el.shadowRoot ? getEditableElements(el.shadowRoot) : [])
+    .value();
 }
 
-function getEditableElements(doc: Document | ShadowRoot = document): Element[] {
+// Exported mainly for testing
+export function getEditableElements(doc: Document | ShadowRoot = document): Element[] {
   return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
-    .union(_(doc.querySelectorAll('*'))
-    .flatMap(traverseShadowRoots).value())
+    .union(traverseShadowRoots(doc))
     .flatMap(traverseIFrames)
     .reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el))
     .value();
