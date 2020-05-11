@@ -143,6 +143,23 @@ describe('autobind', function () {
     assert.equal(adapters.length, 3);
   });
 
+  it('dont bind closed shadow root fields', () => {
+    setPageContent(`
+          <div id="container"></div>
+          <script>
+            (() => {
+              const root = container.attachShadow({ mode: "closed" });
+              const element = document.createElement("input")
+              element.setAttribute("type", "text");
+              root.appendChild(element);
+            })();
+          </script>
+      `);
+
+    const adapters = bindAdaptersForCurrentPage();
+    assert.equal(adapters.length, 0);
+  });
+
   it('dont bind fields that are probably comboboxes', () => {
     setPageContent(`
           <input role="combobox" autocomplete="off"/>

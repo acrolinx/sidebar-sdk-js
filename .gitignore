@@ -13,3 +13,5 @@ tmp
 
 **/.baseDir.ts
 /dist/
+
+coverage
