@@ -84,6 +84,7 @@
     "tscWatch": "tsc -w",
     "tslint": "tslint -p tsconfig.json -t stylish  \"src/**/*.ts\" \"test/**/*.ts\"",
     "tslintFix": "tslint --fix -p tsconfig.json -t stylish \"src/**/*.ts\" \"test/**/*.ts\"",
+    "version": "npm run tsc && npm run webpack && npm run dist",
     "webpack": "webpack",
     "webpack-dev-server": "webpack-dev-server --config webpack.dev.config.js --host 0.0.0.0"
   }
