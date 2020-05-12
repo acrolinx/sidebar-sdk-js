@@ -129,3 +129,15 @@ export function removeEl(el: HTMLElement | undefined) {
     el.parentNode!.removeChild(el);
   }
 }
+
+export interface BenchmarkResult {
+  timeMsPerRun: number;
+}
+
+export function benchmark(runs: number, f: () => void): BenchmarkResult {
+  const start = performance.now();
+  for (let i = 0; i < runs; i++) {
+    f();
+  }
+  return {timeMsPerRun: (performance.now() - start) / runs};
+}

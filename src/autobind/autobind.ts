@@ -22,7 +22,8 @@ import {isQuip, QuipAdapter} from '../adapters/QuipAdapter';
 import {assign, isIFrame} from '../utils/utils';
 
 
-const EDITABLE_ELEMENTS_SELECTOR = [
+// Exported only for testing
+export const EDITABLE_ELEMENTS_SELECTOR = [
   'input:not([type])', // type attribute not present in markup
   'input[type=""]', // type attribute present, but empty
   'input[type=text]',
@@ -74,14 +75,25 @@ function traverseIFrames(el: Element): Element[] {
   }
 }
 
-function traverseShadowRoots(doc: Document | ShadowRoot): Element[] {
-  return _(doc.querySelectorAll('*'))
-    .flatMap(el => el.shadowRoot ? getEditableElements(el.shadowRoot) : [])
-    .value();
+// Caused by open https://github.com/whatwg/dom/issues/665 we have to search manually.
+function traverseShadowRoots(doc: Document | ShadowRoot | HTMLElement): Element[] {
+  const editableElements = [];
+
+  const nodesIterator = (doc.ownerDocument || (doc as Document)).createNodeIterator(doc, NodeFilter.SHOW_ELEMENT);
+
+  let currentNode;
+  while (currentNode = nodesIterator.nextNode()) {
+    const shadowRoot = (currentNode as HTMLElement).shadowRoot;
+    if (shadowRoot) {
+      editableElements.push(...getEditableElements(shadowRoot));
+    }
+  }
+
+  return editableElements;
 }
 
 // Exported mainly for testing
-export function getEditableElements(doc: Document | ShadowRoot = document): Element[] {
+export function getEditableElements(doc: Document | ShadowRoot | HTMLElement = document): Element[] {
   return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
     .union(traverseShadowRoots(doc))
     .flatMap(traverseIFrames)

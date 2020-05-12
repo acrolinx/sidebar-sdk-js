@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
-const assert = chai.assert;
-import {bindAdaptersForCurrentPage} from "../../src/autobind/autobind";
-import {AutoBindAdapter} from "../../src/adapters/AutoBindAdapter";
-import {hasError} from "../../src/adapters/AdapterInterface";
+import _ from 'lodash';
+import {hasError} from '../../src/adapters/AdapterInterface';
+import {AutoBindAdapter} from '../../src/adapters/AutoBindAdapter';
+import {bindAdaptersForCurrentPage, EDITABLE_ELEMENTS_SELECTOR, getEditableElements} from '../../src/autobind/autobind';
+import {benchmark} from '../utils/test-utils';
 
-describe('autobind', function () {
+const assert = chai.assert;
+
+describe('autobind', function() {
   const containerDivId = 'autoBindTest';
 
   function setPageContent(html: string) {
@@ -63,7 +65,7 @@ describe('autobind', function () {
   });
 
   // This test depends on an available internet.
-  it('ignore iframes from other domains ', function (this: any, done: MochaDone) {
+  it('ignore iframes from other domains ', function(this: any, done: MochaDone) {
     this.timeout(5000);
 
     setPageContent(`
@@ -222,8 +224,117 @@ describe('autobind', function () {
       const autobindAdapterHtml = new AutoBindAdapter({aggregateFormat: 'HTML'});
       assert.equal(autobindAdapterHtml.getFormat(), 'HTML');
     });
+  });
+});
 
+describe('getEditableElements performance with no shadow dom', () => {
+  let bigTree: HTMLElement;
 
+  const containerDivId = 'getEditableElementsTest';
+
+  before(() => {
+    bigTree = createDivTree(20, 4);
   });
 
+  beforeEach(() => {
+    $('body').append(`<div id="${containerDivId}"></div>`);
+    $('#' + containerDivId).remove().append(bigTree);
+  });
+
+  afterEach(() => {
+    $('#' + containerDivId).remove();
+  });
+
+  function createDivTree(breadth: number, deep: number): HTMLElement {
+    const element = document.createElement('div');
+    if (deep > 0) {
+      for (let i = 0; i < breadth; i++) {
+        element.appendChild(createDivTree(breadth, deep - 1));
+      }
+    }
+    return element;
+  }
+
+  function traverseShadowRootSlow(doc: Document | ShadowRoot | HTMLElement): Element[] {
+    return _.flatMap(doc.querySelectorAll('*'),
+      el => el.shadowRoot ? getEditableElementsSlow(el.shadowRoot) : []
+    );
+  }
+
+  function getEditableElementsSlow(doc: Document | ShadowRoot | HTMLElement = document): Element[] {
+    return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
+      .union(traverseShadowRootSlow(doc))
+      .value();
+  }
+
+  it('test-test: big tree is big', () => {
+    const numberOfNodes = bigTree.querySelectorAll('*').length;
+    assert.equal(numberOfNodes, 168420);
+  });
+
+  it('getEditableElements is faster than slow on a big tree', function() {
+    this.timeout(10000);
+
+    const benchmarkResultSlow = benchmark(10, () => {
+      const nodes = getEditableElementsSlow(bigTree);
+      assert.equal(nodes.length, 0);
+    });
+
+    const benchmarkResult = benchmark(10, () => {
+      const nodes = getEditableElements(bigTree);
+      assert.equal(nodes.length, 0);
+    });
+
+    const speedUp = benchmarkResultSlow.timeMsPerRun / benchmarkResult.timeMsPerRun;
+
+    // console.log('getEditableElements speedup', benchmarkResultSlow.timeMsPerRun, benchmarkResult.timeMsPerRun, speedUp);
+
+    // In practise the speedup is often larger, but we use a low value here to reduce the risk of fail tests.
+    // In Safari and Firefox the speedup can be up to 5.
+    assert.isAbove(speedUp, 1.2);
+  });
 });
+
+describe('getEditableElements performance for a big shadow dom', () => {
+  let container: HTMLElement;
+  let bigTree: HTMLElement;
+
+  const containerDivId = 'getEditableElementsShadowTest';
+
+  before(() => {
+    bigTree = createShadowTree(10, 4);
+  });
+
+  beforeEach(() => {
+    $('body').append(`<div id="${containerDivId}"></div>`);
+    container = document.querySelector<HTMLElement>('#' + containerDivId)!;
+    $('#' + containerDivId).remove().append(bigTree);
+  });
+
+  afterEach(() => {
+    $('#' + containerDivId).remove();
+  });
+
+  function createShadowTree(breadth: number, deep: number): HTMLElement {
+    const element = document.createElement('div');
+    const shadowRoot = element.attachShadow({mode: 'open'});
+    if (deep > 0) {
+      for (let i = 0; i < breadth; i++) {
+        shadowRoot.appendChild(createShadowTree(breadth, deep - 1));
+      }
+    }
+    return element;
+  }
+
+  it('getEditableElements is fast enough on big nested shadow dom trees', function() {
+    this.timeout(1000);
+    const benchmarkResult = benchmark(2, () => {
+      const nodes = getEditableElements(container);
+      assert.equal(nodes.length, 0);
+    });
+    assert.isTrue(benchmarkResult.timeMsPerRun < 500);
+    // console.log(benchmarkResult.timeMsPerRun);
+  });
+});
+
+
