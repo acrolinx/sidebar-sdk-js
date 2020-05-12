@@ -98,6 +98,68 @@ describe('autobind', function () {
     assert.equal(adapters.length, 0);
   });
 
+  it('bind shadow root fields', () => {
+    setPageContent(`
+          <div id="container"></div>
+          <script>
+            (() => {
+              const root = container.attachShadow({ mode: "open" });
+              const element = document.createElement("input")
+              element.setAttribute("type", "text");
+              root.appendChild(element);
+            })();
+          </script>
+      `);
+
+    const adapters = bindAdaptersForCurrentPage();
+    assert.equal(adapters.length, 1);
+  });
+
+  it('bind nested shadow root fields', () => {
+    setPageContent(`
+          <div id="container"></div>
+          <input type="text"></input>
+          <script>
+            (() => {
+              const root = container.attachShadow({ mode: "open" });
+              const inputElement = document.createElement("input");
+              inputElement.setAttribute("type", "text");
+
+              // Add a nested shadow
+              const innerContainer = document.createElement("div");
+              innerContainer.setAttribute("id", "innerContainer");
+              const nestedRoot = innerContainer.attachShadow({ mode: "open" });
+              const inputElementNested = document.createElement("input");
+              inputElementNested.setAttribute("type", "text");
+              nestedRoot.appendChild(inputElementNested);
+
+              root.appendChild(inputElement);
+              root.appendChild(innerContainer);
+            })();
+          </script>
+      `);
+
+    const adapters = bindAdaptersForCurrentPage();
+    assert.equal(adapters.length, 3);
+  });
+
+  it('dont bind closed shadow root fields', () => {
+    setPageContent(`
+          <div id="container"></div>
+          <script>
+            (() => {
+              const root = container.attachShadow({ mode: "closed" });
+              const element = document.createElement("input")
+              element.setAttribute("type", "text");
+              root.appendChild(element);
+            })();
+          </script>
+      `);
+
+    const adapters = bindAdaptersForCurrentPage();
+    assert.equal(adapters.length, 0);
+  });
+
   it('dont bind fields that are probably comboboxes', () => {
     setPageContent(`
           <input role="combobox" autocomplete="off"/>
