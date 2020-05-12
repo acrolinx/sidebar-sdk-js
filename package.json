@@ -15,6 +15,9 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
+  "// devDependencies comments": {
+    "entities": "Version 2.0.2 breaks IE11 https://github.com/fb55/entities/issues/200"
+  },
   "dependencies": {
     "@acrolinx/sidebar-interface": "^14.16.1",
     "@acrolinx/sidebar-startpage": "^3.0.5",
@@ -23,7 +26,7 @@
     "@types/diff-match-patch": "^1.0.31",
     "@types/tinymce": "^4.5.24",
     "diff-match-patch": "1.0.4",
-    "entities": "^2.0.2",
+    "entities": "2.0.0",
     "es6-promise": "^4.2.8",
     "lodash": "^4.17.15",
     "tslib": "^1.11.2"
@@ -84,4 +87,4 @@
     "webpack": "webpack",
     "webpack-dev-server": "webpack-dev-server --config webpack.dev.config.js --host 0.0.0.0"
   }
-}
+},
