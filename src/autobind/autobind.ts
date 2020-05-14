@@ -50,16 +50,16 @@ function isProbablyCombobox(el: Element) {
   return role === 'combobox' && isAutoCompleteOff(el);
 }
 
-const NAME_FILTER = ['search_query', 'q', 'username', 'login', 'user[login]', 'authenticity_token'];
+const PROBABLE_SEARCH_FIELD_NAMES = ['search_query', 'q'];
 
-function isProbablyUndesiredField(el: Element) {
+function isProbablySearchField(el: Element) {
   if (el.nodeName !== 'INPUT') {
     return false;
   }
   if (el.getAttribute('role') === 'search') {
     return true;
   }
-  return _.includes(NAME_FILTER, el.getAttribute('name')) && isAutoCompleteOff(el);
+  return _.includes(PROBABLE_SEARCH_FIELD_NAMES, el.getAttribute('name')) && isAutoCompleteOff(el);
 }
 
 function traverseIFrames(el: Element): Element[] {
@@ -97,7 +97,7 @@ export function getEditableElements(doc: Document | ShadowRoot | HTMLElement = d
   return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
     .union(traverseShadowRoots(doc))
     .flatMap(traverseIFrames)
-    .reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablyUndesiredField(el))
+    .reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el))
     .value();
 }
 
