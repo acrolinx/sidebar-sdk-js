@@ -62,6 +62,11 @@ function isProbablySearchField(el: Element) {
   return _.includes(PROBABLE_SEARCH_FIELD_NAMES, el.getAttribute('name')) && isAutoCompleteOff(el);
 }
 
+function isProbablyUndesiredField(el: Element) {
+  const UNDESIRED_FIELD_NAMES = [ 'username', 'login', 'user[login]', 'authenticity_token'];
+  return _.includes(UNDESIRED_FIELD_NAMES, el.getAttribute('name'));
+}
+
 function traverseIFrames(el: Element): Element[] {
   if (isIFrame(el)) {
     try {
@@ -97,7 +102,7 @@ export function getEditableElements(doc: Document | ShadowRoot | HTMLElement = d
   return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
     .union(traverseShadowRoots(doc))
     .flatMap(traverseIFrames)
-    .reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el))
+    .reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el) || isProbablyUndesiredField(el))
     .value();
 }
 
