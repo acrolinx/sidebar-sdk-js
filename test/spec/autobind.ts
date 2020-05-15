@@ -194,6 +194,18 @@ describe('autobind', function() {
     assert.equal(adapters.length, 0);
   });
 
+  it('dont bind probable username fields', () => {
+    setPageContent(`
+          <input name="username" />
+          <input name="login" />
+          <input name="user[login]" />
+          <input name="authenticity_token" />
+      `);
+
+    const adapters = bindAdaptersForCurrentPage();
+    assert.equal(adapters.length, 0);
+  });
+
 
   describe('AutoBindAdapter', () => {
     it('uses wrapper attributes from adapters', (done) => {
