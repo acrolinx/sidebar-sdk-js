@@ -62,9 +62,10 @@ function isProbablySearchField(el: Element) {
   return _.includes(PROBABLE_SEARCH_FIELD_NAMES, el.getAttribute('name')) && isAutoCompleteOff(el);
 }
 
-function isProbablyUndesiredField(el: Element) {
-  const UNDESIRED_FIELD_NAMES = [ 'username', 'login', 'user[login]', 'authenticity_token'];
-  return _.includes(UNDESIRED_FIELD_NAMES, el.getAttribute('name'));
+const UNDESIRED_FIELD_NAMES = ['username', 'login', 'user[login]', 'authenticity_token'];
+
+export function isProbablyUndesiredField(el: Element) {
+  return UNDESIRED_FIELD_NAMES.includes(el.getAttribute('name')!);
 }
 
 function traverseIFrames(el: Element): Element[] {
