@@ -65,7 +65,7 @@ describe('autobind', function() {
   });
 
   // This test depends on an available internet.
-  it('ignore iframes from other domains ', function(this: any, done: MochaDone) {
+  it('ignore iframes from other domains ', function(this: any, done: any) {
     this.timeout(5000);
 
     setPageContent(`

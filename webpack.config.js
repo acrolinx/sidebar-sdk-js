@@ -2,7 +2,7 @@ const path = require('path');
 
 // MAX_SIZE_IN_BYTES is set here as a warning to avoid avoid accidental bloat.
 // If it gets bigger and there is no way to avoid it, we must increase this number sadly.
-const MAX_SIZE_IN_BYTES = 496 * 1024;
+const MAX_SIZE_IN_BYTES = 505 * 1024;
 
 module.exports = {
   mode: 'production',
