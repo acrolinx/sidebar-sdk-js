@@ -9,5 +9,10 @@ os:
 - osx
 addons:
   chrome: stable # have Travis install chrome stable.
+  sonarcloud:
+    organization: acrolinx
+    token:
+      secure: "iHkD38KeHXW0UtKScvgyu7n6Us3ta09jI49IUH00t2mQrEKW58jjUliJcThm3jDHHO06zB1Wuz3Sh9AQfT07fdSCQYiXp0BImCOXRAlUKcuXcAU9atSKMQRk7meXwJwbpniasor/cjNHG4r1HHzFkl6w5eCQrGNQqmPhXIpiCKxh+L2iyUVX2Vu0XTVeBmtY1oYbBLj0Ruq3eK2iUMc3gKUeK5ehquzy66iUuQz2qELg2L2lqOESwcNTCJV1l8GXb3BCEdZKPoLnJ4zCByHoOD8I7Ej5gmswKKmfTrH8ZWulkRqX+yyzjkGTeOTf1rDH6u9l2bUaZCE0SH3dLZle1AjJlF1HvmiIfMbxsr2PrSjvc8OrLCHRCS62gzkhnafLFVGrc+XUROPpBFG0LL/J+2jFVfk8Q5iHKj6UD/AhTG7lOWLoEt/QSApKXXNQG0xgIOdbro9ddrONtAVPwaqv23sizJDm8mSvjedWdlegiNqf1ynb2VT9F55XjvsgPCxE0hS16AL0eEcXC8EIuf3D9uggv0HwJ9ET0gQqbpYkzMFd2x8BruSQ6nCnpGM5g5PqPtFpauxQF+ovO8XDu6LFfkSzhYxLy9tZ5ylGfFohTJWO4Y4YuZdakP2gd/sB/OqT4TNBDY1ZpN0bjc5JSgT5NcQFn0RC38Cm3iU8TUDJkwA="
 script:
   - npm run build
+  - sonar-scanner
