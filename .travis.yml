@@ -13,4 +13,3 @@ addons:
     organization: acrolinx
 script:
   - npm run build
-  - sonar-scanner
