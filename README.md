@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/acrolinx/sidebar-sdk-js.svg?branch=master)](https://travis-ci.org/acrolinx/sidebar-sdk-js)
 [![Dependencies Status](https://david-dm.org/acrolinx/sidebar-sdk-js/status.svg)](https://david-dm.org/acrolinx/sidebar-sdk-js)
 [![DevDependencies Status](https://david-dm.org/acrolinx/sidebar-sdk-js/dev-status.svg)](https://david-dm.org/acrolinx/sidebar-sdk-js?type=dev)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=acrolinx_sidebar-sdk-js&metric=alert_status)](https://sonarcloud.io/dashboard?id=acrolinx_sidebar-sdk-js)
 
 This is a library for integrating the [Acrolinx](https://www.acrolinx.com/) Sidebar into a web application.
 
