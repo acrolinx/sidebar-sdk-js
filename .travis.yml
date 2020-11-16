@@ -4,7 +4,6 @@ node_js:
 sudo: required
 os:
 - linux
-# - osx
 addons:
   chrome: stable
   sonarcloud:
@@ -15,12 +14,14 @@ script:
 - npm run build
 - npm run buildDoc
 - sonar-scanner
-
 deploy:
-  - provider: pages
-    skip-cleanup: true
-    github-token: $GITHUB_API_TOKEN
-    keep-history: true
-    local-dir: "./docs/"
-    on:
-        tags: true
+- provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_API_TOKEN
+  keep-history: true
+  local-dir: "./docs/"
+  on:
+    tags: true
+env:
+  global:
+    secure: VDAZjvIWALT97uj0ReSKmyRTx++Ph7ZeTNANg0HDfiwPcfjZbuzAZaW0b9GbVq8Z9r2elTUd5b3qDH02K7lgeKqSdwgF3lelvjdT4upf2MgAYmGBCYamCOHSi5tD/aPTRNnsfeQu4HcTyKWayJEQtomFqoDF9s6qW6tepFhjbygYZS7TY0ep2g8edouJu6jxB/MduDdIDWgumpfRQNfNpr7VQ5Ws0fVs+fLyiNGlSs3yz4vNyBtnDY6+FGVXPDnXkeF7FM5mgmLoEcWTkX6hhk0Fq2Ml4vKoyB4zZVq6DTsG1K93ht4ywMLikXiqyjw1xvv2r6M8n75lrlzMJllYMUpJrhtu20FyvX+BqwQmsa4F4505bi9sX3xP4wWbcdi0UL+JTuElIyL1Bp1TTOq6G1wcuVISjsCmW1A7K4qko/JO1JiwV33fInVa/S0eGYP3QZGlcp/4qyQg6HE8EyU2K91SQaglsIAtd+u817BTCeGrfgtcLFD0MHlRQr6eT+A+Alesx1JWnu+cqUNGBnKNCOaP+Dwk4IQTjpy8vxd5Vo6kY87dQJGxr1K6LcZ+imytM3y1K7r31F1JBEQ12mronv0St+7Hen3ZXl5kiTmY5mdU/womZEpF9U1tcY4H0fU5o7Byz6V2zvD0OZNQg685dwVCwxiEHIFrI17usycotW0=
