@@ -14,6 +14,11 @@ script:
 - npm run build
 - npm run buildDoc
 - sonar-scanner
+# Check for suitable licenses
+- export v=`node -p "require('./package.json').version"`
+- export n=`node -p "require('./package.json').name"`
+- npx license-checker --production --onlyAllow 'BSD;CC-PDDC;CC-BY-3.0;CC-BY-1.0;CC-BY-2.0;CC-BY-4.0;CC0-1.0;Apache;Artistic;MIT;MPL;ISC;Unlicense' --excludePackages "$n@$v$LICENSE_EXCLUDED_PACKAGES" --excludePrivatePackages
+
 deploy:
 - provider: pages
   skip-cleanup: true
