@@ -13,4 +13,14 @@ addons:
       secure: A/i3zcoQvXNqXuONZUBHrVx/VV0AQxfdNZrYBU4nV36kWDUxrzkTwtKeeLumfYWocekDhlnHpU+MUEyj9gjMmQps6As2GY+hPxF+UFQ3oPHoWAL3vuOLpZZxJOL3iOOkA8NN2IajNsedV+c+CjfnecLFU6hf0o1XC/JkKv0UhvH2Ot9+JZFJg2CZcceDuvLyvIGs6BhpQ7DQfKyLfVXNy7thCZcM9udPdb4sI63t6lP5Rxb5PgsAi7LL5rFbhXLeev3uvaJTWHJSIprj85GINsGdFf0BLIaFwSxxgdR1I1Aw3Y5c/vELjFfv3qjwYjJTXEvgWrmGhb9kfxl3Cmtd5bfNRCLMIqh1K8R0L7e41s4iS51WaKmFL4DS423W6nrRnHtJHV0PKrW0P7sK5YTs+7PpXM6Gt8AwTwSonnWqHjiPUpFiPPFg7WvNvR/Q/WR7X0xQah+8sKWP1vrAq7KphRUHnICSkUnW0wD8F2SsuSVpo0RLKzgdvA+of2PC0Dqec+5KzlY5Kj7NjwkqTuHZiTzCg/cwdpDFvAH70l+YZz9h2/XfSOMVq4Zl1UB9XarCO/+4zmRtGakOpMPXsJrq7/NNjfMB9oPa6F4OKJMFZuUX+SLpzAwjKu9vw9yzj0Foql4LguzAdNyYaB4UP+2FxFqb768haexmpppsfGq7aPs=
 script:
 - npm run build
+- npm run buildDoc
 - sonar-scanner
+
+deploy:
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_API_TOKEN
+    keep-history: true
+    local-dir: "./docs/"
+    on:
+        tags: true

@@ -13,5 +13,6 @@ tmp
 
 **/.baseDir.ts
 /dist/
+/docs/pluginDoc
 
 coverage
