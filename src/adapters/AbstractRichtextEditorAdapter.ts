@@ -160,7 +160,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     selection.addRange(this.createRange(begin, length, textMapping));
   }
 
-  private createRange(begin: number, length: number, textMapping: TextMapping) {
+  protected createRange(begin: number, length: number, textMapping: TextMapping) {
     const doc = this.getEditorDocument();
     const range = doc.createRange();
     const beginDomPosition = textMapping.domPositions[begin];
@@ -221,7 +221,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     fakeInputEvent(this.getEditorElement());
   }
 
-  private getTextDomMapping() {
+  protected getTextDomMapping() {
     return extractTextDomMapping(this.getEditorElement());
   }
 

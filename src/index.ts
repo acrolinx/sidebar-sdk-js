@@ -20,6 +20,7 @@ export {InputAdapter} from "./adapters/InputAdapter";
 export {ContentEditableAdapter} from "./adapters/ContentEditableAdapter";
 export {AbstractRichtextEditorAdapter} from "./adapters/AbstractRichtextEditorAdapter";
 export {CKEditorAdapter} from "./adapters/CKEditorAdapter";
+export {DraftKenticoAdapter, isDraftJSKentico} from "./adapters/DraftKenticoAdapter";
 export {TinyMCEAdapter} from "./adapters/TinyMCEAdapter";
 export {TinyMCEWordpressAdapter} from "./adapters/TinyMCEWordpressAdapter";
 export {AutoBindAdapter} from "./adapters/AutoBindAdapter";

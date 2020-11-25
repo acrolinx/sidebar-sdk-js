@@ -16,10 +16,10 @@
 
 import _ from 'lodash';
 import {AdapterConf, AdapterInterface, CommonAdapterConf} from '../adapters/AdapterInterface';
-import {ContentEditableAdapter} from '../adapters/ContentEditableAdapter';
-import {InputAdapter} from '../adapters/InputAdapter';
+import {InputAdapter} from '..';
 import {isQuip, QuipAdapter} from '../adapters/QuipAdapter';
 import {assign, isIFrame} from '../utils/utils';
+import {DraftKenticoAdapter} from '../adapters/DraftKenticoAdapter';
 
 
 // Exported only for testing
@@ -109,6 +109,7 @@ export function getEditableElements(doc: Document | ShadowRoot | HTMLElement = d
 
 export interface AutobindConfig extends CommonAdapterConf {
   enableQuipAdapter?: boolean;
+  enableKenticoAdapter?: boolean;
 }
 
 export function bindAdaptersForCurrentPage(conf: AutobindConfig = {}): AdapterInterface[] {
@@ -116,10 +117,12 @@ export function bindAdaptersForCurrentPage(conf: AutobindConfig = {}): AdapterIn
     const adapterConf = assign(conf, {element: editable}) as AdapterConf;
     if (conf.enableQuipAdapter && isQuip(editable)) {
       return new QuipAdapter(adapterConf);
+    // } else if (conf.enableKenticoAdapter && isDraftJSKentico(editable)) {
+    //   return new DraftKenticoAdapter(adapterConf);
     } else if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {
       return new InputAdapter(adapterConf);
     } else {
-      return new ContentEditableAdapter(adapterConf);
+      return new DraftKenticoAdapter(adapterConf);
     }
   });
 }

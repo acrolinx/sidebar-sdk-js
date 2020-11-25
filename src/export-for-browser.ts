@@ -33,6 +33,7 @@ import {CodeMirrorAdapter} from "./adapters/CodeMirrorAdapter";
 import {initFloatingSidebar} from "./floating-sidebar/floating-sidebar";
 import {AsyncLocalStorage} from "./floating-sidebar/async-storage";
 import { XeditorAdapter } from './adapters/XeditorAdapter';
+import {DraftKenticoAdapter} from './adapters/DraftKenticoAdapter';
 
 
 export interface AcrolinxSidebarIntegration {
@@ -49,6 +50,7 @@ export interface AcrolinxSidebarIntegration {
     CKEditorAdapter: typeof CKEditorAdapter;
     CodeMirrorAdapter: typeof CodeMirrorAdapter;
     ContentEditableAdapter: typeof ContentEditableAdapter;
+    DraftKenticoAdapter: typeof DraftKenticoAdapter;
     InputAdapter: typeof InputAdapter;
     MultiEditorAdapter: typeof MultiEditorAdapter;
     AsyncMultiEditorAdapter: typeof AsyncMultiEditorAdapter;
@@ -88,6 +90,7 @@ const exported: AcrolinxSidebarIntegration = {
     CKEditorAdapter: CKEditorAdapter,
     CodeMirrorAdapter: CodeMirrorAdapter,
     ContentEditableAdapter: ContentEditableAdapter,
+    DraftKenticoAdapter: DraftKenticoAdapter,
     InputAdapter: InputAdapter,
     MultiEditorAdapter: MultiEditorAdapter,
     AsyncMultiEditorAdapter: AsyncMultiEditorAdapter,
