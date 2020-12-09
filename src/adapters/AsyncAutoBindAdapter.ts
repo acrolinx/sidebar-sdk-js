@@ -17,7 +17,7 @@
 import {Check, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {AutobindConfig, bindAdaptersForCurrentPage} from '../autobind/autobind';
 import {
-  AdapterInterface,
+  AsyncAdapterInterface,
   CommonAdapterConf,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
@@ -26,7 +26,9 @@ import {
 import {MultiEditorAdapterConfig} from "./MultiEditorAdapter";
 import {AsyncMultiEditorAdapter} from "./AsyncMultiEditorAdapter";
 
-export class AsyncAutoBindAdapter implements AdapterInterface {
+export class AsyncAutoBindAdapter implements AsyncAdapterInterface {
+  readonly isAsync: true = true;
+  readonly requiresSynchronization: true = true;
   private asyncMultiAdapter!: AsyncMultiEditorAdapter;
 
   constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf & AutobindConfig)) {

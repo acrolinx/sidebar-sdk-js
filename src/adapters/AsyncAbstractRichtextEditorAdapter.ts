@@ -15,15 +15,13 @@
  */
 
 import * as _ from 'lodash';
-import {Match, MatchWithReplacement} from '@acrolinx/sidebar-interface';
-import {lookupMatches} from '../lookup/diff-based';
-import {AlignedMatch} from '../utils/alignment';
-import {getCompleteFlagLength} from '../utils/match';
-import {TextDomMapping} from '../utils/text-dom-mapping';
-import {assertElementIsDisplayed, fakeInputEvent} from '../utils/utils';
+import { Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { TextDomMapping } from '../utils/text-dom-mapping';
+import { assertElementIsDisplayed, fakeInputEvent } from '../utils/utils';
 import {
-  AsyncAdapterInterface} from './AdapterInterface';
-import { AbstractRichtextEditorAdapter, removeEmptyTextNodesIfNeeded } from './AbstractRichtextEditorAdapter';
+  AsyncAdapterInterface
+} from './AdapterInterface';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
 
 
 type TextMapping = TextDomMapping;
@@ -41,7 +39,7 @@ export abstract class AsyncAbstractRichtextEditorAdapter extends AbstractRichtex
     const range = sel.getRangeAt(0);
     const tmp = range.cloneRange();
     tmp.collapse(true);
-    
+
     sel.removeAllRanges();
     await this.addSelectionRange(sel, range);
     const containerElement = range.startContainer.parentElement;
@@ -66,30 +64,12 @@ export abstract class AsyncAbstractRichtextEditorAdapter extends AbstractRichtex
   async selectRanges(checkId: string, matches: Match[]): Promise<void> {
     assertElementIsDisplayed(this.getEditorElement());
     this.getEditorElement().click();
-    await this.selectMatchesAsync(checkId, matches);
+    await this.selectMatches(checkId, matches);
     await this.scrollToCurrentSelection();
-    
+
   }
 
-  private async selectMatchesAsync<T extends Match>(_checkId: string, matches: T[]): Promise<[AlignedMatch<T>[], TextMapping]> {
-    const textMapping: TextMapping = this.getTextDomMapping();
-    const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.lastContentChecked!, textMapping.text, matches);
-
-    if (_.isEmpty(alignedMatches)) {
-      throw new Error('Selected flagged content is modified.');
-    }
-
-    await this.selectAlignedMatches(alignedMatches, textMapping);
-    return [alignedMatches, textMapping];
-  }
-
-  protected async selectAlignedMatches(matches: AlignedMatch<Match>[], textMapping: TextMapping): Promise<void> {
-    const newBegin = matches[0].range[0];
-    const matchLength = getCompleteFlagLength(matches);
-    return await this.selectText(newBegin, matchLength, textMapping);
-  }
-
-  protected async selectText(begin: number, length: number, textMapping: TextMapping): Promise<void > {
+  protected async selectText(begin: number, length: number, textMapping: TextMapping): Promise<void> {
     if (!textMapping.text) {
       return;
     }
@@ -109,37 +89,9 @@ export abstract class AsyncAbstractRichtextEditorAdapter extends AbstractRichtex
     return new Promise(resolve => resolve(selection.addRange(range)));
   }
 
-  protected replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
-    const doc = this.getEditorDocument();
-    const reversedMatches = _.clone(matches).reverse();
-    for (let match of reversedMatches) {
-      const textDomMapping = this.getTextDomMapping();
-      const rangeLength = match.range[1] - match.range[0];
-      if (rangeLength > 1) {
-        const tail = this.createRange(match.range[0] + 1, rangeLength - 1, textDomMapping);
-        const head = this.createRange(match.range[0], 1, textDomMapping);
-        tail.deleteContents();
-        head.deleteContents();
-        head.insertNode(doc.createTextNode(match.originalMatch.replacement));
-
-        removeEmptyTextNodesIfNeeded(tail);
-        if (tail.startContainer !== head.startContainer || tail.endContainer !== head.endContainer) {
-          removeEmptyTextNodesIfNeeded(head);
-        }
-      } else {
-        const range = this.createRange(match.range[0], rangeLength, textDomMapping);
-        range.deleteContents();
-        range.insertNode(doc.createTextNode(match.originalMatch.replacement));
-
-        removeEmptyTextNodesIfNeeded(range);
-      }
-    }
-  }
-
-
   async replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): Promise<void> {
     assertElementIsDisplayed(this.getEditorElement());
-    const [alignedMatches] = await this.selectMatchesAsync(checkId, matchesWithReplacement);
+    const [alignedMatches] = await this.selectMatches(checkId, matchesWithReplacement);
     const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
     this.replaceAlignedMatches(alignedMatches);
 

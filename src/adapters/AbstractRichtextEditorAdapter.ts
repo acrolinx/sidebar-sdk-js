@@ -126,7 +126,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   }
 
 
-  private selectMatches<T extends Match>(_checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
+  protected selectMatches<T extends Match>(_checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
     const textMapping: TextMapping = this.getTextDomMapping();
     const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.lastContentChecked!, textMapping.text, matches);
 
