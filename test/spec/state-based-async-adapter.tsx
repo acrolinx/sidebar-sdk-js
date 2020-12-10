@@ -22,6 +22,7 @@ import App from './adapter-test-setups/draftjs-editor/draftApp';
 import { bindAdaptersForCurrentPage } from '../../src/autobind/autobind';
 import { assert } from 'chai';
 import { getMatchesWithReplacement } from '../utils/test-utils';
+import { AsyncContentEditableAdapter } from '../../src/adapters/AsyncContentEditableAdapter';
 
 // The content of draft editor is initialized from constants.
 describe('state-based-editors-async-adapters', function () {
@@ -40,6 +41,17 @@ describe('state-based-editors-async-adapters', function () {
     document.body.removeChild(rootContainer);
   });
 
+  it('check content', async () => {
+    const editable = document.querySelector('[contenteditable=true]');
+    if (editable) {
+      const adapter = new AsyncContentEditableAdapter({ element: editable as HTMLElement });
+      const content = adapter.getContent();
+      assert.isTrue(content.includes('test'));
+    } else {
+      assert('No content editable div found on page');
+    }
+  });
+
   it('select ranges', async () => {
 
     const adapters = bindAdaptersForCurrentPage();
@@ -47,7 +59,7 @@ describe('state-based-editors-async-adapters', function () {
 
     adapters.forEach(async adapter => {
       const content = adapter.getContent!({});
-      const selected = 'tesst';
+      const selected = 'test';
       await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(content, selected, ''));
       assert.equal(document.getSelection()!.toString(), selected);
     });
