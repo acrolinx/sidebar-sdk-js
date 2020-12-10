@@ -15,6 +15,7 @@
  */
 
 import _ from 'lodash';
+import { AsyncAutoBindAdapter } from '../../src';
 import {hasError} from '../../src/adapters/AdapterInterface';
 import {AutoBindAdapter} from '../../src/adapters/AutoBindAdapter';
 import {bindAdaptersForCurrentPage, EDITABLE_ELEMENTS_SELECTOR, getEditableElements} from '../../src/autobind/autobind';
@@ -207,6 +208,7 @@ describe('autobind', function() {
   });
 
 
+
   describe('AutoBindAdapter', () => {
     it('uses wrapper attributes from adapters', (done) => {
       setPageContent(`
@@ -237,7 +239,39 @@ describe('autobind', function() {
       assert.equal(autobindAdapterHtml.getFormat(), 'HTML');
     });
   });
+
+  describe('AsyncAutoBindAdapter', () => {
+    it('uses wrapper attributes from adapters', (done) => {
+      setPageContent(`
+          <input id="inputId" class="inputClass" name="inputName" value="text"/>
+          <div id="divId" class="divClass" contenteditable="true">html</div>
+      `);
+
+      const autobindAdapter = new AsyncAutoBindAdapter({});
+      const extractedContent = autobindAdapter.extractContentForCheck({});
+      extractedContent.then(result => {
+        if (hasError(result)) {
+          done(result.error);
+          return;
+        }
+        assert.equal(result.content,
+          '<div original-id="inputId" original-class="inputClass" original-name="inputName" original-source="input" id="acrolinx_integration0">text</div>' +
+          '<div original-id="divId" original-class="divClass" original-source="div" id="acrolinx_integration1">html</div>'
+        );
+        done();
+      }).catch(done);
+    });
+
+    it('returns format of inner MultiEditor ', () => {
+      const autobindAdapterAuto = new AsyncAutoBindAdapter({aggregateFormat: 'AUTO'});
+      assert.equal(autobindAdapterAuto.getFormat(), 'AUTO');
+
+      const autobindAdapterHtml = new AsyncAutoBindAdapter({aggregateFormat: 'HTML'});
+      assert.equal(autobindAdapterHtml.getFormat(), 'HTML');
+    });
+  });
 });
+
 
 describe('getEditableElements performance with no shadow dom', () => {
   let bigTree: HTMLElement;

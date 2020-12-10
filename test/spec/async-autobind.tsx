@@ -22,7 +22,7 @@ import App from './adapter-test-setups/draftjs-editor/draftApp';
 import { bindAdaptersForCurrentPage } from '../../src/autobind/autobind';
 import { assert } from 'chai';
 
-describe('asyncAutobind', function () {
+describe('asyncAutobind DraftJS', function () {
 
   let rootContainer: Element
   beforeEach(() => {
