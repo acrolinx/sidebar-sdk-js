@@ -52,7 +52,7 @@ export class AsyncContentEditableAdapter extends AbstractRichtextEditorAdapter i
   async selectRanges(checkId: string, matches: Match[]): Promise<void> {
     assertElementIsDisplayed(this.getEditorElement());
     this.getEditorElement().click();
-    await this.selectMatches(checkId, matches);
+    this.selectMatches(checkId, matches);
     this.scrollToCurrentSelection();
   }
 
@@ -64,7 +64,7 @@ export class AsyncContentEditableAdapter extends AbstractRichtextEditorAdapter i
 
     // Replacement will remove the selection, so we need to restore it again.
     await this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
-    await this.scrollToCurrentSelection();
+    this.scrollToCurrentSelection();
     fakeInputEvent(this.getEditorElement());
   }
 
