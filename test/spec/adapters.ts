@@ -321,7 +321,7 @@ describe('adapter test', function () {
       });
 
       it('Replace first and only word', function (done) {
-        givenAText('xyz', text => {
+        givenAText('xyz', async text => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
           assertEditorText('aa');
           done();

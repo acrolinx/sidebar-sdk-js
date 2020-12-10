@@ -18,7 +18,7 @@ export {AcrolinxPlugin, autoBindFloatingSidebar} from "./acrolinx-plugin";
 export {AdapterInterface, AsyncAdapterInterface, CommonAdapterInterface} from "./adapters/AdapterInterface";
 export {InputAdapter} from "./adapters/InputAdapter";
 export {ContentEditableAdapter} from "./adapters/ContentEditableAdapter";
-export {StateBasedContentEditableAdapter} from "./adapters/StateBasedContentEditableAdapter";
+export {AsyncContentEditableAdapter as StateBasedContentEditableAdapter} from "./adapters/AsyncContentEditableAdapter";
 export {AbstractRichtextEditorAdapter} from "./adapters/AbstractRichtextEditorAdapter";
 export {CKEditorAdapter} from "./adapters/CKEditorAdapter";
 export {TinyMCEAdapter} from "./adapters/TinyMCEAdapter";

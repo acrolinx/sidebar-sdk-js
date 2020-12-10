@@ -16,7 +16,7 @@
 
 import _ from 'lodash';
 import {AdapterConf, AdapterInterface, CommonAdapterConf} from '../adapters/AdapterInterface';
-import {StateBasedContentEditableAdapter, isStateBasedEditor} from '../adapters/StateBasedContentEditableAdapter';
+import {AsyncContentEditableAdapter, isStateBasedEditor} from '../adapters/AsyncContentEditableAdapter';
 import {ContentEditableAdapter} from '../adapters/ContentEditableAdapter';
 import {InputAdapter} from '../adapters/InputAdapter';
 import {isQuip, QuipAdapter} from '../adapters/QuipAdapter';
@@ -120,7 +120,7 @@ export function bindAdaptersForCurrentPage(conf: AutobindConfig = {}): AdapterIn
     } else if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {
       return new InputAdapter(adapterConf);
     } else if (isStateBasedEditor(editable)) {
-      return new StateBasedContentEditableAdapter(adapterConf);
+      return new AsyncContentEditableAdapter(adapterConf);
     } else {
       return new ContentEditableAdapter(adapterConf);
     }
