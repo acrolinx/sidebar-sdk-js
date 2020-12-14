@@ -19,73 +19,85 @@ import { act } from 'react-dom/test-utils';
 import ReactDOM from "react-dom";
 import React from 'react';
 import App from './adapter-test-setups/draftjs-editor/draftApp';
-import { bindAdaptersForCurrentPage } from '../../src/autobind/autobind';
 import { assert } from 'chai';
 import { getMatchesWithReplacement } from '../utils/test-utils';
 import { AsyncContentEditableAdapter } from '../../src/adapters/AsyncContentEditableAdapter';
+import { isSuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
+import { waitMs } from '../../src/utils/utils';
 
 // The content of draft editor is initialized from constants.
 describe('state-based-editors-async-adapters', function () {
 
   let rootContainer: Element
   const dummyCheckId = 'dummyCheckId';
+  let adapter: AsyncContentEditableAdapter;
   beforeEach(() => {
     rootContainer = document.createElement("div");
     document.body.appendChild(rootContainer);
     act(() => {
       ReactDOM.render(<App />, rootContainer);
     });
+    const editable = document.querySelector('[contenteditable=true]');
+    adapter = new AsyncContentEditableAdapter({ element: editable as HTMLElement });
   });
 
   afterEach(() => {
     document.body.removeChild(rootContainer);
   });
 
+  const registerCheckResult = (text: string) => {
+    adapter.registerCheckResult({
+      checkedPart: {
+        checkId: dummyCheckId,
+        range: [0, text.length]
+      }
+    });
+  }
+
   it('check content', async () => {
-    const editable = document.querySelector('[contenteditable=true]');
-    if (editable) {
-      const adapter = new AsyncContentEditableAdapter({ element: editable as HTMLElement });
-      const content = adapter.getContent();
-      assert.isTrue(content.includes('test'));
-    } else {
-      assert('No content editable div found on page');
-    }
+    const content = adapter.getContent();
+    assert.isTrue(content.includes('test'));
   });
 
   it('select ranges', async () => {
-
-    const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 1);
-
-    adapters.forEach(async adapter => {
-      const content = adapter.getContent!({});
+    const extractionResult = await adapter.extractContentForCheck({});
+    if (isSuccessfulContentExtractionResult(extractionResult)) {
+      assert.isTrue(extractionResult.content.includes('test'));
+      registerCheckResult(extractionResult.content);
       const selected = 'test';
-      await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(content, selected, ''));
-      assert.equal(document.getSelection()!.toString(), selected);
-    });
+      await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected, ''));
+      await waitMs(0);
+      assert.equal(document.getElementById('selection')?.innerText, selected);
+    } else {
+      assert('Extraction failed');
+    }
   });
 
   it('select ranges sequentially', async () => {
+    let extractionResult = await adapter.extractContentForCheck({});
+    if (isSuccessfulContentExtractionResult(extractionResult)) {
+      assert.isTrue(extractionResult.content.includes('test'));
+      registerCheckResult(extractionResult.content);
 
-    const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 1);
+      const selected = 'test';
+      await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected, ''));
+      await waitMs(0);
+      assert.equal(document.getElementById('selection')?.innerText, selected);
 
-    adapters.forEach(async adapter => {
-      const content = adapter.getContent!({});
-      const selected1 = 'test';
-      await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(content, selected1, ''));
-      assert.equal(document.getSelection()!.toString(), selected1);
+      const selected2 = 'This';
+      await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected2, ''));
+      await waitMs(0);
+      assert.equal(document.getElementById('selection')?.innerText, selected2);
 
-      const selected2 = 'content';
-      await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(content, selected2, ''));
-      assert.equal(document.getSelection()!.toString(), selected2);
-
-      const selected3 = 'This';
-      await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(content, selected3, ''));
-      assert.equal(document.getSelection()!.toString(), selected3);
-    });
+      const selected3 = 'conteent';
+      await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected3, ''));
+      await waitMs(0);
+      assert.equal(document.getElementById('selection')?.innerText, selected3);
+    }
+    else {
+      assert('Extraction of content failed')
+    }
   });
-
 });
 
 

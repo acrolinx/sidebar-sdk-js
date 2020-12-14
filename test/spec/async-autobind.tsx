@@ -44,7 +44,7 @@ describe('asyncAutobind DraftJS', function () {
 
     const adaptersContent = adapters.map(a => a.getContent!({}));
     // TODO: A way to change state of editor for tests.
-    assert.isTrue(adaptersContent[0].includes('This is test content.'));
+    assert.isTrue(adaptersContent[0].includes('This is test conteent.'));
   });
 
 });
