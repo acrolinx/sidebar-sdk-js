@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {AcrolinxPlugin, autoBindFloatingSidebar} from "./acrolinx-plugin";
+import {AcrolinxPlugin, autoBindFloatingSidebar, autoBindFloatingSidebarAsync} from "./acrolinx-plugin";
 import {InputAdapter} from "./adapters/InputAdapter";
 import {ContentEditableAdapter} from "./adapters/ContentEditableAdapter";
 import {AbstractRichtextEditorAdapter} from "./adapters/AbstractRichtextEditorAdapter";
@@ -22,6 +22,7 @@ import {CKEditorAdapter} from "./adapters/CKEditorAdapter";
 import {TinyMCEAdapter} from "./adapters/TinyMCEAdapter";
 import {TinyMCEWordpressAdapter} from "./adapters/TinyMCEWordpressAdapter";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
+import {AsyncAutoBindAdapter} from "./adapters/AsyncAutoBindAdapter";
 import {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
 import {AsyncMultiEditorAdapter} from "./adapters/AsyncMultiEditorAdapter";
 import {createPluginMessageAdapter} from "./message-adapter/message-adapter";
@@ -38,6 +39,7 @@ import { XeditorAdapter } from './adapters/XeditorAdapter';
 export interface AcrolinxSidebarIntegration {
   AcrolinxPlugin: typeof AcrolinxPlugin;
   autoBindFloatingSidebar: typeof autoBindFloatingSidebar;
+  autoBindFloatingSidebarAsync: typeof autoBindFloatingSidebarAsync;
   initFloatingSidebar: typeof initFloatingSidebar;
   AsyncLocalStorage: typeof AsyncLocalStorage;
   createPluginMessageAdapter: typeof createPluginMessageAdapter;
@@ -46,6 +48,7 @@ export interface AcrolinxSidebarIntegration {
   adapter: {
     AbstractRichtextEditorAdapter: typeof AbstractRichtextEditorAdapter;
     AutoBindAdapter: typeof AutoBindAdapter;
+    AsyncAutoBindAdapter: typeof AsyncAutoBindAdapter;
     CKEditorAdapter: typeof CKEditorAdapter;
     CodeMirrorAdapter: typeof CodeMirrorAdapter;
     ContentEditableAdapter: typeof ContentEditableAdapter;
@@ -77,6 +80,7 @@ augmentedWindow.acrolinx = augmentedWindow.acrolinx || ({} as any);
 const exported: AcrolinxSidebarIntegration = {
   AcrolinxPlugin: AcrolinxPlugin,
   autoBindFloatingSidebar: autoBindFloatingSidebar,
+  autoBindFloatingSidebarAsync: autoBindFloatingSidebarAsync,
   createPluginMessageAdapter: createPluginMessageAdapter,
   initFloatingSidebar: initFloatingSidebar,
   AsyncLocalStorage: AsyncLocalStorage,
@@ -85,6 +89,7 @@ const exported: AcrolinxSidebarIntegration = {
   adapter: {
     AbstractRichtextEditorAdapter: AbstractRichtextEditorAdapter,
     AutoBindAdapter: AutoBindAdapter,
+    AsyncAutoBindAdapter: AsyncAutoBindAdapter,
     CKEditorAdapter: CKEditorAdapter,
     CodeMirrorAdapter: CodeMirrorAdapter,
     ContentEditableAdapter: ContentEditableAdapter,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-present Acrolinx GmbH
+ * Copyright 2020-present Acrolinx GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,52 +17,55 @@
 import {Check, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {AutobindConfig, bindAdaptersForCurrentPage} from '../autobind/autobind';
 import {
-  AdapterInterface,
+  AsyncAdapterInterface,
   CommonAdapterConf,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
   SuccessfulCheckResult
 } from "./AdapterInterface";
-import {MultiEditorAdapter, MultiEditorAdapterConfig} from "./MultiEditorAdapter";
+import {MultiEditorAdapterConfig} from "./MultiEditorAdapter";
+import {AsyncMultiEditorAdapter} from "./AsyncMultiEditorAdapter";
 
-// While making changes here make sure if you also need to do them in asynchronous version
+// While making changes here make sure if you also need to do them in synchronous version
 // of this adapter
-export class AutoBindAdapter implements AdapterInterface {
-  private multiAdapter!: MultiEditorAdapter;
+export class AsyncAutoBindAdapter implements AsyncAdapterInterface {
+  readonly isAsync: true = true;
+  readonly requiresSynchronization: true = true;
+  private asyncMultiAdapter!: AsyncMultiEditorAdapter;
 
   constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf & AutobindConfig)) {
     this.initMultiAdapter();
   }
 
   private initMultiAdapter() {
-    this.multiAdapter = new MultiEditorAdapter(this.conf);
+    this.asyncMultiAdapter = new AsyncMultiEditorAdapter(this.conf);
   }
 
   getFormat() {
-    return this.multiAdapter.getFormat();
+    return this.asyncMultiAdapter.getFormat();
   }
 
   extractContentForCheck(opts: ExtractContentForCheckOpts): Promise<ContentExtractionResult> {
     this.initMultiAdapter();
     bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
       const wrapperAttributes = adapter.getAutobindWrapperAttributes ? adapter.getAutobindWrapperAttributes() : {};
-      this.multiAdapter.addSingleAdapter(adapter, {attributes: wrapperAttributes});
+      this.asyncMultiAdapter.addSingleAdapter(adapter, {attributes: wrapperAttributes});
     });
-    return this.multiAdapter.extractContentForCheck(opts);
+    return this.asyncMultiAdapter.extractContentForCheck(opts);
   }
 
   registerCheckCall(_checkInfo: Check) {
   }
 
   registerCheckResult(_checkResult: SuccessfulCheckResult) {
-    this.multiAdapter.registerCheckResult(_checkResult);
+    this.asyncMultiAdapter.registerCheckResult(_checkResult);
   }
 
-  selectRanges(checkId: string, matches: Match[]) {
-    this.multiAdapter.selectRanges(checkId, matches);
+  async selectRanges(checkId: string, matches: Match[]): Promise<void> {
+    await this.asyncMultiAdapter.selectRanges(checkId, matches);
   }
 
-  replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
-    this.multiAdapter.replaceRanges(checkId, matchesWithReplacement);
+  async replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): Promise<void> {
+    await this.asyncMultiAdapter.replaceRanges(checkId, matchesWithReplacement);
   }
 }

@@ -38,6 +38,8 @@ type TextMapping = TextDomMapping;
 
 // TODO: if you want to extend this adapter with asynchronous methods,
 //  then you will have to implement AsyncAdapterInterface at the same time
+// If you make changes here make sure to see AsyncContentEditableAdapter,
+// there are some similar methods with asynchronous calls
 
 export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
   config: AdapterConf;
@@ -73,7 +75,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     return {ranges: []};
   }
 
-  private scrollIntoView(sel: Selection) {
+  protected scrollIntoView(sel: Selection): void | Promise<void> {
     const range = sel.getRangeAt(0);
     const tmp = range.cloneRange();
     tmp.collapse(true);
@@ -119,14 +121,14 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     }
   }
 
-  private isQuillEditor(): boolean {
+  protected isQuillEditor(): boolean {
     const editorElementIsQuill = this.getEditorElement().classList.contains('ql-editor');
     const editorElementContainsQuill = !!this.getEditorElement().querySelector('.ql-editor');
     return editorElementIsQuill || editorElementContainsQuill;
   }
 
 
-  private selectMatches<T extends Match>(_checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
+  protected selectMatches<T extends Match>(_checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
     const textMapping: TextMapping = this.getTextDomMapping();
     const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.lastContentChecked!, textMapping.text, matches);
 
@@ -138,13 +140,13 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     return [alignedMatches, textMapping];
   }
 
-  private selectAlignedMatches(matches: AlignedMatch<Match>[], textMapping: TextMapping) {
+  protected selectAlignedMatches(matches: AlignedMatch<Match>[], textMapping: TextMapping) {
     const newBegin = matches[0].range[0];
     const matchLength = getCompleteFlagLength(matches);
     this.selectText(newBegin, matchLength, textMapping);
   }
 
-  private selectText(begin: number, length: number, textMapping: TextMapping) {
+  protected selectText(begin: number, length: number, textMapping: TextMapping) {
     if (!textMapping.text) {
       return;
     }
@@ -160,7 +162,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     selection.addRange(this.createRange(begin, length, textMapping));
   }
 
-  private createRange(begin: number, length: number, textMapping: TextMapping) {
+  protected createRange(begin: number, length: number, textMapping: TextMapping) {
     const doc = this.getEditorDocument();
     const range = doc.createRange();
     const beginDomPosition = textMapping.domPositions[begin];
@@ -182,7 +184,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     return range;
   }
 
-  private replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
+  protected replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
     const doc = this.getEditorDocument();
     const reversedMatches = _.clone(matches).reverse();
     for (let match of reversedMatches) {
@@ -221,7 +223,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     fakeInputEvent(this.getEditorElement());
   }
 
-  private getTextDomMapping() {
+  protected getTextDomMapping() {
     return extractTextDomMapping(this.getEditorElement());
   }
 
