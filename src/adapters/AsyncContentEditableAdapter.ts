@@ -22,7 +22,11 @@ import { assertElementIsDisplayed, fakeInputEvent } from '../utils/utils';
 import { TextDomMapping } from '../utils/text-dom-mapping';
 
 type TextMapping = TextDomMapping;
-
+// Asynchronous extension to synchronous AbstractRichTextAdapter. While working in this class make sure
+// that if you need to add those also to the base class.
+// Note: Replacement functionality does not work as expected in every state based adapter. If DOM based
+// replacements are not supported by state based adapter, the replacements performed by this adapter
+// are illusion.
 export class AsyncContentEditableAdapter extends AbstractRichtextEditorAdapter implements AsyncAdapterInterface {
   element: HTMLElement;
 
@@ -76,7 +80,7 @@ export class AsyncContentEditableAdapter extends AbstractRichtextEditorAdapter i
     const selection = this.getEditorDocument().getSelection();
 
     if (!selection) {
-      console.warn('AbstractRichtextEditorAdapter.selectText: Missing selection');
+      console.warn('AsyncContentEditableAdapter.selectText: Missing selection');
       return;
     }
 

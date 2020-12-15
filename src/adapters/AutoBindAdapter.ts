@@ -25,6 +25,8 @@ import {
 } from "./AdapterInterface";
 import {MultiEditorAdapter, MultiEditorAdapterConfig} from "./MultiEditorAdapter";
 
+// While making changes here make sure if you also need to do them in asynchronous version
+// of this adapter
 export class AutoBindAdapter implements AdapterInterface {
   private multiAdapter!: MultiEditorAdapter;
 

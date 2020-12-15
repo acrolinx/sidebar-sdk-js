@@ -371,6 +371,7 @@ export interface AutoBindFloatingSidebarConfig extends AcrolinxPluginConfig, Mul
   asyncStorage?: AsyncStorage;
 }
 
+// Synchronous - Remember to make changes to asynchronous version if necessary.
 export function autoBindFloatingSidebar(basicConf: AutoBindFloatingSidebarConfig): FloatingSidebar {
   const conf = assign(basicConf, {
     sidebarContainerId: SIDEBAR_CONTAINER_ID,
@@ -386,6 +387,7 @@ export function autoBindFloatingSidebar(basicConf: AutoBindFloatingSidebarConfig
   return floatingSidebar;
 }
 
+// Asynchronous - Remember to make changes to synchronous version if necessary.
 export function autoBindFloatingSidebarAsync(basicConf: AutoBindFloatingSidebarConfig): FloatingSidebar {
   const conf = assign(basicConf, {
     sidebarContainerId: SIDEBAR_CONTAINER_ID,

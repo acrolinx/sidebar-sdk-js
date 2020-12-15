@@ -38,6 +38,8 @@ type TextMapping = TextDomMapping;
 
 // TODO: if you want to extend this adapter with asynchronous methods,
 //  then you will have to implement AsyncAdapterInterface at the same time
+// If you make changes here make sure to see AsyncContentEditableAdapter,
+// there are some similar methods with asynchronous calls
 
 export abstract class AbstractRichtextEditorAdapter implements AdapterInterface {
   config: AdapterConf;

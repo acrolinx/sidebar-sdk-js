@@ -26,6 +26,8 @@ import { isSuccessfulContentExtractionResult } from '../../src/adapters/AdapterI
 import { waitMs } from '../../src/utils/utils';
 
 // The content of draft editor is initialized from constants.
+// The tests only cover selection as replacement is crrently not implemented the way it should
+// be in state based editors.
 describe('state-based-editors-async-adapters', function () {
 
   let rootContainer: Element
