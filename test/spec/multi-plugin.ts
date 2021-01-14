@@ -52,8 +52,7 @@ describe('multi plugin', function() {
   let acrolinxPlugin: acrolinxPluginModule.AcrolinxPlugin;
 
   afterEach((done) => {
-    acrolinxPlugin.dispose(function() {
-    });
+    acrolinxPlugin.dispose(_.noop);
     $('#multiPluginTest').remove();
     done();
   });
@@ -252,7 +251,7 @@ describe('multi plugin', function() {
     });
 
     it('onSidebarWindowLoaded was called on sidebar window', () => {
-      assert.equal((getIFrameWindow() as any).injectedStuff, injectedStuff);
+      assert.equal(getIFrameWindow().injectedStuff, injectedStuff);
     });
 
   });

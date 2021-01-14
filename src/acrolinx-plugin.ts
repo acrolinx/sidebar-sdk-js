@@ -262,7 +262,7 @@ function initInternalAcrolinxSidebarPlugin(config: AcrolinxPluginConfig, editorA
     throw new Error(`Acrolinx can't find an element with the configured sidebarContainerId "${config.sidebarContainerId}".`);
   }
 
-  const sidebarIFrameElement = document.createElement('iframe') as HTMLIFrameElement;
+  const sidebarIFrameElement = document.createElement('iframe');
   sidebarContainer.appendChild(sidebarIFrameElement);
   const sidebarContentWindow = sidebarIFrameElement.contentWindow as IFrameWindowOfSidebar;
 

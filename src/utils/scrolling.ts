@@ -15,7 +15,7 @@
  */
 
 function getRootElement(doc: Document): HTMLElement {
-  return (doc.documentElement || doc.body.parentNode || doc.body) as HTMLElement;
+  return doc.documentElement || doc.body.parentNode || doc.body;
 }
 
 function getScrollTop(win = window) {

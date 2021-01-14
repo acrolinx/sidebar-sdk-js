@@ -77,7 +77,7 @@ export class FakeAdapter implements AdapterInterface {
   replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
     const reversedMatches = _.clone(matches).reverse();
     let text = this.content;
-    for (let match of reversedMatches) {
+    for (const match of reversedMatches) {
       text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
     }
     this.content = text;

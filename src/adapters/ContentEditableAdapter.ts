@@ -36,11 +36,11 @@ export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
   }
 
   protected getSelection(): DocumentSelection {
-    return {ranges: getSelectionHtmlRanges(this.getEditorElement() as HTMLElement)};
+    return {ranges: getSelectionHtmlRanges(this.getEditorElement())};
   }
 
   getEditorDocument(): Document {
-    return this.element.ownerDocument!;
+    return this.element.ownerDocument;
   }
 }
 

@@ -78,7 +78,7 @@ describe('floating sidebar', function () {
 
   describe('integration', () => {
     let floatingSidebar: FloatingSidebar;
-    let asyncStorage = new AsyncLocalStorage();
+    const asyncStorage = new AsyncLocalStorage();
 
     beforeEach(() => {
       localStorage.removeItem(POSITION_KEY);

@@ -134,7 +134,7 @@ export class InputAdapter implements AdapterInterface {
     const reversedMatches = _.clone(matches).reverse();
     const el = this.element;
     let text = el.value;
-    for (let match of reversedMatches) {
+    for (const match of reversedMatches) {
       if (!isDangerousToReplace(this.lastContentChecked!, match.originalMatch)) {
         text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);
       }

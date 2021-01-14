@@ -44,7 +44,7 @@ export class QuipAdapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditorDocument(): Document {
-    return this.element.ownerDocument!;
+    return this.element.ownerDocument;
   }
 
   async replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
@@ -117,7 +117,7 @@ enum QuipSectionType {
 }
 
 function findCorrespondingHtmlElement(node: Node): HTMLElement {
-  return node instanceof HTMLElement ? node : node.parentElement!!;
+  return node instanceof HTMLElement ? node : node.parentElement!;
 }
 
 function simulateDoubleClick(element: HTMLElement) {

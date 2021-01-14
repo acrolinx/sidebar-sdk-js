@@ -23,8 +23,8 @@ import {addIFrame, removeEl, waitMs} from '../utils/test-utils';
 const assert = chai.assert;
 
 describe('message-adapter', function() {
-  let mockedAcrolinxPlugin = mock<InternalAcrolinxSidebarPluginInterface>();
-  let acrolinxPlugin = instance(mockedAcrolinxPlugin);
+  const mockedAcrolinxPlugin = mock<InternalAcrolinxSidebarPluginInterface>();
+  const acrolinxPlugin = instance(mockedAcrolinxPlugin);
   let sidebarIFrameElement: HTMLIFrameElement;
   let evilIFrameElement: HTMLIFrameElement;
   const requestGlobalCheckMessage = {command: 'requestGlobalCheck', args: [{selection: true}]};

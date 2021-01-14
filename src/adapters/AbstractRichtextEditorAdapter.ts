@@ -187,7 +187,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   protected replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
     const doc = this.getEditorDocument();
     const reversedMatches = _.clone(matches).reverse();
-    for (let match of reversedMatches) {
+    for (const match of reversedMatches) {
       const textDomMapping = this.getTextDomMapping();
       const rangeLength = match.range[1] - match.range[0];
       if (rangeLength > 1) {
@@ -249,6 +249,7 @@ export function removeEmptyTextNodes(range: Range) {
   const nodeIterator = document.createNodeIterator(range.commonAncestorContainer);
   let currentNode: Node | null;
   let afterStartNode = false;
+  // eslint-disable-next-line no-cond-assign
   while (currentNode = nodeIterator.nextNode()) {
     if (currentNode === range.startContainer) {
       afterStartNode = true;

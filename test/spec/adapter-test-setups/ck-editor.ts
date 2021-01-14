@@ -38,7 +38,7 @@ export class CKEditorTestSetup implements AdapterTestSetup {
   }
 
   async init() {
-    return new Promise<AdapterInterface>(async (resolve, reject) => {
+    return new Promise<AdapterInterface>((resolve, reject) => {
       const adapter = new CKEditorAdapter({editorId: 'editorId'});
       CKEDITOR.disableAutoInline = true;
       CKEDITOR.replace('editorId', {customConfig: ''});

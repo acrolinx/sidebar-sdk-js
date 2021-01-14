@@ -153,7 +153,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck(opts));
     return Promise.all(contentExtractionResults).then((results: ContentExtractionResult[]): ContentExtractionResult => {
       let html = this.config.documentHeader || '';
-      let selectionRanges: DocumentRange[] = [];
+      const selectionRanges: DocumentRange[] = [];
       if (this.rootElementWrapper) {
         html += createStartTag(this.rootElementWrapper);
       }
@@ -167,7 +167,7 @@ export class MultiEditorAdapter implements AdapterInterface {
         const {completeHtml, contentStart, contentEnd} = wrapAdapterContent(registeredAdapter, extractionResult);
         registeredAdapter.checkedRange = [html.length + contentStart, html.length + contentEnd];
         if (extractionResult.selection) {
-          for (let selectionRange of extractionResult.selection.ranges) {
+          for (const selectionRange of extractionResult.selection.ranges) {
             selectionRanges.push([selectionRange[0] + registeredAdapter.checkedRange[0], selectionRange[1] + registeredAdapter.checkedRange[0]]);
           }
         }
@@ -193,7 +193,7 @@ export class MultiEditorAdapter implements AdapterInterface {
 
   selectRanges(checkId: string, matches: Match[]) {
     const map = this.remapMatches(matches);
-    for (let id in map) {
+    for (const id in map) {
       map[id].adapter.selectRanges(checkId, map[id].matches);
     }
   }
@@ -202,6 +202,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     const map: { [id: string]: RemappedMatches<T> } = {};
     for (const match of matches) {
       const registeredAdapter = this.getAdapterForMatch(match);
+      // eslint-disable-next-line no-prototype-builtins
       if (!map.hasOwnProperty(registeredAdapter.id)) {
         map[registeredAdapter.id] = {matches: [], adapter: registeredAdapter.adapter};
       }
@@ -228,7 +229,7 @@ export class MultiEditorAdapter implements AdapterInterface {
 
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
     const map = this.remapMatches(matchesWithReplacement);
-    for (let id in map) {
+    for (const id in map) {
       map[id].adapter.replaceRanges(checkId, map[id].matches);
     }
   }

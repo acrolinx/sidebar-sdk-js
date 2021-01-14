@@ -236,6 +236,7 @@ export class XeditorAdapter implements AdapterInterface {
     const ignoreSpaceAfter = (this.editor.getVersion().major >= 6);
 
     // use inner function for recursion to share the result
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const scope = this;
     function getContentForCheckInner(elementInner: any, resultParent: any) {
       // check for removed
@@ -305,7 +306,7 @@ export class XeditorAdapter implements AdapterInterface {
     }
 
     // create element with given tag
-    let newElement = document.createElement(role.tag);
+    const newElement = document.createElement(role.tag);
     currentElement.appendChild(newElement);
     return newElement;
   }

@@ -71,8 +71,8 @@ function getNodePath(ancestor: HTMLElement, node: Node): number[] {
 
 function findNodeByPath(ancestor: Node, path: number[]): Node | undefined {
   let currentNode: Node = ancestor;
-  for (let nodeIndex of path) {
-    let childNode = currentNode.childNodes[nodeIndex];
+  for (const nodeIndex of path) {
+    const childNode = currentNode.childNodes[nodeIndex];
     if (!childNode) {
       return undefined;
     }

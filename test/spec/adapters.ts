@@ -371,7 +371,7 @@ describe('adapter test', function () {
       it('Replace last word', function (done) {
         givenAText('wordOne wordTwo', text => {
 
-          let matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'wordTw');
+          const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'wordTw');
           adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
 
           assertEditorText('wordOne wordTw');
@@ -568,7 +568,7 @@ describe('adapter test', function () {
 
       it('selectRanges does not change text', function (done) {
         const words = ['wordOne', 'wordTwo', 'wordThree', 'wordFour'];
-        let editorText = words.join(' ');
+        const editorText = words.join(' ');
         givenAText(editorText, text => {
           words.forEach((word) => {
             adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(text, word, ''));

@@ -27,7 +27,7 @@ export class QuillContentEditableTestSetup implements AdapterTestSetup {
 
   async init() {
     this.quill = new Quill('#editorId', {theme: 'snow'});
-    const quillElement = document.querySelector<HTMLDivElement>('#editorId .ql-editor')!!;
+    const quillElement = document.querySelector<HTMLDivElement>('#editorId .ql-editor')!;
     return Promise.resolve(new ContentEditableAdapter({element: quillElement}));
   }
 

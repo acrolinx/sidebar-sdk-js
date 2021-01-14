@@ -62,6 +62,7 @@ export function parseUrl(href: string) {
   aElement.href = href;
   if (aElement.host === '') {
     // IE workaround.
+    // eslint-disable-next-line no-self-assign
     aElement.href = aElement.href;
   }
   const {protocol, host, hostname, port, pathname, hash} = aElement;

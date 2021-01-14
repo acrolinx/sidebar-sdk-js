@@ -45,7 +45,7 @@ export function textMapping(text: string, domPositions: DomPosition[]): TextDomM
 export function concatTextMappings(textMappings: TextDomMapping[]): TextDomMapping {
   return {
     text: textMappings.map(tm => tm.text).join(''),
-    domPositions: <DomPosition[]> _.flatten(textMappings.map(tm => tm.domPositions))
+    domPositions: _.flatten(textMappings.map(tm => tm.domPositions))
   };
 }
 

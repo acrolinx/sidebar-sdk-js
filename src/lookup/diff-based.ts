@@ -28,7 +28,7 @@ const dmp = new diff_match_patch();
 dmp.Diff_Timeout = 5;
 
 export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
-  let offsetMappingArray: OffSetAlign[] = [];
+  const offsetMappingArray: OffSetAlign[] = [];
   let offsetCountOld = 0;
   let currentDiffOffset = 0;
   diffs.forEach((diff: Diff) => {
