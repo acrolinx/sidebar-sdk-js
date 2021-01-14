@@ -68,6 +68,7 @@ describe('adapter test', function () {
   const testedAdapterNames: string[] = []; // empty = all
   const testedAdapters: AdapterTestSetup[] = adapters.filter(a => _.isEmpty(testedAdapterNames) || _.includes(testedAdapterNames, a.name));
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   testedAdapters.forEach(adapterSpec => {
     const adapterName = adapterSpec.name;
     describe('adapter ' + adapterName, function (this: any) {

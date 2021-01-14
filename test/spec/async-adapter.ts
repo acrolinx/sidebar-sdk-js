@@ -79,14 +79,12 @@ describe('async adapter', function () {
 
     function pollForInjectedAcrolinxPlug() {
       const iFrameWindow = getIFrameWindow();
-      if (iFrameWindow) {
-        if (iFrameWindow['acrolinxPlugin']) {
-          injectedPlugin = iFrameWindow['acrolinxPlugin'];
-          iFrameWindow['acrolinxSidebar'] = createMockSidebar();
-          injectedPlugin.requestInit();
-          done();
-          return;
-        }
+      if (iFrameWindow?.['acrolinxPlugin']) {
+        injectedPlugin = iFrameWindow['acrolinxPlugin'];
+        iFrameWindow['acrolinxSidebar'] = createMockSidebar();
+        injectedPlugin.requestInit();
+        done();
+        return;
       }
       if (Date.now() - pollingStartTime > 1500) {
         done(new Error("Can't find injected acrolinxPlugin"));

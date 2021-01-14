@@ -146,6 +146,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     this.adapters = [];
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   extractContentForCheck(opts: ExtractContentForCheckOpts): Promise<ContentExtractionResult> {
     if (this.config.beforeCheck) {
       this.config.beforeCheck(this);

@@ -6,12 +6,14 @@
   },
   "plugins": [
     "@typescript-eslint",
+    "sonarjs"
   ],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:sonarjs/recommended"
   ],
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -31,6 +33,8 @@
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/await-thenable": "off",
+    "sonarjs/no-duplicate-string": "off",
+    "sonarjs/no-identical-functions": "off",
     "no-case-declarations": "off",
     "no-useless-escape": "off"
   }
