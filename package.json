@@ -15,8 +15,9 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "// devDependencies comments": {
-    "entities": "Version 2.0.2 breaks IE11 https://github.com/fb55/entities/issues/200"
+  "// dependencies & devDependencies comments": {
+    "entities": "Version 2.0.2 breaks IE11 https://github.com/fb55/entities/issues/200",
+    "typedoc": "Version >=0.20 changes url structure and 'Implemented by' shows only direct sub classes"
   },
   "dependencies": {
     "@acrolinx/sidebar-interface": "14.16.1",
@@ -67,7 +68,7 @@
     "ts-loader": "^8.0.14",
     "ts-mockito": "^2.6.1",
     "tslint": "6.1.2",
-    "typedoc": "^0.19.2",
+    "typedoc": "0.19.2",
     "typescript": "4.1.3",
     "uglify-js": "^3.12.4",
     "webpack": "^4.46.0",
