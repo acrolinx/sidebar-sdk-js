@@ -25,10 +25,11 @@ import {
   InvalidDocumentPart,
   SidebarConfiguration
 } from '@acrolinx/sidebar-interface';
-import * as acrolinxPluginModule from "../../src/acrolinx-plugin";
-import {assign} from "../../src/utils/utils";
+import _ from 'lodash';
+import * as acrolinxPluginModule from '../../src/acrolinx-plugin';
+import {AsyncContentEditableAdapter} from '../../src/adapters/AsyncContentEditableAdapter';
+import {assign} from '../../src/utils/utils';
 import {getDummySidebarPath, getMatchesWithReplacement, waitMs} from '../utils/test-utils';
-import { AsyncContentEditableAdapter } from '../../src/adapters/AsyncContentEditableAdapter';
 
 const DUMMY_CHECK_ID = 'dummyCheckId';
 const INITIAL_DOCUMENT_CONTENT = 'word1 word2 word3';
@@ -106,7 +107,6 @@ describe('async adapter', function () {
     return {
       init(_initParameters: InitParameters): void {
         injectedPlugin.onInitFinished({});
-        injectedPlugin.configure({supported: {base64EncodedGzippedDocumentContent: false}});
       },
       configure(_config: SidebarConfiguration): void {
       },
@@ -133,6 +133,8 @@ describe('async adapter', function () {
 
       onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
       },
+
+      showMessage: _.noop
     };
   }
 

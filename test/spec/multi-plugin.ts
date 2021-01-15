@@ -15,23 +15,29 @@
  */
 
 const assert = chai.assert;
-import * as _ from "lodash";
-
 import {
-  AcrolinxPlugin, AcrolinxSidebar, InitParameters, CheckOptions, Check, InvalidDocumentPart, CheckedDocumentRange,
-  SidebarConfiguration, InitResult
+  AcrolinxPlugin,
+  AcrolinxSidebar,
+  Check,
+  CheckedDocumentRange,
+  CheckOptions,
+  InitParameters,
+  InitResult,
+  InvalidDocumentPart,
+  SidebarConfiguration
 } from '@acrolinx/sidebar-interface';
+import * as _ from 'lodash';
+import * as acrolinxPluginModule from '../../src/acrolinx-plugin';
+import {AcrolinxPluginConfig} from '../../src/acrolinx-plugin';
+import {ContentEditableAdapter} from '../../src/adapters/ContentEditableAdapter';
+import {InputAdapter} from '../../src/adapters/InputAdapter';
 import {
-  MultiEditorAdapterConfig,
   AddSingleAdapterOptions,
-  MultiEditorAdapter
-} from "../../src/adapters/MultiEditorAdapter";
-import {ContentEditableAdapter} from "../../src/adapters/ContentEditableAdapter";
-import {InputAdapter} from "../../src/adapters/InputAdapter";
-import * as acrolinxPluginModule from "../../src/acrolinx-plugin";
+  MultiEditorAdapter,
+  MultiEditorAdapterConfig
+} from '../../src/adapters/MultiEditorAdapter';
+import {assign} from '../../src/utils/utils';
 import {getDummySidebarPath, getMatchesWithReplacement} from '../utils/test-utils';
-import {assign} from "../../src/utils/utils";
-import {AcrolinxPluginConfig} from "../../src/acrolinx-plugin";
 
 const DUMMY_CHECK_ID = 'dummyCheckId';
 
@@ -115,7 +121,6 @@ describe('multi plugin', function() {
     return {
       init(_initParameters: InitParameters): void {
         injectedPlugin.onInitFinished({});
-        injectedPlugin.configure({supported: {base64EncodedGzippedDocumentContent: false}});
       },
       configure(config: SidebarConfiguration): void {
         newConfig = config;
@@ -143,6 +148,8 @@ describe('multi plugin', function() {
 
       onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
       },
+
+      showMessage: _.noop
     };
   }
 

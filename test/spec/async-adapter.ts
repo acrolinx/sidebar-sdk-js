@@ -15,6 +15,7 @@
  */
 
 const assert = chai.assert;
+import _ from 'lodash';
 import {ContentEditableAdapter} from "../../src";
 import {
   AcrolinxPlugin,
@@ -107,7 +108,6 @@ describe('async adapter', function () {
     return {
       init(_initParameters: InitParameters): void {
         injectedPlugin.onInitFinished({});
-        injectedPlugin.configure({supported: {base64EncodedGzippedDocumentContent: false}});
       },
       configure(_config: SidebarConfiguration): void {
       },
@@ -134,6 +134,8 @@ describe('async adapter', function () {
 
       onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
       },
+
+      showMessage: _.noop
     };
   }
 

@@ -20,7 +20,7 @@ import {
   CheckResult,
   InitParameters,
   InitResult,
-  Match,
+  Match, Message,
   OpenWindowParameters,
   RequestGlobalCheckOptions,
   SidebarConfiguration
@@ -45,7 +45,6 @@ import {loadSidebarIntoIFrame} from './utils/sidebar-loader';
 import {assign, isPromise} from './utils/utils';
 
 type MatchWithReplacement = acrolinxSidebarInterfaces.MatchWithReplacement;
-type AcrolinxPluginConfiguration = acrolinxSidebarInterfaces.AcrolinxPluginConfiguration;
 type AcrolinxSidebar = acrolinxSidebarInterfaces.AcrolinxSidebar;
 type AcrolinxSidebarPlugin = acrolinxSidebarInterfaces.AcrolinxPlugin;
 
@@ -166,10 +165,6 @@ class InternalAcrolinxSidebarPlugin implements InternalAcrolinxSidebarPluginInte
     } else if (initFinishedResult.error) {
       window.alert(initFinishedResult.error.message);
     }
-  }
-
-  configure(configuration: AcrolinxPluginConfiguration) {
-    console.log('configure: ', configuration);
   }
 
   requestGlobalCheck(options: RequestGlobalCheckOptions = {selection: false}) {
@@ -330,6 +325,14 @@ export class AcrolinxPlugin {
   check() {
     if (this.internalPlugin) {
       this.internalPlugin.requestGlobalCheck();
+    }
+  }
+
+  showMessage(message: Message) {
+    try {
+      this.internalPlugin!.acrolinxSidebar.showMessage(message);
+    } catch (error) {
+      console.warn('Error while trying to call acrolinxSidebar.showMessage', error);
     }
   }
 

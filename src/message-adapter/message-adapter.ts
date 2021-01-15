@@ -55,7 +55,8 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: InternalAcrolinx
     checkGlobal: () => ({checkId: 'dummyCheckId'}),
     onGlobalCheckRejected: _.noop,
     invalidateRanges: _.noop,
-    onVisibleRangesChanged: _.noop
+    onVisibleRangesChanged: _.noop,
+    showMessage: _.noop
   };
 
   injectPostCommandAsMessage(() => sidebarWindowIframe.contentWindow!, sidebar);
@@ -97,7 +98,6 @@ export function createPluginMessageAdapter(win = window): AcrolinxPlugin {
   const acrolinxSidebarPlugin: AcrolinxPlugin = {
     requestInit: _.noop,
     onInitFinished: _.noop,
-    configure: _.noop,
     requestGlobalCheck: _.noop,
     onCheckResult: _.noop,
     selectRanges: _.noop,
