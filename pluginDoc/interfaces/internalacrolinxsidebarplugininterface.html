@@ -47,9 +47,6 @@
 			<a href="internalacrolinxsidebarplugininterface.html" class="tsd-kind-icon">Internal<wbr>Acrolinx<wbr>Sidebar<wbr>Plugin<wbr>Interface</a>
 			<ul>
 				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a href="internalacrolinxsidebarplugininterface.html#configure" class="tsd-kind-icon">configure</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 					<a href="internalacrolinxsidebarplugininterface.html#oncheckresult" class="tsd-kind-icon">on<wbr>Check<wbr>Result</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
@@ -108,7 +105,6 @@
 					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="internalacrolinxsidebarplugininterface.html#configure" class="tsd-kind-icon">configure</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="internalacrolinxsidebarplugininterface.html#oncheckresult" class="tsd-kind-icon">on<wbr>Check<wbr>Result</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="internalacrolinxsidebarplugininterface.html#oninitfinished" class="tsd-kind-icon">on<wbr>Init<wbr>Finished</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="internalacrolinxsidebarplugininterface.html#openlogfile" class="tsd-kind-icon">open<wbr>Log<wbr>File</a></li>
@@ -126,38 +122,6 @@
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-				<a name="configure" class="tsd-anchor"></a>
-				<h3>configure</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<li class="tsd-signature tsd-kind-icon">configure<span class="tsd-signature-symbol">(</span>configuration<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AcrolinxPluginConfiguration</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<p>Inherited from <a href="internalacrolinxsidebarplugininterface.html">InternalAcrolinxSidebarPluginInterface</a>.<a href="internalacrolinxsidebarplugininterface.html#configure">configure</a></p>
-							<ul>
-								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:480</li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p> The AcrolinxSidebar pushes the latest configuration to the AcrolinxPlugin.</p>
-							</div>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5>configuration: <span class="tsd-signature-type">AcrolinxPluginConfiguration</span></h5>
-								<div class="tsd-comment tsd-typography">
-									<p>Contains capabilities.</p>
-								</div>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
 				<a name="oncheckresult" class="tsd-anchor"></a>
 				<h3>on<wbr>Check<wbr>Result</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
@@ -168,7 +132,7 @@
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="internalacrolinxsidebarplugininterface.html">InternalAcrolinxSidebarPluginInterface</a>.<a href="internalacrolinxsidebarplugininterface.html#oncheckresult">onCheckResult</a></p>
 							<ul>
-								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:491</li>
+								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:474</li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -198,15 +162,13 @@
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="internalacrolinxsidebarplugininterface.html">InternalAcrolinxSidebarPluginInterface</a>.<a href="internalacrolinxsidebarplugininterface.html#oninitfinished">onInitFinished</a></p>
 							<ul>
-								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:474</li>
+								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:463</li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
 							<div class="lead">
 								<p>The sidebar has finished initialization. Now the sidebar is ready for checking.</p>
 							</div>
-							<p>Note: Usually you should wait for the configuration to be pushed via: acrolinxPlugin.configure() to know the
-							capabilities of the sidebar.</p>
 						</div>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
@@ -232,7 +194,7 @@
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="internalacrolinxsidebarplugininterface.html">InternalAcrolinxSidebarPluginInterface</a>.<a href="internalacrolinxsidebarplugininterface.html#openlogfile">openLogFile</a></p>
 							<ul>
-								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:534</li>
+								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:517</li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -255,7 +217,7 @@
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="internalacrolinxsidebarplugininterface.html">InternalAcrolinxSidebarPluginInterface</a>.<a href="internalacrolinxsidebarplugininterface.html#openwindow">openWindow</a></p>
 							<ul>
-								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:530</li>
+								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:513</li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -283,7 +245,7 @@
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="internalacrolinxsidebarplugininterface.html">InternalAcrolinxSidebarPluginInterface</a>.<a href="internalacrolinxsidebarplugininterface.html#replaceranges">replaceRanges</a></p>
 							<ul>
-								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:526</li>
+								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:509</li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -322,7 +284,7 @@
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="internalacrolinxsidebarplugininterface.html">InternalAcrolinxSidebarPluginInterface</a>.<a href="internalacrolinxsidebarplugininterface.html#requestglobalcheck">requestGlobalCheck</a></p>
 							<ul>
-								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:486</li>
+								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:469</li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -353,7 +315,7 @@
 						<aside class="tsd-sources">
 							<p>Overrides AcrolinxPlugin.requestInit</p>
 							<ul>
-								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/2a3932e/src/acrolinx-plugin.ts#L98">src/acrolinx-plugin.ts:98</a></li>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/3d2a9c6/src/acrolinx-plugin.ts#L97">src/acrolinx-plugin.ts:97</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -377,7 +339,7 @@
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="internalacrolinxsidebarplugininterface.html">InternalAcrolinxSidebarPluginInterface</a>.<a href="internalacrolinxsidebarplugininterface.html#selectranges">selectRanges</a></p>
 							<ul>
-								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:517</li>
+								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:500</li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -435,7 +397,7 @@
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="internalacrolinxsidebarplugininterface.html">InternalAcrolinxSidebarPluginInterface</a>.<a href="internalacrolinxsidebarplugininterface.html#showserverselector">showServerSelector</a></p>
 							<ul>
-								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:535</li>
+								<li>Defined in node_modules/@acrolinx/sidebar-interface/dist/index.d.ts:518</li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
