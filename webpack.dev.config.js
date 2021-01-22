@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
+  target: ['web', 'es5'],
   entry: {
     'acrolinx-sidebar-sdk': './src/export-for-browser.ts',
     'tests': './test/index.ts'

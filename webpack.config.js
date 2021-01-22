@@ -6,6 +6,7 @@ const MAX_SIZE_IN_BYTES = 512 * 1024;
 
 module.exports = {
   mode: 'production',
+  target: ['web', 'es5'],
   entry: {
     'acrolinx-sidebar-sdk': './src/export-for-browser.ts',
   },
