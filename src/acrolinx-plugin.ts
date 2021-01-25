@@ -328,11 +328,17 @@ export class AcrolinxPlugin {
     }
   }
 
+  /**
+   * Show a message in the Sidebar.
+   * Supported since Acrolinx Platform 2021.2 (Sidebar version 14.28).
+   * @param message The message to show.
+   */
   showMessage(message: Message) {
     try {
       this.internalPlugin!.acrolinxSidebar.showMessage(message);
+      console.log('acrolinxSidebar.showMessage', message);
     } catch (error) {
-      console.warn('Error while trying to call acrolinxSidebar.showMessage', error);
+      console.warn('Error while trying to call acrolinxSidebar.showMessage', error, message);
     }
   }
 
