@@ -20,8 +20,8 @@
     "typedoc": "Version >=0.20 changes url structure and 'Implemented by' shows only direct sub classes"
   },
   "dependencies": {
-    "@acrolinx/sidebar-interface": "14.28.1",
-    "@acrolinx/sidebar-startpage": "^3.0.8",
+    "@acrolinx/sidebar-interface": "^14.28.2",
+    "@acrolinx/sidebar-startpage": "^3.0.9",
     "@types/ckeditor": "4.9.10",
     "@types/codemirror": "0.0.106",
     "@types/diff-match-patch": "^1.0.32",

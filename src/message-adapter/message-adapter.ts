@@ -103,7 +103,8 @@ export function createPluginMessageAdapter(win = window): AcrolinxPlugin {
     selectRanges: _.noop,
     replaceRanges: _.noop,
     openWindow: _.noop,
-    openLogFile: _.noop
+    openLogFile: _.noop,
+    log: _.noop
   };
 
   injectPostCommandAsMessage(() => win.parent, acrolinxSidebarPlugin);

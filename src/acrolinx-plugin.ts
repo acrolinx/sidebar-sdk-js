@@ -70,6 +70,7 @@ export interface AcrolinxPluginConfig extends InitParameters {
   onCheckResult?: (checkResult: CheckResult) => void;
   openLogFile?: () => void;
   openWindow?: (url: string) => void;
+  log?: (logEntry: acrolinxSidebarInterfaces.LogEntry) => void;
 }
 
 const CLIENT_COMPONENT_MAIN_FALLBACK = [
@@ -110,7 +111,8 @@ class InternalAcrolinxSidebarPlugin implements InternalAcrolinxSidebarPluginInte
     this.acrolinxSidebar.init({
       showServerSelector: true,
       supported: {
-        checkSelection: !!this.config.checkSelection
+        checkSelection: !!this.config.checkSelection,
+        log: !!this.config.log,
       },
       ...this.config,
       clientComponents: (this.config.clientComponents || CLIENT_COMPONENT_MAIN_FALLBACK).concat(SIDEBAR_SDK_COMPONENT)
@@ -246,6 +248,12 @@ class InternalAcrolinxSidebarPlugin implements InternalAcrolinxSidebarPluginInte
   openLogFile() {
     if (this.config.openLogFile) {
       this.config.openLogFile();
+    }
+  }
+
+  log(logEntry: acrolinxSidebarInterfaces.LogEntry): void {
+    if (this.config.log) {
+      this.config.log(logEntry);
     }
   }
 }
