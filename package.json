@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@acrolinx/sidebar-interface": "^14.28.2",
-    "@acrolinx/sidebar-startpage": "^3.0.9",
+    "@acrolinx/sidebar-startpage": "^3.0.10",
     "@types/ckeditor": "4.9.10",
     "@types/codemirror": "0.0.106",
     "@types/diff-match-patch": "^1.0.32",
