@@ -31,15 +31,11 @@
     "tmp"
   ],
   "typedocOptions": {
-    "mode": "file",
     "theme": "minimal",
     "readme": "none",
     "excludePrivate": true,
     "excludeProtected": true,
     "excludeExternals": true,
-    "expandInputFiles": true,
-    "includeDeclarations": "true",
     "out": "./docs/pluginDoc/",
-    "ignoreCompilerErrors": true
   }
 }
