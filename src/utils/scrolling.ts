@@ -86,12 +86,10 @@ export function isScrollIntoViewCenteredAvailable(): boolean {
  * @return indicates if it succeeded
  */
 export function scrollIntoViewCenteredIfPossible(targetEl: HTMLElement): boolean {
-  if (!isScrollIntoViewCenteredAvailable()) {
-    return false;
-  }
 
   try {
-    // For Chrome and Firefox (currently).
+    // For Chrome, Firefox and Safari (currently).
+    // Try if scrollIntoViewOptions are supported.
     targetEl.scrollIntoView({block: 'center'});
     return true;
   } catch (e) {
