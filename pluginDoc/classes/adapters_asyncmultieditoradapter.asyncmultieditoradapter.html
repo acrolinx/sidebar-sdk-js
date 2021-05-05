@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@acrolinx/sidebar-sdk | @acrolinx/sidebar-sdk</title>
+	<title>AsyncMultiEditorAdapter | @acrolinx/sidebar-sdk</title>
 	<meta name="description" content="Documentation for @acrolinx/sidebar-sdk">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">:root {
@@ -2674,7 +2674,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="index.html">@acrolinx/sidebar-sdk</a></strong>
+					<strong><a href="../index.html">@acrolinx/sidebar-sdk</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2702,58 +2702,418 @@ img {
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
+		<li class="current tsd-kind-class tsd-parent-kind-module">
+			<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html" class="tsd-kind-icon">Async<wbr>Multi<wbr>Editor<wbr>Adapter</a>
+			<ul>
+				<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#constructor" class="tsd-kind-icon">constructor</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#isasync" class="tsd-kind-icon">is<wbr>Async</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#requiressynchronization" class="tsd-kind-icon">requires<wbr>Synchronization</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#addsingleadapter" class="tsd-kind-icon">add<wbr>Single<wbr>Adapter</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#extractcontentforcheck" class="tsd-kind-icon">extract<wbr>Content<wbr>For<wbr>Check</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#getadapterformatch" class="tsd-kind-icon">get<wbr>Adapter<wbr>For<wbr>Match</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#getformat" class="tsd-kind-icon">get<wbr>Format</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#registercheckcall" class="tsd-kind-icon">register<wbr>Check<wbr>Call</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#registercheckresult" class="tsd-kind-icon">register<wbr>Check<wbr>Result</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#remapmatches" class="tsd-kind-icon">remap<wbr>Matches</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#removealladapters" class="tsd-kind-icon">remove<wbr>All<wbr>Adapters</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#replaceranges" class="tsd-kind-icon">replace<wbr>Ranges</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#selectranges" class="tsd-kind-icon">select<wbr>Ranges</a>
+				</li>
+			</ul>
+		</li>
 	</ul>
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel tsd-hierarchy">
+			<h3>Hierarchy</h3>
+			<ul class="tsd-hierarchy">
+				<li>
+					<a href="adapters_multieditoradapter.multieditoradapter.html" class="tsd-signature-type" data-tsd-kind="Class">MultiEditorAdapter</a>
+					<ul class="tsd-hierarchy">
+						<li>
+							<span class="target">AsyncMultiEditorAdapter</span>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</section>
+		<section class="tsd-panel">
+			<h3>Implements</h3>
+			<ul class="tsd-hierarchy">
+				<li><a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html" class="tsd-signature-type" data-tsd-kind="Interface">AsyncAdapterInterface</a></li>
+			</ul>
+		</section>
 		<section class="tsd-panel-group tsd-index-group">
 			<h2>Index</h2>
 			<section class="tsd-panel tsd-index-panel">
 				<div class="tsd-index-content">
-					<section class="tsd-index-section ">
-						<h3>Modules</h3>
+					<section class="tsd-index-section tsd-is-inherited">
+						<h3>Constructors</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-module"><a href="modules/acrolinx_plugin.html" class="tsd-kind-icon">acrolinx-<wbr>plugin</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_abstractrichtexteditoradapter.html" class="tsd-kind-icon">adapters/<wbr>Abstract<wbr>Richtext<wbr>Editor<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_adapterinterface.html" class="tsd-kind-icon">adapters/<wbr>Adapter<wbr>Interface</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_asyncautobindadapter.html" class="tsd-kind-icon">adapters/<wbr>Async<wbr>Auto<wbr>Bind<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_asynccontenteditableadapter.html" class="tsd-kind-icon">adapters/<wbr>Async<wbr>Content<wbr>Editable<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_asyncmultieditoradapter.html" class="tsd-kind-icon">adapters/<wbr>Async<wbr>Multi<wbr>Editor<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_autobindadapter.html" class="tsd-kind-icon">adapters/<wbr>Auto<wbr>Bind<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_ckeditoradapter.html" class="tsd-kind-icon">adapters/CKEditor<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_codemirroradapter.html" class="tsd-kind-icon">adapters/<wbr>Code<wbr>Mirror<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_contenteditableadapter.html" class="tsd-kind-icon">adapters/<wbr>Content<wbr>Editable<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_inputadapter.html" class="tsd-kind-icon">adapters/<wbr>Input<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_multieditoradapter.html" class="tsd-kind-icon">adapters/<wbr>Multi<wbr>Editor<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_quipadapter.html" class="tsd-kind-icon">adapters/<wbr>Quip<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_synchronizeasyncadapter.html" class="tsd-kind-icon">adapters/<wbr>Synchronize<wbr>Async<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_tinymceadapter.html" class="tsd-kind-icon">adapters/<wbr>TinyMCEAdapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_tinymcewordpressadapter.html" class="tsd-kind-icon">adapters/<wbr>TinyMCEWordpress<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/adapters_xeditoradapter.html" class="tsd-kind-icon">adapters/<wbr>Xeditor<wbr>Adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/autobind_autobind.html" class="tsd-kind-icon">autobind/autobind</a></li>
-							<li class="tsd-kind-module"><a href="modules/export_for_browser.html" class="tsd-kind-icon">export-<wbr>for-<wbr>browser</a></li>
-							<li class="tsd-kind-module"><a href="modules/floating_sidebar_async_storage.html" class="tsd-kind-icon">floating-<wbr>sidebar/async-<wbr>storage</a></li>
-							<li class="tsd-kind-module"><a href="modules/floating_sidebar_floating_sidebar.html" class="tsd-kind-icon">floating-<wbr>sidebar/floating-<wbr>sidebar</a></li>
-							<li class="tsd-kind-module"><a href="modules/index.html" class="tsd-kind-icon">index</a></li>
-							<li class="tsd-kind-module"><a href="modules/lookup_diff_based.html" class="tsd-kind-icon">lookup/diff-<wbr>based</a></li>
-							<li class="tsd-kind-module"><a href="modules/message_adapter_message_adapter.html" class="tsd-kind-icon">message-<wbr>adapter/message-<wbr>adapter</a></li>
-							<li class="tsd-kind-module"><a href="modules/typings_tinymce.html" class="tsd-kind-icon">typings/tinymce</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_adapter_utils.html" class="tsd-kind-icon">utils/adapter-<wbr>utils</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_alignment.html" class="tsd-kind-icon">utils/alignment</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_check_selection.html" class="tsd-kind-icon">utils/check-<wbr>selection</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_detect_browser.html" class="tsd-kind-icon">utils/detect-<wbr>browser</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_escaping.html" class="tsd-kind-icon">utils/escaping</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_logging.html" class="tsd-kind-icon">utils/logging</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_match.html" class="tsd-kind-icon">utils/match</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_scrolling.html" class="tsd-kind-icon">utils/scrolling</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_sidebar_loader.html" class="tsd-kind-icon">utils/sidebar-<wbr>loader</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_text_dom_mapping.html" class="tsd-kind-icon">utils/text-<wbr>dom-<wbr>mapping</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_text_extraction.html" class="tsd-kind-icon">utils/text-<wbr>extraction</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_utils.html" class="tsd-kind-icon">utils/utils</a></li>
-							<li class="tsd-kind-module"><a href="modules/utils_work_queue.html" class="tsd-kind-icon">utils/work-<wbr>queue</a></li>
+							<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#constructor" class="tsd-kind-icon">constructor</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Properties</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#isasync" class="tsd-kind-icon">is<wbr>Async</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#requiressynchronization" class="tsd-kind-icon">requires<wbr>Synchronization</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Methods</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#addsingleadapter" class="tsd-kind-icon">add<wbr>Single<wbr>Adapter</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#extractcontentforcheck" class="tsd-kind-icon">extract<wbr>Content<wbr>For<wbr>Check</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#getadapterformatch" class="tsd-kind-icon">get<wbr>Adapter<wbr>For<wbr>Match</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#getformat" class="tsd-kind-icon">get<wbr>Format</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#registercheckcall" class="tsd-kind-icon">register<wbr>Check<wbr>Call</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#registercheckresult" class="tsd-kind-icon">register<wbr>Check<wbr>Result</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#remapmatches" class="tsd-kind-icon">remap<wbr>Matches</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#removealladapters" class="tsd-kind-icon">remove<wbr>All<wbr>Adapters</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#replaceranges" class="tsd-kind-icon">replace<wbr>Ranges</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html#selectranges" class="tsd-kind-icon">select<wbr>Ranges</a></li>
 						</ul>
 					</section>
 				</div>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<h2>Constructors</h2>
+			<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+				<a name="constructor" class="tsd-anchor"></a>
+				<h3>constructor</h3>
+				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Async<wbr>Multi<wbr>Editor<wbr>Adapter<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">?: </span><a href="../interfaces/adapters_multieditoradapter.multieditoradapterconfig.html" class="tsd-signature-type" data-tsd-kind="Interface">MultiEditorAdapterConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html" class="tsd-signature-type" data-tsd-kind="Class">AsyncMultiEditorAdapter</a></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#constructor">constructor</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/MultiEditorAdapter.ts#L123">adapters/MultiEditorAdapter.ts:123</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>config: <a href="../interfaces/adapters_multieditoradapter.multieditoradapterconfig.html" class="tsd-signature-type" data-tsd-kind="Interface">MultiEditorAdapterConfig</a><span class="tsd-signature-symbol"> = ...</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="adapters_asyncmultieditoradapter.asyncmultieditoradapter.html" class="tsd-signature-type" data-tsd-kind="Class">AsyncMultiEditorAdapter</a></h4>
+					</li>
+				</ul>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Properties</h2>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="isasync" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Async</h3>
+				<div class="tsd-signature tsd-kind-icon">is<wbr>Async<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+				<aside class="tsd-sources">
+					<p>Implementation of <a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html">AsyncAdapterInterface</a>.<a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html#isasync">isAsync</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/AsyncMultiEditorAdapter.ts#L23">adapters/AsyncMultiEditorAdapter.ts:23</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="requiressynchronization" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> requires<wbr>Synchronization</h3>
+				<div class="tsd-signature tsd-kind-icon">requires<wbr>Synchronization<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+				<aside class="tsd-sources">
+					<p>Implementation of <a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html">AsyncAdapterInterface</a>.<a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html#requiressynchronization">requiresSynchronization</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/AsyncMultiEditorAdapter.ts#L24">adapters/AsyncMultiEditorAdapter.ts:24</a></li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+				<a name="addsingleadapter" class="tsd-anchor"></a>
+				<h3>add<wbr>Single<wbr>Adapter</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<li class="tsd-signature tsd-kind-icon">add<wbr>Single<wbr>Adapter<span class="tsd-signature-symbol">(</span>singleAdapter<span class="tsd-signature-symbol">: </span><a href="../interfaces/adapters_adapterinterface.adapterinterface.html" class="tsd-signature-type" data-tsd-kind="Interface">AdapterInterface</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html" class="tsd-signature-type" data-tsd-kind="Interface">AsyncAdapterInterface</a>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/adapters_multieditoradapter.wrapperconfoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">WrapperConfOptions</a>, id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Overrides <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#addsingleadapter">addSingleAdapter</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/AsyncMultiEditorAdapter.ts#L26">adapters/AsyncMultiEditorAdapter.ts:26</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>singleAdapter: <a href="../interfaces/adapters_adapterinterface.adapterinterface.html" class="tsd-signature-type" data-tsd-kind="Interface">AdapterInterface</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html" class="tsd-signature-type" data-tsd-kind="Interface">AsyncAdapterInterface</a></h5>
+							</li>
+							<li>
+								<h5>opts: <a href="../interfaces/adapters_multieditoradapter.wrapperconfoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">WrapperConfOptions</a><span class="tsd-signature-symbol"> = ...</span></h5>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> id: <span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<a name="extractcontentforcheck" class="tsd-anchor"></a>
+				<h3>extract<wbr>Content<wbr>For<wbr>Check</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">extract<wbr>Content<wbr>For<wbr>Check<span class="tsd-signature-symbol">(</span>opts<span class="tsd-signature-symbol">: </span><a href="../interfaces/adapters_adapterinterface.extractcontentforcheckopts.html" class="tsd-signature-type" data-tsd-kind="Interface">ExtractContentForCheckOpts</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/adapters_adapterinterface.html#contentextractionresult" class="tsd-signature-type" data-tsd-kind="Type alias">ContentExtractionResult</a><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Implementation of <a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html">AsyncAdapterInterface</a>.<a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html#extractcontentforcheck">extractContentForCheck</a></p>
+							<p>Inherited from <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#extractcontentforcheck">extractContentForCheck</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/MultiEditorAdapter.ts#L150">adapters/MultiEditorAdapter.ts:150</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>opts: <a href="../interfaces/adapters_adapterinterface.extractcontentforcheckopts.html" class="tsd-signature-type" data-tsd-kind="Interface">ExtractContentForCheckOpts</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/adapters_adapterinterface.html#contentextractionresult" class="tsd-signature-type" data-tsd-kind="Type alias">ContentExtractionResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<a name="getadapterformatch" class="tsd-anchor"></a>
+				<h3>get<wbr>Adapter<wbr>For<wbr>Match</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Adapter<wbr>For<wbr>Match<span class="tsd-signature-symbol">(</span>match<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Match</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/adapters_multieditoradapter.checkedregisteredadapter.html" class="tsd-signature-type" data-tsd-kind="Interface">CheckedRegisteredAdapter</a></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#getadapterformatch">getAdapterForMatch</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/MultiEditorAdapter.ts#L220">adapters/MultiEditorAdapter.ts:220</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>match: <span class="tsd-signature-type">Match</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="../interfaces/adapters_multieditoradapter.checkedregisteredadapter.html" class="tsd-signature-type" data-tsd-kind="Interface">CheckedRegisteredAdapter</a></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<a name="getformat" class="tsd-anchor"></a>
+				<h3>get<wbr>Format</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Format<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;AUTO&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;HTML&quot;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Implementation of <a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html">AsyncAdapterInterface</a>.<a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html#getformat">getFormat</a></p>
+							<p>Inherited from <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#getformat">getFormat</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/MultiEditorAdapter.ts#L133">adapters/MultiEditorAdapter.ts:133</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">&quot;AUTO&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;HTML&quot;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<a name="registercheckcall" class="tsd-anchor"></a>
+				<h3>register<wbr>Check<wbr>Call</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">register<wbr>Check<wbr>Call<span class="tsd-signature-symbol">(</span>_checkInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Check</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Implementation of <a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html">AsyncAdapterInterface</a>.<a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html#registercheckcall">registerCheckCall</a></p>
+							<p>Inherited from <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#registercheckcall">registerCheckCall</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/MultiEditorAdapter.ts#L184">adapters/MultiEditorAdapter.ts:184</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>_checkInfo: <span class="tsd-signature-type">Check</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<a name="registercheckresult" class="tsd-anchor"></a>
+				<h3>register<wbr>Check<wbr>Result</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">register<wbr>Check<wbr>Result<span class="tsd-signature-symbol">(</span>checkResult<span class="tsd-signature-symbol">: </span><a href="../interfaces/adapters_adapterinterface.successfulcheckresult.html" class="tsd-signature-type" data-tsd-kind="Interface">SuccessfulCheckResult</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Implementation of <a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html">AsyncAdapterInterface</a>.<a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html#registercheckresult">registerCheckResult</a></p>
+							<p>Inherited from <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#registercheckresult">registerCheckResult</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/MultiEditorAdapter.ts#L187">adapters/MultiEditorAdapter.ts:187</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>checkResult: <a href="../interfaces/adapters_adapterinterface.successfulcheckresult.html" class="tsd-signature-type" data-tsd-kind="Interface">SuccessfulCheckResult</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+				<a name="remapmatches" class="tsd-anchor"></a>
+				<h3>remap<wbr>Matches</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">remap<wbr>Matches&lt;T&gt;<span class="tsd-signature-symbol">(</span>matches<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#remapmatches">remapMatches</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/MultiEditorAdapter.ts#L202">adapters/MultiEditorAdapter.ts:202</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-type-parameters-title">Type parameters</h4>
+						<ul class="tsd-type-parameters">
+							<li>
+								<h4>T<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Match</span></h4>
+							</li>
+						</ul>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>matches: <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{}</span></h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>id: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="../interfaces/adapters_multieditoradapter.remappedmatches.html" class="tsd-signature-type" data-tsd-kind="Interface">RemappedMatches</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<a name="removealladapters" class="tsd-anchor"></a>
+				<h3>remove<wbr>All<wbr>Adapters</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<li class="tsd-signature tsd-kind-icon">remove<wbr>All<wbr>Adapters<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#removealladapters">removeAllAdapters</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/MultiEditorAdapter.ts#L145">adapters/MultiEditorAdapter.ts:145</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+				<a name="replaceranges" class="tsd-anchor"></a>
+				<h3>replace<wbr>Ranges</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<li class="tsd-signature tsd-kind-icon">replace<wbr>Ranges<span class="tsd-signature-symbol">(</span>checkId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, matchesWithReplacement<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MatchWithReplacement</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Implementation of <a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html">AsyncAdapterInterface</a>.<a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html#replaceranges">replaceRanges</a></p>
+							<p>Overrides <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#replaceranges">replaceRanges</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/AsyncMultiEditorAdapter.ts#L37">adapters/AsyncMultiEditorAdapter.ts:37</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>checkId: <span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li>
+								<h5>matchesWithReplacement: <span class="tsd-signature-type">MatchWithReplacement</span><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+				<a name="selectranges" class="tsd-anchor"></a>
+				<h3>select<wbr>Ranges</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<li class="tsd-signature tsd-kind-icon">select<wbr>Ranges<span class="tsd-signature-symbol">(</span>checkId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, matches<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Match</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Implementation of <a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html">AsyncAdapterInterface</a>.<a href="../interfaces/adapters_adapterinterface.asyncadapterinterface.html#selectranges">selectRanges</a></p>
+							<p>Overrides <a href="adapters_multieditoradapter.multieditoradapter.html">MultiEditorAdapter</a>.<a href="adapters_multieditoradapter.multieditoradapter.html#selectranges">selectRanges</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/acrolinx/sidebar-sdk-js/blob/513de9b/src/adapters/AsyncMultiEditorAdapter.ts#L30">adapters/AsyncMultiEditorAdapter.ts:30</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>checkId: <span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li>
+								<h5>matches: <span class="tsd-signature-type">Match</span><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
 			</section>
 		</section>
 		<footer class="with-border-bottom">
@@ -2768,12 +3128,18 @@ img {
 						<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 					</ul>
 					<ul class="tsd-legend">
+						<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+						<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+						<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+						<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+					</ul>
+					<ul class="tsd-legend">
 						<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 						<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
 					</ul>
 					<ul class="tsd-legend">
-						<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-						<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+						<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+						<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
 					</ul>
 				</div>
 			</div>
