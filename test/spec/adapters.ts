@@ -19,7 +19,7 @@ import {MatchWithReplacement} from '@acrolinx/sidebar-interface';
 
 import * as _ from 'lodash';
 import {isChrome} from '../../src/utils/detect-browser';
-import {isScrollIntoViewCenteredAvailable} from '../../src/utils/scrolling';
+import {isScrollIntoViewCenteredAvailable} from '../../test/utils/test-utils';
 import {
   assertDeepEqual,
   containsEmptyTextNodes,

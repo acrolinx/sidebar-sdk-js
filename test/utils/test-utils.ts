@@ -143,3 +143,11 @@ export function benchmark(runs: number, f: () => void): BenchmarkResult {
   }
   return {timeMsPerRun: (performance.now() - start) / runs};
 }
+
+/**
+ * Detect if ScrollIntoViewOptions are supported, which indicated that it's possible to scroll to center.
+ * Should be supported currently (April 2019) in Chrome and Firefox.
+ */
+ export function isScrollIntoViewCenteredAvailable(): boolean {
+  return 'scrollBehavior' in document.body.style;
+}
