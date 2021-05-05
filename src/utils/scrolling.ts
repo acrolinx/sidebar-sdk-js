@@ -75,14 +75,6 @@ export function scrollIntoView(targetEl: HTMLElement, windowTopOffset = 0, local
 }
 
 /**
- * Detect if ScrollIntoViewOptions are supported, which indicated that it's possible to scroll to center.
- * Should be supported currently (April 2019) in Chrome and Firefox.
- */
-export function isScrollIntoViewCenteredAvailable(): boolean {
-  return 'scrollBehavior' in document.body.style;
-}
-
-/**
  * @return indicates if it succeeded
  */
 export function scrollIntoViewCenteredIfPossible(targetEl: HTMLElement): boolean {
