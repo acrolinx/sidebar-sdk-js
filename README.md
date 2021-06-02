@@ -68,7 +68,7 @@ The SDK provides [adapters](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/
 * `MultiEditorAdapter` that can be used to combine different adapters as one document.
 
 If you need to support other editors, sometimes the `ContentEditableAdapter` works without any changes.
-If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/interfaces/adapterinterface.html).
+If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/adapters_adapterinterface.html).
 
 ## References
 
