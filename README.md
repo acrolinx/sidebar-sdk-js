@@ -79,7 +79,14 @@ If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sd
 
 * Make sure you have a Chrome or chromium version later than 72.0.0. This is needed to execute the tests successfully.
 * Run `npm i`
-* Run `npm run buildLocal` to run all tests and build distribution
+* Run `npm run build` to run all tests and build distribution
+
+## Serve for Development (Load local SDK in Browser)
+
+* Run 'npm run webpack-dev-server'
+* Include '<script src="http://0.0.0.0:8081/dist/acrolinx-sidebar-sdk.js"></script>' into your project.
+* Check the output of the above npm task and correct the host port if needed.
+
 
 ## License
 
