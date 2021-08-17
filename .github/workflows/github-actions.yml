@@ -38,5 +38,3 @@ jobs:
         run: |
           npm run build
           npm run buildDoc
-      - name: Scan with SonarCloud Scan  
-        run: sonar-scanner
