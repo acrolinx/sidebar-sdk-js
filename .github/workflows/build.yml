@@ -1,0 +1,45 @@
+name: GitHub Actions sidebar-sdk-js
+on:
+  push:
+    branches: [build-migration]
+  schedule:
+    - cron: "* 3 * * *"
+jobs:
+  GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14' 
+          
+      - name: Setup SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=acrolinx
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+
+      - name: Setup and Audit Source Code    
+        run: |
+          npm ci
+          npm audit --production --audit-level=moderate   
+          
+      - name: Check for suitable licenses
+        run: |
+         export v=`node -p "require('./package.json').version"`
+         export n=`node -p "require('./package.json').name"`
+         npx license-checker --production --onlyAllow 'BSD;CC-PDDC;CC-BY-3.0;CC-BY-1.0;CC-BY-2.0;CC-BY-4.0;CC0-1.0;Apache;Artistic;MIT;MPL;ISC;Unlicense' --excludePackages "$n@$v$LICENSE_EXCLUDED_PACKAGES" --excludePrivatePackages
+         
+      - name: Build
+        run: |
+          npm run build
+          npm run buildDoc
+          

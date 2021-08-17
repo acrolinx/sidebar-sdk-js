@@ -1,0 +1,22 @@
+name: Deploy npm package
+
+on:
+  release:
+    types: [ created ]
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm publish --access public
+        # TODO publish to GitHub pages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
