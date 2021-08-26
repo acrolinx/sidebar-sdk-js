@@ -17,6 +17,11 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - run: npm publish --access public
-        # TODO publish to GitHub pages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+      
+      - name: Publish github pages 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: docs # The folder the action should deploy.
