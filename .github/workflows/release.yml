@@ -15,9 +15,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
       - run: npm run lint
-      - run: npm run build
-      - run: npm run buildDoc
-      - run: npm publish --access public
+      - run: |
+          npm run build 
+          npm run buildDoc
+          npm version patch -m "Release version %s" -f # Bump the release version
+          git push --tags origin HEAD:master # Save version bump to repo
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       
