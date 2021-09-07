@@ -1,4 +1,4 @@
-name: Deploy npm package
+name: CI Sidebar SDK JS
 
 on:
   push:
