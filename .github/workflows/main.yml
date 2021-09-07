@@ -84,16 +84,21 @@ jobs:
           path: tmp/reports/coverage/**/cobertura-coverage.xml
 
       - name: Publish to NPM
+        if: github.event_name == 'push' && ( github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' )
         id: publish
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_ACCESS_TOKEN }}
-
-      - name: Publish github pages 🚀
+      
+      - name: Check steps run in sequence
         if: steps.publish.outputs.type != 'none'
-        uses: JamesIves/github-pages-deploy-action@4.1.4
-        with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: docs # The folder the action should deploy.
+        run: echo "Run sequentially"
+
+      # - name: Publish github pages 🚀
+      #   if: steps.publish.outputs.type != 'none'
+      #   uses: JamesIves/github-pages-deploy-action@4.1.4
+      #   with:
+      #     branch: gh-pages # The branch the action should deploy to.
+      #     folder: docs # The folder the action should deploy.
           
           
