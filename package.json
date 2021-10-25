@@ -20,12 +20,7 @@
     "typedoc": "Version >=0.20 changes url structure and 'Implemented by' shows only direct sub classes"
   },
   "dependencies": {
-    "@acrolinx/sidebar-interface": "^14.28.2",
-    "@acrolinx/sidebar-startpage": "^3.0.12",
-    "@types/ckeditor": "4.9.10",
-    "@types/codemirror": "0.0.106",
-    "@types/diff-match-patch": "^1.0.32",
-    "@types/tinymce": "^4.6.0",
+    "@acrolinx/sidebar-startpage": "^3.0.15",
     "diff-match-patch": "1.0.5",
     "entities": "2.1.0",
     "es6-promise": "^4.2.8",
@@ -33,6 +28,7 @@
     "tslib": "^2.1.0"
   },
   "devDependencies": {
+    "@acrolinx/sidebar-interface": "^14.28.2",
     "@types/chai": "^4.2.14",
     "@types/draft-js": "^0.10.44",
     "@types/jquery": "^3.5.5",
@@ -43,6 +39,10 @@
     "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
     "@typescript-eslint/parser": "^4.13.0",
+    "@types/ckeditor": "4.9.10",
+    "@types/codemirror": "0.0.106",
+    "@types/diff-match-patch": "^1.0.32",
+    "@types/tinymce": "^4.6.0",
     "browserify": "^17.0.0",
     "browserify-istanbul": "3.0.1",
     "chai": "^4.2.0",
