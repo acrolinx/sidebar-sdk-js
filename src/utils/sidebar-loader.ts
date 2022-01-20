@@ -66,7 +66,7 @@ export function loadSidebarCode(sidebarBaseUrl: string) {
       try {
         throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly.", sidebarBaseUrl, sidebarHtml);
       } catch (error) {
-        console.log(error.details);
+        console.log(error);
         return;
       }
     }
@@ -109,6 +109,7 @@ export function rebaseRelativeUrl(url: string, sidebarBaseUrl: string): string {
   }
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFrameElement: HTMLIFrameElement, onSidebarLoaded: () => void) {
   if (config.sidebarHtml || !config.sidebarUrl) {
     injectSidebarHtml(config.sidebarHtml || ACROLINX_STARTPAGE_INLINED_HTML, sidebarIFrameElement);
@@ -127,8 +128,13 @@ export function loadSidebarIntoIFrame(config: AcrolinxPluginConfig, sidebarIFram
           throw new SidebarURLInvalidError("It looks like the sidebar URL was configured wrongly. " +
             "Check developer console for more information!", completeSidebarUrl, sidebarHtml);
         } catch (error) {
-          injectSidebarHtml(error.message, sidebarIFrameElement);
-          console.error(error.details);
+          if (error instanceof Error) {
+            injectSidebarHtml(error.message, sidebarIFrameElement);
+          }
+          else {
+            injectSidebarHtml("Unknown error loading sidebar", sidebarIFrameElement);
+          }
+          console.error(error);
           return;
         }
       }

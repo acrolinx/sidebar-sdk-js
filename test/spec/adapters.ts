@@ -87,6 +87,7 @@ describe('adapter test', function () {
 
       afterEach(() => {
         const containsUnwantedEmptyTextNodes = isChrome() && (adapter instanceof AbstractRichtextEditorAdapter) &&
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           containsEmptyTextNodes((adapter as any).getEditorElement());
 
         adapterSpec.remove();

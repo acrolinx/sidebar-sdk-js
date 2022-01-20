@@ -27,7 +27,7 @@ describe('message-adapter', function() {
   const acrolinxPlugin = instance(mockedAcrolinxPlugin);
   let sidebarIFrameElement: HTMLIFrameElement;
   let evilIFrameElement: HTMLIFrameElement;
-  const requestGlobalCheckMessage = {command: 'requestGlobalCheck', args: [{selection: true}]};
+  const requestGlobalCheckMessage = {command: 'requestGlobalCheck', args: [{selection: true, batchCheck: false}]};
 
   function setIFrameContent(iFrameElement: HTMLIFrameElement, message: unknown) {
     const messageJson = JSON.stringify(message);
@@ -75,18 +75,20 @@ describe('message-adapter', function() {
     it('forwards messages from Sidebar', async () => {
       setIFrameContent(sidebarIFrameElement, requestGlobalCheckMessage);
       await waitMs(0);
-      verify(mockedAcrolinxPlugin.requestGlobalCheck(deepEqual({selection: true}))).once();
+      verify(mockedAcrolinxPlugin.requestGlobalCheck(deepEqual({selection: true, batchCheck: false}))).once();
     });
 
     it('does not forward messages from other iFrames', async () => {
       setIFrameContent(evilIFrameElement, requestGlobalCheckMessage);
       await waitMs(0);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       verify(mockedAcrolinxPlugin.requestGlobalCheck(anything())).never();
     });
 
     it('does not forward messages from current windows', async () => {
       window.postMessage(requestGlobalCheckMessage, '*');
       await waitMs(0);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       verify(mockedAcrolinxPlugin.requestGlobalCheck(anything())).never();
     });
 
@@ -94,6 +96,7 @@ describe('message-adapter', function() {
       setIFrameContent(sidebarIFrameElement, {command: 'requestInit', args: []});
       await waitMs(0);
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       verify(mockedAcrolinxPlugin.requestInit(notNull())).once();
       const [sidebarProxy] = capture(mockedAcrolinxPlugin.requestInit).first();
 
@@ -108,6 +111,7 @@ describe('message-adapter', function() {
       setIFrameContent(sidebarIFrameElement, {command: 'requestInit', args: []});
       await waitMs(0);
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       verify(mockedAcrolinxPlugin.requestInit(notNull())).once();
       sidebarProxy = capture(mockedAcrolinxPlugin.requestInit).first()[0]!;
     });
