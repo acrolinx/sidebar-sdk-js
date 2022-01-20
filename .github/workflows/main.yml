@@ -2,13 +2,13 @@ name: CI Sidebar SDK JS
 
 on:
   push:
-    branches: [build-migration]
+    branches: [build-migration, main]
     tags:
       - "v*.*.*"
   pull_request:
-    branches: [master]
+    branches: [main]
   schedule:
-    - cron: "30 5 * * *"
+    - cron: "0 2 * * *" # Everyday at 2:00AM
   workflow_dispatch:
     inputs:
       reason:
@@ -34,6 +34,7 @@ jobs:
       - run: |
           npm ci
           npm run build
+
   build:
     needs: test
     runs-on: ubuntu-latest
