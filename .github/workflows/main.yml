@@ -91,15 +91,17 @@ jobs:
         with:
           token: ${{ secrets.NPM_ACCESS_TOKEN }}
       
-      - name: Check steps run in sequence
+      - name: Push tag
+        uses: anothrNick/github-tag-action@1.36.0
         if: steps.publish.outputs.type != 'none'
-        run: echo "Run sequentially"
-
-      # - name: Publish github pages 🚀
-      #   if: steps.publish.outputs.type != 'none'
-      #   uses: JamesIves/github-pages-deploy-action@4.1.4
-      #   with:
-      #     branch: gh-pages # The branch the action should deploy to.
-      #     folder: docs # The folder the action should deploy.
+        env:
+          CUSTOM_TAG: v${{ steps.publish.outputs.version }}
+      
+      - name: Publish github pages 🚀
+        if: steps.publish.outputs.type != 'none'
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: docs
           
           
