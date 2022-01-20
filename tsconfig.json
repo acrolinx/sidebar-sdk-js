@@ -31,7 +31,7 @@
     "tmp"
   ],
   "typedocOptions": {
-    "theme": "minimal",
+    "theme": "default",
     "readme": "none",
     "excludePrivate": true,
     "excludeProtected": true,
