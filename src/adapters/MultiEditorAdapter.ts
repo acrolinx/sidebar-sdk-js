@@ -65,6 +65,7 @@ function createStartTag(wrapper: WrapperConf, id?: string) {
   if (id) {
     _.assign(allAttributes, {id});
   }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const allAttributesString = _.map(allAttributes, (value, key) => ` ${key}="${_.escape(value)}"`).join('');
   return `<${wrapper.tagName}${allAttributesString}>`;
 }

@@ -169,7 +169,7 @@ class InternalAcrolinxSidebarPlugin implements InternalAcrolinxSidebarPluginInte
     }
   }
 
-  requestGlobalCheck(options: RequestGlobalCheckOptions = {selection: false}) {
+  requestGlobalCheck(options: RequestGlobalCheckOptions = {selection: false, batchCheck: false}) {
     const adapter = this.adapter;
     const contentExtractionResultOrPromise = adapter.extractContentForCheck({checkSelection: options.selection});
     const pFormat = adapter.getFormat ? adapter.getFormat() : undefined;
@@ -228,7 +228,7 @@ class InternalAcrolinxSidebarPlugin implements InternalAcrolinxSidebarPluginInte
     }
   }
 
-  private handleRangeOperationError(error: Error, checkId: string, matchesWithReplacement: Match[]) {
+  private handleRangeOperationError(error: unknown, checkId: string, matchesWithReplacement: Match[]) {
     console.log(error);
     this.acrolinxSidebar.invalidateRanges(matchesWithReplacement.map(match => ({
         checkId: checkId,

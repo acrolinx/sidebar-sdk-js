@@ -39,6 +39,7 @@ function injectPostCommandAsMessage(windowProvider: WindowProvider, object: any)
   for (const key in object) {
     const originalMethod = object[key];
     object[key] = (...args: any[]) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       postCommandAsMessage(windowProvider(), key, ...args);
       return originalMethod.apply(object, args);
     };

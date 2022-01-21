@@ -23,3 +23,8 @@ Run the dev server:
 * Open [http://localhost:8080/test/](http://localhost:8080/test/)
 * Change the code
 * The tests should automatically run for every code change
+
+## Publishing a release
+
+Increment the version in package.json and commit
+Workflow will detect the change creating a tag and publish to npm 

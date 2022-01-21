@@ -93,8 +93,10 @@ export function createRange(startNode: Node, endNode: Node) {
 
 export function describeIf(condition: boolean | string | undefined, testName: string, f: () => void) {
   if (condition) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     describe(testName, f as any);
   } else {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     describe.skip(testName, f as any);
   }
 }
