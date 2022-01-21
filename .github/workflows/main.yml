@@ -17,24 +17,6 @@ on:
         default: "Manual Workflow Run"
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, windows-latest]
-        node: [14.x]
-        
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Sidebar SDK Test
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-      - run: |
-          npm ci
-          npm run build
-
   build:
     needs: test
     runs-on: ubuntu-latest
