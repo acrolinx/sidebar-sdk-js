@@ -1,6 +1,6 @@
 # Acrolinx Sidebar SDK JS
 
-[![CI Sidebar SDK JS](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml/badge.svg)](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml) 
+[![CI Sidebar SDK JS](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml/badge.svg)](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml)
 [![Dependencies Status](https://david-dm.org/acrolinx/sidebar-sdk-js/status.svg)](https://david-dm.org/acrolinx/sidebar-sdk-js)
 [![DevDependencies Status](https://david-dm.org/acrolinx/sidebar-sdk-js/dev-status.svg)](https://david-dm.org/acrolinx/sidebar-sdk-js?type=dev)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=acrolinx_sidebar-sdk-js&metric=alert_status)](https://sonarcloud.io/dashboard?id=acrolinx_sidebar-sdk-js)
