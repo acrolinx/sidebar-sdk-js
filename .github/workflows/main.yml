@@ -2,7 +2,7 @@ name: CI Sidebar SDK JS
 
 on:
   push:
-    branches: [build-migration, main]
+    branches: [main]
     tags:
       - "v*.*.*"
   pull_request:
@@ -19,6 +19,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
