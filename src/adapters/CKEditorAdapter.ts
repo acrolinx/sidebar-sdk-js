@@ -20,10 +20,14 @@ import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
 
 export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   editorId: string;
+  editorVersion = 4;
 
   constructor(conf: HasEditorID) {
     super(conf);
     this.editorId = conf.editorId;
+    if(typeof window["CKEDITOR"] == 'undefined'){
+      this.editorVersion = 5;
+    }
   }
 
   getEditor(): CKEDITOR.editor {
@@ -35,11 +39,22 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditorDocument(): Document {
-    return this.getEditor().document.$ as any;
+    // for version 4
+    if(this.editorVersion == 4){
+      return this.getEditor().document.$ as any;
+    }
+    // for version 5
+    return document.querySelector('.ck-content')!.ownerDocument;
   }
 
   getContent() {
-    return this.getEditor().getData();
+    // for version 4
+    if(this.editorVersion == 4){
+      return this.getEditor().getData();
+    }
+    // for version 5
+    // TODO: check if .ck-content exists in all types of CKEditors
+    return document.querySelector('.ck-content')!.innerHTML;
   }
 
   extractContentForCheck(): ContentExtractionResult {
@@ -59,6 +74,13 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
     }
   }
 
+  getEditorElement(): HTMLElement {
+    if(this.editorVersion == 4){
+      return this.getEditorDocument().querySelector('body')!;
+    }
+    // TODO: check if .ck-editor__main exists in all types of CKEditors
+    return this.getEditorDocument().querySelector('.ck-editor__main')!;
+  }
   replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
     if (this.isInWysiwygMode()) {
       super.replaceRanges(checkId, matchesWithReplacementArg);
@@ -68,6 +90,10 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   }
 
   isInWysiwygMode() {
-    return this.getEditor().mode === 'wysiwyg';
+    if(this.editorVersion == 4){
+      return this.getEditor().mode === 'wysiwyg';
+    }
+    // TODO: if mode != 'wysiwyg'
+    return true;
   }
 }
