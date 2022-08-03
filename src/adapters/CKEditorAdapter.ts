@@ -98,7 +98,7 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
     if(this.editorVersion == 4){
       return this.getEditor().mode === 'wysiwyg';
     }
-    // TODO: if mode != 'wysiwyg'
-    return true;
+    const editorElement = this.getEditorDocument().querySelector('.ck-editor .ck-source-editing-button')!;
+    return !(editorElement && editorElement.classList.contains('ck-on'));
   }
 }
