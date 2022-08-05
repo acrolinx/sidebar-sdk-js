@@ -33,11 +33,23 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditor(): CKEDITOR.editor {
-    const ckeditor = CKEDITOR.instances[this.editorId as any];
-    if (!ckeditor) {
-      throw new Error(`Can't find ckeditor with id '${this.editorId}'`);
+    if(this.editorVersion === 4){
+      const ckeditor = CKEDITOR.instances[this.editorId as any];
+      if (!ckeditor) {
+        throw new Error(`Can't find ckeditor with id '${this.editorId}'`);
+      }
+      return ckeditor;
     }
-    return ckeditor;
+    // CKEditor Version 5 detected
+    let editorDomElement = document.querySelector(this.editorIdHashed)!;
+    const isInlineEditor = editorDomElement.classList.contains('ck-editor__editable');
+    if(!isInlineEditor){
+      // Classic editor detected
+      editorDomElement = editorDomElement.nextElementSibling!.querySelector('.ck-editor__editable')!;
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return editorDomElement.ckeditorInstance;
   }
 
   getEditorDocument(): Document {
@@ -50,12 +62,7 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   }
 
   getContent() {
-    // for version 4
-    if(this.editorVersion == 4){
-      return this.getEditor().getData();
-    }
-    // for version 5
-    return document.querySelector(this.editorIdHashed)!.innerHTML;
+    return this.getEditor().getData();
   }
 
   extractContentForCheck(): ContentExtractionResult {
@@ -76,15 +83,10 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditorElement(): HTMLElement {
-    if(this.editorVersion == 4){
+    if(this.editorVersion === 4){
       return this.getEditorDocument().querySelector('body')!;
     }
-    const editorElement = this.getEditorDocument().querySelector(this.editorIdHashed)!;
-    if(editorElement.classList.length == 0){
-      // selector for CKEditor5 classic editor, because it's different from inline.
-      return this.getEditorDocument().querySelector(".ck-content")!
-    }
-    return <HTMLElement>editorElement;
+    return this.getEditorDocument().querySelector('.ck-content')!;
   }
   replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
     if (this.isInWysiwygMode()) {
