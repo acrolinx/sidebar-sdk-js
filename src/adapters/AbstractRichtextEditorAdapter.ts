@@ -110,8 +110,8 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   selectRanges(checkId: string, matches: Match[]): void | Promise<void> {
     assertElementIsDisplayed(this.getEditorElement());
     this.selectMatches(checkId, matches);
-    if (this.isQuillEditor()) {
-      // Simple workaround for quill editor, as 'scrollIntoView' is messing up the selection range there.
+    if (this.isQuillEditor() || this.isCkEditor5()) {
+      // Simple workaround for quill/CKEditor5 editor, as 'scrollIntoView' is messing up the selection range there.
       const selection = this.getEditorDocument().getSelection();
       if (selection && selection.anchorNode && selection.anchorNode.parentElement) {
         scrollIntoViewCenteredWithFallback(selection.anchorNode.parentElement);
@@ -119,6 +119,10 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     } else {
       this.scrollToCurrentSelection();
     }
+  }
+
+  protected isCkEditor5(): boolean{
+    return this.getEditorElement().classList.contains('ck-editor__editable');
   }
 
   protected isQuillEditor(): boolean {
