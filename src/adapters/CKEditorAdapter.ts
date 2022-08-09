@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
-import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
+import { Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { HasEditorID, ContentExtractionResult } from './AdapterInterface';
 
 export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   editorId: string;
@@ -26,14 +26,14 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   constructor(conf: HasEditorID) {
     super(conf);
     this.editorId = conf.editorId;
-    if(typeof window["CKEDITOR"] == 'undefined'){
+    if (typeof window['CKEDITOR'] == 'undefined') {
       this.editorVersion = 5;
     }
-    this.editorIdHashed = "#" + this.editorId;
+    this.editorIdHashed = '#' + this.editorId;
   }
 
   getEditor(): CKEDITOR.editor {
-    if(this.editorVersion === 4){
+    if (this.editorVersion === 4) {
       const ckeditor = CKEDITOR.instances[this.editorId as any];
       if (!ckeditor) {
         throw new Error(`Can't find ckeditor with id '${this.editorId}'`);
@@ -43,7 +43,7 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
     // CKEditor Version 5 detected
     let editorDomElement = document.querySelector(this.editorIdHashed)!;
     const isInlineEditor = editorDomElement.classList.contains('ck-editor__editable');
-    if(!isInlineEditor){
+    if (!isInlineEditor) {
       // Classic editor detected
       editorDomElement = editorDomElement.nextElementSibling!.querySelector('.ck-editor__editable')!;
     }
@@ -54,7 +54,7 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
 
   getEditorDocument(): Document {
     // for version 4
-    if(this.editorVersion == 4){
+    if (this.editorVersion === 4) {
       return this.getEditor().document.$ as any;
     }
     // for version 5
@@ -68,9 +68,9 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   extractContentForCheck(): ContentExtractionResult {
     if (this.isInWysiwygMode()) {
       this.currentContentChecking = this.getContent();
-      return {content: this.currentContentChecking};
+      return { content: this.currentContentChecking };
     } else {
-      return {error: 'Action is not permitted in Source mode.'};
+      return { error: 'Action is not permitted in Source mode.' };
     }
   }
 
@@ -83,10 +83,12 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditorElement(): HTMLElement {
-    if(this.editorVersion === 4){
+    if (this.editorVersion === 4) {
       return this.getEditorDocument().querySelector('body')!;
     }
-    return this.getEditorDocument().querySelector('.ck-content')!;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this.getEditor().ui.getEditableElement()
   }
   replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
     if (this.isInWysiwygMode()) {
@@ -96,11 +98,16 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
     }
   }
 
-  isInWysiwygMode() {
-    if(this.editorVersion == 4){
-      return this.getEditor().mode === 'wysiwyg';
+  isInWysiwygMode(): boolean {
+    const editor = this.getEditor();
+    if (this.editorVersion === 4) {
+      return editor.mode === 'wysiwyg';
     }
-    const editorElement = this.getEditorDocument().querySelector('.ck-editor .ck-source-editing-button')!;
-    return !(editorElement && editorElement.classList.contains('ck-on'));
+    if (editor.plugins.has('SourceEditing')) {
+      const sourceEditingPlugin = editor.plugins.get('SourceEditing');
+      return !(sourceEditingPlugin.isEnabled && sourceEditingPlugin.isSourceEditingMode);
+    } else {
+      return true;
+    }
   }
 }
