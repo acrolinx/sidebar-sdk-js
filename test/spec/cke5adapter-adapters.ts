@@ -27,8 +27,7 @@ import {
 } from '../utils/test-utils';
 import {AdapterInterface, SuccessfulContentExtractionResult} from '../../src/adapters/AdapterInterface';
 import {AdapterTestSetup} from './adapter-test-setups/adapter-test-setup';
-import {CKEditor5TestSetup} from './adapter-test-setups/ck5-editor';
-
+import {CKEditor5InlineTestSetup} from './adapter-test-setups/ck5-editor-inline';
 
 const assert = chai.assert;
 
@@ -41,7 +40,7 @@ describe('CKEditor5 adapter test', function () {
   const dummyCheckId = 'dummyCheckId';
 
   const adapters: AdapterTestSetup[] = [
-    new CKEditor5TestSetup(),
+    new CKEditor5InlineTestSetup()
   ];
 
   const testedAdapterNames: string[] = []; // empty = all
