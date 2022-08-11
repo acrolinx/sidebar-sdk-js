@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-present Acrolinx GmbH
+ * Copyright 2022-present Acrolinx GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ export function getCkEditorInstance(id: string): InlineEditor {
   return (editorDiv as any).ckeditorInstance;
 }
 
-export class CKEditor5TestSetup implements AdapterTestSetup {
-  name = 'CKEditor5Adapter';
+export class CKEditor5InlineTestSetup implements AdapterTestSetup {
+  name = 'CKEditor5Adapter-Inline';
   inputFormat = 'HTML';
   editorElement = '<div id="editorId"><p>initial text</p></div>';
 

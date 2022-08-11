@@ -49,7 +49,7 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   }
 
   extractContentForCheck(): ContentExtractionResult {
-    if (this.isInWysiwygMode()) {
+    if (this.isInSourceEditingMode()) {
       this.currentContentChecking = this.getContent();
       return {content: this.currentContentChecking};
     } else {
@@ -58,7 +58,7 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   }
 
   selectRanges(checkId: string, matches: Match[]) {
-    if (this.isInWysiwygMode()) {
+    if (this.isInSourceEditingMode()) {
       super.selectRanges(checkId, matches);
     } else {
       window.alert('Action is not permitted in Source mode.');
@@ -70,23 +70,20 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   }
 
   replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
-    if (this.isInWysiwygMode()) {
+    if (this.isInSourceEditingMode()) {
       super.replaceRanges(checkId, matchesWithReplacementArg);
     } else {
       window.alert('Action is not permitted in Source mode.');
     }
   }
 
-  isInWysiwygMode() {
-
+  isInSourceEditingMode() {
     const editor = this.getEditor();
-    if (editor.plugins.has("SourceEditing")) {
-      const sep = editor.plugins.get("SourceEditing") as any;
-      return sep.isEnabled && sep.isSourceEditingMode;
-    }
-    else {
+    if (!editor.plugins.has('SourceEditing')) {
       return true;
     }
+    const sep = editor.plugins.get('SourceEditing') as any;
+    return sep.isEnabled && sep.isSourceEditingMode;
     
   }
 }
