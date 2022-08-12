@@ -41,7 +41,7 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditorDocument(): Document {
-    return (this.getEditor() as any).ui.getEditableElement().ownerDocument;
+    return this.getEditorElement().ownerDocument;
   }
 
   getContent() {
@@ -66,7 +66,11 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditorElement(): HTMLElement {
-    return (this.getEditor() as any).ui.getEditableElement();
+    const editableElement = this.getEditor().ui.getEditableElement();
+    if (editableElement) {
+      return editableElement;
+    }
+    throw new Error('Unable to fetch editable element');
   }
 
   replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
@@ -82,6 +86,7 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
     if (!editor.plugins.has('SourceEditing')) {
       return true;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const sep = editor.plugins.get('SourceEditing') as any;
     return sep.isEnabled && sep.isSourceEditingMode;
     
