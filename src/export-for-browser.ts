@@ -31,6 +31,7 @@ import {getSelectionHtmlRanges} from "./utils/check-selection";
 import {lookupMatches} from "./lookup/diff-based";
 import {extractTextDomMapping} from "./utils/text-dom-mapping";
 import {CodeMirrorAdapter} from "./adapters/CodeMirrorAdapter";
+import {CodeMirror6Adapter} from "./adapters/CodeMirror6Adapter";
 import {initFloatingSidebar} from "./floating-sidebar/floating-sidebar";
 import {AsyncLocalStorage} from "./floating-sidebar/async-storage";
 import { XeditorAdapter } from './adapters/XeditorAdapter';
@@ -51,6 +52,7 @@ export interface AcrolinxSidebarIntegration {
     AsyncAutoBindAdapter: typeof AsyncAutoBindAdapter;
     CKEditorAdapter: typeof CKEditorAdapter;
     CodeMirrorAdapter: typeof CodeMirrorAdapter;
+    CodeMirror6Adapter: typeof CodeMirror6Adapter;
     ContentEditableAdapter: typeof ContentEditableAdapter;
     InputAdapter: typeof InputAdapter;
     MultiEditorAdapter: typeof MultiEditorAdapter;
@@ -92,6 +94,7 @@ const exported: AcrolinxSidebarIntegration = {
     AsyncAutoBindAdapter: AsyncAutoBindAdapter,
     CKEditorAdapter: CKEditorAdapter,
     CodeMirrorAdapter: CodeMirrorAdapter,
+    CodeMirror6Adapter: CodeMirror6Adapter,
     ContentEditableAdapter: ContentEditableAdapter,
     InputAdapter: InputAdapter,
     MultiEditorAdapter: MultiEditorAdapter,

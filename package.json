@@ -25,6 +25,7 @@
     "@types/codemirror": "0.0.106",
     "@types/diff-match-patch": "^1.0.32",
     "@types/tinymce": "^4.6.0",
+    "codemirror6": "npm:codemirror@^6.0.0",
     "diff-match-patch": "1.0.5",
     "entities": "2.1.0",
     "es6-promise": "^4.2.8",
