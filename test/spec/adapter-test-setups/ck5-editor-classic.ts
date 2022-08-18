@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
-import {CKEditor5Adapter} from "../../../src/adapters/CKEditor5Adapter";
+import {AdapterTestSetup, DoneCallback} from './adapter-test-setup';
+import {CKEditor5Adapter} from '../../../src/adapters/CKEditor5Adapter';
 import * as CKEDITOR from '@abhijeetnarvekar/ckeditor5-build-super';
 
 export class CKEditor5ClassicTestSetup implements AdapterTestSetup {
   name = 'CKEditor5Adapter-Classic';
   inputFormat = 'HTML';
   editorElement = '<div id="editorId"><p>initial text</p></div>';
-  editorInstance: any;
 
   setEditorContent(html: string, done: DoneCallback) {
     this.getCkEditorInstance('editorId').setData(html);
@@ -32,13 +31,13 @@ export class CKEditor5ClassicTestSetup implements AdapterTestSetup {
   async init() {
     const editorDiv = document.querySelector('#editorId');
     const editor = await CKEDITOR.ClassicEditor.create(editorDiv as HTMLElement);
-    (<any>window).editor = editor; 
-    return new CKEditor5Adapter({editorId: "editorId"});
+    (<any>window).editor = editor;
+    return new CKEditor5Adapter({ editorId: 'editorId' });
   }
 
   async remove() {
     await this.getCkEditorInstance('editorId').destroy();
-    $('#editorId').remove();
+    document.querySelector('#editorId')!.remove();
   }
 
   getSelectedText(): string {
