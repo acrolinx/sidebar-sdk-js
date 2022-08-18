@@ -113,7 +113,7 @@ export class CodeMirror6Adapter implements AdapterInterface {
           changes: {
             from: match.range[0],
             to: match.range[1],
-            insert: match.originalMatch.replacement
+            insert: escapedReplacement
           }
         });
 
