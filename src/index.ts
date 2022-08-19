@@ -21,6 +21,7 @@ export {ContentEditableAdapter} from "./adapters/ContentEditableAdapter";
 export {AsyncContentEditableAdapter as StateBasedContentEditableAdapter} from "./adapters/AsyncContentEditableAdapter";
 export {AbstractRichtextEditorAdapter} from "./adapters/AbstractRichtextEditorAdapter";
 export {CKEditorAdapter} from "./adapters/CKEditorAdapter";
+export {CKEditor5Adapter} from "./adapters/CKEditor5Adapter";
 export {TinyMCEAdapter} from "./adapters/TinyMCEAdapter";
 export {TinyMCEWordpressAdapter} from "./adapters/TinyMCEWordpressAdapter";
 export {AutoBindAdapter} from "./adapters/AutoBindAdapter";
