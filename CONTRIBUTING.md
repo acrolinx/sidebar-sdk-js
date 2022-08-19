@@ -27,4 +27,4 @@ Run the dev server:
 ## Publishing a release
 
 Increment the version in package.json and commit
-Workflow will detect the change creating a tag and publish to npm 
+Workflow will detect the change creating a tag and publish to npm

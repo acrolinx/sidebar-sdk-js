@@ -1,0 +1,39 @@
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.6/codemirror.min.js" integrity="sha512-n7rucz/qOiYAkYK1CVKuqygMAnohil8Rg6kKAv0IsF2xnHUhnVyD5K9GO25OUvc+WEVZVu+NIYLblIUpkBMNvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.6/codemirror.min.css" integrity="sha512-uf06llspW44/LZpHzHT6qBOIVODjWtv4MxCricRxkzvopAlSWnTf6hpZTFxuuZcuNE9CBQhqE0Seu1CoRk84nQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css"-->
+<!--      integrity="sha512-uf06llspW44/LZpHzHT6qBOIVODjWtv4MxCricRxkzvopAlSWnTf6hpZTFxuuZcuNE9CBQhqE0Seu1CoRk84nQ=="-->
+<!--      crossorigin="anonymous" referrerpolicy="no-referrer"/>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"
+        integrity="sha512-8RnEqURPUc5aqFEN04aQEiPlSAdE0jlFS/9iGgUyNtwFnSKCXhmB6ZTNl7LnDtDWKabJIASzXrzD0K+LYexU9g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="http://0.0.0.0:8080/dist/acrolinx-sidebar-sdk.js"></script>
+<body>
+<textarea id="code">Hello worldd</textarea>
+<script>
+    // initiate codemirror
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        mode: "text/html",
+        theme: "material",
+    });
+      window.acrolinxSidebar = new acrolinx.plugins.initFloatingSidebar({asyncStorage: new acrolinx.plugins.AsyncLocalStorage()});
+
+  var acrolinxPlugin = new acrolinx.plugins.AcrolinxPlugin({
+    serverAddress: '',
+    sidebarContainerId: 'acrolinxSidebarContainer',
+    showServerSelector: false,
+    clientSignature: '',
+    getDocumentReference: function () {
+      return window.location.href;
+    },
+  });
+  debugger;
+
+  acrolinxPlugin.registerAdapter(new acrolinx.plugins.adapter.CodeMirrorAdapter({editor: editor}));
+
+  acrolinxPlugin.init();
+
+</script>
+</body>
+</html>
