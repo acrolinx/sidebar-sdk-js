@@ -84,6 +84,9 @@ export class CodeMirror6Adapter implements AdapterInterface {
     this.lastContentChecked = this.currentContentChecking;
   }
 
+  registerCheckCall(_checkInfo: Check) {
+    return;
+  }
 
   private lookupMatchesOrThrow<T extends Match>(matches: T[]): AlignedMatch<T>[] {
     const alignedMatches = lookupMatches(this.lastContentChecked!, this.getContent(), matches, 'TEXT');
