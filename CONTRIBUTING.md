@@ -24,7 +24,7 @@ Run the dev server:
 * Change the code
 * The tests should automatically run for every code change
 
-## Publishing a release
+## Publishing a Release
 
 Increment the version in package.json and commit
-Workflow will detect the change creating a tag and publish to npm
+Workflow will detect the change creating a tag and publish to npm.
