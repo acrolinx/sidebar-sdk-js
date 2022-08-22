@@ -54,6 +54,7 @@ export class CodeMirror6TestSetup implements AdapterTestSetup {
 
   remove() {
     this.editor.destroy();
+    document.querySelector('#editorId')!.remove();
   }
 
   getSelectedText(): string {
