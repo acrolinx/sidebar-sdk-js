@@ -37,6 +37,7 @@ import {InputAdapterTestSetup} from './adapter-test-setups/input';
 import {CKEditorTestSetup} from './adapter-test-setups/ck-editor';
 import {QuillContentEditableTestSetup} from './adapter-test-setups/quill';
 import {TinyMCETestSetup} from './adapter-test-setups/tinymce';
+import {CodeMirror6TestSetup} from './adapter-test-setups/codemirror6';
 
 const assert = chai.assert;
 
@@ -63,6 +64,16 @@ describe('adapter test', function () {
     new CKEditorTestSetup(),
     new TinyMCETestSetup(),
     new QuillContentEditableTestSetup(),
+    new CodeMirror6TestSetup({
+      mode: 'text/plain',
+      name: 'CodeMirror6Adapter',
+      inputFormat: 'TEXT'
+    }),
+    new CodeMirror6TestSetup({
+      mode: 'text/html',
+      name: 'CodeMirror6AdapterHTML',
+      inputFormat: 'HTML'
+    }),
   ];
 
   const testedAdapterNames: string[] = []; // empty = all
