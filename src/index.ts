@@ -34,5 +34,6 @@ export {getSelectionHtmlRanges} from "./utils/check-selection";
 export {lookupMatches} from "./lookup/diff-based";
 export {extractTextDomMapping} from "./utils/text-dom-mapping";
 export {CodeMirrorAdapter} from "./adapters/CodeMirrorAdapter";
+export {CodeMirror6Adapter} from "./adapters/CodeMirror6Adapter";
 export {initFloatingSidebar} from "./floating-sidebar/floating-sidebar";
 export {AsyncLocalStorage} from "./floating-sidebar/async-storage";
