@@ -27,28 +27,28 @@ import {
 } from './AdapterInterface';
 import { EditorView } from '@codemirror/view';
 
-export type CodeMirrorAdapterConf = {
+export type CodeMirror6AdapterConf = {
   editor: EditorView;
   format?: string;  // See CheckOptions.inputFormat
 };
 
 export class CodeMirror6Adapter implements AdapterInterface {
-  private config!: CodeMirrorAdapterConf;
+  private config!: CodeMirror6AdapterConf;
   private currentContentChecking?: string;
   private lastContentChecked?: string;
   private formatDetectedByCheck: string | undefined;
 
-  constructor(conf: CodeMirrorAdapterConf) {
+  constructor(conf: CodeMirror6AdapterConf) {
     this.configure(conf);
   }
 
-  configure(partialConfig: Partial<CodeMirrorAdapterConf>) {
+  configure(partialConfig: Partial<CodeMirror6AdapterConf>) {
     const newConf = { ...this.config, ...partialConfig };
     this.validateConf(newConf);
     this.config = newConf;
   }
 
-  private validateConf(conf: CodeMirrorAdapterConf) {
+  private validateConf(conf: CodeMirror6AdapterConf) {
     if (!conf) {
       throw new Error('CodeMirrorAdapter config is missing');
     }

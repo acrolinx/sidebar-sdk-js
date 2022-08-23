@@ -19,6 +19,7 @@ import {InputAdapter} from "./adapters/InputAdapter";
 import {ContentEditableAdapter} from "./adapters/ContentEditableAdapter";
 import {AbstractRichtextEditorAdapter} from "./adapters/AbstractRichtextEditorAdapter";
 import {CKEditorAdapter} from "./adapters/CKEditorAdapter";
+import {CKEditor5Adapter} from "./adapters/CKEditor5Adapter";
 import {TinyMCEAdapter} from "./adapters/TinyMCEAdapter";
 import {TinyMCEWordpressAdapter} from "./adapters/TinyMCEWordpressAdapter";
 import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
@@ -51,6 +52,7 @@ export interface AcrolinxSidebarIntegration {
     AutoBindAdapter: typeof AutoBindAdapter;
     AsyncAutoBindAdapter: typeof AsyncAutoBindAdapter;
     CKEditorAdapter: typeof CKEditorAdapter;
+    CKEditor5Adapter: typeof CKEditor5Adapter;
     CodeMirrorAdapter: typeof CodeMirrorAdapter;
     CodeMirror6Adapter: typeof CodeMirror6Adapter;
     ContentEditableAdapter: typeof ContentEditableAdapter;
@@ -93,6 +95,7 @@ const exported: AcrolinxSidebarIntegration = {
     AutoBindAdapter: AutoBindAdapter,
     AsyncAutoBindAdapter: AsyncAutoBindAdapter,
     CKEditorAdapter: CKEditorAdapter,
+    CKEditor5Adapter: CKEditor5Adapter,
     CodeMirrorAdapter: CodeMirrorAdapter,
     CodeMirror6Adapter: CodeMirror6Adapter,
     ContentEditableAdapter: ContentEditableAdapter,
