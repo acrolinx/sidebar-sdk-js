@@ -70,6 +70,7 @@ jobs:
       - name: Publish to NPM
         id: publish
         uses: JS-DevTools/npm-publish@v1
+        if: github.ref == 'refs/heads/main'
         with:
           token: ${{ secrets.NPM_ACCESS_TOKEN }}
       
