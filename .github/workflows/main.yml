@@ -76,12 +76,12 @@ jobs:
       
       - name: Push tag
         uses: anothrNick/github-tag-action@1.36.0
-        if: github.ref == 'refs/heads/main' && steps.publish.outcome == success &&  && steps.publish.outputs.type != 'none'
+        if: github.ref == 'refs/heads/main' && steps.publish.outcome == 'success' &&  && steps.publish.outputs.type != 'none'
         env:
           CUSTOM_TAG: v${{ steps.publish.outputs.version }}
       
       - name: Publish github pages 🚀
-        if: github.ref == 'refs/heads/main' && steps.publish.outcome == success &&  && steps.publish.outputs.type != 'none'
+        if: github.ref == 'refs/heads/main' && steps.publish.outcome == 'success' &&  && steps.publish.outputs.type != 'none'
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
           branch: gh-pages
