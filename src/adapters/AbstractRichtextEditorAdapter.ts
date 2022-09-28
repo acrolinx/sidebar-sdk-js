@@ -155,6 +155,20 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
       return;
     }
 
+    // TODO: get xpath and send it
+    const isCodeMirror6 = document.querySelector('.cm-content');
+    if (isCodeMirror6) {
+      window.postMessage(
+        {
+          sender: 'Acrolinx',
+          anchor: begin,
+          head: begin + length,
+        },
+        '*',
+      );
+      return;
+    }
+
     const selection = this.getEditorDocument().getSelection();
 
     if (!selection) {
