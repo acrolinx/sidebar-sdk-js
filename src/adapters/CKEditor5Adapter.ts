@@ -75,7 +75,14 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
 
   replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
     if (!this.isInSourceEditingMode()) {
-      super.replaceRanges(checkId, matchesWithReplacementArg);
+      this.selectRanges(checkId, matchesWithReplacementArg);
+      const editor = this.getEditor();
+      editor.model.change((writer) => {
+        const selectedRange = editor.model.document.selection.getFirstRange();
+        if (selectedRange) {
+          editor.model.insertContent(writer.createText(matchesWithReplacementArg[0].replacement), selectedRange);
+        }
+      });
     } else {
       window.alert('Action is not permitted in Source mode.');
     }

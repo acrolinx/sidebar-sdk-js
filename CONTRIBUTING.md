@@ -20,7 +20,7 @@ Run the dev server:
    npm run webpack-dev-server
 ```
 
-* Open [http://localhost:8080/test/](http://localhost:8080/test/)
+* Open [http://localhost:9000/test/](http://localhost:9000/test/)
 * Change the code
 * The tests should automatically run for every code change
 

@@ -106,7 +106,7 @@
     "lintFix": "eslint . --ext .ts --fix",
     "version": "npm run tsc && npm run webpack && npm run dist",
     "webpack": "webpack",
-    "webpack-dev-server": "webpack-dev-server --config webpack.dev.config.js --host 0.0.0.0",
+    "webpack-dev-server": "webpack-dev-server --config webpack.dev.config.js",
     "updateDependencies": "npx -p npm-check-updates ncu --doctor -u"
   }
 }
