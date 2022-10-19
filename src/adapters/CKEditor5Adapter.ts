@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import {Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
-import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
+import { Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { HasEditorID, ContentExtractionResult, AsyncAdapterInterface } from './AdapterInterface';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
+export class CKEditor5Adapter extends AbstractRichtextEditorAdapter implements AsyncAdapterInterface {
   editorId: string;
 
   constructor(conf: HasEditorID) {
@@ -29,15 +29,22 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
     this.editorId = conf.editorId;
   }
 
+  readonly isAsync: true = true;
+  readonly requiresSynchronization: true = true;
+
+  getFormat?(): string {
+    return 'auto';
+  }
+
   getEditor(): InlineEditor | BalloonEditor | ClassicEditor {
     let editorDomElement = document.querySelector('#' + this.editorId)!;
 
     const isInlineEditor = editorDomElement.classList.contains('ck-editor__editable');
-    if(!isInlineEditor){
+    if (!isInlineEditor) {
       editorDomElement = editorDomElement.nextElementSibling!.querySelector('.ck-editor__editable')!;
     }
 
-    return ((editorDomElement as any).ckeditorInstance) as InlineEditor;
+    return (editorDomElement as any).ckeditorInstance as InlineEditor;
   }
 
   getEditorDocument(): Document {
@@ -51,13 +58,13 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   extractContentForCheck(): ContentExtractionResult {
     if (!this.isInSourceEditingMode()) {
       this.currentContentChecking = this.getContent();
-      return {content: this.currentContentChecking};
+      return { content: this.currentContentChecking };
     } else {
-      return {error: 'Action is not permitted in Source mode.'};
+      return { error: 'Action is not permitted in Source mode.' };
     }
   }
 
-  selectRanges(checkId: string, matches: Match[]) {
+  async selectRanges(checkId: string, matches: Match[]) {
     if (!this.isInSourceEditingMode()) {
       super.selectRanges(checkId, matches);
     } else {
@@ -73,19 +80,34 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
     throw new Error('Unable to fetch editable element');
   }
 
-  replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
+  async replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
     if (!this.isInSourceEditingMode()) {
-      this.selectRanges(checkId, matchesWithReplacementArg);
-      const editor = this.getEditor();
-      editor.model.change((writer) => {
-        const selectedRange = editor.model.document.selection.getFirstRange();
-        if (selectedRange) {
-          editor.model.insertContent(writer.createText(matchesWithReplacementArg[0].replacement), selectedRange);
-        }
-      });
+      matchesWithReplacementArg.reverse();
+      for (const match of matchesWithReplacementArg) {
+        await this.replaceEachMatch(checkId, match);
+      }
     } else {
       window.alert('Action is not permitted in Source mode.');
     }
+  }
+
+  async replaceEachMatch(checkId: string, match: MatchWithReplacement) {
+    await this.selectRanges(checkId, [match]);
+
+    const editor = this.getEditor();
+
+    await new Promise<void>((resolve) => {
+      editor.model.document.selection.once('change', (..._args) => {
+        resolve();
+      });
+    });
+
+    editor.model.change((writer) => {
+      const selectedRange = editor.model.document.selection.getFirstRange();
+      if (selectedRange) {
+        editor.model.insertContent(writer.createText(match.replacement), selectedRange);
+      }
+    });
   }
 
   isInSourceEditingMode() {

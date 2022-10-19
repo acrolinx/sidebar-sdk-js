@@ -97,11 +97,11 @@ describe('CKEditor5 adapter test', function () {
       }
 
       function givenAText(text: string, callback: (initialExtractedContent: string) => void) {
-        setEditorContent(text, () => {
+        setEditorContent(text, async () => {
           adapter.registerCheckCall({checkId: dummyCheckId});
           const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
           registerCheckResult(text);
-          callback(contentExtractionResult.content);
+          await callback(contentExtractionResult.content);
         });
       }
 
@@ -140,8 +140,8 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Don\'t change surrounding words when replacing', function (done) {
-        givenAText('wordOne wordTwo wordThree', (text) => {
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+        givenAText('wordOne wordTwo wordThree', async (text) => {
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordTwoReplacement wordThree');
             done();
@@ -153,9 +153,9 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace words in reverse order', function (done) {
-        givenAText('wordOne wordTwo wordThree', (text) => {
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+        givenAText('wordOne wordTwo wordThree', async (text) => {
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordTwoReplacement wordThreeReplacement');
             done();
@@ -167,9 +167,9 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace words in order', function (done) {
-        givenAText('wordOne wordTwo wordThree', (text) => {
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
+        givenAText('wordOne wordTwo wordThree', async (text) => {
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordTwoReplacement wordThreeReplacement');
             done();
@@ -182,9 +182,9 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace second of the same word', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', text => {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement');
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement[1]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement[1]]);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordSame wordSameReplacement wordThree');
             done();
@@ -196,9 +196,9 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace first of the same word', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', text => {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement');
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement[0]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement[0]]);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordSameReplacement wordSame wordThree');
             done();
@@ -210,11 +210,11 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace the same word with word in between two times with different replacements', function (done) {
-        givenAText('wordOne wordSame blubb wordSame wordThree', text => {
+        givenAText('wordOne wordSame blubb wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement2');
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordSameReplacement1 blubb wordSameReplacement2 wordThree');
             done();
@@ -226,11 +226,11 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace the same word two times with different replacements', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', text => {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordSame1 wordSame2 wordThree');
             done();
@@ -243,11 +243,11 @@ describe('CKEditor5 adapter test', function () {
 
 
       it('Replace the same word two times with different replacements, where the first replacement is kinda long', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', text => {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSamelonglonglonglong1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordSamelonglonglonglong1 wordSame2 wordThree');
             done();
@@ -259,11 +259,11 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace the same word two times with different replacements in reverse oder', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', text => {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
-          adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+          await adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordSame1 wordSame2 wordThree');
             done();
@@ -275,9 +275,9 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace single character ","', function (done) {
-        givenAText('wordOne, wordTwo', text => {
+        givenAText('wordOne, wordTwo', async (text) => {
           const matchWithReplacement = getMatchesWithReplacement(text, ',', '');
-          adapter.replaceRanges(dummyCheckId, matchWithReplacement);
+          await adapter.replaceRanges(dummyCheckId, matchWithReplacement);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordTwo');
           }).catch(() => {
@@ -289,9 +289,9 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace single character space', function (done) {
-        givenAText('wordOne wordTwo', text => {
+        givenAText('wordOne wordTwo', async (text) => {
           const matchWithReplacement = getMatchesWithReplacement(text, ' ', '');
-          adapter.replaceRanges(dummyCheckId, matchWithReplacement);
+          await adapter.replaceRanges(dummyCheckId, matchWithReplacement);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOnewordTwo');
             done();
@@ -303,7 +303,7 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace continues multi range', function (done) {
-        givenAText('word0 blub mist word3', text => {
+        givenAText('word0 blub mist word3', async (text) => {
           const word1 = getMatchesWithReplacement(text, 'blub', 'a')[0];
           const word2 = getMatchesWithReplacement(text, 'mist', 'b')[0];
           const space = {
@@ -312,7 +312,7 @@ describe('CKEditor5 adapter test', function () {
             range: [word1.range[1], word2.range[0]] as [number, number]
           };
 
-          adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
+          await adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('word0 ab word3');
             done();
@@ -324,7 +324,7 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace continues multi range with number in words', function (done) {
-        givenAText('word0 blub1 mist2 word3', text => {
+        givenAText('word0 blub1 mist2 word3', async (text) => {
 
           const word1 = getMatchesWithReplacement(text, 'blub1', 'a')[0];
           const word2 = getMatchesWithReplacement(text, 'mist2', 'b')[0];
@@ -334,7 +334,7 @@ describe('CKEditor5 adapter test', function () {
             range: [word1.range[1], word2.range[0]] as [number, number]
           };
 
-          adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
+          await adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('word0 ab word3');
             done();
@@ -359,8 +359,8 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace first and only word', function (done) {
-        givenAText('xyz', async text => {
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
+        givenAText('xyz', async (text) => {
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('aa');
             done();
@@ -372,8 +372,8 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace first char', function (done) {
-        givenAText('x after', text => {
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
+        givenAText('x after', async (text) => {
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('aa after');
             done();
@@ -385,8 +385,8 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace first word', function (done) {
-        givenAText('xyz after', text => {
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
+        givenAText('xyz after', async (text) => {
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('aa after');
             done();
@@ -398,12 +398,12 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace single chars', function (done) {
-        givenAText('y x f z u', text => {
+        givenAText('y x f z u', async (text) => {
 
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'f', 'bb'));
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'z', 'cc'));
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'u', 'dd'));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'f', 'bb'));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'z', 'cc'));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'u', 'dd'));
 
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('y aa bb cc dd');
@@ -416,10 +416,10 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace inside a word', function (done) {
-        givenAText('InsideAllWord', text => {
+        givenAText('InsideAllWord', async (text) => {
 
           const matchWithReplacement = getMatchesWithReplacement(text, 'All', '12345');
-          adapter.replaceRanges(dummyCheckId, matchWithReplacement);
+          await adapter.replaceRanges(dummyCheckId, matchWithReplacement);
 
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('Inside12345Word');
@@ -432,10 +432,10 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace last word', function (done) {
-        givenAText('wordOne wordTwo', text => {
+        givenAText('wordOne wordTwo', async (text) => {
 
           const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'wordTw');
-          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+          await adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
 
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordTw');
@@ -448,10 +448,10 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace last word with short word', function (done) {
-        givenAText('wordOne wordTwo', text => {
+        givenAText('wordOne wordTwo', async (text) => {
 
           const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'beer');
-          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+          await adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne beer');
             done();
@@ -464,12 +464,12 @@ describe('CKEditor5 adapter test', function () {
 
 
       it('Replace discontinues multi range', function (done) {
-        givenAText('wordOne wordTwo wordThree wordFour', text => {
+        givenAText('wordOne wordTwo wordThree wordFour', async (text) => {
           const matchesWithReplacement = [
             getMatchesWithReplacement(text, 'wordOne', 'a')[0],
             getMatchesWithReplacement(text, 'wordThree', 'c')[0]
           ];
-          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+          await adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
 
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('a wordTwo c wordFour');
@@ -482,10 +482,10 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace with and after strange chars', function (done) {
-        givenAText('wordOne wordTwo wordThree wordFour', text => {
+        givenAText('wordOne wordTwo wordThree wordFour', async (text) => {
           const strangeChars = '[]()/&%$§"!\'*+~öäü:,;-<>|^°´`òê€@ß?={}µコンピュータ';
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', strangeChars));
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'c'));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', strangeChars));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'c'));
           // TODO: Depending on the document type, we should test for correct escaping.
 
           waitMs(DELAY_IN_MS).then(() => {
@@ -499,9 +499,9 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace with text looking like entities', function (done) {
-        givenAText('wordOne wordTwo wordThree', text => {
+        givenAText('wordOne wordTwo wordThree', async (text) => {
           const entities = '&uuml;';
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', entities));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', entities));
 
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText(`wordOne ${ entities } wordThree`);
@@ -514,9 +514,9 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace with text looking like html tags', function (done) {
-        givenAText('wordOne wordTwo wordThree', text => {
+        givenAText('wordOne wordTwo wordThree', async (text) => {
           const replacement = '<tagish>';
-          adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', replacement));
+          await adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', replacement));
 
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText(`wordOne ${ replacement } wordThree`);
@@ -529,12 +529,12 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace word containing entity', function (done) {
-        givenAText('wordOne D&amp;D wordThree', html => {
+        givenAText('wordOne D&amp;D wordThree', async (html) => {
           const replacement = 'Dungeons and Dragons';
           const matchesWithReplacement = getMatchesWithReplacement(html, 'D&amp;D', replacement);
           matchesWithReplacement[0].content = 'D&D';
-          adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+          await adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+          await adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
 
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText(`wordOne ${ replacement } wordThree`);
@@ -549,11 +549,11 @@ describe('CKEditor5 adapter test', function () {
 
       if (adapterSpec.inputFormat === 'HTML') {
         it('Replace word before entity &nbsp;', function (done) {
-          givenAText('Southh&nbsp;is warm.', html => {
+          givenAText('Southh&nbsp;is warm.', async (html) => {
             const replacement = 'South';
             const matchesWithReplacement = getMatchesWithReplacement(html, 'Southh', replacement);
-            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            await adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            await adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
             waitMs(DELAY_IN_MS).then(() => {
               assertEditorText(`${ replacement }${ NON_BREAKING_SPACE }is warm.`);
               done();
@@ -565,7 +565,7 @@ describe('CKEditor5 adapter test', function () {
         });
 
         it('Replace words containing entity &nbsp;', function (done) {
-          givenAText('South&nbsp;is warm&nbsp;.', html => {
+          givenAText('South&nbsp;is warm&nbsp;.', async (html) => {
             const replacement = 'South';
             // Some editors wrap the html inside e.g. <p>
             const offset = html.indexOf('South');
@@ -574,8 +574,8 @@ describe('CKEditor5 adapter test', function () {
               {content: NON_BREAKING_SPACE, range: [18 + offset, 24 + offset], replacement: ''},
               {content: '.', range: [24 + offset, 25 + offset], replacement: ''},
             ] as MatchWithReplacement[];
-            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            await adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            await adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
             waitMs(DELAY_IN_MS).then(() => {
               assertEditorText(`${ replacement }${ NON_BREAKING_SPACE }is warm.`);
               done();
@@ -588,19 +588,19 @@ describe('CKEditor5 adapter test', function () {
       }
 
       it('Replace same word in correct order', function (done) {
-        givenAText('before wordSame wordSame wordSame wordSame wordSame after', text => {
+        givenAText('before wordSame wordSame wordSame wordSame wordSame after', async (text) => {
           // The diff approach can not always handle ["a", "b", "c", "d", "e"] correctly.
           const replacements = ['replacement1', 'replacement2', 'replacement3', 'replacement4', 'replacement5'];
 
-          function replace(i: number) {
-            adapter.replaceRanges(dummyCheckId, [getMatchesWithReplacement(text, 'wordSame', replacements[i])[i]]);
+          async function replace(i: number) {
+            await adapter.replaceRanges(dummyCheckId, [getMatchesWithReplacement(text, 'wordSame', replacements[i])[i]]);
           }
 
-          replace(0);
-          replace(4);
-          replace(2);
-          replace(3);
-          replace(1);
+          await replace(0);
+          await replace(4);
+          await replace(2);
+          await replace(3);
+          await replace(1);
 
           waitMs(DELAY_IN_MS).then(() => {
             assertEditorText(`before ${ replacements.join(' ') } after`);
@@ -615,17 +615,17 @@ describe('CKEditor5 adapter test', function () {
       it('selectRanges does not change text', function (done) {
         const words = ['wordOne', 'wordTwo', 'wordThree', 'wordFour'];
         const editorText = words.join(' ');
-        givenAText(editorText, text => {
-          words.forEach((word) => {
-            adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(text, word, ''));
+        givenAText(editorText, async (text) => {
+          words.forEach(async (word) => {
+            await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(text, word, ''));
           });
 
-          adapter.selectRanges(dummyCheckId, [
+          await adapter.selectRanges(dummyCheckId, [
             getMatchesWithReplacement(text, words[0], '')[0],
             getMatchesWithReplacement(text, words[words.length - 1], '')[0]
           ]);
 
-          adapter.selectRanges(dummyCheckId, [
+          await adapter.selectRanges(dummyCheckId, [
             getMatchesWithReplacement(text, words[1], '')[0],
             getMatchesWithReplacement(text, words[2], '')[0]
           ]);
@@ -637,11 +637,11 @@ describe('CKEditor5 adapter test', function () {
 
       if (adapterSpec.inputFormat === 'HTML') {
         it('Remove complete text content', function (done) {
-          givenAText('<p>a</p>', () => {
+          givenAText('<p>a</p>', async () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
               {'content': 'a', 'range': [3, 4], 'replacement': ''},
             ];
-            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            await adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
 
             waitMs(DELAY_IN_MS).then(() => {
               done();
@@ -654,12 +654,12 @@ describe('CKEditor5 adapter test', function () {
 
 
         it.skip('Missing space within divs', function (done) {
-          givenAText('<div>a b ?</div><div>c</div>', () => {
+          givenAText('<div>a b ?</div><div>c</div>', async () => {
             const matchesWithReplacement: MatchWithReplacement[] = [
               {'content': 'b', 'range': [7, 8], 'replacement': 'b?'},
               {'content': ' ', 'range': [8, 9], 'replacement': ''},
               {'content': '?', 'range': [9, 10], 'replacement': ''}];
-            adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+              await adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
 
             waitMs(DELAY_IN_MS).then(() => {
               assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
@@ -674,20 +674,27 @@ describe('CKEditor5 adapter test', function () {
       }
 
       it('SelectRanges throws exception if matched document part has changed', function (done) {
-        givenAText('wordOne wordTwo wordThree', html => {
+        givenAText('wordOne wordTwo wordThree', (html) => {
           const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
-          setEditorContent('wordOne wordXTwo wordThree', () => {
-            assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
-            done();
+          setEditorContent('wordOne wordXTwo wordThree', async () => {
+            try{
+              await adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            } catch (e){
+              done();
+            }
           });
         });
       });
 
       it('ReplaceRanges throws exception if matched document part has changed', function (done) {
-        givenAText('wordOne wordTwo wordThree', html => {
+        givenAText('wordOne wordTwo wordThree', async (html) => {
           const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo', 'replacement');
-          setEditorContent('wordOne wordXTwo wordThree', () => {
-            assert.throws(() => adapter.replaceRanges(dummyCheckId, matchesWithReplacement));
+          setEditorContent('wordOne wordXTwo wordThree', async () => {
+            try {
+              await adapter.replaceRanges(dummyCheckId, matchesWithReplacement); 
+            } catch (e) {
+              assert.isDefined(e);
+            }
 
             waitMs(DELAY_IN_MS).then(() => {
               done();
@@ -702,9 +709,9 @@ describe('CKEditor5 adapter test', function () {
       describe('selectRanges', () => {
         testIfWindowIsFocused('should select the correct text', (done) => {
           const completeContent = '<p>begin selection end</p>';
-          givenAText(completeContent, initialExtractedContent => {
+          givenAText(completeContent, async (initialExtractedContent) => {
             const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'selection');
-            adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+            await adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             assert.equal(adapterSpec.getSelectedText(), 'selection');
             done();
           });
@@ -723,8 +730,8 @@ describe('CKEditor5 adapter test', function () {
 
         it('replaces ranges of previous check', (done) => {
           const completeNewContent = 'change begin selection end';
-          givenATextWithoutCheckResult(completeNewContent, _initialExtractedContent => {
-            adapter.replaceRanges(dummyCheckId, matchesWithReplacementOfFirstCheck);
+          givenATextWithoutCheckResult(completeNewContent, async (_initialExtractedContent) => {
+            await adapter.replaceRanges(dummyCheckId, matchesWithReplacementOfFirstCheck);
 
             waitMs(DELAY_IN_MS).then(() => {
               assertEditorText('change begin replacement end');
