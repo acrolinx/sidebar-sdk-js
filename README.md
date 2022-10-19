@@ -82,7 +82,7 @@ If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sd
 ## Serve for Development (Load local SDK in Browser)
 
 * Run 'npm run webpack-dev-server'
-* Include '<script src="http://0.0.0.0:8081/dist/acrolinx-sidebar-sdk.js"></script>' into your project.
+* Include '<script src="http://0.0.0.0:9000/dist/acrolinx-sidebar-sdk.js"></script>' into your project.
 * Check the output of the above npm task and correct the host port if needed.
 
 
