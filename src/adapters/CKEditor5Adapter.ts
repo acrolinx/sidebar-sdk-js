@@ -104,7 +104,7 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter implements A
 
     editor.model.change((writer) => {
       const selectedRange = editor.model.document.selection.getFirstRange();
-      if (selectedRange) {
+      if (selectedRange && selectedRange.end.offset > selectedRange.start.offset) {
         editor.model.insertContent(writer.createText(match.replacement), selectedRange);
       }
     });
