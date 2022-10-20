@@ -302,6 +302,28 @@ describe('CKEditor5 adapter test', function () {
         });
       });
 
+
+      it('Replace continues multi range for an apple', function (done) {
+        givenAText('a apple', async (text) => {
+          const word1 = getMatchesWithReplacement(text, 'a', 'an apple')[0];
+          const word2 = getMatchesWithReplacement(text, 'apple', '')[0];
+          const space = {
+            content: ' ',
+            replacement: '',
+            range: [word1.range[1], word2.range[0]] as [number, number]
+          };
+
+          await adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
+          waitMs(DELAY_IN_MS).then(() => {
+            assertEditorText('an apple');
+            done();
+          }).catch(() => {
+            assert(false, 'Unable to synchronize with replacement event');
+            done();
+          });
+        });
+      });
+
       it('Replace continues multi range', function (done) {
         givenAText('word0 blub mist word3', async (text) => {
           const word1 = getMatchesWithReplacement(text, 'blub', 'a')[0];

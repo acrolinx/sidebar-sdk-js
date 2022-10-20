@@ -66,6 +66,7 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter implements A
 
   async selectRanges(checkId: string, matches: Match[]) {
     if (!this.isInSourceEditingMode()) {
+      this.removeExistingSelection();
       super.selectRanges(checkId, matches);
     } else {
       window.alert('Action is not permitted in Source mode.');
@@ -118,5 +119,15 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter implements A
     }
     const sep = editor.plugins.get(sourceEditingPluginId);
     return sep.isEnabled && sep.isSourceEditingMode;
+  }
+
+  removeExistingSelection() {
+    const editor = this.getEditor();
+    editor.model.change((writer) => {
+      const startPosition = writer.createPositionFromPath(editor.model.document.getRoot()!, [0]);
+      const endPosition = writer.createPositionFromPath(editor.model.document.getRoot()!, [0]);
+      const range = writer.createRange(startPosition, endPosition);
+      writer.setSelection(range);
+    });
   }
 }

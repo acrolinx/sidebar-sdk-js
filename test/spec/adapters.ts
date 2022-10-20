@@ -292,6 +292,22 @@ describe('adapter test', function () {
         });
       });
 
+      it('Replace continues multi range for an apple', function (done) {
+        givenAText('a apple', text => {
+          const word1 = getMatchesWithReplacement(text, 'a', 'an apple')[0];
+          const word2 = getMatchesWithReplacement(text, 'apple', '')[0];
+          const space = {
+            content: ' ',
+            replacement: '',
+            range: [word1.range[1], word2.range[0]] as [number, number]
+          };
+
+          adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
+          assertEditorText('an apple');
+          done();
+        });
+      });
+
       it('Replace continues multi range', function (done) {
         givenAText('word0 blub mist word3', text => {
           const word1 = getMatchesWithReplacement(text, 'blub', 'a')[0];
