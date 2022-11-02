@@ -76,7 +76,7 @@ If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sd
 ## Running This Project
 
 * Make sure you have a Chrome or chromium version later than 72.0.0. This is needed to execute the tests successfully.
-* Run `npm install`
+* Run `npm i`
 * Run `npm run build` to run all tests and build distribution
 
 ## Serve for Development (Load local SDK in Browser)
