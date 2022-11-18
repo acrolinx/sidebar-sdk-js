@@ -147,7 +147,7 @@ describe('text-extraction', () => {
       return el.textContent || '';
     }
 
-    const executionCount = 10000;
+    const executionCount = 9000;
     const testEntities = '&amp;';
     const expectedDecodedEntities = `&`;
 
