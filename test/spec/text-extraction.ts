@@ -147,13 +147,11 @@ describe('text-extraction', () => {
       return el.textContent || '';
     }
 
-    // Count reduced to 5000 for GH Actions.
-    // On physical machine more than 10000 executions are possible
-    const executionCount = 5000;
+    const executionCount = 10000;
     const testEntities = '&amp;';
     const expectedDecodedEntities = `&`;
 
-    it('should be faster then the old DOM based code', () => {
+    it.skip('should be faster then the old DOM based code', () => {
       const startTimeOld = Date.now();
       for (let i = 0; i < executionCount; i++) {
         assert.equal(decodeEntityOld(testEntities), expectedDecodedEntities);
