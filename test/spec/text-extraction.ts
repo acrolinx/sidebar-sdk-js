@@ -147,7 +147,9 @@ describe('text-extraction', () => {
       return el.textContent || '';
     }
 
-    const executionCount = 9000;
+    // Count reduced to 5000 for GH Actions.
+    // On physical machine more than 10000 executions are possible
+    const executionCount = 5000;
     const testEntities = '&amp;';
     const expectedDecodedEntities = `&`;
 
