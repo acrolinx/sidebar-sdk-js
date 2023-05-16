@@ -1,7 +1,7 @@
 {
   "name": "@acrolinx/sidebar-sdk",
   "description": "Acrolinx Sidebar SDK for JavaScript",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "license": "Apache-2.0",
   "author": "Acrolinx",
   "url": "https://www.acrolinx.com",
@@ -20,7 +20,7 @@
     "typedoc": "Version >=0.20 changes url structure and 'Implemented by' shows only direct sub classes"
   },
   "dependencies": {
-    "@acrolinx/sidebar-startpage": "^3.3.1",
+    "@acrolinx/sidebar-startpage": "^3.4.1",
     "@types/ckeditor": "4.9.10",
     "@types/ckeditor__ckeditor5-build-balloon": "^29.1.1",
     "@types/ckeditor__ckeditor5-build-classic": "^29.0.1",
