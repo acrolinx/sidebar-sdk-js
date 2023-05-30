@@ -34,8 +34,8 @@ export class AsyncContentEditableAdapter extends AbstractRichtextEditorAdapter i
     super(conf);
     this.element = getElementFromAdapterConf(conf);
   }
-  readonly isAsync: true = true;
-  readonly requiresSynchronization: true = true;
+  readonly isAsync = true as const;
+  readonly requiresSynchronization = true as const;
 
   getEditorElement(): HTMLElement {
     return this.element;

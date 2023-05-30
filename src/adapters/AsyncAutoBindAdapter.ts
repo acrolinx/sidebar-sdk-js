@@ -29,8 +29,8 @@ import {AsyncMultiEditorAdapter} from "./AsyncMultiEditorAdapter";
 // While making changes here make sure if you also need to do them in synchronous version
 // of this adapter
 export class AsyncAutoBindAdapter implements AsyncAdapterInterface {
-  readonly isAsync: true = true;
-  readonly requiresSynchronization: true = true;
+  readonly isAsync = true as const;
+  readonly requiresSynchronization = true as const;
   private asyncMultiAdapter!: AsyncMultiEditorAdapter;
 
   constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf & AutobindConfig)) {
