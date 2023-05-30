@@ -27,7 +27,7 @@ export class TinyMCETestSetup implements AdapterTestSetup {
 
 
   setEditorContent(html: string, done: DoneCallback) {
-    tinymce.get("editorId").setContent(html);
+    tinymce.get("editorId")!.setContent(html);
     done();
   }
 
@@ -45,12 +45,12 @@ export class TinyMCETestSetup implements AdapterTestSetup {
 
   remove() {
     if (tinymce) {
-      tinymce.get('editorId').remove();
+      tinymce.get('editorId')!.remove();
     }
     $('#editorId').remove();
   }
 
   getSelectedText(): string {
-    return tinymce.get("editorId").selection.getContent();
+    return tinymce.get("editorId")!.selection.getContent();
   }
 }

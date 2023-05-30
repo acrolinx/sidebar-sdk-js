@@ -23,7 +23,7 @@ import {TinyMCEAdapter} from "./TinyMCEAdapter";
 export class TinyMCEWordpressAdapter extends TinyMCEAdapter {
 
   getEditor() : Editor {
-    return tinymce.get(this.editorId);
+    return tinymce.get(this.editorId)!;
   }
 
   getContent() {

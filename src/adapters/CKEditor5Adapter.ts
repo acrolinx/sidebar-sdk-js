@@ -18,8 +18,6 @@ import {Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
 import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
 import InlineEditor from "@ckeditor/ckeditor5-build-inline";
-import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {SourceEditing} from "@ckeditor/ckeditor5-source-editing";
 
 export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
@@ -30,7 +28,7 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
     this.editorId = conf.editorId;
   }
 
-  getEditor(): InlineEditor | BalloonEditor | ClassicEditor {
+  getEditor(): InlineEditor {
     let editorDomElement = document.querySelector('#' + this.editorId)!;
 
     const isInlineEditor = editorDomElement.classList.contains('ck-editor__editable');

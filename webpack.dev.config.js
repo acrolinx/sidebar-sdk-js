@@ -5,7 +5,7 @@ module.exports = {
   target: ['web', 'es5'],
   entry: {
     'acrolinx-sidebar-sdk': './src/export-for-browser.ts',
-    'tests': './test/index.ts'
+    tests: './test/index.ts',
   },
   module: {
     rules: [
@@ -24,7 +24,14 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
-    publicPath: "/dist/",
+    publicPath: '/dist/',
     path: path.resolve(__dirname, 'dist')
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, '.'),
+    },
+    compress: true,
+    port: 9000,
   },
 };

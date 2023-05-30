@@ -80,7 +80,10 @@ export class CodeMirrorAdapter implements AdapterInterface {
   }
 
   private getFormatFromCodeMirror() {
-    return FORMAT_BY_MODE[this.config.editor.getDoc().getMode().name || ''] || FORMAT_BY_MIME_TYPE[this.config.editor.getOption('mode')];
+    return (
+      FORMAT_BY_MODE[this.config.editor.getDoc().getMode().name || ''] ||
+      FORMAT_BY_MIME_TYPE[(this.config.editor.getOption('mode')!)]
+    );
   }
 
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult {

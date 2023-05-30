@@ -29,7 +29,7 @@ export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
   }
 
   getEditor(): Editor {
-    return tinymce.get(this.editorId);
+    return tinymce.get(this.editorId)!;
   }
 
   getContent(opts: ExtractContentForCheckOpts) {
