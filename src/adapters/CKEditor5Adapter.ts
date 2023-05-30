@@ -17,9 +17,10 @@
 import {Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
 import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
 import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
+import InlineEditor from "@ckeditor/ckeditor5-build-inline";
 import BalloonEditor from "@ckeditor/ckeditor5-build-balloon";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import {SourceEditing} from "@ckeditor/ckeditor5-source-editing";
 
 export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   editorId: string;
@@ -87,7 +88,7 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
     if (!editor.plugins.has(sourceEditingPluginId)) {
       return false;
     }
-    const sep = editor.plugins.get(sourceEditingPluginId);
+    const sep: SourceEditing = editor.plugins.get(sourceEditingPluginId);
     return sep.isEnabled && sep.isSourceEditingMode;
   }
 }

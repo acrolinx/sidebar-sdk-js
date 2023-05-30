@@ -16,7 +16,7 @@
 
 import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
 import {CKEditor5Adapter} from "../../../src/adapters/CKEditor5Adapter";
-import * as CKEDITOR from '@abhijeetnarvekar/ckeditor5-build-super';
+import InlineEditor from "@ckeditor/ckeditor5-build-inline";
 
 export class CKEditor5InlineTestSetup implements AdapterTestSetup {
   name = 'CKEditor5Adapter-Inline';
@@ -30,7 +30,7 @@ export class CKEditor5InlineTestSetup implements AdapterTestSetup {
 
   async init() {
     const editorDiv = document.querySelector('#editorId');
-    const editor = await CKEDITOR.InlineEditor.create(editorDiv as HTMLElement);
+    const editor = await InlineEditor.create(editorDiv as HTMLElement);
     (<any>window).editor = editor; 
     return new CKEditor5Adapter({editorId: "editorId"});
   }

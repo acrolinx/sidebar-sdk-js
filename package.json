@@ -22,10 +22,6 @@
   "dependencies": {
     "@acrolinx/sidebar-startpage": "^3.4.1",
     "@types/ckeditor": "4.9.10",
-    "@types/ckeditor__ckeditor5-build-balloon": "^29.1.1",
-    "@types/ckeditor__ckeditor5-build-classic": "^29.0.1",
-    "@types/ckeditor__ckeditor5-build-inline": "^29.0.0",
-    "@types/ckeditor__ckeditor5-core": "^33.0.3",
     "@types/codemirror": "0.0.106",
     "@types/diff-match-patch": "^1.0.32",
     "@types/tinymce": "^4.6.0",
@@ -36,10 +32,13 @@
     "tslib": "^2.3.1"
   },
   "devDependencies": {
-    "@abhijeetnarvekar/ckeditor5-build-super": "^35.0.2",
     "@acrolinx/sidebar-interface": "^15.0.0",
+    "@ckeditor/ckeditor5-build-balloon": "^38.0.1",
+    "@ckeditor/ckeditor5-build-classic": "^38.0.1",
+    "@ckeditor/ckeditor5-build-inline": "^38.0.1",
+    "@ckeditor/ckeditor5-core": "^38.0.1",
+    "@ckeditor/ckeditor5-source-editing": "^38.0.1",
     "@types/chai": "^4.3.0",
-    "@types/ckeditor__ckeditor5-source-editing": "^29.1.1",
     "@types/draft-js": "^0.11.8",
     "@types/jquery": "^3.5.13",
     "@types/lodash": "^4.14.178",

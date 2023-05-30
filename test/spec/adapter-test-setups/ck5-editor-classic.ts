@@ -16,7 +16,7 @@
 
 import {AdapterTestSetup, DoneCallback} from './adapter-test-setup';
 import {CKEditor5Adapter} from '../../../src/adapters/CKEditor5Adapter';
-import * as CKEDITOR from '@abhijeetnarvekar/ckeditor5-build-super';
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export class CKEditor5ClassicTestSetup implements AdapterTestSetup {
   name = 'CKEditor5Adapter-Classic';
@@ -30,7 +30,7 @@ export class CKEditor5ClassicTestSetup implements AdapterTestSetup {
 
   async init() {
     const editorDiv = document.querySelector('#editorId');
-    const editor = await CKEDITOR.ClassicEditor.create(editorDiv as HTMLElement);
+    const editor = await ClassicEditor.create(editorDiv as HTMLElement);
     (<any>window).editor = editor;
     return new CKEditor5Adapter({ editorId: 'editorId' });
   }
@@ -46,7 +46,7 @@ export class CKEditor5ClassicTestSetup implements AdapterTestSetup {
 
   public getCkEditorInstance(id: string) {
     let editorDomElement = document.querySelector('#' + id);
-    editorDomElement = editorDomElement!.nextElementSibling!.querySelector('.ck-editor__editable')!
+    editorDomElement = editorDomElement!.nextElementSibling!.querySelector('.ck-editor__editable')!;
     return (editorDomElement as any).ckeditorInstance;
   }
 
