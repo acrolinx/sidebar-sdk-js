@@ -31,7 +31,7 @@ export class CKEditor5InlineTestSetup implements AdapterTestSetup {
   async init() {
     const editorDiv = document.querySelector('#editorId');
     const editor = await InlineEditor.create(editorDiv as HTMLElement);
-    (<any>window).editor = editor; 
+    (<any>window).editor = editor;
     return new CKEditor5Adapter({editorId: "editorId"});
   }
 

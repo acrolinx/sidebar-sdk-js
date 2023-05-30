@@ -91,7 +91,7 @@ describe('adapter test', function () {
           adapter = res;
           done();
         }).catch((res) => {
-          assert(false, 'Before each hook failed. ' + res);
+          assert.fail('Before each hook failed. ' + res);
           done();
         });
       });
@@ -738,7 +738,7 @@ describe('adapter test', function () {
         it('Return correct check selection if tags are filtered by tinyMCE', () => {
           const SELECTED_TEXT = 'selection';
           // The blink tag will be filter by setContent/getContent of tinyMCE, so we must set it with this trick.
-          adapterSpec.getTinyMceEditor().getBody().innerHTML = '<blink>begin</blink> selection end';
+          adapterSpec.getTinyMceEditor()!.getBody().innerHTML = '<blink>begin</blink> selection end';
 
           // We simulate a check only to set a selection.
           adapter.registerCheckCall({checkId: dummyCheckId});

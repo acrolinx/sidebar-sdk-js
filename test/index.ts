@@ -30,3 +30,4 @@ import './spec/floating-sidebar';
 import './spec/message-adapter';
 import './spec/text-extraction';
 import './spec/sidebar-loader';
+import './spec/cke5adapter-adapters';
