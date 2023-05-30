@@ -140,7 +140,7 @@ describe.skip('CKEditor5 adapter test', function () {
       it('Don\'t change surrounding words when replacing', function (done) {
         givenAText('wordOne wordTwo wordThree', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-          waitMs(50000).then(() => {
+          waitMs(DELAY_IN_MS).then(() => {
             assertEditorText('wordOne wordTwoReplacement wordThree');
             done();
           }).catch(() => {
