@@ -16,12 +16,11 @@
 
 import * as entities from 'entities';
 import * as jsc from 'jsverify';
-import {findNewIndex} from '../../src/utils/alignment';
-import {extractTextDomMapping} from '../../src/utils/text-dom-mapping';
-import {extractText} from '../../src/utils/text-extraction';
+import { findNewIndex } from '../../src/utils/alignment';
+import { extractTextDomMapping } from '../../src/utils/text-dom-mapping';
+import { extractText } from '../../src/utils/text-extraction';
 
 const assert = chai.assert;
-
 
 describe('text-extraction', () => {
   describe('extractText', () => {
@@ -61,7 +60,6 @@ describe('text-extraction', () => {
       assert.equal(text, '0&1');
     });
 
-
     it('replace scripts with empty string', () => {
       const html = '1<script>2</script>3';
       const [text, offsetMapping] = extractText(html);
@@ -82,9 +80,7 @@ describe('text-extraction', () => {
     it('replace style with empty string', () => {
       assert.equal(extractText('1<style>2</style>3')[0], '13');
     });
-
   });
-
 
   describe('extractText and extractTextDomMapping should return the same text', () => {
     function assertSameExtractedText(html: string, message?: string) {
@@ -116,26 +112,25 @@ describe('text-extraction', () => {
       assertSameExtractedText('</\u0000', 'this ends up as a comment');
     });
 
-    it('random strings', function(this: any) {
+    it('random strings', function (this: any) {
       this.timeout(2000);
 
       const JS_VERIFY_OPTS = {
         tests: 1000,
-        rngState: '0123456789abcdef01'
+        rngState: '0123456789abcdef01',
       };
 
-      jsc.assert(jsc.forall('string',
-        (html: string) => {
+      jsc.assert(
+        jsc.forall('string', (html: string) => {
           const htmlElement = toHtmlElement(html);
           const textDomMapping = extractTextDomMapping(htmlElement);
           const [text] = extractText(htmlElement.innerHTML);
           return textDomMapping.text === text;
-        }
-      ), JS_VERIFY_OPTS);
+        }),
+        JS_VERIFY_OPTS,
+      );
     });
-
   });
-
 
   describe('entities.decodeHTMLStrict', () => {
     /**
@@ -168,4 +163,3 @@ describe('text-extraction', () => {
     });
   });
 });
-

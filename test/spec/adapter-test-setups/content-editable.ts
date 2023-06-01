@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {ContentEditableAdapter} from "../../../src/adapters/ContentEditableAdapter";
-import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
-import {EDITOR_HEIGHT} from './constants';
+import { ContentEditableAdapter } from '../../../src/adapters/ContentEditableAdapter';
+import { AdapterTestSetup, DoneCallback } from './adapter-test-setup';
+import { EDITOR_HEIGHT } from './constants';
 
 export class ContentEditableTestSetup implements AdapterTestSetup {
   name = 'ContentEditableAdapter';
@@ -25,13 +25,15 @@ export class ContentEditableTestSetup implements AdapterTestSetup {
   inputEventWasTriggered?: boolean;
 
   init() {
-    return Promise.resolve(new ContentEditableAdapter({editorId: 'editorId'}));
+    return Promise.resolve(new ContentEditableAdapter({ editorId: 'editorId' }));
   }
 
   setEditorContent(html: string, done: DoneCallback) {
-    $('#editorId').html(html).on('input', () => {
-      this.inputEventWasTriggered = true;
-    });
+    $('#editorId')
+      .html(html)
+      .on('input', () => {
+        this.inputEventWasTriggered = true;
+      });
     done();
   }
 

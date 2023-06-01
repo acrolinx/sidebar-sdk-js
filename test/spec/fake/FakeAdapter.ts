@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-import {AdapterInterface} from "../../../src";
-import {Check, DocumentSelection, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
+import { AdapterInterface } from '../../../src';
+import { Check, DocumentSelection, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import {
   ContentExtractionResult,
   ExtractContentForCheckOpts,
-  SuccessfulCheckResult
-} from "../../../src/adapters/AdapterInterface";
-import {lookupMatches} from "../../../src/lookup/diff-based";
-import {AlignedMatch} from "../../../src/utils/alignment";
-import {getCompleteFlagLength} from "../../../src/utils/match";
-import _ = require("lodash");
+  SuccessfulCheckResult,
+} from '../../../src/adapters/AdapterInterface';
+import { lookupMatches } from '../../../src/lookup/diff-based';
+import { AlignedMatch } from '../../../src/utils/alignment';
+import { getCompleteFlagLength } from '../../../src/utils/match';
+import _ = require('lodash');
 
 export class FakeAdapter implements AdapterInterface {
   selection?: DocumentSelection;
   private currentContentChecking?: string;
   private lastContentChecked?: string;
 
-  constructor(public content: string) {
-  }
+  constructor(public content: string) {}
 
   getFormat() {
     return 'TEXT';
@@ -42,7 +41,7 @@ export class FakeAdapter implements AdapterInterface {
     this.currentContentChecking = this.content;
     return {
       content: this.currentContentChecking,
-      selection: opts.checkSelection ? this.selection : undefined
+      selection: opts.checkSelection ? this.selection : undefined,
     };
   }
 
@@ -50,13 +49,12 @@ export class FakeAdapter implements AdapterInterface {
     this.lastContentChecked = this.currentContentChecking;
   }
 
-  registerCheckCall(_checkInfo: Check) {
-  }
+  registerCheckCall(_checkInfo: Check) {}
 
   scrollAndSelect(matches: AlignedMatch<Match>[]) {
     const newBegin = matches[0].range[0];
     const matchLength = getCompleteFlagLength(matches);
-    this.selection = {ranges: [[newBegin, newBegin + matchLength]]};
+    this.selection = { ranges: [[newBegin, newBegin + matchLength]] };
   }
 
   selectRanges(checkId: string, matches: Match[]) {
@@ -88,7 +86,7 @@ export class FakeAdapter implements AdapterInterface {
     this.scrollAndSelect(alignedMatches);
     this.replaceAlignedMatches(alignedMatches);
     const startOfSelection = alignedMatches[0].range[0];
-    const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
-    this.selection = {ranges: [[startOfSelection, startOfSelection + replacement.length]]};
+    const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
+    this.selection = { ranges: [[startOfSelection, startOfSelection + replacement.length]] };
   }
 }

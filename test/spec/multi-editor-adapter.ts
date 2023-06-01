@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import {MultiEditorAdapter} from "../../src/adapters/MultiEditorAdapter";
+import { MultiEditorAdapter } from '../../src/adapters/MultiEditorAdapter';
 import {
   AdapterInterface,
   ContentExtractionResult,
-  isSuccessfulContentExtractionResult, SuccessfulContentExtractionResult
-} from "../../src/adapters/AdapterInterface";
-import {Check, CheckResult, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {assertDeepEqual, getMatchesWithReplacement} from "../utils/test-utils";
+  isSuccessfulContentExtractionResult,
+  SuccessfulContentExtractionResult,
+} from '../../src/adapters/AdapterInterface';
+import { Check, CheckResult, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { assertDeepEqual, getMatchesWithReplacement } from '../utils/test-utils';
 
 const assert = chai.assert;
 
@@ -29,14 +30,11 @@ class MockedAdapter implements AdapterInterface {
   selectRangesCount = 0;
   lastSelectedRanges!: Match[];
 
-  constructor(public content = '') {
-  }
+  constructor(public content = '') {}
 
-  registerCheckCall(_checkInfo: Check): void {
-  }
+  registerCheckCall(_checkInfo: Check): void {}
 
-  registerCheckResult(_checkResult: CheckResult): void {
-  }
+  registerCheckResult(_checkResult: CheckResult): void {}
 
   selectRanges(_checkId: string, matches: Match[]): void {
     console.log('selectedMatches', matches);
@@ -45,11 +43,10 @@ class MockedAdapter implements AdapterInterface {
     this.lastSelectedRanges = matches;
   }
 
-  replaceRanges(_checkId: string, _matchesWithReplacement: MatchWithReplacement[]): void {
-  }
+  replaceRanges(_checkId: string, _matchesWithReplacement: MatchWithReplacement[]): void {}
 
   extractContentForCheck(): ContentExtractionResult {
-    return {content: this.content};
+    return { content: this.content };
   }
 }
 
@@ -70,21 +67,24 @@ describe('multi-editor-adapter', () => {
       multiAdapter.addSingleAdapter(adapter2);
 
       // Check the first time when adapter 1 has some content
-      extractionResult1 = await multiAdapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
+      extractionResult1 = (await multiAdapter.extractContentForCheck({})) as SuccessfulContentExtractionResult;
       if (!isSuccessfulContentExtractionResult(extractionResult1)) {
         return assert.ok(false, 'Extraction should have no error');
       }
-      assert.equal(extractionResult1.content, `<div id="acrolinx_integration0">Content1</div><div id="acrolinx_integration1">${adapter2Content}</div>`);
+      assert.equal(
+        extractionResult1.content,
+        `<div id="acrolinx_integration0">Content1</div><div id="acrolinx_integration1">${adapter2Content}</div>`,
+      );
       multiAdapter.registerCheckResult({
         checkedPart: {
           checkId: 'dummyCheckId',
-          range: [0, extractionResult1.content.length]
-        }
+          range: [0, extractionResult1.content.length],
+        },
       });
 
       // Check the second time when adapter 1 has no content
       adapter1.content = '';
-      extractionResult2 = await multiAdapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
+      extractionResult2 = (await multiAdapter.extractContentForCheck({})) as SuccessfulContentExtractionResult;
       if (!isSuccessfulContentExtractionResult(extractionResult2)) {
         return assert.ok(false, 'Extraction should have no error');
       }
@@ -92,7 +92,6 @@ describe('multi-editor-adapter', () => {
       expectedWrappedContent2 = `<div id="acrolinx_integration0"></div><div id="acrolinx_integration1">${adapter2Content}</div>`;
       assert.equal(extractionResult2.content, expectedWrappedContent2);
     });
-
 
     it('maps correctly based on first extraction, if second check check has not finished', async () => {
       multiAdapter.selectRanges('dummyCheckId', getMatchesWithReplacement(extractionResult1.content, adapter2Content));
@@ -102,13 +101,12 @@ describe('multi-editor-adapter', () => {
       assertDeepEqual(adapter2.lastSelectedRanges[0].range, [0, adapter2Content.length]);
     });
 
-
     it('maps correctly if first adapter gets empty', async () => {
       multiAdapter.registerCheckResult({
         checkedPart: {
           checkId: 'dummyCheckId',
-          range: [0, extractionResult2.content.length]
-        }
+          range: [0, extractionResult2.content.length],
+        },
       });
 
       multiAdapter.selectRanges('dummyCheckId', getMatchesWithReplacement(expectedWrappedContent2, adapter2Content));
@@ -120,13 +118,11 @@ describe('multi-editor-adapter', () => {
   });
 
   it('getFormat returns config.aggregateFormat', () => {
-    const multiAdapter = new MultiEditorAdapter({aggregateFormat: 'AUTO'});
+    const multiAdapter = new MultiEditorAdapter({ aggregateFormat: 'AUTO' });
     assert.equal(multiAdapter.getFormat(), 'AUTO');
   });
 
   it('getFormat returns HTML as default', () => {
     assert.equal(new MultiEditorAdapter().getFormat(), 'HTML');
   });
-
 });
-

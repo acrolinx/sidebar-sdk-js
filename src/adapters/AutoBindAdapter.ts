@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-import {Check, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {AutobindConfig, bindAdaptersForCurrentPage} from '../autobind/autobind';
+import { Check, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { AutobindConfig, bindAdaptersForCurrentPage } from '../autobind/autobind';
 import {
   AdapterInterface,
   CommonAdapterConf,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
-  SuccessfulCheckResult
-} from "./AdapterInterface";
-import {MultiEditorAdapter, MultiEditorAdapterConfig} from "./MultiEditorAdapter";
+  SuccessfulCheckResult,
+} from './AdapterInterface';
+import { MultiEditorAdapter, MultiEditorAdapterConfig } from './MultiEditorAdapter';
 
 // While making changes here make sure if you also need to do them in asynchronous version
 // of this adapter
 export class AutoBindAdapter implements AdapterInterface {
   private multiAdapter!: MultiEditorAdapter;
 
-  constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf & AutobindConfig)) {
+  constructor(private conf: MultiEditorAdapterConfig & CommonAdapterConf & AutobindConfig) {
     this.initMultiAdapter();
   }
 
@@ -44,15 +44,14 @@ export class AutoBindAdapter implements AdapterInterface {
 
   extractContentForCheck(opts: ExtractContentForCheckOpts): Promise<ContentExtractionResult> {
     this.initMultiAdapter();
-    bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
+    bindAdaptersForCurrentPage(this.conf).forEach((adapter) => {
       const wrapperAttributes = adapter.getAutobindWrapperAttributes ? adapter.getAutobindWrapperAttributes() : {};
-      this.multiAdapter.addSingleAdapter(adapter, {attributes: wrapperAttributes});
+      this.multiAdapter.addSingleAdapter(adapter, { attributes: wrapperAttributes });
     });
     return this.multiAdapter.extractContentForCheck(opts);
   }
 
-  registerCheckCall(_checkInfo: Check) {
-  }
+  registerCheckCall(_checkInfo: Check) {}
 
   registerCheckResult(_checkResult: SuccessfulCheckResult) {
     this.multiAdapter.registerCheckResult(_checkResult);

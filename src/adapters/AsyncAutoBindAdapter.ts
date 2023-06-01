@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import {Check, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {AutobindConfig, bindAdaptersForCurrentPage} from '../autobind/autobind';
+import { Check, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { AutobindConfig, bindAdaptersForCurrentPage } from '../autobind/autobind';
 import {
   AsyncAdapterInterface,
   CommonAdapterConf,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
-  SuccessfulCheckResult
-} from "./AdapterInterface";
-import {MultiEditorAdapterConfig} from "./MultiEditorAdapter";
-import {AsyncMultiEditorAdapter} from "./AsyncMultiEditorAdapter";
+  SuccessfulCheckResult,
+} from './AdapterInterface';
+import { MultiEditorAdapterConfig } from './MultiEditorAdapter';
+import { AsyncMultiEditorAdapter } from './AsyncMultiEditorAdapter';
 
 // While making changes here make sure if you also need to do them in synchronous version
 // of this adapter
@@ -33,7 +33,7 @@ export class AsyncAutoBindAdapter implements AsyncAdapterInterface {
   readonly requiresSynchronization = true as const;
   private asyncMultiAdapter!: AsyncMultiEditorAdapter;
 
-  constructor(private conf: (MultiEditorAdapterConfig & CommonAdapterConf & AutobindConfig)) {
+  constructor(private conf: MultiEditorAdapterConfig & CommonAdapterConf & AutobindConfig) {
     this.initMultiAdapter();
   }
 
@@ -47,15 +47,14 @@ export class AsyncAutoBindAdapter implements AsyncAdapterInterface {
 
   extractContentForCheck(opts: ExtractContentForCheckOpts): Promise<ContentExtractionResult> {
     this.initMultiAdapter();
-    bindAdaptersForCurrentPage(this.conf).forEach(adapter => {
+    bindAdaptersForCurrentPage(this.conf).forEach((adapter) => {
       const wrapperAttributes = adapter.getAutobindWrapperAttributes ? adapter.getAutobindWrapperAttributes() : {};
-      this.asyncMultiAdapter.addSingleAdapter(adapter, {attributes: wrapperAttributes});
+      this.asyncMultiAdapter.addSingleAdapter(adapter, { attributes: wrapperAttributes });
     });
     return this.asyncMultiAdapter.extractContentForCheck(opts);
   }
 
-  registerCheckCall(_checkInfo: Check) {
-  }
+  registerCheckCall(_checkInfo: Check) {}
 
   registerCheckResult(_checkResult: SuccessfulCheckResult) {
     this.asyncMultiAdapter.registerCheckResult(_checkResult);

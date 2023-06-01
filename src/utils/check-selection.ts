@@ -35,9 +35,8 @@ function getNonEmptySelectedRangesInsideOf(editorElement: HTMLElement): Range[] 
     return [];
   }
   const ranges = getRangesOfCurrentSelection(editorElement.ownerDocument);
-  return ranges.filter(range =>
-    containsOrIs(editorElement, range.commonAncestorContainer) &&
-    range.toString().trim() !== ''
+  return ranges.filter(
+    (range) => containsOrIs(editorElement, range.commonAncestorContainer) && range.toString().trim() !== '',
   );
 }
 
@@ -46,9 +45,8 @@ function getNonEmptySelectedRangesInsideOf(editorElement: HTMLElement): Range[] 
  * https://connect.microsoft.com/IE/feedback/details/780874/node-contains-is-incorrect
  */
 function containsOrIs(ancestor: HTMLElement, descendant: Node) {
-  return ancestor === descendant || (descendant.compareDocumentPosition(ancestor) & Node.DOCUMENT_POSITION_CONTAINS);
+  return ancestor === descendant || descendant.compareDocumentPosition(ancestor) & Node.DOCUMENT_POSITION_CONTAINS;
 }
-
 
 function getNodePath(ancestor: HTMLElement, node: Node): number[] {
   const result: number[] = [];
@@ -87,9 +85,11 @@ const RANGE_MARKER_END = 'ACROOO_SELECTION_END';
 
 type ElementHtmlGetter = (el: HTMLElement) => string;
 
-function mapDomRangeToHtmlRange(editorElement: HTMLElement,
-                                range: Range,
-                                getElementHtml: ElementHtmlGetter): [number, number] | undefined {
+function mapDomRangeToHtmlRange(
+  editorElement: HTMLElement,
+  range: Range,
+  getElementHtml: ElementHtmlGetter,
+): [number, number] | undefined {
   const doc = editorElement.ownerDocument;
   if (!doc) {
     return undefined;
@@ -134,11 +134,13 @@ function getInnerHtml(el: HTMLElement): string {
   return el.innerHTML;
 }
 
-export function getSelectionHtmlRanges(editorElement: HTMLElement,
-                                       getElementHtml: ElementHtmlGetter = getInnerHtml): [number, number][] {
+export function getSelectionHtmlRanges(
+  editorElement: HTMLElement,
+  getElementHtml: ElementHtmlGetter = getInnerHtml,
+): [number, number][] {
   const ranges = getNonEmptySelectedRangesInsideOf(editorElement);
   // We could optimize this mapping of individual ranges by implementing a function
   // which maps all ranges at once, but this would probably increase code complexity just
   // to speed up the rare corner case of multiple ranges in a selection.
-  return _.compact(ranges.map(range => mapDomRangeToHtmlRange(editorElement, range, getElementHtml)));
+  return _.compact(ranges.map((range) => mapDomRangeToHtmlRange(editorElement, range, getElementHtml)));
 }

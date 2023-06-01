@@ -15,9 +15,9 @@
  */
 
 import Quill from 'quill';
-import {ContentEditableAdapter} from '../../../src/adapters/ContentEditableAdapter';
-import {AdapterTestSetup, DoneCallback} from './adapter-test-setup';
-import {EDITOR_HEIGHT} from './constants';
+import { ContentEditableAdapter } from '../../../src/adapters/ContentEditableAdapter';
+import { AdapterTestSetup, DoneCallback } from './adapter-test-setup';
+import { EDITOR_HEIGHT } from './constants';
 
 export class QuillContentEditableTestSetup implements AdapterTestSetup {
   name = 'QuillContentEditableAdapter';
@@ -26,9 +26,9 @@ export class QuillContentEditableTestSetup implements AdapterTestSetup {
   quill!: Quill;
 
   async init() {
-    this.quill = new Quill('#editorId', {theme: 'snow'});
+    this.quill = new Quill('#editorId', { theme: 'snow' });
     const quillElement = document.querySelector<HTMLDivElement>('#editorId .ql-editor')!;
-    return Promise.resolve(new ContentEditableAdapter({element: quillElement}));
+    return Promise.resolve(new ContentEditableAdapter({ element: quillElement }));
   }
 
   setEditorContent(html: string, done: DoneCallback) {

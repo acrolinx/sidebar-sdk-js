@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {AdapterInterface} from "../../../src/adapters/AdapterInterface";
+import { AdapterInterface } from '../../../src/adapters/AdapterInterface';
 
 export type DoneCallback = () => void;
 

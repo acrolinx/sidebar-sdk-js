@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
-import {Match} from "@acrolinx/sidebar-interface";
-
+import * as _ from 'lodash';
+import { Match } from '@acrolinx/sidebar-interface';
 
 export interface OffSetAlign {
   oldPosition: number;
@@ -32,9 +31,10 @@ export function findDisplacement(offsetMappingArray: OffSetAlign[], originalInde
   if (offsetMappingArray.length === 0) {
     return 0;
   }
-  const index = _.sortedIndexBy(offsetMappingArray,
-    {diffOffset: 0, oldPosition: originalIndex + 0.1},
-    offsetAlign => offsetAlign.oldPosition
+  const index = _.sortedIndexBy(
+    offsetMappingArray,
+    { diffOffset: 0, oldPosition: originalIndex + 0.1 },
+    (offsetAlign) => offsetAlign.oldPosition,
   );
   return index > 0 ? offsetMappingArray[index - 1].diffOffset : 0;
 }

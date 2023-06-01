@@ -15,8 +15,8 @@
  */
 
 import * as _ from 'lodash';
-import {AutobindWrapperAttributes} from '../adapters/AdapterInterface';
-import {isDisplayed} from '../utils/utils';
+import { AutobindWrapperAttributes } from '../adapters/AdapterInterface';
+import { isDisplayed } from '../utils/utils';
 
 export function getAutobindWrapperAttributes(element: Element): AutobindWrapperAttributes {
   const attributes: AutobindWrapperAttributes = {
@@ -24,10 +24,10 @@ export function getAutobindWrapperAttributes(element: Element): AutobindWrapperA
     'original-class': element.className,
     'original-name': (element as HTMLInputElement).name,
     'original-source': element.tagName.toLowerCase(),
-    'original-display': isDisplayed(element) ? '' : 'hidden'
+    'original-display': isDisplayed(element) ? '' : 'hidden',
   };
 
-  for (const attributeName of element.getAttributeNames().filter(it => _.startsWith(it, 'aria-'))) {
+  for (const attributeName of element.getAttributeNames().filter((it) => _.startsWith(it, 'aria-'))) {
     attributes['original-' + attributeName] = element.getAttribute(attributeName)!;
   }
 

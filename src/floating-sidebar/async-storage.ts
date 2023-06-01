@@ -33,7 +33,6 @@ export class AsyncLocalStorage implements AsyncStorage {
       saveToLocalStorage(key, value);
       resolve(undefined);
     });
-
   }
 }
 

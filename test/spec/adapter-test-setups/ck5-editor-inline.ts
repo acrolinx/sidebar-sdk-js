@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
-import {CKEditor5Adapter} from "../../../src/adapters/CKEditor5Adapter";
-import InlineEditor from "@ckeditor/ckeditor5-build-inline";
+import { AdapterTestSetup, DoneCallback } from './adapter-test-setup';
+import { CKEditor5Adapter } from '../../../src/adapters/CKEditor5Adapter';
+import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 
 export class CKEditor5InlineTestSetup implements AdapterTestSetup {
   name = 'CKEditor5Adapter-Inline';
@@ -32,7 +32,7 @@ export class CKEditor5InlineTestSetup implements AdapterTestSetup {
     const editorDiv = document.querySelector('#editorId');
     const editor = await InlineEditor.create(editorDiv as HTMLElement);
     (<any>window).editor = editor;
-    return new CKEditor5Adapter({editorId: "editorId"});
+    return new CKEditor5Adapter({ editorId: 'editorId' });
   }
 
   async remove() {
@@ -48,5 +48,4 @@ export class CKEditor5InlineTestSetup implements AdapterTestSetup {
     const editorDiv = document.querySelector('#' + id);
     return (editorDiv as any).ckeditorInstance;
   }
-
 }

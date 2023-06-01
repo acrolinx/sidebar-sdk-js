@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 import 'es6-promise/auto';
-import * as _ from "lodash";
-import {Check, DocumentRange, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {findNewIndex} from "../utils/alignment";
-import {escapeHtmlCharacters, EscapeHtmlCharactersResult} from "../utils/escaping";
+import * as _ from 'lodash';
+import { Check, DocumentRange, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { findNewIndex } from '../utils/alignment';
+import { escapeHtmlCharacters, EscapeHtmlCharactersResult } from '../utils/escaping';
 import {
-  AdapterInterface, AsyncAdapterInterface,
+  AdapterInterface,
+  AsyncAdapterInterface,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
   hasError,
   SuccessfulCheckResult,
-  SuccessfulContentExtractionResult
-} from "./AdapterInterface";
-
+  SuccessfulContentExtractionResult,
+} from './AdapterInterface';
 
 export interface RemappedMatches<T extends Match> {
   matches: T[];
@@ -59,11 +59,10 @@ export interface CheckedRegisteredAdapter extends RegisteredAdapter {
   checkedRange: [number, number];
 }
 
-
 function createStartTag(wrapper: WrapperConf, id?: string) {
   const allAttributes = _.clone(wrapper.attributes);
   if (id) {
-    _.assign(allAttributes, {id});
+    _.assign(allAttributes, { id });
   }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const allAttributesString = _.map(allAttributes, (value, key) => ` ${key}="${_.escape(value)}"`).join('');
@@ -74,10 +73,13 @@ function createEndTag(tagName: string) {
   return `</${tagName}>`;
 }
 
-function mapBackRangeOfEscapedText(escapeResult: EscapeHtmlCharactersResult, range: [number, number]): [number, number] {
+function mapBackRangeOfEscapedText(
+  escapeResult: EscapeHtmlCharactersResult,
+  range: [number, number],
+): [number, number] {
   return [
     findNewIndex(escapeResult.backwardAlignment, range[0]),
-    findNewIndex(escapeResult.backwardAlignment, range[1])
+    findNewIndex(escapeResult.backwardAlignment, range[1]),
   ];
 }
 
@@ -93,7 +95,7 @@ function wrapperConfWithDefaults(opts: WrapperConfOptions, defaultTagName = 'div
   if (_.includes(tagName, ' ')) {
     console.info(`tagName "${tagName}" contains whitespaces which may lead to unexpected results.`);
   }
-  return {tagName, attributes: opts.attributes || {}};
+  return { tagName, attributes: opts.attributes || {} };
 }
 
 function wrapAdapterContent(registeredAdapter: RegisteredAdapter, extractionResult: SuccessfulContentExtractionResult) {
@@ -113,7 +115,7 @@ function wrapAdapterContent(registeredAdapter: RegisteredAdapter, extractionResu
   return {
     completeHtml: startText + innerHtml + createEndTag(tagName),
     contentStart: startText.length,
-    contentEnd: startText.length + innerHtml.length
+    contentEnd: startText.length + innerHtml.length,
   };
 }
 
@@ -135,8 +137,12 @@ export class MultiEditorAdapter implements AdapterInterface {
     return this.config.aggregateFormat || 'HTML';
   }
 
-  protected addSingleAdapterInternal(singleAdapter: AdapterInterface | AsyncAdapterInterface, opts: AddSingleAdapterOptions = {}, id = 'acrolinx_integration' + this.adapters.length) {
-    this.adapters.push({id: id, adapter: singleAdapter, wrapper: wrapperConfWithDefaults(opts)});
+  protected addSingleAdapterInternal(
+    singleAdapter: AdapterInterface | AsyncAdapterInterface,
+    opts: AddSingleAdapterOptions = {},
+    id = 'acrolinx_integration' + this.adapters.length,
+  ) {
+    this.adapters.push({ id: id, adapter: singleAdapter, wrapper: wrapperConfWithDefaults(opts) });
   }
 
   addSingleAdapter(singleAdapter: AdapterInterface, opts: AddSingleAdapterOptions = {}, id?: string) {
@@ -152,7 +158,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     if (this.config.beforeCheck) {
       this.config.beforeCheck(this);
     }
-    const contentExtractionResults = this.adapters.map(adapter => adapter.adapter.extractContentForCheck(opts));
+    const contentExtractionResults = this.adapters.map((adapter) => adapter.adapter.extractContentForCheck(opts));
     return Promise.all(contentExtractionResults).then((results: ContentExtractionResult[]): ContentExtractionResult => {
       let html = this.config.documentHeader || '';
       const selectionRanges: DocumentRange[] = [];
@@ -166,11 +172,14 @@ export class MultiEditorAdapter implements AdapterInterface {
           registeredAdapter.checkedRange = undefined;
           continue;
         }
-        const {completeHtml, contentStart, contentEnd} = wrapAdapterContent(registeredAdapter, extractionResult);
+        const { completeHtml, contentStart, contentEnd } = wrapAdapterContent(registeredAdapter, extractionResult);
         registeredAdapter.checkedRange = [html.length + contentStart, html.length + contentEnd];
         if (extractionResult.selection) {
           for (const selectionRange of extractionResult.selection.ranges) {
-            selectionRanges.push([selectionRange[0] + registeredAdapter.checkedRange[0], selectionRange[1] + registeredAdapter.checkedRange[0]]);
+            selectionRanges.push([
+              selectionRange[0] + registeredAdapter.checkedRange[0],
+              selectionRange[1] + registeredAdapter.checkedRange[0],
+            ]);
           }
         }
         html += completeHtml;
@@ -178,19 +187,18 @@ export class MultiEditorAdapter implements AdapterInterface {
       if (this.rootElementWrapper) {
         html += createEndTag(this.rootElementWrapper.tagName);
       }
-      return {content: html, selection: {ranges: selectionRanges}};
+      return { content: html, selection: { ranges: selectionRanges } };
     });
   }
 
-  registerCheckCall(_checkInfo: Check) {
-  }
+  registerCheckCall(_checkInfo: Check) {}
 
   registerCheckResult(checkResult: SuccessfulCheckResult): void {
-    this.adapters.forEach(entry => {
+    this.adapters.forEach((entry) => {
       entry.adapter.registerCheckResult(checkResult);
     });
     // Shallow clone of the registered adapters
-    this.adaptersOfLastSuccessfulCheck = this.adapters.map(registeredAdapter => ({...registeredAdapter}));
+    this.adaptersOfLastSuccessfulCheck = this.adapters.map((registeredAdapter) => ({ ...registeredAdapter }));
   }
 
   selectRanges(checkId: string, matches: Match[]) {
@@ -206,13 +214,17 @@ export class MultiEditorAdapter implements AdapterInterface {
       const registeredAdapter = this.getAdapterForMatch(match);
       // eslint-disable-next-line no-prototype-builtins
       if (!map.hasOwnProperty(registeredAdapter.id)) {
-        map[registeredAdapter.id] = {matches: [], adapter: registeredAdapter.adapter};
+        map[registeredAdapter.id] = { matches: [], adapter: registeredAdapter.adapter };
       }
       const checkedRangeStart = registeredAdapter.checkedRange[0];
-      const rangeInsideWrapper: [number, number] = [match.range[0] - (checkedRangeStart), match.range[1] - (checkedRangeStart)];
+      const rangeInsideWrapper: [number, number] = [
+        match.range[0] - checkedRangeStart,
+        match.range[1] - checkedRangeStart,
+      ];
       const remappedMatch = _.clone(match);
-      remappedMatch.range = registeredAdapter.escapeResult ?
-        mapBackRangeOfEscapedText(registeredAdapter.escapeResult, rangeInsideWrapper) : rangeInsideWrapper;
+      remappedMatch.range = registeredAdapter.escapeResult
+        ? mapBackRangeOfEscapedText(registeredAdapter.escapeResult, rangeInsideWrapper)
+        : rangeInsideWrapper;
       map[registeredAdapter.id].matches.push(remappedMatch);
     }
     return map;
@@ -220,13 +232,12 @@ export class MultiEditorAdapter implements AdapterInterface {
 
   getAdapterForMatch(match: Match): CheckedRegisteredAdapter {
     if (!this.adaptersOfLastSuccessfulCheck) {
-      throw new Error("Expected previous successful check.");
+      throw new Error('Expected previous successful check.');
     }
-    return _.find(this.adaptersOfLastSuccessfulCheck,
-      (adapter: RegisteredAdapter) => {
-        const checkedRange = adapter.checkedRange;
-        return !!checkedRange && (match.range[0] >= checkedRange[0]) && (match.range[1] <= checkedRange[1]);
-      }) as CheckedRegisteredAdapter;
+    return _.find(this.adaptersOfLastSuccessfulCheck, (adapter: RegisteredAdapter) => {
+      const checkedRange = adapter.checkedRange;
+      return !!checkedRange && match.range[0] >= checkedRange[0] && match.range[1] <= checkedRange[1];
+    }) as CheckedRegisteredAdapter;
   }
 
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
@@ -235,5 +246,4 @@ export class MultiEditorAdapter implements AdapterInterface {
       map[id].adapter.replaceRanges(checkId, map[id].matches);
     }
   }
-
 }

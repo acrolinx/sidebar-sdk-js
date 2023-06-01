@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { AdapterInterface, ExtractContentForCheckOpts, ContentExtractionResult, SuccessfulCheckResult } from './AdapterInterface';
+import {
+  AdapterInterface,
+  ExtractContentForCheckOpts,
+  ContentExtractionResult,
+  SuccessfulCheckResult,
+} from './AdapterInterface';
 import { Check, MatchWithReplacement, Match } from '@acrolinx/sidebar-interface';
 import { lookupMatches } from '../lookup/diff-based';
 import { AlignedMatch } from '../utils/alignment';
@@ -31,7 +36,6 @@ interface CheckContentResult {
 }
 
 export class XeditorAdapter implements AdapterInterface {
-
   /**
    * Editor of this adapter
    *
@@ -96,20 +100,20 @@ export class XeditorAdapter implements AdapterInterface {
   /**
    * @inheritdoc
    */
-  extractContentForCheck(_opts: ExtractContentForCheckOpts): ContentExtractionResult | Promise<ContentExtractionResult> {
+  extractContentForCheck(
+    _opts: ExtractContentForCheckOpts,
+  ): ContentExtractionResult | Promise<ContentExtractionResult> {
     const content = this.getContentForCheck().html;
     this.currentContentChecking = content;
     return {
-      content: content
+      content: content,
     };
   }
 
   /**
    * @inheritdoc
    */
-  registerCheckCall(_checkInfo: Check): void {
-
-  }
+  registerCheckCall(_checkInfo: Check): void {}
 
   /**
    * @inheritdoc
@@ -123,7 +127,7 @@ export class XeditorAdapter implements AdapterInterface {
    */
   replaceRanges(_checkId: string, matchesWithReplacement: MatchWithReplacement[]): void {
     const alignedMatches = this.selectMatches<MatchWithReplacement>(matchesWithReplacement);
-    const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
+    const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
     this.replaceAlignedMatches(alignedMatches);
 
     // Replacement will remove the selection, so we need to restore it again.
@@ -151,10 +155,15 @@ export class XeditorAdapter implements AdapterInterface {
     });
 
     for (const match of matches) {
-      this.document.replaceTextByOffsetRanges([{
-        from: match.range[0],
-        to: match.range[1]
-      }], match.originalMatch.replacement);
+      this.document.replaceTextByOffsetRanges(
+        [
+          {
+            from: match.range[0],
+            to: match.range[1],
+          },
+        ],
+        match.originalMatch.replacement,
+      );
     }
 
     this.editor.updateState(true);
@@ -169,7 +178,11 @@ export class XeditorAdapter implements AdapterInterface {
    * @protected
    */
   selectMatches<T extends Match>(matches: Match[]): AlignedMatch<T>[] {
-    const alignedMatches = lookupMatches(this.lastContentChecked, this.getContentForCheck().text, matches) as AlignedMatch<T>[];
+    const alignedMatches = lookupMatches(
+      this.lastContentChecked,
+      this.getContentForCheck().text,
+      matches,
+    ) as AlignedMatch<T>[];
     this.selectAlignedMatches(alignedMatches);
     return alignedMatches;
   }
@@ -203,9 +216,17 @@ export class XeditorAdapter implements AdapterInterface {
     const activeSelection = this.selectionManager.getActive();
 
     activeSelection.startNode = startOffset.textNode;
-    activeSelection.startOffset = Ext.ux.xeditor.Util.getNodeOffsetByNodeAndOffset(this.editor, startOffset.textNode, startOffset.offset);
+    activeSelection.startOffset = Ext.ux.xeditor.Util.getNodeOffsetByNodeAndOffset(
+      this.editor,
+      startOffset.textNode,
+      startOffset.offset,
+    );
     activeSelection.endNode = endOffset.textNode;
-    activeSelection.endOffset = Ext.ux.xeditor.Util.getNodeOffsetByNodeAndOffset(this.editor, endOffset.textNode, endOffset.offset);
+    activeSelection.endOffset = Ext.ux.xeditor.Util.getNodeOffsetByNodeAndOffset(
+      this.editor,
+      endOffset.textNode,
+      endOffset.offset,
+    );
 
     this.editor.updateState();
     this.selectionManager.sync();
@@ -229,11 +250,11 @@ export class XeditorAdapter implements AdapterInterface {
     const result = {
       dom: document.createElement('div'),
       html: '',
-      text: ''
+      text: '',
     };
 
     // Ignore space after for versions over 6
-    const ignoreSpaceAfter = (this.editor.getVersion().major >= 6);
+    const ignoreSpaceAfter = this.editor.getVersion().major >= 6;
 
     // use inner function for recursion to share the result
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -246,11 +267,11 @@ export class XeditorAdapter implements AdapterInterface {
 
       // check if element is a text element as a exception for text
       // elements exist
-      const isTextElement = (elementInner.getType() === 'text');
+      const isTextElement = elementInner.getType() === 'text';
 
       // handle children
       let insertSpaceAfter = false;
-      elementInner.eachChildNode(function(child: any, _index: number, _len: number) {
+      elementInner.eachChildNode(function (child: any, _index: number, _len: number) {
         // check type
         const childType = scope.editor.document.getNodeType(child);
         if (isTextElement && childType === '#text') {

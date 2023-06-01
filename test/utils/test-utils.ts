@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {MatchWithReplacement} from '@acrolinx/sidebar-interface';
+import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import * as _ from 'lodash';
 
 const assert = chai.assert;
@@ -23,7 +23,11 @@ export function getDummySidebarPath() {
   return _.startsWith(location.pathname, '/test/') ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/';
 }
 
-export function getMatchesWithReplacement(completeString: string, partialString: string, replacement = ''): MatchWithReplacement[] {
+export function getMatchesWithReplacement(
+  completeString: string,
+  partialString: string,
+  replacement = '',
+): MatchWithReplacement[] {
   const matches: MatchWithReplacement[] = [];
   let offsetStart: number;
   let offsetEnd = 0;
@@ -40,7 +44,7 @@ export function getMatchesWithReplacement(completeString: string, partialString:
     matches.push({
       content: partialString,
       replacement: replacement,
-      range: [offsetStart, offsetEnd]
+      range: [offsetStart, offsetEnd],
     });
   }
   return matches;
@@ -61,7 +65,7 @@ export function containsEmptyTextNodes(node: Node) {
   const nodeIterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT);
   let currentNode: Node | null;
   // eslint-disable-next-line no-cond-assign
-  while (currentNode = nodeIterator.nextNode()) {
+  while ((currentNode = nodeIterator.nextNode())) {
     if (currentNode.textContent === '') {
       return true;
     }
@@ -75,13 +79,13 @@ export function createTextNode(text: string) {
 
 export function createDiv(children: Node[]) {
   const div = document.createElement('div');
-  children.forEach(node => div.appendChild(node));
+  children.forEach((node) => div.appendChild(node));
   appendChildren(div, children);
   return div;
 }
 
 export function appendChildren(parent: Node, children: Node[]) {
-  children.forEach(node => parent.appendChild(node));
+  children.forEach((node) => parent.appendChild(node));
 }
 
 export function createRange(startNode: Node, endNode: Node) {
@@ -119,7 +123,7 @@ export function testIfWindowIsFocused(testName: string, test: (done: () => void)
 }
 
 export function waitMs(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export function addIFrame() {
@@ -143,13 +147,13 @@ export function benchmark(runs: number, f: () => void): BenchmarkResult {
   for (let i = 0; i < runs; i++) {
     f();
   }
-  return {timeMsPerRun: (performance.now() - start) / runs};
+  return { timeMsPerRun: (performance.now() - start) / runs };
 }
 
 /**
  * Detect if ScrollIntoViewOptions are supported, which indicated that it's possible to scroll to center.
  * Should be supported currently (April 2019) in Chrome and Firefox.
  */
- export function isScrollIntoViewCenteredAvailable(): boolean {
+export function isScrollIntoViewCenteredAvailable(): boolean {
   return 'scrollBehavior' in document.body.style;
 }

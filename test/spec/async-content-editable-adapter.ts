@@ -23,13 +23,13 @@ import {
   CheckOptions,
   InitParameters,
   InvalidDocumentPart,
-  SidebarConfiguration
+  SidebarConfiguration,
 } from '@acrolinx/sidebar-interface';
 import _ from 'lodash';
 import * as acrolinxPluginModule from '../../src/acrolinx-plugin';
-import {AsyncContentEditableAdapter} from '../../src/adapters/AsyncContentEditableAdapter';
-import {assign} from '../../src/utils/utils';
-import {getDummySidebarPath, getMatchesWithReplacement, waitMs} from '../utils/test-utils';
+import { AsyncContentEditableAdapter } from '../../src/adapters/AsyncContentEditableAdapter';
+import { assign } from '../../src/utils/utils';
+import { getDummySidebarPath, getMatchesWithReplacement, waitMs } from '../utils/test-utils';
 
 const DUMMY_CHECK_ID = 'dummyCheckId';
 const INITIAL_DOCUMENT_CONTENT = 'word1 word2 word3';
@@ -46,8 +46,7 @@ describe('async adapter', function () {
   let acrolinxPlugin: acrolinxPluginModule.AcrolinxPlugin;
 
   afterEach((done) => {
-    acrolinxPlugin.dispose(() => {
-    });
+    acrolinxPlugin.dispose(() => {});
     $('#asyncAdapterTest').remove();
     done();
   });
@@ -62,16 +61,17 @@ describe('async adapter', function () {
         </div>
       `);
 
-
-    const conf = assign({
-      sidebarUrl: getDummySidebarPath(),
-      sidebarContainerId: 'sidebarContainer',
-    }, {});
+    const conf = assign(
+      {
+        sidebarUrl: getDummySidebarPath(),
+        sidebarContainerId: 'sidebarContainer',
+      },
+      {},
+    );
 
     acrolinxPlugin = new acrolinxPluginModule.AcrolinxPlugin(conf);
 
-    const asyncContentEditableAdapter =
-      new AsyncContentEditableAdapter({editorId: 'ContentEditableAdapter'});
+    const asyncContentEditableAdapter = new AsyncContentEditableAdapter({ editorId: 'ContentEditableAdapter' });
     acrolinxPlugin.registerAdapter(asyncContentEditableAdapter);
     acrolinxPlugin.init();
 
@@ -96,45 +96,39 @@ describe('async adapter', function () {
     pollForInjectedAcrolinxPlug();
   }
 
-
   function getIFrameWindow(): any {
     const iFrame: HTMLIFrameElement = document.querySelector('#sidebarContainer iframe') as HTMLIFrameElement;
     return iFrame ? iFrame.contentWindow : null;
   }
-
 
   function createMockSidebar(): AcrolinxSidebar {
     return {
       init(_initParameters: InitParameters): void {
         injectedPlugin.onInitFinished({});
       },
-      configure(_config: SidebarConfiguration): void {
-      },
+      configure(_config: SidebarConfiguration): void {},
       checkGlobal(documentContent: string, _options: CheckOptions): Check {
         lastDocumentContent = documentContent;
         setTimeout(() => {
           injectedPlugin.onCheckResult({
             checkedPart: {
               checkId: DUMMY_CHECK_ID,
-              range: [0, documentContent.length]
-            }
+              range: [0, documentContent.length],
+            },
           });
           afterCheckCallback();
         }, 1);
-        return {checkId: DUMMY_CHECK_ID};
+        return { checkId: DUMMY_CHECK_ID };
       },
-      onGlobalCheckRejected(): void {
-
-      },
+      onGlobalCheckRejected(): void {},
 
       invalidateRanges(invalidCheckedDocumentRanges: InvalidDocumentPart[]) {
         invalidatedRanges = invalidCheckedDocumentRanges;
       },
 
-      onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
-      },
+      onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {},
 
-      showMessage: _.noop
+      showMessage: _.noop,
     };
   }
 
@@ -185,10 +179,12 @@ describe('async adapter', function () {
 
       await waitMs(DELAY_IN_MS);
 
-      assert.deepEqual(invalidatedRanges, [{
-        checkId: DUMMY_CHECK_ID,
-        range: contentEditableAdapterMatch[0].range
-      }]);
+      assert.deepEqual(invalidatedRanges, [
+        {
+          checkId: DUMMY_CHECK_ID,
+          range: contentEditableAdapterMatch[0].range,
+        },
+      ]);
     });
 
     it('trying to replace modified ranges invalidated them', async () => {
@@ -201,10 +197,12 @@ describe('async adapter', function () {
 
       await waitMs(DELAY_IN_MS);
 
-      assert.deepEqual(invalidatedRanges, [{
-        checkId: DUMMY_CHECK_ID,
-        range: contentEditableAdapterMatch[0].range
-      }]);
+      assert.deepEqual(invalidatedRanges, [
+        {
+          checkId: DUMMY_CHECK_ID,
+          range: contentEditableAdapterMatch[0].range,
+        },
+      ]);
     });
 
     it('trying to replace modified ranges invalidated them', async () => {
@@ -217,10 +215,12 @@ describe('async adapter', function () {
 
       await waitMs(DELAY_IN_MS);
 
-      assert.deepEqual(invalidatedRanges, [{
-        checkId: DUMMY_CHECK_ID,
-        range: contentEditableAdapterMatch[0].range
-      }]);
+      assert.deepEqual(invalidatedRanges, [
+        {
+          checkId: DUMMY_CHECK_ID,
+          range: contentEditableAdapterMatch[0].range,
+        },
+      ]);
     });
   });
 });

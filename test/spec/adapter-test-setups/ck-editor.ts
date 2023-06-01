@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {AdapterInterface} from "../../../src/adapters/AdapterInterface";
-import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
-import {CKEditorAdapter} from "../../../src/adapters/CKEditorAdapter";
-import {waitMs} from '../../utils/test-utils';
+import { AdapterInterface } from '../../../src/adapters/AdapterInterface';
+import { AdapterTestSetup, DoneCallback } from './adapter-test-setup';
+import { CKEditorAdapter } from '../../../src/adapters/CKEditorAdapter';
+import { waitMs } from '../../utils/test-utils';
 import editor = CKEDITOR.editor;
 
 export function getCkEditorInstance(id: string): editor {
@@ -33,24 +33,26 @@ export class CKEditorTestSetup implements AdapterTestSetup {
     getCkEditorInstance('editorId').setData(html, {
       callback: () => {
         done();
-      }
+      },
     });
   }
 
   async init() {
     return new Promise<AdapterInterface>((resolve, reject) => {
-      const adapter = new CKEditorAdapter({editorId: 'editorId'});
+      const adapter = new CKEditorAdapter({ editorId: 'editorId' });
       CKEDITOR.disableAutoInline = true;
-      CKEDITOR.replace('editorId', {customConfig: ''});
-      getCkEditorInstance('editorId').on("instanceReady", () => {
+      CKEDITOR.replace('editorId', { customConfig: '' });
+      getCkEditorInstance('editorId').on('instanceReady', () => {
         // Timeout is needed for IE
         setTimeout(() => {
           resolve(adapter);
         }, 30);
       });
-      waitMs(5000).then(() => reject('Instance ready was never called by CK Editor.')).catch(() => {
-        reject();
-      });
+      waitMs(5000)
+        .then(() => reject('Instance ready was never called by CK Editor.'))
+        .catch(() => {
+          reject();
+        });
     });
   }
 

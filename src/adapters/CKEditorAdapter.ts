@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
-import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
+import { Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { HasEditorID, ContentExtractionResult } from './AdapterInterface';
 
 export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   editorId: string;
@@ -45,9 +45,9 @@ export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
   extractContentForCheck(): ContentExtractionResult {
     if (this.isInWysiwygMode()) {
       this.currentContentChecking = this.getContent();
-      return {content: this.currentContentChecking};
+      return { content: this.currentContentChecking };
     } else {
-      return {error: 'Action is not permitted in Source mode.'};
+      return { error: 'Action is not permitted in Source mode.' };
     }
   }
 

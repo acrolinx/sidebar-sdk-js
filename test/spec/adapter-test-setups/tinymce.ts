@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-import {AdapterInterface} from "../../../src/adapters/AdapterInterface";
-import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
-import {TinyMCEAdapter} from "../../../src/adapters/TinyMCEAdapter";
+import { AdapterInterface } from '../../../src/adapters/AdapterInterface';
+import { AdapterTestSetup, DoneCallback } from './adapter-test-setup';
+import { TinyMCEAdapter } from '../../../src/adapters/TinyMCEAdapter';
 
 export class TinyMCETestSetup implements AdapterTestSetup {
   name = 'TinyMCEAdapter';
   inputFormat = 'HTML';
   editorElement = '<textarea id="editorId" rows="10" cols="40">initial text</textarea>';
 
-  getTinyMceEditor = () => tinymce.get("editorId");
-
+  getTinyMceEditor = () => tinymce.get('editorId');
 
   setEditorContent(html: string, done: DoneCallback) {
-    tinymce.get("editorId")!.setContent(html);
+    tinymce.get('editorId')!.setContent(html);
     done();
   }
 
   init() {
     return new Promise<AdapterInterface>((resolve, reject) => {
-      tinymce.init({
-        selector: "#editorId",
-        height: 50,
-        init_instance_callback: () => {
-          resolve(new TinyMCEAdapter({editorId: 'editorId'}));
-        }
-      }).catch(reject);
+      tinymce
+        .init({
+          selector: '#editorId',
+          height: 50,
+          init_instance_callback: () => {
+            resolve(new TinyMCEAdapter({ editorId: 'editorId' }));
+          },
+        })
+        .catch(reject);
     });
   }
 
@@ -51,6 +52,6 @@ export class TinyMCETestSetup implements AdapterTestSetup {
   }
 
   getSelectedText(): string {
-    return tinymce.get("editorId")!.selection.getContent();
+    return tinymce.get('editorId')!.selection.getContent();
   }
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
-import {Match} from "@acrolinx/sidebar-interface";
-import {OffSetAlign, findNewIndex, AlignedMatch} from "../utils/alignment";
-import {extractText} from "../utils/text-extraction";
-import {log} from "../utils/logging";
-import {diff_match_patch, DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT, Diff} from "diff-match-patch";
-import {rangeContent} from "../utils/match";
+import * as _ from 'lodash';
+import { Match } from '@acrolinx/sidebar-interface';
+import { OffSetAlign, findNewIndex, AlignedMatch } from '../utils/alignment';
+import { extractText } from '../utils/text-extraction';
+import { log } from '../utils/logging';
+import { diff_match_patch, DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT, Diff } from 'diff-match-patch';
+import { rangeContent } from '../utils/match';
 
 export type InputFormat = 'HTML' | 'TEXT';
 
@@ -49,7 +49,7 @@ export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
     }
     offsetMappingArray.push({
       oldPosition: offsetCountOld,
-      diffOffset: currentDiffOffset
+      diffOffset: currentDiffOffset,
     });
   });
   return offsetMappingArray;
@@ -68,18 +68,23 @@ export function createOffsetMappingArray(diffs: Diff[]): OffSetAlign[] {
  *
  * @return {AlignedMatch<T extends Match>[]}
  */
-export function lookupMatches<T extends Match>(checkedDocument: string, currentDocument: string,
-                                               matches: T[], inputFormat: InputFormat = 'HTML'): AlignedMatch<T>[] {
+export function lookupMatches<T extends Match>(
+  checkedDocument: string,
+  currentDocument: string,
+  matches: T[],
+  inputFormat: InputFormat = 'HTML',
+): AlignedMatch<T>[] {
   if (_.isEmpty(matches)) {
     return [];
   }
 
-  const cleaningResult: [string, OffSetAlign[]] = inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []];
+  const cleaningResult: [string, OffSetAlign[]] =
+    inputFormat === 'HTML' ? extractText(checkedDocument) : [checkedDocument, []];
   const [cleanedCheckedDocument, cleaningOffsetMappingArray] = cleaningResult;
   const diffs: Diff[] = dmp.diff_main(cleanedCheckedDocument, currentDocument);
   const offsetMappingArray = createOffsetMappingArray(diffs);
 
-  const alignedMatches = matches.map(match => {
+  const alignedMatches = matches.map((match) => {
     const beginAfterCleaning = findNewIndex(cleaningOffsetMappingArray, match.range[0]);
     const endAfterCleaning = findNewIndex(cleaningOffsetMappingArray, match.range[1]);
     const alignedBegin = findNewIndex(offsetMappingArray, beginAfterCleaning);
@@ -91,19 +96,31 @@ export function lookupMatches<T extends Match>(checkedDocument: string, currentD
     };
   });
 
-  const containsModifiedMatches = inputFormat === 'HTML' ?
-    _.some(alignedMatches, m => rangeContent(currentDocument, m) !== m.originalMatch.content) :
-    _.some(alignedMatches, m => rangeContent(currentDocument, m) !== rangeContent(checkedDocument, m.originalMatch));
+  const containsModifiedMatches =
+    inputFormat === 'HTML'
+      ? _.some(alignedMatches, (m) => rangeContent(currentDocument, m) !== m.originalMatch.content)
+      : _.some(
+          alignedMatches,
+          (m) => rangeContent(currentDocument, m) !== rangeContent(checkedDocument, m.originalMatch),
+        );
 
   log('cleanedCheckedDocument', cleanedCheckedDocument);
-  log('cleanedCheckedDocumentCodes', cleanedCheckedDocument.split('').map(c => c.charCodeAt(0)));
+  log(
+    'cleanedCheckedDocumentCodes',
+    cleanedCheckedDocument.split('').map((c) => c.charCodeAt(0)),
+  );
   log('currentDocument', currentDocument);
-  log('currentDocumentCodes', currentDocument.split('').map(c => c.charCodeAt(0)));
+  log(
+    'currentDocumentCodes',
+    currentDocument.split('').map((c) => c.charCodeAt(0)),
+  );
   log('matches', matches);
   log('diffs', diffs);
   log('alignedMatches', alignedMatches);
-  log('alignedMatchesContent', alignedMatches.map(m => rangeContent(currentDocument, m)));
+  log(
+    'alignedMatchesContent',
+    alignedMatches.map((m) => rangeContent(currentDocument, m)),
+  );
 
   return containsModifiedMatches ? [] : alignedMatches;
 }
-

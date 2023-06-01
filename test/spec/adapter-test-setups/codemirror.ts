@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import CodeMirror, {EditorFromTextArea} from 'codemirror';
-import {CodeMirrorAdapter} from '../../../src/adapters/CodeMirrorAdapter';
-import {AdapterTestSetup, DoneCallback} from './adapter-test-setup';
+import CodeMirror, { EditorFromTextArea } from 'codemirror';
+import { CodeMirrorAdapter } from '../../../src/adapters/CodeMirrorAdapter';
+import { AdapterTestSetup, DoneCallback } from './adapter-test-setup';
 
 export interface CodeMirrorTestSetupOpts {
   mode: string;
@@ -40,10 +40,10 @@ export class CodeMirrorTestSetup implements AdapterTestSetup {
   init() {
     const editor = CodeMirror.fromTextArea(document.getElementById('editorId') as HTMLTextAreaElement, {
       lineNumbers: true,
-      mode: this.mode
+      mode: this.mode,
     });
     this.editor = editor;
-    return Promise.resolve(new CodeMirrorAdapter({editor: editor}));
+    return Promise.resolve(new CodeMirrorAdapter({ editor: editor }));
   }
 
   setEditorContent(content: string, done: DoneCallback) {

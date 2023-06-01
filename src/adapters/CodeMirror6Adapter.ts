@@ -23,13 +23,13 @@ import {
   AdapterInterface,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
-  SuccessfulCheckResult
+  SuccessfulCheckResult,
 } from './AdapterInterface';
 import { EditorView } from '@codemirror/view';
 
 export type CodeMirror6AdapterConf = {
   editor: EditorView;
-  format?: string;  // See CheckOptions.inputFormat
+  format?: string; // See CheckOptions.inputFormat
 };
 
 export class CodeMirror6Adapter implements AdapterInterface {
@@ -69,14 +69,14 @@ export class CodeMirror6Adapter implements AdapterInterface {
     this.currentContentChecking = this.getContent();
     return {
       content: this.currentContentChecking,
-      selection: opts.checkSelection ? this.getSelection() : undefined
+      selection: opts.checkSelection ? this.getSelection() : undefined,
     };
   }
 
   private getSelection(): DocumentSelection {
     return {
-      ranges: this.config.editor.state.selection.ranges.map(this.cmSelectionToRange)
-    }
+      ranges: this.config.editor.state.selection.ranges.map(this.cmSelectionToRange),
+    };
   }
 
   registerCheckResult(checkResult: SuccessfulCheckResult): void {
@@ -96,7 +96,6 @@ export class CodeMirror6Adapter implements AdapterInterface {
     return alignedMatches;
   }
 
-
   selectRanges(_checkId: string, matches: Match[]) {
     const alignedMatches = this.lookupMatchesOrThrow(matches);
     this.selectRangeAndScroll([alignedMatches[0].range[0], alignedMatches[alignedMatches.length - 1].range[1]]);
@@ -107,15 +106,15 @@ export class CodeMirror6Adapter implements AdapterInterface {
     const escapeFunction = this.getEscapeFunction();
 
     let replacementLength = 0;
-    _.forEachRight(alignedMatches, match => {
+    _.forEachRight(alignedMatches, (match) => {
       if (!isDangerousToReplace(this.lastContentChecked!, match.originalMatch)) {
         const escapedReplacement = escapeFunction(match.originalMatch.replacement);
         this.config.editor.dispatch({
           changes: {
             from: match.range[0],
             to: match.range[1],
-            insert: escapedReplacement
-          }
+            insert: escapedReplacement,
+          },
         });
 
         replacementLength += escapedReplacement.length;

@@ -14,29 +14,28 @@
  * limitations under the License.
  */
 
-import {AcrolinxPlugin, autoBindFloatingSidebar, autoBindFloatingSidebarAsync} from "./acrolinx-plugin";
-import {InputAdapter} from "./adapters/InputAdapter";
-import {ContentEditableAdapter} from "./adapters/ContentEditableAdapter";
-import {AbstractRichtextEditorAdapter} from "./adapters/AbstractRichtextEditorAdapter";
-import {CKEditorAdapter} from "./adapters/CKEditorAdapter";
-import {CKEditor5Adapter} from "./adapters/CKEditor5Adapter";
-import {TinyMCEAdapter} from "./adapters/TinyMCEAdapter";
-import {TinyMCEWordpressAdapter} from "./adapters/TinyMCEWordpressAdapter";
-import {AutoBindAdapter} from "./adapters/AutoBindAdapter";
-import {AsyncAutoBindAdapter} from "./adapters/AsyncAutoBindAdapter";
-import {MultiEditorAdapter} from "./adapters/MultiEditorAdapter";
-import {AsyncMultiEditorAdapter} from "./adapters/AsyncMultiEditorAdapter";
-import {createPluginMessageAdapter} from "./message-adapter/message-adapter";
-import {loadSidebarCode} from "./utils/sidebar-loader";
-import {getSelectionHtmlRanges} from "./utils/check-selection";
-import {lookupMatches} from "./lookup/diff-based";
-import {extractTextDomMapping} from "./utils/text-dom-mapping";
-import {CodeMirrorAdapter} from "./adapters/CodeMirrorAdapter";
-import {CodeMirror6Adapter} from "./adapters/CodeMirror6Adapter";
-import {initFloatingSidebar} from "./floating-sidebar/floating-sidebar";
-import {AsyncLocalStorage} from "./floating-sidebar/async-storage";
+import { AcrolinxPlugin, autoBindFloatingSidebar, autoBindFloatingSidebarAsync } from './acrolinx-plugin';
+import { InputAdapter } from './adapters/InputAdapter';
+import { ContentEditableAdapter } from './adapters/ContentEditableAdapter';
+import { AbstractRichtextEditorAdapter } from './adapters/AbstractRichtextEditorAdapter';
+import { CKEditorAdapter } from './adapters/CKEditorAdapter';
+import { CKEditor5Adapter } from './adapters/CKEditor5Adapter';
+import { TinyMCEAdapter } from './adapters/TinyMCEAdapter';
+import { TinyMCEWordpressAdapter } from './adapters/TinyMCEWordpressAdapter';
+import { AutoBindAdapter } from './adapters/AutoBindAdapter';
+import { AsyncAutoBindAdapter } from './adapters/AsyncAutoBindAdapter';
+import { MultiEditorAdapter } from './adapters/MultiEditorAdapter';
+import { AsyncMultiEditorAdapter } from './adapters/AsyncMultiEditorAdapter';
+import { createPluginMessageAdapter } from './message-adapter/message-adapter';
+import { loadSidebarCode } from './utils/sidebar-loader';
+import { getSelectionHtmlRanges } from './utils/check-selection';
+import { lookupMatches } from './lookup/diff-based';
+import { extractTextDomMapping } from './utils/text-dom-mapping';
+import { CodeMirrorAdapter } from './adapters/CodeMirrorAdapter';
+import { CodeMirror6Adapter } from './adapters/CodeMirror6Adapter';
+import { initFloatingSidebar } from './floating-sidebar/floating-sidebar';
+import { AsyncLocalStorage } from './floating-sidebar/async-storage';
 import { XeditorAdapter } from './adapters/XeditorAdapter';
-
 
 export interface AcrolinxSidebarIntegration {
   AcrolinxPlugin: typeof AcrolinxPlugin;
@@ -72,7 +71,7 @@ export interface AcrolinxSidebarIntegration {
 declare global {
   /* tslint:disable:no-unused-variable */
   const acrolinx: {
-    plugins: AcrolinxSidebarIntegration
+    plugins: AcrolinxSidebarIntegration;
   };
   /* tslint:enable */
 }
@@ -104,12 +103,12 @@ const exported: AcrolinxSidebarIntegration = {
     AsyncMultiEditorAdapter: AsyncMultiEditorAdapter,
     TinyMCEAdapter: TinyMCEAdapter,
     TinyMCEWordpressAdapter: TinyMCEWordpressAdapter,
-    XeditorAdapter: XeditorAdapter
+    XeditorAdapter: XeditorAdapter,
   },
   lookup: {
-    lookupMatches: lookupMatches
+    lookupMatches: lookupMatches,
   },
-  extractTextDomMapping: extractTextDomMapping
+  extractTextDomMapping: extractTextDomMapping,
 };
 
 augmentedWindow.acrolinx.plugins = exported;

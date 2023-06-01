@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 export function logTime(text: string, f: Function) {
   const startTime = Date.now();
@@ -27,7 +27,7 @@ export function fetch(url: string, callback: (s: string) => void) {
   const request = new XMLHttpRequest();
   request.open('GET', url, true);
 
-  request.onload = function() {
+  request.onload = function () {
     if (request.status >= 200 && request.status < 400) {
       callback(request.responseText);
     } else {
@@ -35,7 +35,7 @@ export function fetch(url: string, callback: (s: string) => void) {
     }
   };
 
-  request.onerror = function() {
+  request.onerror = function () {
     throw new Error(`Error while loading ${url}.`);
   };
 
@@ -48,11 +48,11 @@ export function isIFrame(el: Element): el is HTMLIFrameElement {
 
 export function fakeInputEvent(el: Element) {
   let customEvent: Event;
-  if (typeof  CustomEvent === 'function') {
-    customEvent = (new CustomEvent('input'));
+  if (typeof CustomEvent === 'function') {
+    customEvent = new CustomEvent('input');
   } else {
     customEvent = document.createEvent('CustomEvent');
-    customEvent.initEvent("input", true, true);
+    customEvent.initEvent('input', true, true);
   }
   el.dispatchEvent(customEvent);
 }
@@ -65,12 +65,12 @@ export function parseUrl(href: string) {
     // eslint-disable-next-line no-self-assign
     aElement.href = aElement.href;
   }
-  const {protocol, host, hostname, port, pathname, hash} = aElement;
-  return {protocol, host, hostname, port, pathname, hash};
+  const { protocol, host, hostname, port, pathname, hash } = aElement;
+  return { protocol, host, hostname, port, pathname, hash };
 }
 
 export function isFromSameOrigin(url: string) {
-  const {protocol, host} = parseUrl(url);
+  const { protocol, host } = parseUrl(url);
   return location.protocol === protocol && location.host === host;
 }
 
@@ -85,15 +85,17 @@ export function assign<T, U>(obj: T, update: U): T & U {
 function deepFreeze(o: any) {
   Object.freeze(o);
 
-  const oIsFunction = typeof o === "function";
+  const oIsFunction = typeof o === 'function';
   const hasOwnProp = Object.prototype.hasOwnProperty;
 
-  Object.getOwnPropertyNames(o).forEach(function(prop) {
-    if (hasOwnProp.call(o, prop)
-      && (oIsFunction ? prop !== 'caller' && prop !== 'callee' && prop !== 'arguments' : true)
-      && o[prop] !== null
-      && (typeof o[prop] === "object" || typeof o[prop] === "function")
-      && !Object.isFrozen(o[prop])) {
+  Object.getOwnPropertyNames(o).forEach(function (prop) {
+    if (
+      hasOwnProp.call(o, prop) &&
+      (oIsFunction ? prop !== 'caller' && prop !== 'callee' && prop !== 'arguments' : true) &&
+      o[prop] !== null &&
+      (typeof o[prop] === 'object' || typeof o[prop] === 'function') &&
+      !Object.isFrozen(o[prop])
+    ) {
       deepFreeze(o[prop]);
     }
   });
@@ -145,5 +147,5 @@ export class Deferred<T> {
 }
 
 export function waitMs(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

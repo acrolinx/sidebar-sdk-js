@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {InputAdapter} from "../../../src/adapters/InputAdapter";
-import {AdapterTestSetup, DoneCallback} from "./adapter-test-setup";
+import { InputAdapter } from '../../../src/adapters/InputAdapter';
+import { AdapterTestSetup, DoneCallback } from './adapter-test-setup';
 
 export class InputAdapterTestSetup implements AdapterTestSetup {
   name = 'InputAdapter';
@@ -24,13 +24,15 @@ export class InputAdapterTestSetup implements AdapterTestSetup {
   inputEventWasTriggered = false;
 
   init() {
-    return Promise.resolve(new InputAdapter({editorId: 'editorId'}));
+    return Promise.resolve(new InputAdapter({ editorId: 'editorId' }));
   }
 
   setEditorContent(content: string, done: DoneCallback) {
-    $('#editorId').val(content).on('input', () => {
-      this.inputEventWasTriggered = true;
-    });
+    $('#editorId')
+      .val(content)
+      .on('input', () => {
+        this.inputEventWasTriggered = true;
+      });
     done();
   }
 

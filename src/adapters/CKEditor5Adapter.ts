@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {AbstractRichtextEditorAdapter} from "./AbstractRichtextEditorAdapter";
-import {HasEditorID, ContentExtractionResult} from "./AdapterInterface";
-import InlineEditor from "@ckeditor/ckeditor5-build-inline";
-import {SourceEditing} from "@ckeditor/ckeditor5-source-editing";
+import { Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { HasEditorID, ContentExtractionResult } from './AdapterInterface';
+import InlineEditor from '@ckeditor/ckeditor5-build-inline';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 
 export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   editorId: string;
@@ -32,11 +32,11 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
     let editorDomElement = document.querySelector('#' + this.editorId)!;
 
     const isInlineEditor = editorDomElement.classList.contains('ck-editor__editable');
-    if(!isInlineEditor){
+    if (!isInlineEditor) {
       editorDomElement = editorDomElement.nextElementSibling!.querySelector('.ck-editor__editable')!;
     }
 
-    return ((editorDomElement as any).ckeditorInstance) as InlineEditor;
+    return (editorDomElement as any).ckeditorInstance as InlineEditor;
   }
 
   getEditorDocument(): Document {
@@ -50,9 +50,9 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   extractContentForCheck(): ContentExtractionResult {
     if (!this.isInSourceEditingMode()) {
       this.currentContentChecking = this.getContent();
-      return {content: this.currentContentChecking};
+      return { content: this.currentContentChecking };
     } else {
-      return {error: 'Action is not permitted in Source mode.'};
+      return { error: 'Action is not permitted in Source mode.' };
     }
   }
 

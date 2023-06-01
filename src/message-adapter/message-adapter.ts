@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import {AcrolinxPlugin, AcrolinxSidebar} from '@acrolinx/sidebar-interface';
+import { AcrolinxPlugin, AcrolinxSidebar } from '@acrolinx/sidebar-interface';
 import _ from 'lodash';
-import {InternalAcrolinxSidebarPluginInterface} from '../acrolinx-plugin';
+import { InternalAcrolinxSidebarPluginInterface } from '../acrolinx-plugin';
 
 // Functions are not cloneable and don't work with postMessage.
 function removeFunctions(object: any) {
@@ -29,7 +29,7 @@ interface CommandMessage<I> {
 }
 
 function postCommandAsMessage<T>(targetWindow: Window, command: keyof T, ...args: any[]) {
-  const message: CommandMessage<T> = {command, args: removeFunctions(args)};
+  const message: CommandMessage<T> = { command, args: removeFunctions(args) };
   targetWindow.postMessage(message, '*');
 }
 
@@ -49,15 +49,18 @@ function injectPostCommandAsMessage(windowProvider: WindowProvider, object: any)
 /**
  * Connects to a sidebar iframe that is on a different domain and uses the plugin message adapter.
  */
-export function connectAcrolinxPluginToMessages(acrolinxPlugin: InternalAcrolinxSidebarPluginInterface, sidebarWindowIframe: HTMLIFrameElement) {
+export function connectAcrolinxPluginToMessages(
+  acrolinxPlugin: InternalAcrolinxSidebarPluginInterface,
+  sidebarWindowIframe: HTMLIFrameElement,
+) {
   const sidebar: AcrolinxSidebar = {
     init: _.noop,
     configure: _.noop,
-    checkGlobal: () => ({checkId: 'dummyCheckId'}),
+    checkGlobal: () => ({ checkId: 'dummyCheckId' }),
     onGlobalCheckRejected: _.noop,
     invalidateRanges: _.noop,
     onVisibleRangesChanged: _.noop,
-    showMessage: _.noop
+    showMessage: _.noop,
   };
 
   injectPostCommandAsMessage(() => sidebarWindowIframe.contentWindow!, sidebar);
@@ -68,7 +71,7 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: InternalAcrolinx
     }
 
     const commandMessage: CommandMessage<AcrolinxPlugin> = event.data;
-    const {command, args} = commandMessage;
+    const { command, args } = commandMessage;
     if (acrolinxPlugin[command]) {
       if (command === 'requestInit') {
         acrolinxPlugin.requestInit(sidebar);
@@ -87,7 +90,7 @@ export function connectAcrolinxPluginToMessages(acrolinxPlugin: InternalAcrolinx
 export function createPluginMessageAdapter(win = window): AcrolinxPlugin {
   function receiveMessage(event: MessageEvent) {
     const commandMessage: CommandMessage<AcrolinxSidebar> = event.data;
-    const {command, args} = commandMessage;
+    const { command, args } = commandMessage;
     const acrolinxSidebar: AcrolinxSidebar = (win as any).acrolinxSidebar;
     if (acrolinxSidebar[command]) {
       (acrolinxSidebar[command] as Function).apply(acrolinxSidebar, args);
@@ -105,7 +108,7 @@ export function createPluginMessageAdapter(win = window): AcrolinxPlugin {
     replaceRanges: _.noop,
     openWindow: _.noop,
     openLogFile: _.noop,
-    log: _.noop
+    log: _.noop,
   };
 
   injectPostCommandAsMessage(() => win.parent, acrolinxSidebarPlugin);
