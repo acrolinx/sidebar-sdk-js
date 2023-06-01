@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import {Editor} from 'tinymce';
-import {DocumentSelection} from '@acrolinx/sidebar-interface';
-import {getSelectionHtmlRanges} from '../utils/check-selection';
-import {AbstractRichtextEditorAdapter} from './AbstractRichtextEditorAdapter';
-import {ExtractContentForCheckOpts, HasEditorID} from './AdapterInterface';
+import { Editor } from 'tinymce';
+import { DocumentSelection } from '@acrolinx/sidebar-interface';
+import { getSelectionHtmlRanges } from '../utils/check-selection';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { ExtractContentForCheckOpts, HasEditorID } from './AdapterInterface';
 
 export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
   editorId: string;
@@ -40,11 +40,10 @@ export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
     }
   }
 
-  getContentForCheckSelection = (el: HTMLElement) =>
-    this.getEditor().serializer.serialize(el, {}) as unknown as string
+  getContentForCheckSelection = (el: HTMLElement) => this.getEditor().serializer.serialize(el, {}) as unknown as string;
 
   protected getSelection(): DocumentSelection {
-    return {ranges: getSelectionHtmlRanges(this.getEditorElement(), this.getContentForCheckSelection)};
+    return { ranges: getSelectionHtmlRanges(this.getEditorElement(), this.getContentForCheckSelection) };
   }
 
   getEditorDocument() {

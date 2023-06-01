@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import {Check, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {WorkQueue} from "../utils/work-queue";
+import { Check, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { WorkQueue } from '../utils/work-queue';
 import {
-  AsyncAdapterInterface, AutobindWrapperAttributes,
+  AsyncAdapterInterface,
+  AutobindWrapperAttributes,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
-  SuccessfulCheckResult
-} from "./AdapterInterface";
+  SuccessfulCheckResult,
+} from './AdapterInterface';
 
 /**
  * This wrapper around an AsyncAdapterInterface synchronizes all calls to selectRanges and replaceRanges.
@@ -37,10 +38,10 @@ export class SynchronizeAsyncAdapter implements AsyncAdapterInterface {
   private workQueue = new WorkQueue();
 
   constructor(private readonly adapter: AsyncAdapterInterface) {
-    if (adapter.getAutobindWrapperAttributes)  {
+    if (adapter.getAutobindWrapperAttributes) {
       this.getAutobindWrapperAttributes = adapter.getAutobindWrapperAttributes.bind(adapter);
     }
-    if (adapter.getFormat)  {
+    if (adapter.getFormat) {
       this.getFormat = adapter.getFormat.bind(adapter);
     }
   }

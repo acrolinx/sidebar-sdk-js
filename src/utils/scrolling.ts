@@ -19,7 +19,7 @@ function getRootElement(doc: Document): HTMLElement {
 }
 
 function getScrollTop(win = window) {
-  return (win.pageYOffset !== undefined) ? win.pageYOffset : getRootElement(win.document).scrollTop;
+  return win.pageYOffset !== undefined ? win.pageYOffset : getRootElement(win.document).scrollTop;
 }
 
 function hasScrollBar(el: Element) {
@@ -60,7 +60,7 @@ export function scrollIntoView(targetEl: HTMLElement, windowTopOffset = 0, local
   const scrollableAncestors = findScrollableAncestors(targetEl);
 
   if (scrollableAncestors.length <= 2) {
-    scrollableAncestors.forEach(scrollableOuterContainer => {
+    scrollableAncestors.forEach((scrollableOuterContainer) => {
       const containerPos = scrollableOuterContainer.getBoundingClientRect();
       if (pos.top < containerPos.top + localTopOffset || pos.bottom > containerPos.bottom) {
         scrollableOuterContainer.scrollTop = pos.top - containerPos.top - localTopOffset;
@@ -78,11 +78,10 @@ export function scrollIntoView(targetEl: HTMLElement, windowTopOffset = 0, local
  * @return indicates if it succeeded
  */
 export function scrollIntoViewCenteredIfPossible(targetEl: HTMLElement): boolean {
-
   try {
     // For Chrome, Firefox and Safari (currently).
     // Try if scrollIntoViewOptions are supported.
-    targetEl.scrollIntoView({block: 'center'});
+    targetEl.scrollIntoView({ block: 'center' });
     return true;
   } catch (e) {
     // According to https://stackoverflow.com/questions/46919627/is-it-possible-to-test-for-scrollintoview-browser-compatibility
@@ -90,7 +89,6 @@ export function scrollIntoViewCenteredIfPossible(targetEl: HTMLElement): boolean
     return false;
   }
 }
-
 
 export function scrollIntoViewCenteredWithFallback(targetEl: HTMLElement) {
   const success = scrollIntoViewCenteredIfPossible(targetEl);

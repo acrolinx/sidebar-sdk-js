@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import {removeEmptyTextNodes} from '../../src/adapters/AbstractRichtextEditorAdapter';
-import {isChrome} from '../../src/utils/detect-browser';
-import {removeNode} from '../../src/utils/utils';
+import { removeEmptyTextNodes } from '../../src/adapters/AbstractRichtextEditorAdapter';
+import { isChrome } from '../../src/utils/detect-browser';
+import { removeNode } from '../../src/utils/utils';
 import {
   appendChildren,
   containsEmptyTextNodes,
   createDiv,
   createRange,
   createTextNode,
-  describeIf
+  describeIf,
 } from '../utils/test-utils';
 
 const assert = chai.assert;
@@ -43,7 +43,12 @@ describeIf(isChrome(), 'empty text node chrome bug', () => {
 
   describe('removeEmptyTextNodes', () => {
     it('removes direct empty child nodes', () => {
-      appendChildren(testContainer, [createTextNode('0'), createTextNode(''), createTextNode(' '), createTextNode('3')]);
+      appendChildren(testContainer, [
+        createTextNode('0'),
+        createTextNode(''),
+        createTextNode(' '),
+        createTextNode('3'),
+      ]);
       assert.isOk(containsEmptyTextNodes(testContainer));
 
       removeEmptyTextNodes(createRange(testContainer.childNodes[0], testContainer.childNodes[3]));
@@ -64,7 +69,7 @@ describeIf(isChrome(), 'empty text node chrome bug', () => {
           createTextNode(' '),
           createTextNode(''),
           createTextNode('1.2'),
-          createTextNode('')
+          createTextNode(''),
         ]),
         createTextNode(''),
         createTextNode('2'),
@@ -118,5 +123,4 @@ describe('chrome bug affects only chrome', () => {
       assert.isTrue(divWithBugWidth === divWithoutBugWidth);
     }
   });
-
 });

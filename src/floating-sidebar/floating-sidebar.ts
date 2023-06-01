@@ -15,8 +15,8 @@
  */
 
 import * as _ from 'lodash';
-import {assign, removeNode} from '../utils/utils';
-import {AsyncStorage} from './async-storage';
+import { assign, removeNode } from '../utils/utils';
+import { AsyncStorage } from './async-storage';
 
 export const SIDEBAR_ID = 'acrolinxFloatingSidebar';
 export const TITLE_BAR_CLASS = 'acrolinxFloatingSidebarTitleBar';
@@ -32,8 +32,10 @@ export const IS_DRAGGED_CLASS = 'acrolinxFloatingSidebarIsDragged';
 
 export const FOOTER_HEIGHT = 34;
 
-const HIDE_ICON = 'PHN2ZyBmaWxsPSIjZmZmZmZmIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0xOSAxOUg1VjVoN1YzSDVjLTEuMTEgMC0yIC45LTIgMnYxNGMwIDEuMS44OSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMnYtN2gtMnY3ek0xNCAzdjJoMy41OWwtOS44MyA5LjgzIDEuNDEgMS40MUwxOSA2LjQxVjEwaDJWM2gtN3oiLz4KPC9zdmc+';
-const RESIZE_ICON = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6IzkwOTA5MDt9Cgkuc3Qxe2ZpbGw6bm9uZTt9Cjwvc3R5bGU+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik03LjMsMjFoOS41di0ySDcuM1YyMXogTTcuMywxN2g5LjV2LTJINy4zVjE3eiBNNy4zLDEzaDkuNXYtMkg3LjNWMTN6IE03LjMsOWg5LjVWN0g3LjNWOXogTTcuMywzdjJoOS41VjNINy4zCgl6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0wLDBoMjR2MjRIMFYweiIvPgo8L3N2Zz4K';
+const HIDE_ICON =
+  'PHN2ZyBmaWxsPSIjZmZmZmZmIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0xOSAxOUg1VjVoN1YzSDVjLTEuMTEgMC0yIC45LTIgMnYxNGMwIDEuMS44OSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMnYtN2gtMnY3ek0xNCAzdjJoMy41OWwtOS44MyA5LjgzIDEuNDEgMS40MUwxOSA2LjQxVjEwaDJWM2gtN3oiLz4KPC9zdmc+';
+const RESIZE_ICON =
+  'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMjQgMjQiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI0IDI0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6IzkwOTA5MDt9Cgkuc3Qxe2ZpbGw6bm9uZTt9Cjwvc3R5bGU+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik03LjMsMjFoOS41di0ySDcuM1YyMXogTTcuMywxN2g5LjV2LTJINy4zVjE3eiBNNy4zLDEzaDkuNXYtMkg3LjNWMTN6IE03LjMsOWg5LjVWN0g3LjNWOXogTTcuMywzdjJoOS41VjNINy4zCgl6Ii8+CjxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0wLDBoMjR2MjRIMFYweiIvPgo8L3N2Zz4K';
 
 // Smaller than the biggest 32-bit int (2147483647) but bigger than the menu of youtube.
 const Z_INDEX = 2000000000;
@@ -57,9 +59,8 @@ const MIN_HEIGHT = 400;
 export const DEFAULT_POS: Position = Object.freeze({
   top: 20,
   left: 20,
-  height: MIN_INITIAL_HEIGHT
+  height: MIN_INITIAL_HEIGHT,
 });
-
 
 export const POSITION_KEY = 'acrolinx.plugins.floatingSidebar.position';
 
@@ -70,14 +71,15 @@ export function loadInitialPos(asyncStorage: AsyncStorage): Promise<Position> {
   const defaultPos = {
     top: DEFAULT_POS.top,
     left: DEFAULT_POS.left,
-    height: sanitizeHeight(window.innerHeight - DEFAULT_POS.top - 40)
+    height: sanitizeHeight(window.innerHeight - DEFAULT_POS.top - 40),
   };
   return asyncStorage.get<Position>(POSITION_KEY).then(
-    (loadedPosition) => ({...defaultPos, ...loadedPosition}),
+    (loadedPosition) => ({ ...defaultPos, ...loadedPosition }),
     (e: Error) => {
       console.error("Can't load saved sidebar position.", e);
       return defaultPos;
-    });
+    },
+  );
 }
 
 function sanitizeHeight(floatingSidebarHeight: number) {
@@ -87,7 +89,11 @@ function sanitizeHeight(floatingSidebarHeight: number) {
 /**
  * Exported only for testing.
  */
-export function keepVisible({left, top, height}: Position, windowWidth: number = window.innerWidth, windowHeight: number = window.innerHeight): Position {
+export function keepVisible(
+  { left, top, height }: Position,
+  windowWidth: number = window.innerWidth,
+  windowHeight: number = window.innerHeight,
+): Position {
   const minVerticalMargin = 30;
   const minHorizontalMargin = 150;
   if (top <= 0) {
@@ -97,9 +103,9 @@ export function keepVisible({left, top, height}: Position, windowWidth: number =
     left = 20;
   }
   return {
-    left: left > (windowWidth - minHorizontalMargin) ? (windowWidth - minHorizontalMargin) : left,
-    top: top > (windowHeight - minVerticalMargin) ? (windowHeight - minVerticalMargin) : top,
-    height: height > windowHeight ? sanitizeHeight(windowHeight - 10) : height
+    left: left > windowWidth - minHorizontalMargin ? windowWidth - minHorizontalMargin : left,
+    top: top > windowHeight - minVerticalMargin ? windowHeight - minVerticalMargin : top,
+    height: height > windowHeight ? sanitizeHeight(windowHeight - 10) : height,
   };
 }
 
@@ -260,7 +266,7 @@ function show(el: HTMLElement) {
 }
 
 function createNodeFromTemplate(template: string): HTMLElement {
-  return createDiv({innerHTML: template.trim()}).firstChild as HTMLElement;
+  return createDiv({ innerHTML: template.trim() }).firstChild as HTMLElement;
 }
 
 export interface FloatingSidebar {
@@ -284,7 +290,7 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
   const dragOverlay = floatingSidebarElement.querySelector('#' + SIDEBAR_DRAG_OVERLAY_ID) as HTMLElement;
   const closeIcon = floatingSidebarElement.querySelector('.' + CLOSE_ICON_CLASS) as HTMLElement;
   const resizeIcon = floatingSidebarElement.querySelector('.' + RESIZE_ICON_CLASS) as HTMLElement;
-  const glassPane = createDiv({id: SIDEBAR_GLASS_PANE_ID});
+  const glassPane = createDiv({ id: SIDEBAR_GLASS_PANE_ID });
   const body = document.querySelector('body')!;
   let isMoving = false;
   let isResizing = false;
@@ -311,7 +317,7 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
   }
 
   function savePosition() {
-    config.asyncStorage.set(POSITION_KEY, position).catch(error => {
+    config.asyncStorage.set(POSITION_KEY, position).catch((error) => {
       console.error('Error in FloatingSidebar.savePosition:', error);
     });
   }
@@ -331,22 +337,24 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
     }
   }
 
-  document.addEventListener('mousemove', event => {
+  document.addEventListener('mousemove', (event) => {
     if (isMoving) {
       move({
         left: Math.max(event.clientX - relativeMouseDownX, 0),
-        top: Math.max(event.clientY - relativeMouseDownY, 0)
+        top: Math.max(event.clientY - relativeMouseDownY, 0),
       });
     }
     if (isResizing) {
       const floatingSidebarTop = floatingSidebarElement.getBoundingClientRect().top;
       const iconPositionOffset = 30;
-      move({height: Math.max(event.clientY - relativeMouseDownY + iconPositionOffset - floatingSidebarTop, MIN_HEIGHT)});
+      move({
+        height: Math.max(event.clientY - relativeMouseDownY + iconPositionOffset - floatingSidebarTop, MIN_HEIGHT),
+      });
     }
   });
 
-  floatingSidebarElement.addEventListener('mousedown', event => {
-    const {top, left} = floatingSidebarElement.getBoundingClientRect();
+  floatingSidebarElement.addEventListener('mousedown', (event) => {
+    const { top, left } = floatingSidebarElement.getBoundingClientRect();
     relativeMouseDownX = event.clientX - left;
     relativeMouseDownY = event.clientY - top;
     isMoving = true;
@@ -355,7 +363,7 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
     floatingSidebarElement.classList.add(IS_DRAGGED_CLASS);
   });
 
-  resizeIcon.addEventListener('mousedown', event => {
+  resizeIcon.addEventListener('mousedown', (event) => {
     relativeMouseDownY = event.clientY - resizeIcon.getBoundingClientRect().top;
     isResizing = true;
     floatingSidebarElement.classList.add(IS_RESIZING_CLASS);
@@ -393,24 +401,23 @@ export function initFloatingSidebar(config: FloatingSidebarConfig): FloatingSide
 
   closeIcon.addEventListener('click', hideFloatingSidebar);
 
-
   hide(dragOverlay);
   hide(glassPane);
 
   addStyles();
 
-  loadInitialPos(config.asyncStorage).then(loadedPosition => {
-    show(floatingSidebarElement);
-    move(loadedPosition);
-    pullInAnimationIfNeeded();
-  }).catch(error => {
-    console.error('Error while trying to set initial position of FloatingSidebar:', error);
-  });
-
+  loadInitialPos(config.asyncStorage)
+    .then((loadedPosition) => {
+      show(floatingSidebarElement);
+      move(loadedPosition);
+      pullInAnimationIfNeeded();
+    })
+    .catch((error) => {
+      console.error('Error while trying to set initial position of FloatingSidebar:', error);
+    });
 
   body.appendChild(floatingSidebarElement);
   body.appendChild(glassPane);
 
-  return {toggleVisibility, remove};
+  return { toggleVisibility, remove };
 }
-

@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-import {Check, DocumentSelection, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import * as _ from "lodash";
+import { Check, DocumentSelection, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import * as _ from 'lodash';
 import {
   AdapterConf,
   AdapterInterface,
   AutobindWrapperAttributes,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
-  getElementFromAdapterConf, SuccessfulCheckResult,
-} from "./AdapterInterface";
-import {AlignedMatch} from "../utils/alignment";
-import {getCompleteFlagLength, isDangerousToReplace} from "../utils/match";
-import {scrollIntoView} from "../utils/scrolling";
-import {lookupMatches} from "../lookup/diff-based";
-import {assertElementIsDisplayed, fakeInputEvent} from "../utils/utils";
-import {getAutobindWrapperAttributes} from "../utils/adapter-utils";
+  getElementFromAdapterConf,
+  SuccessfulCheckResult,
+} from './AdapterInterface';
+import { AlignedMatch } from '../utils/alignment';
+import { getCompleteFlagLength, isDangerousToReplace } from '../utils/match';
+import { scrollIntoView } from '../utils/scrolling';
+import { lookupMatches } from '../lookup/diff-based';
+import { assertElementIsDisplayed, fakeInputEvent } from '../utils/utils';
+import { getAutobindWrapperAttributes } from '../utils/adapter-utils';
 
 export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement;
 
 export type Format = 'TEXT' | 'MARKDOWN';
 
 export type InputAdapterConf = AdapterConf & {
-  format?: Format
+  format?: Format;
 };
 
 export class InputAdapter implements AdapterInterface {
@@ -66,30 +67,32 @@ export class InputAdapter implements AdapterInterface {
     this.currentContentChecking = this.getContent();
     return {
       content: this.currentContentChecking,
-      selection: opts.checkSelection ? this.getSelection() : undefined
+      selection: opts.checkSelection ? this.getSelection() : undefined,
     };
   }
 
   private getSelection(): DocumentSelection | undefined {
     const selectionStart = this.element.selectionStart;
     const selectionEnd = this.element.selectionEnd;
-    if (_.isNumber(selectionStart) && _.isNumber(selectionEnd) &&
-      selectionStart < selectionEnd && this.getContent().slice(selectionStart, selectionEnd).trim() !== '') {
+    if (
+      _.isNumber(selectionStart) &&
+      _.isNumber(selectionEnd) &&
+      selectionStart < selectionEnd &&
+      this.getContent().slice(selectionStart, selectionEnd).trim() !== ''
+    ) {
       return {
-        ranges: [[selectionStart, selectionEnd]]
+        ranges: [[selectionStart, selectionEnd]],
       };
     } else {
       return undefined;
     }
   }
 
-
   registerCheckResult(_checkResult: SuccessfulCheckResult): void {
     this.lastContentChecked = this.currentContentChecking;
   }
 
-  registerCheckCall(_checkInfo: Check) {
-  }
+  registerCheckCall(_checkInfo: Check) {}
 
   scrollAndSelect(matches: AlignedMatch<Match>[]) {
     const newBegin = matches[0].range[0];
@@ -147,7 +150,7 @@ export class InputAdapter implements AdapterInterface {
     this.scrollAndSelect(alignedMatches);
     this.replaceAlignedMatches(alignedMatches);
     const startOfSelection = alignedMatches[0].range[0];
-    const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
+    const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
     (this.element as HTMLTextAreaElement).setSelectionRange(startOfSelection, startOfSelection + replacement.length);
     fakeInputEvent(this.element);
   }

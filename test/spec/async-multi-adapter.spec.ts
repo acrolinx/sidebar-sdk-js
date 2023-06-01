@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {SuccessfulContentExtractionResult} from "../../src/adapters/AdapterInterface";
-import {AsyncMultiEditorAdapter} from "../../src/adapters/AsyncMultiEditorAdapter";
-import {getMatchesWithReplacement, waitMs} from "../utils/test-utils";
-import {FakeAdapter} from "./fake/FakeAdapter";
-import {SlowMotionAsyncWrapper} from "./fake/SlowMotionAsyncAdapter";
+import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { SuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
+import { AsyncMultiEditorAdapter } from '../../src/adapters/AsyncMultiEditorAdapter';
+import { getMatchesWithReplacement, waitMs } from '../utils/test-utils';
+import { FakeAdapter } from './fake/FakeAdapter';
+import { SlowMotionAsyncWrapper } from './fake/SlowMotionAsyncAdapter';
 
 const assert = chai.assert;
 
@@ -41,13 +41,14 @@ describe('AsyncMultiEditorAdapter', () => {
     amea.addSingleAdapter(new SlowMotionAsyncWrapper(childAdapter2, DELAY_IN_MS));
 
     // Simulate check
-    const contentResult = await amea.extractContentForCheck({}) as SuccessfulContentExtractionResult;
+    const contentResult = (await amea.extractContentForCheck({})) as SuccessfulContentExtractionResult;
     const content = contentResult.content;
-    amea.registerCheckResult({checkedPart: {checkId: DUMMY_CHECK_ID, range: [0, content.length]}});
+    amea.registerCheckResult({ checkedPart: { checkId: DUMMY_CHECK_ID, range: [0, content.length] } });
 
     // Match over last word of childAdapter1 to first word of childAdapter2
-    overlappingMatches = getMatchesWithReplacement(content, 'end1', 'end1X')
-      .concat(getMatchesWithReplacement(content, 'start2', 'start2X'));
+    overlappingMatches = getMatchesWithReplacement(content, 'end1', 'end1X').concat(
+      getMatchesWithReplacement(content, 'start2', 'start2X'),
+    );
   });
 
   it('should synchronize selections over multiple children', async () => {

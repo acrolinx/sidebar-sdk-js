@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import {AcrolinxSidebar} from '@acrolinx/sidebar-interface';
-import {anything, capture, deepEqual, instance, mock, notNull, reset, verify} from 'ts-mockito';
-import {InternalAcrolinxSidebarPluginInterface} from '../../src/acrolinx-plugin';
-import {connectAcrolinxPluginToMessages, createPluginMessageAdapter} from '../../src/message-adapter/message-adapter';
-import {addIFrame, removeEl, waitMs} from '../utils/test-utils';
+import { AcrolinxSidebar } from '@acrolinx/sidebar-interface';
+import { anything, capture, deepEqual, instance, mock, notNull, reset, verify } from 'ts-mockito';
+import { InternalAcrolinxSidebarPluginInterface } from '../../src/acrolinx-plugin';
+import { connectAcrolinxPluginToMessages, createPluginMessageAdapter } from '../../src/message-adapter/message-adapter';
+import { addIFrame, removeEl, waitMs } from '../utils/test-utils';
 
 const assert = chai.assert;
 
-describe('message-adapter', function() {
+describe('message-adapter', function () {
   const mockedAcrolinxPlugin = mock<InternalAcrolinxSidebarPluginInterface>();
   const acrolinxPlugin = instance(mockedAcrolinxPlugin);
   let sidebarIFrameElement: HTMLIFrameElement;
   let evilIFrameElement: HTMLIFrameElement;
-  const requestGlobalCheckMessage = {command: 'requestGlobalCheck', args: [{selection: true, batchCheck: false}]};
+  const requestGlobalCheckMessage = { command: 'requestGlobalCheck', args: [{ selection: true, batchCheck: false }] };
 
   function setIFrameContent(iFrameElement: HTMLIFrameElement, message: unknown) {
     const messageJson = JSON.stringify(message);
@@ -48,14 +48,13 @@ describe('message-adapter', function() {
             setTimeout(function() {
                acrolinxPlugin = createPluginMessageAdapter(window);
             }, 0);
-       </script>`
-    );
+       </script>`);
     contentWindow.document.write(`<script>window.parent.postMessage(${messageJson} ,'*')</script>`);
     contentWindow.document.close();
     (contentWindow as any).createPluginMessageAdapter = createPluginMessageAdapter;
   }
 
-  beforeEach(function() {
+  beforeEach(function () {
     if (!Proxy) {
       this.skip(); // ts-mockito needs the Proxy class to mock interfaces (bad luck in IE11)
     }
@@ -75,7 +74,7 @@ describe('message-adapter', function() {
     it('forwards messages from Sidebar', async () => {
       setIFrameContent(sidebarIFrameElement, requestGlobalCheckMessage);
       await waitMs(0);
-      verify(mockedAcrolinxPlugin.requestGlobalCheck(deepEqual({selection: true, batchCheck: false}))).once();
+      verify(mockedAcrolinxPlugin.requestGlobalCheck(deepEqual({ selection: true, batchCheck: false }))).once();
     });
 
     it('does not forward messages from other iFrames', async () => {
@@ -93,7 +92,7 @@ describe('message-adapter', function() {
     });
 
     it('injects sidebar proxy to requestInit call', async () => {
-      setIFrameContent(sidebarIFrameElement, {command: 'requestInit', args: []});
+      setIFrameContent(sidebarIFrameElement, { command: 'requestInit', args: [] });
       await waitMs(0);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -108,7 +107,7 @@ describe('message-adapter', function() {
     let sidebarProxy: AcrolinxSidebar;
 
     beforeEach(async () => {
-      setIFrameContent(sidebarIFrameElement, {command: 'requestInit', args: []});
+      setIFrameContent(sidebarIFrameElement, { command: 'requestInit', args: [] });
       await waitMs(0);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

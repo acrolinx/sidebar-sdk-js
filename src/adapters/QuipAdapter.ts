@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {DocumentSelection, MatchWithReplacement} from '@acrolinx/sidebar-interface';
-import {waitMs} from '../utils/utils';
-import {AbstractRichtextEditorAdapter} from './AbstractRichtextEditorAdapter';
-import {AdapterConf, getElementFromAdapterConf} from './AdapterInterface';
+import { DocumentSelection, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { waitMs } from '../utils/utils';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { AdapterConf, getElementFromAdapterConf } from './AdapterInterface';
 
 /**
  * Just a proof of concept.
@@ -40,7 +40,7 @@ export class QuipAdapter extends AbstractRichtextEditorAdapter {
   }
 
   protected getSelection(): DocumentSelection {
-    return {ranges: []};
+    return { ranges: [] };
   }
 
   getEditorDocument(): Document {
@@ -123,11 +123,13 @@ function findCorrespondingHtmlElement(node: Node): HTMLElement {
 }
 
 function simulateDoubleClick(element: HTMLElement) {
-  element.dispatchEvent(new MouseEvent('dblclick', {
-    'view': window,
-    'bubbles': true,
-    'cancelable': true
-  }));
+  element.dispatchEvent(
+    new MouseEvent('dblclick', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    }),
+  );
 }
 
 function simulateKeyboardEvent(element: Element, type: string, key: string, keyCode: number) {
@@ -136,9 +138,9 @@ function simulateKeyboardEvent(element: Element, type: string, key: string, keyC
     code: key,
     keyCode: keyCode,
     which: keyCode,
-    'view': window,
-    'bubbles': true,
-    'cancelable': true
+    view: window,
+    bubbles: true,
+    cancelable: true,
   };
   element.dispatchEvent(new KeyboardEvent(type, keyboardEventProps));
 }

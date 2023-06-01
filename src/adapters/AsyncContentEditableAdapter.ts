@@ -63,7 +63,7 @@ export class AsyncContentEditableAdapter extends AbstractRichtextEditorAdapter i
   async replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): Promise<void> {
     assertElementIsDisplayed(this.getEditorElement());
     const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
-    const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
+    const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
     this.replaceAlignedMatches(alignedMatches);
 
     // Replacement will remove the selection, so we need to restore it again.
@@ -89,7 +89,7 @@ export class AsyncContentEditableAdapter extends AbstractRichtextEditorAdapter i
   }
 
   private async addSelectionRange(selection: Selection, range: Range): Promise<void> {
-    return new Promise(resolve => resolve(selection.addRange(range)));
+    return new Promise((resolve) => resolve(selection.addRange(range)));
   }
 
   async scrollIntoView(sel: Selection): Promise<void> {
@@ -109,5 +109,3 @@ export function isStateBasedEditor(el: Element) {
   // Add selectors for state based editors here.
   return el.closest('.DraftEditor-editorContainer, .akEditor');
 }
-
-

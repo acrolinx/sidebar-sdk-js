@@ -39,7 +39,7 @@ export class CodeMirror6TestSetup implements AdapterTestSetup {
 
   init() {
     const editor = new EditorView({
-      doc: 'initial text'
+      doc: 'initial text',
     });
     this.editor = editor;
     return Promise.resolve(new CodeMirror6Adapter({ editor: editor, format: this.inputFormat }));
@@ -47,7 +47,7 @@ export class CodeMirror6TestSetup implements AdapterTestSetup {
 
   setEditorContent(content: string, done: DoneCallback) {
     this.editor.dispatch({
-      changes: { from: 0, to: this.editor.state.doc.length, insert: content }
+      changes: { from: 0, to: this.editor.state.doc.length, insert: content },
     });
     done();
   }
@@ -58,8 +58,8 @@ export class CodeMirror6TestSetup implements AdapterTestSetup {
   }
 
   getSelectedText(): string {
-    return this.editor.state.sliceDoc(
-      this.editor.state.selection.main.from,
-      this.editor.state.selection.main.to).toString();
+    return this.editor.state
+      .sliceDoc(this.editor.state.selection.main.from, this.editor.state.selection.main.to)
+      .toString();
   }
 }

@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
-import {assertDeepEqual} from "../utils/test-utils";
-import {escapeHtmlCharacters} from "../../src/utils/escaping";
-import {findNewIndex} from "../../src/utils/alignment";
-import * as jsc from "jsverify";
+import * as _ from 'lodash';
+import { assertDeepEqual } from '../utils/test-utils';
+import { escapeHtmlCharacters } from '../../src/utils/escaping';
+import { findNewIndex } from '../../src/utils/alignment';
+import * as jsc from 'jsverify';
 const assert = chai.assert;
-
 
 const JS_VERIFY_OPTS = {
   tests: 1000,
-  rngState: '0123456789abcdef01'
+  rngState: '0123456789abcdef01',
 };
-
 
 function findIndices(char: string, text: string) {
   const indices: number[] = [];
@@ -73,9 +71,7 @@ describe('escapeHtmlCharacters', function () {
     const escapedText = '012&lt;456';
     assert.equal(result.escapedText, escapedText);
 
-    assertDeepEqual(result.backwardAlignment, [
-      {oldPosition: escapedText.indexOf('4'), diffOffset: -3}
-    ]);
+    assertDeepEqual(result.backwardAlignment, [{ oldPosition: escapedText.indexOf('4'), diffOffset: -3 }]);
   });
 
   it('text with two html characters', () => {
@@ -86,8 +82,8 @@ describe('escapeHtmlCharacters', function () {
     assert.equal(result.escapedText, escapedText);
 
     assertDeepEqual(result.backwardAlignment, [
-      {oldPosition: escapedText.indexOf('4'), diffOffset: -3},
-      {oldPosition: escapedText.indexOf('6'), diffOffset: -7}
+      { oldPosition: escapedText.indexOf('4'), diffOffset: -3 },
+      { oldPosition: escapedText.indexOf('6'), diffOffset: -7 },
     ]);
   });
 
@@ -113,22 +109,21 @@ describe('escapeHtmlCharacters', function () {
     });
 
     it('random texts', () => {
-      jsc.assert(jsc.forall("string", (text: string) => {
+      jsc.assert(
+        jsc.forall('string', (text: string) => {
           const textWithNeedles = text.replace(/(.)/g, '$1!');
           return assertBackwardMappingIsCorrect(textWithNeedles);
-        }
-      ), JS_VERIFY_OPTS);
+        }),
+        JS_VERIFY_OPTS,
+      );
     });
-
   });
 
   // TODO lodash escape not identical for "`"
   it.skip('escapedText is identical result of _.escape', () => {
-    jsc.assert(jsc.forall("string",
-      (text: string) => _.escape(text) === escapeHtmlCharacters(text).escapedText
-    ), JS_VERIFY_OPTS);
+    jsc.assert(
+      jsc.forall('string', (text: string) => _.escape(text) === escapeHtmlCharacters(text).escapedText),
+      JS_VERIFY_OPTS,
+    );
   });
-
 });
-
-

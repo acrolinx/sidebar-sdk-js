@@ -15,13 +15,12 @@
  */
 
 import _ from 'lodash';
-import {AdapterConf, AdapterInterface, CommonAdapterConf} from '../adapters/AdapterInterface';
-import {AsyncContentEditableAdapter, isStateBasedEditor} from '../adapters/AsyncContentEditableAdapter';
-import {ContentEditableAdapter} from '../adapters/ContentEditableAdapter';
-import {InputAdapter} from '../adapters/InputAdapter';
-import {isQuip, QuipAdapter} from '../adapters/QuipAdapter';
-import {assign, isIFrame} from '../utils/utils';
-
+import { AdapterConf, AdapterInterface, CommonAdapterConf } from '../adapters/AdapterInterface';
+import { AsyncContentEditableAdapter, isStateBasedEditor } from '../adapters/AsyncContentEditableAdapter';
+import { ContentEditableAdapter } from '../adapters/ContentEditableAdapter';
+import { InputAdapter } from '../adapters/InputAdapter';
+import { isQuip, QuipAdapter } from '../adapters/QuipAdapter';
+import { assign, isIFrame } from '../utils/utils';
 
 // Exported only for testing
 export const EDITABLE_ELEMENTS_SELECTOR = [
@@ -33,9 +32,8 @@ export const EDITABLE_ELEMENTS_SELECTOR = [
   '[contenteditable="plaintext-only"]',
   '[contenteditable=""]',
   'textarea',
-  'iframe'
+  'iframe',
 ].join(', ');
-
 
 function isReadOnly(el: Element) {
   return (el as HTMLInputElement).readOnly;
@@ -90,7 +88,7 @@ function traverseShadowRoots(doc: Document | ShadowRoot | HTMLElement): Element[
 
   let currentNode;
   // eslint-disable-next-line no-cond-assign
-  while (currentNode = nodesIterator.nextNode()) {
+  while ((currentNode = nodesIterator.nextNode())) {
     const shadowRoot = (currentNode as HTMLElement).shadowRoot;
     if (shadowRoot) {
       editableElements.push(...getEditableElements(shadowRoot));
@@ -105,7 +103,9 @@ export function getEditableElements(doc: Document | ShadowRoot | HTMLElement = d
   return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
     .union(traverseShadowRoots(doc))
     .flatMap(traverseIFrames)
-    .reject(el => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el) || isProbablyUndesiredField(el))
+    .reject(
+      (el) => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el) || isProbablyUndesiredField(el),
+    )
     .value();
 }
 
@@ -114,8 +114,8 @@ export interface AutobindConfig extends CommonAdapterConf {
 }
 
 export function bindAdaptersForCurrentPage(conf: AutobindConfig = {}): AdapterInterface[] {
-  return getEditableElements().map(function(editable) {
-    const adapterConf = assign(conf, {element: editable}) as AdapterConf;
+  return getEditableElements().map(function (editable) {
+    const adapterConf = assign(conf, { element: editable }) as AdapterConf;
     if (conf.enableQuipAdapter && isQuip(editable)) {
       return new QuipAdapter(adapterConf);
     } else if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {

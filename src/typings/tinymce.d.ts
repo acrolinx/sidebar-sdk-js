@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {EditorManager} from 'tinymce';
+import { EditorManager } from 'tinymce';
 
 declare global {
   const tinymce: EditorManager;

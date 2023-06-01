@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import {createOffsetMappingArray} from "../../../src/lookup/diff-based";
-import {diff_match_patch} from "diff-match-patch";
+import { createOffsetMappingArray } from '../../../src/lookup/diff-based';
+import { diff_match_patch } from 'diff-match-patch';
 const assert = chai.assert;
-
 
 function generateText(length: number) {
   const chars = '      abcdefghijcmnopqrstuvwxyz';
@@ -37,11 +36,8 @@ function modifyTextRandomly(originalText: string, modifications: number) {
   return currentText;
 }
 
-
 describe('lookup/diff-based-performance', function () {
-
   it('is fast', function () {
-
     const text1 = generateText(100000);
     const text2 = modifyTextRandomly(text1, 100);
 
@@ -53,6 +49,5 @@ describe('lookup/diff-based-performance', function () {
 
     const neededTimeMs = Date.now() - startTime;
     assert.isTrue(neededTimeMs < 20000);
-
   });
 });

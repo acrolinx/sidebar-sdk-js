@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-import {EditorFromTextArea} from "codemirror";
-import * as _ from "lodash";
-import {Check, DocumentSelection, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {lookupMatches} from "../lookup/diff-based";
-import {AlignedMatch} from "../utils/alignment";
-import {isDangerousToReplace} from "../utils/match";
+import { EditorFromTextArea } from 'codemirror';
+import * as _ from 'lodash';
+import { Check, DocumentSelection, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { lookupMatches } from '../lookup/diff-based';
+import { AlignedMatch } from '../utils/alignment';
+import { isDangerousToReplace } from '../utils/match';
 import {
   AdapterInterface,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
-  SuccessfulCheckResult
-} from "./AdapterInterface";
+  SuccessfulCheckResult,
+} from './AdapterInterface';
 
 const FORMAT_BY_MIME_TYPE: { [mime: string]: string } = {
   'text/html': 'HTML',
   'text/xml': 'HTML',
   'application/xml': 'XML',
   'text/x-markdown': 'MARKDOWN',
-  'text/plain': 'TEXT'
+  'text/plain': 'TEXT',
 };
 
 const FORMAT_BY_MODE: { [mode: string]: string } = {
-  'htmlmixed': 'HTML',
-  'xml': 'XML',
-  'markdown': 'MARKDOWN'
+  htmlmixed: 'HTML',
+  xml: 'XML',
+  markdown: 'MARKDOWN',
 };
 
 export type CodeMirrorAdapterConf = {
   editor: CodeMirror.Editor | EditorFromTextArea;
-  format?: string;  // See CheckOptions.inputFormat
+  format?: string; // See CheckOptions.inputFormat
 };
 
 export class CodeMirrorAdapter implements AdapterInterface {
@@ -57,7 +57,7 @@ export class CodeMirrorAdapter implements AdapterInterface {
   }
 
   configure(partialConfig: Partial<CodeMirrorAdapterConf>) {
-    const newConf = {...this.config, ...partialConfig};
+    const newConf = { ...this.config, ...partialConfig };
     this.validateConf(newConf);
     this.config = newConf;
   }
@@ -82,7 +82,7 @@ export class CodeMirrorAdapter implements AdapterInterface {
   private getFormatFromCodeMirror() {
     return (
       FORMAT_BY_MODE[this.config.editor.getDoc().getMode().name || ''] ||
-      FORMAT_BY_MIME_TYPE[(this.config.editor.getOption('mode')!)]
+      FORMAT_BY_MIME_TYPE[this.config.editor.getOption('mode')!]
     );
   }
 
@@ -90,13 +90,13 @@ export class CodeMirrorAdapter implements AdapterInterface {
     this.currentContentChecking = this.getContent();
     return {
       content: this.currentContentChecking,
-      selection: opts.checkSelection ? this.getSelection() : undefined
+      selection: opts.checkSelection ? this.getSelection() : undefined,
     };
   }
 
   private getSelection(): DocumentSelection {
     return {
-      ranges: this.getDoc().listSelections().map(this.cmSelectionToRange)
+      ranges: this.getDoc().listSelections().map(this.cmSelectionToRange),
     };
   }
 
@@ -105,8 +105,7 @@ export class CodeMirrorAdapter implements AdapterInterface {
     this.lastContentChecked = this.currentContentChecking;
   }
 
-  registerCheckCall(_checkInfo: Check) {
-  }
+  registerCheckCall(_checkInfo: Check) {}
 
   private lookupMatchesOrThrow<T extends Match>(matches: T[]): AlignedMatch<T>[] {
     const alignedMatches = lookupMatches(this.lastContentChecked!, this.getContent(), matches, 'TEXT');
@@ -115,7 +114,6 @@ export class CodeMirrorAdapter implements AdapterInterface {
     }
     return alignedMatches;
   }
-
 
   selectRanges(_checkId: string, matches: Match[]) {
     const alignedMatches = this.lookupMatchesOrThrow(matches);
@@ -128,7 +126,7 @@ export class CodeMirrorAdapter implements AdapterInterface {
     const escapeFunction = this.getEscapeFunction();
 
     let replacementLength = 0;
-    _.forEachRight(alignedMatches, match => {
+    _.forEachRight(alignedMatches, (match) => {
       if (!isDangerousToReplace(this.lastContentChecked!, match.originalMatch)) {
         const positionRange = this.selectRange(match.range);
         const escapedReplacement = escapeFunction(match.originalMatch.replacement);
@@ -171,11 +169,13 @@ export class CodeMirrorAdapter implements AdapterInterface {
     editor.focus();
   }
 
-  private cmSelectionToRange = (selection: { anchor: CodeMirror.Position; head: CodeMirror.Position }): [number, number] => {
+  private cmSelectionToRange = (selection: {
+    anchor: CodeMirror.Position;
+    head: CodeMirror.Position;
+  }): [number, number] => {
     const doc = this.getDoc();
     const range: [number, number] = [doc.indexFromPos(selection.anchor), doc.indexFromPos(selection.head)];
     range.sort((a, b) => a - b);
     return range;
-  }
-
+  };
 }

@@ -19,8 +19,10 @@ import {
   MatchWithReplacement,
   Check,
   DocumentSelection,
-  CheckedDocumentPart, CheckInformationKeyValuePair, ExternalContent
-} from "@acrolinx/sidebar-interface";
+  CheckedDocumentPart,
+  CheckInformationKeyValuePair,
+  ExternalContent,
+} from '@acrolinx/sidebar-interface';
 
 export interface CommonAdapterConf {
   scrollOffsetY?: number;
@@ -97,7 +99,9 @@ export function hasError(a: ContentExtractionResult): a is HasError {
   return !!(a as HasError).error;
 }
 
-export function isSuccessfulContentExtractionResult(a: ContentExtractionResult): a is SuccessfulContentExtractionResult {
+export function isSuccessfulContentExtractionResult(
+  a: ContentExtractionResult,
+): a is SuccessfulContentExtractionResult {
   return typeof (a as SuccessfulContentExtractionResult).content == 'string';
 }
 
@@ -119,5 +123,3 @@ export function getElementFromAdapterConf(conf: AdapterConf) {
     throw new Error('Invalid AdapterConf. Missing editorId or element');
   }
 }
-
-

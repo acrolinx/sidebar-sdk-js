@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-
-import {Editor} from 'tinymce';
-import {removeEmptyTextNodesIfNeeded} from './AbstractRichtextEditorAdapter';
-import {TinyMCEAdapter} from "./TinyMCEAdapter";
-
+import { Editor } from 'tinymce';
+import { removeEmptyTextNodesIfNeeded } from './AbstractRichtextEditorAdapter';
+import { TinyMCEAdapter } from './TinyMCEAdapter';
 
 export class TinyMCEWordpressAdapter extends TinyMCEAdapter {
-
-  getEditor() : Editor {
+  getEditor(): Editor {
     return tinymce.get(this.editorId)!;
   }
 

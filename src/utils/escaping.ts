@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-import {OffSetAlign} from "./alignment";
+import { OffSetAlign } from './alignment';
 
 export interface EscapeHtmlCharactersResult {
   escapedText: string;
   backwardAlignment: OffSetAlign[];
 }
 
-const HTML_ESCAPES: {[key: string]: string} = {
+const HTML_ESCAPES: { [key: string]: string } = {
   '&': '&amp;',
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
   "'": '&#39;',
-  '`': '&#96;'
+  '`': '&#96;',
 };
 
 export function escapeHtmlCharacters(text: string): EscapeHtmlCharactersResult {
@@ -42,10 +42,10 @@ export function escapeHtmlCharacters(text: string): EscapeHtmlCharactersResult {
       currentDiffOffset = currentDiffOffset - additionalChars;
       backwardAlignment.push({
         oldPosition: escapedText.length + escapedChar.length,
-        diffOffset: currentDiffOffset
+        diffOffset: currentDiffOffset,
       });
     }
     escapedText = escapedText + (escapedChar || char);
   }
-  return {escapedText, backwardAlignment};
+  return { escapedText, backwardAlignment };
 }

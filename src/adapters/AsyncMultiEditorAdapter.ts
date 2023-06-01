@@ -15,15 +15,19 @@
  */
 
 import 'es6-promise/auto';
-import {Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
-import {AdapterInterface, AsyncAdapterInterface} from "./AdapterInterface";
-import {AddSingleAdapterOptions, MultiEditorAdapter} from "./MultiEditorAdapter";
+import { Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { AdapterInterface, AsyncAdapterInterface } from './AdapterInterface';
+import { AddSingleAdapterOptions, MultiEditorAdapter } from './MultiEditorAdapter';
 
 export class AsyncMultiEditorAdapter extends MultiEditorAdapter implements AsyncAdapterInterface {
   readonly isAsync = true as const;
   readonly requiresSynchronization = true as const;
 
-  addSingleAdapter(singleAdapter: AsyncAdapterInterface | AdapterInterface, opts: AddSingleAdapterOptions = {}, id?: string) {
+  addSingleAdapter(
+    singleAdapter: AsyncAdapterInterface | AdapterInterface,
+    opts: AddSingleAdapterOptions = {},
+    id?: string,
+  ) {
     this.addSingleAdapterInternal(singleAdapter, opts, id);
   }
 
@@ -41,4 +45,3 @@ export class AsyncMultiEditorAdapter extends MultiEditorAdapter implements Async
     }
   }
 }
-

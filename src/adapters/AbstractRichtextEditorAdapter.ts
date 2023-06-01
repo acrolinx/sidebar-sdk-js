@@ -15,24 +15,23 @@
  */
 
 import * as _ from 'lodash';
-import {Check, DocumentSelection, Match, MatchWithReplacement} from '@acrolinx/sidebar-interface';
-import {lookupMatches} from '../lookup/diff-based';
-import {getAutobindWrapperAttributes} from '../utils/adapter-utils';
-import {AlignedMatch} from '../utils/alignment';
-import {isChrome} from '../utils/detect-browser';
-import {getCompleteFlagLength} from '../utils/match';
-import {scrollIntoView, scrollIntoViewCenteredWithFallback} from '../utils/scrolling';
-import {extractTextDomMapping, getEndDomPos, TextDomMapping} from '../utils/text-dom-mapping';
-import {assertElementIsDisplayed, fakeInputEvent, removeNode} from '../utils/utils';
+import { Check, DocumentSelection, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { lookupMatches } from '../lookup/diff-based';
+import { getAutobindWrapperAttributes } from '../utils/adapter-utils';
+import { AlignedMatch } from '../utils/alignment';
+import { isChrome } from '../utils/detect-browser';
+import { getCompleteFlagLength } from '../utils/match';
+import { scrollIntoView, scrollIntoViewCenteredWithFallback } from '../utils/scrolling';
+import { extractTextDomMapping, getEndDomPos, TextDomMapping } from '../utils/text-dom-mapping';
+import { assertElementIsDisplayed, fakeInputEvent, removeNode } from '../utils/utils';
 import {
   AdapterConf,
   AdapterInterface,
   AutobindWrapperAttributes,
   ContentExtractionResult,
   ExtractContentForCheckOpts,
-  SuccessfulCheckResult
+  SuccessfulCheckResult,
 } from './AdapterInterface';
-
 
 type TextMapping = TextDomMapping;
 
@@ -58,8 +57,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     return this.getEditorDocument().querySelector('body')!;
   }
 
-  registerCheckCall(_checkInfo: Check) {
-  }
+  registerCheckCall(_checkInfo: Check) {}
 
   registerCheckResult(_checkResult: SuccessfulCheckResult): void {
     this.lastContentChecked = this.currentContentChecking;
@@ -68,11 +66,11 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   extractContentForCheck(opts: ExtractContentForCheckOpts): ContentExtractionResult | Promise<ContentExtractionResult> {
     const html = this.getContent(opts);
     this.currentContentChecking = html;
-    return {content: html, selection: opts.checkSelection ? this.getSelection() : undefined};
+    return { content: html, selection: opts.checkSelection ? this.getSelection() : undefined };
   }
 
   protected getSelection(): DocumentSelection {
-    return {ranges: []};
+    return { ranges: [] };
   }
 
   protected scrollIntoView(sel: Selection): void | Promise<void> {
@@ -121,7 +119,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     }
   }
 
-  protected isCkEditor5(): boolean{
+  protected isCkEditor5(): boolean {
     return this.getEditorElement().classList.contains('ck-editor__editable');
   }
 
@@ -130,7 +128,6 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     const editorElementContainsQuill = !!this.getEditorElement().querySelector('.ql-editor');
     return editorElementIsQuill || editorElementContainsQuill;
   }
-
 
   protected selectMatches<T extends Match>(_checkId: string, matches: T[]): [AlignedMatch<T>[], TextMapping] {
     const textMapping: TextMapping = this.getTextDomMapping();
@@ -176,13 +173,21 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     if (beginDomPosition.offset <= beginDomPosition.node.textContent!.length) {
       range.setStart(beginDomPosition.node, beginDomPosition.offset);
     } else {
-      console.warn(`Offset of range begin (${beginDomPosition.offset}) > node text length (${beginDomPosition.node.textContent!.length})`);
+      console.warn(
+        `Offset of range begin (${beginDomPosition.offset}) > node text length (${
+          beginDomPosition.node.textContent!.length
+        })`,
+      );
     }
 
     if (endDomPosition.offset <= endDomPosition.node.textContent!.length) {
       range.setEnd(endDomPosition.node, endDomPosition.offset);
     } else {
-      console.warn(`Offset of range end (${endDomPosition.offset}) > node text length (${endDomPosition.node.textContent!.length})`);
+      console.warn(
+        `Offset of range end (${endDomPosition.offset}) > node text length (${
+          endDomPosition.node.textContent!.length
+        })`,
+      );
     }
 
     return range;
@@ -218,7 +223,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void | Promise<void> {
     assertElementIsDisplayed(this.getEditorElement());
     const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
-    const replacement = alignedMatches.map(m => m.originalMatch.replacement).join('');
+    const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
     this.replaceAlignedMatches(alignedMatches);
 
     // Replacement will remove the selection, so we need to restore it again.
@@ -254,7 +259,7 @@ export function removeEmptyTextNodes(range: Range) {
   let currentNode: Node | null;
   let afterStartNode = false;
   // eslint-disable-next-line no-cond-assign
-  while (currentNode = nodeIterator.nextNode()) {
+  while ((currentNode = nodeIterator.nextNode())) {
     if (currentNode === range.startContainer) {
       afterStartNode = true;
     }
@@ -273,4 +278,3 @@ function removeIfEmptyTextNode(node: Node) {
     removeNode(node);
   }
 }
-

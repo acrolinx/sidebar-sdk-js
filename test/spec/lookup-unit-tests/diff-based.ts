@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import {createOffsetMappingArray, lookupMatches} from "../../../src/lookup/diff-based";
-import {diff_match_patch} from "diff-match-patch";
-import {getMatchesWithReplacement} from "../../utils/test-utils";
+import { createOffsetMappingArray, lookupMatches } from '../../../src/lookup/diff-based';
+import { diff_match_patch } from 'diff-match-patch';
+import { getMatchesWithReplacement } from '../../utils/test-utils';
 const assert = chai.assert;
-
 
 describe('lookup/diff-based', function () {
   it('createOffsetMappingArray', function () {
@@ -26,13 +25,13 @@ describe('lookup/diff-based', function () {
     const diffs = dmp.diff_main('abcde', 'zabxcye');
     const offsetMapping = createOffsetMappingArray(diffs);
     const expected = [
-      {"oldPosition": 0, "diffOffset": 1},
-      {"oldPosition": 2, "diffOffset": 1},
-      {"oldPosition": 2, "diffOffset": 2},
-      {"oldPosition": 3, "diffOffset": 2},
-      {"oldPosition": 4, "diffOffset": 1},
-      {"oldPosition": 4, "diffOffset": 2},
-      {"oldPosition": 5, "diffOffset": 2}
+      { oldPosition: 0, diffOffset: 1 },
+      { oldPosition: 2, diffOffset: 1 },
+      { oldPosition: 2, diffOffset: 2 },
+      { oldPosition: 3, diffOffset: 2 },
+      { oldPosition: 4, diffOffset: 1 },
+      { oldPosition: 4, diffOffset: 2 },
+      { oldPosition: 5, diffOffset: 2 },
     ];
 
     assert.deepEqual(offsetMapping, expected);
@@ -47,7 +46,4 @@ describe('lookup/diff-based', function () {
     const alignedMatches = lookupMatches(text, 'error', getMatchesWithReplacement(text, 'errorr'));
     assert.deepEqual(alignedMatches, []);
   });
-
 });
-
-

@@ -15,8 +15,8 @@
  */
 
 import _ from 'lodash';
-import {getAutobindWrapperAttributes} from '../../src/utils/adapter-utils';
-import {assertDeepEqual} from '../utils/test-utils';
+import { getAutobindWrapperAttributes } from '../../src/utils/adapter-utils';
+import { assertDeepEqual } from '../utils/test-utils';
 
 describe('escapeHtmlCharacters', () => {
   it('empty div', () => {
@@ -32,7 +32,7 @@ describe('escapeHtmlCharacters', () => {
     const element = createElementWithAttributes('input', {
       id: 'myId',
       name: 'myName',
-      'class': 'myClass'
+      class: 'myClass',
     });
     const result = getAutobindWrapperAttributes(element);
     assertDeepEqual(result, {
@@ -40,7 +40,7 @@ describe('escapeHtmlCharacters', () => {
       'original-source': 'input',
       'original-name': 'myName',
       'original-display': 'hidden',
-      'original-class': 'myClass'
+      'original-class': 'myClass',
     });
   });
 
@@ -58,26 +58,24 @@ describe('escapeHtmlCharacters', () => {
     it('omit original-display attribute if displayed', () => {
       const result = getAutobindWrapperAttributes(element);
       assertDeepEqual(result, {
-        'original-source': 'input'
+        'original-source': 'input',
       });
     });
   });
 
-
   it('all aria attributes', () => {
     const element = createElementWithAttributes('textarea', {
       'aria-label': 'myAriaLabel',
-      'other-thing': 'otherThing'
+      'other-thing': 'otherThing',
     });
     const result = getAutobindWrapperAttributes(element);
     assertDeepEqual(result, {
       'original-source': 'textarea',
       'original-display': 'hidden',
-      'original-aria-label': 'myAriaLabel'
+      'original-aria-label': 'myAriaLabel',
     });
   });
 });
-
 
 function createElementWithAttributes(tag: string, attributes: { [key: string]: string }) {
   const element = document.createElement(tag, {});

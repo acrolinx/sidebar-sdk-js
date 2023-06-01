@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-import {Check, Match, MatchWithReplacement} from "@acrolinx/sidebar-interface";
+import { Check, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import {
   AdapterInterface,
   AsyncAdapterInterface,
-  AutobindWrapperAttributes, ContentExtractionResult, ExtractContentForCheckOpts, SuccessfulCheckResult
-} from "../../../src/adapters/AdapterInterface";
-import {waitMs} from "../../utils/test-utils";
+  AutobindWrapperAttributes,
+  ContentExtractionResult,
+  ExtractContentForCheckOpts,
+  SuccessfulCheckResult,
+} from '../../../src/adapters/AdapterInterface';
+import { waitMs } from '../../utils/test-utils';
 
 export class SlowMotionAsyncWrapper implements AsyncAdapterInterface {
   public readonly isAsync = true;

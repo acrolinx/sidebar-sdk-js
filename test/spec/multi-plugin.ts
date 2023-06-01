@@ -24,20 +24,20 @@ import {
   InitParameters,
   InitResult,
   InvalidDocumentPart,
-  SidebarConfiguration
+  SidebarConfiguration,
 } from '@acrolinx/sidebar-interface';
 import * as _ from 'lodash';
 import * as acrolinxPluginModule from '../../src/acrolinx-plugin';
-import {AcrolinxPluginConfig} from '../../src/acrolinx-plugin';
-import {ContentEditableAdapter} from '../../src/adapters/ContentEditableAdapter';
-import {InputAdapter} from '../../src/adapters/InputAdapter';
+import { AcrolinxPluginConfig } from '../../src/acrolinx-plugin';
+import { ContentEditableAdapter } from '../../src/adapters/ContentEditableAdapter';
+import { InputAdapter } from '../../src/adapters/InputAdapter';
 import {
   AddSingleAdapterOptions,
   MultiEditorAdapter,
-  MultiEditorAdapterConfig
+  MultiEditorAdapterConfig,
 } from '../../src/adapters/MultiEditorAdapter';
-import {assign} from '../../src/utils/utils';
-import {getDummySidebarPath, getMatchesWithReplacement} from '../utils/test-utils';
+import { assign } from '../../src/utils/utils';
+import { getDummySidebarPath, getMatchesWithReplacement } from '../utils/test-utils';
 
 const DUMMY_CHECK_ID = 'dummyCheckId';
 
@@ -47,7 +47,7 @@ interface InitMultiPluginOpts {
   addInputAdapterOptions?: AddSingleAdapterOptions;
 }
 
-describe('multi plugin', function() {
+describe('multi plugin', function () {
   let injectedPlugin: AcrolinxPlugin;
 
   let lastDocumentContent: string;
@@ -63,7 +63,10 @@ describe('multi plugin', function() {
     done();
   });
 
-  function initMultiPlugin(done: Function, {config, addInputAdapterOptions, multiEditorAdapterConfig}: InitMultiPluginOpts = {}) {
+  function initMultiPlugin(
+    done: Function,
+    { config, addInputAdapterOptions, multiEditorAdapterConfig }: InitMultiPluginOpts = {},
+  ) {
     $('body').append(`
         <div id="multiPluginTest">
           <div id="ContentEditableAdapter" contenteditable="true">Initial text of ContentEditableAdapter.</div>
@@ -72,16 +75,18 @@ describe('multi plugin', function() {
         </div>
       `);
 
-
-    const conf = assign({
-      sidebarUrl: getDummySidebarPath(),
-      sidebarContainerId: 'sidebarContainer',
-    }, config);
+    const conf = assign(
+      {
+        sidebarUrl: getDummySidebarPath(),
+        sidebarContainerId: 'sidebarContainer',
+      },
+      config,
+    );
 
     acrolinxPlugin = new acrolinxPluginModule.AcrolinxPlugin(conf);
 
-    const contentEditableAdapter = new ContentEditableAdapter({editorId: 'ContentEditableAdapter'});
-    const inputAdapter = new InputAdapter({editorId: 'InputAdapter'});
+    const contentEditableAdapter = new ContentEditableAdapter({ editorId: 'ContentEditableAdapter' });
+    const inputAdapter = new InputAdapter({ editorId: 'InputAdapter' });
     const multiAdapter = new MultiEditorAdapter(multiEditorAdapterConfig);
     multiAdapter.addSingleAdapter(contentEditableAdapter, addInputAdapterOptions);
     multiAdapter.addSingleAdapter(inputAdapter);
@@ -110,12 +115,10 @@ describe('multi plugin', function() {
     pollForInjectedAcrolinxPlug();
   }
 
-
   function getIFrameWindow(): any {
     const iFrame: HTMLIFrameElement = document.querySelector('#sidebarContainer iframe') as HTMLIFrameElement;
     return iFrame ? iFrame.contentWindow : null;
   }
-
 
   function createMockSidebar(): AcrolinxSidebar {
     return {
@@ -131,25 +134,22 @@ describe('multi plugin', function() {
           injectedPlugin.onCheckResult({
             checkedPart: {
               checkId: DUMMY_CHECK_ID,
-              range: [0, documentContent.length]
-            }
+              range: [0, documentContent.length],
+            },
           });
           afterCheckCallback();
         }, 1);
-        return {checkId: DUMMY_CHECK_ID};
+        return { checkId: DUMMY_CHECK_ID };
       },
-      onGlobalCheckRejected(): void {
-
-      },
+      onGlobalCheckRejected(): void {},
 
       invalidateRanges(invalidCheckedDocumentRanges: InvalidDocumentPart[]) {
         invalidatedRanges = invalidCheckedDocumentRanges;
       },
 
-      onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {
-      },
+      onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {},
 
-      showMessage: _.noop
+      showMessage: _.noop,
     };
   }
 
@@ -158,7 +158,6 @@ describe('multi plugin', function() {
     injectedPlugin.requestGlobalCheck();
   }
 
-
   describe('normal', () => {
     beforeEach((done) => {
       initMultiPlugin(done);
@@ -166,9 +165,10 @@ describe('multi plugin', function() {
 
     it('request check', (done) => {
       waitForCheck(() => {
-        assert.equal(lastDocumentContent,
+        assert.equal(
+          lastDocumentContent,
           '<div id="acrolinx_integration0">Initial text of ContentEditableAdapter.</div>' +
-          '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>'
+            '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>',
         );
         done();
       });
@@ -215,10 +215,12 @@ describe('multi plugin', function() {
         console.log(contentEditableAdapterMatch);
         $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
         injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.deepEqual(invalidatedRanges, [{
-          checkId: DUMMY_CHECK_ID,
-          range: contentEditableAdapterMatch[0].range
-        }]);
+        assert.deepEqual(invalidatedRanges, [
+          {
+            checkId: DUMMY_CHECK_ID,
+            range: contentEditableAdapterMatch[0].range,
+          },
+        ]);
         done();
       });
     });
@@ -230,16 +232,16 @@ describe('multi plugin', function() {
         console.log(contentEditableAdapterMatch);
         $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
         injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.deepEqual(invalidatedRanges, [{
-          checkId: DUMMY_CHECK_ID,
-          range: contentEditableAdapterMatch[0].range
-        }]);
+        assert.deepEqual(invalidatedRanges, [
+          {
+            checkId: DUMMY_CHECK_ID,
+            range: contentEditableAdapterMatch[0].range,
+          },
+        ]);
         done();
       });
     });
-
   });
-
 
   describe('with onSidebarWindowLoaded config', () => {
     const injectedStuff = 'injected';
@@ -250,15 +252,14 @@ describe('multi plugin', function() {
           onSidebarWindowLoaded: (sidebarWindow: Window) => {
             assert.equal(sidebarWindow, getIFrameWindow());
             (sidebarWindow as any).injectedStuff = injectedStuff;
-          }
-        }
+          },
+        },
       });
     });
 
     it('onSidebarWindowLoaded was called on sidebar window', () => {
       assert.equal(getIFrameWindow().injectedStuff, injectedStuff);
     });
-
   });
 
   describe('AddSingleAdapterOptions', () => {
@@ -267,18 +268,19 @@ describe('multi plugin', function() {
         addInputAdapterOptions: {
           tagName: 'h1',
           attributes: {
-            'class': 'class',
+            class: 'class',
             'data-boolean': false,
-            'data-more': '"<tag>"'
-          }
-        }
+            'data-more': '"<tag>"',
+          },
+        },
       });
 
       function onInitDone() {
         waitForCheck(() => {
-          assert.equal(lastDocumentContent,
+          assert.equal(
+            lastDocumentContent,
             '<h1 class="class" data-boolean="false" data-more="&quot;&lt;tag&gt;&quot;" id="acrolinx_integration0">Initial text of ContentEditableAdapter.</h1>' +
-            '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>'
+              '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>',
           );
           done();
         });
@@ -293,8 +295,8 @@ describe('multi plugin', function() {
           documentHeader: '<!DOCTYPE html>\n',
           rootElement: {
             tagName: 'root',
-          }
-        }
+          },
+        },
       });
 
       function onInitDone() {
@@ -312,11 +314,11 @@ describe('multi plugin', function() {
     it('do stuff before check', (done) => {
       initMultiPlugin(onInitDone, {
         multiEditorAdapterConfig: {
-          beforeCheck: multiAdapter => {
+          beforeCheck: (multiAdapter) => {
             multiAdapter.removeAllAdapters();
-            multiAdapter.addSingleAdapter(new InputAdapter({editorId: 'InputAdapter'}));
-          }
-        }
+            multiAdapter.addSingleAdapter(new InputAdapter({ editorId: 'InputAdapter' }));
+          },
+        },
       });
 
       function onInitDone() {
@@ -331,7 +333,7 @@ describe('multi plugin', function() {
   describe('configure and reconfigure', () => {
     it('configure before init done', (done) => {
       initMultiPlugin(onInitDone);
-      acrolinxPlugin.configure({readOnlySuggestions: true});
+      acrolinxPlugin.configure({ readOnlySuggestions: true });
 
       function onInitDone() {
         setTimeout(() => {
@@ -346,13 +348,12 @@ describe('multi plugin', function() {
 
       function onInitDone() {
         setTimeout(() => {
-          acrolinxPlugin.configure({readOnlySuggestions: true});
+          acrolinxPlugin.configure({ readOnlySuggestions: true });
           assert.equal(newConfig.readOnlySuggestions, true);
           done();
         }, 1);
       }
     });
-
   });
 
   describe('enforce check after sidebar is initialized', () => {
@@ -365,10 +366,9 @@ describe('multi plugin', function() {
               done();
             };
             acrolinxPlugin.check();
-          }
-        }
+          },
+        },
       });
     });
   });
-
 });

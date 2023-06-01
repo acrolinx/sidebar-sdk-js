@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import * as _ from "lodash";
-import {toSet} from "./utils";
-import {OffSetAlign} from "./alignment";
+import * as _ from 'lodash';
+import { toSet } from './utils';
+import { OffSetAlign } from './alignment';
 import * as entities from 'entities';
 
-const REPLACE_SCRIPTS_REGEXP = '<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\/script>';
-const REPLACE_STYLES_REGEXP = '<style\\b[^<]*(?:(?!<\\/style>)<[^<]*)*<\/style>';
+const REPLACE_SCRIPTS_REGEXP = '<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*</script>';
+const REPLACE_STYLES_REGEXP = '<style\\b[^<]*(?:(?!<\\/style>)<[^<]*)*</style>';
 const REPLACE_TAG_REGEXP = '<([^>]+)>';
 const REPLACE_ENTITY_REGEXP = '&.*?;';
 // Order is important.
@@ -30,13 +30,11 @@ const REPLACE_TAGS_REGEXP = '(' + REPLACE_TAGS_PARTS.join('|') + ')';
 export const NEW_LINE_TAGS = toSet(['BR', 'P', 'DIV']);
 export const AUTO_SELF_CLOSING_LINE_TAGS = toSet(['BR']);
 
-
 function getTagReplacement(completeTag: string): string {
-  const [slash1 = '', tagName = '', slash2 = ''] = ((/^<(\/?)(\w+)/i).exec(completeTag.toUpperCase()) || []).slice(1);
+  const [slash1 = '', tagName = '', slash2 = ''] = (/^<(\/?)(\w+)/i.exec(completeTag.toUpperCase()) || []).slice(1);
   // eslint-disable-next-line sonarjs/no-collapsible-if
   if (tagName) {
-    if (AUTO_SELF_CLOSING_LINE_TAGS[tagName] ||
-      (NEW_LINE_TAGS[tagName] && (slash1 || slash2))) {
+    if (AUTO_SELF_CLOSING_LINE_TAGS[tagName] || (NEW_LINE_TAGS[tagName] && (slash1 || slash2))) {
       return '\n';
     }
   }
@@ -49,11 +47,13 @@ export function extractText(s: string): [string, OffSetAlign[]] {
   const offsetMapping: OffSetAlign[] = [];
   let currentDiffOffset = 0;
   const resultText = s.replace(regExp, (tagOrEntity, _p1, _p2, offset) => {
-    const rep = _.startsWith(tagOrEntity, '&') ? entities.decodeHTMLStrict(tagOrEntity) : getTagReplacement(tagOrEntity);
+    const rep = _.startsWith(tagOrEntity, '&')
+      ? entities.decodeHTMLStrict(tagOrEntity)
+      : getTagReplacement(tagOrEntity);
     currentDiffOffset -= tagOrEntity.length - rep.length;
     offsetMapping.push({
       oldPosition: offset + tagOrEntity.length,
-      diffOffset: currentDiffOffset
+      diffOffset: currentDiffOffset,
     });
     return rep;
   });

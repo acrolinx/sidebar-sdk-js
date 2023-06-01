@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {Deferred} from "./utils";
+import { Deferred } from './utils';
 
 class Fifo<T> {
   private store: T[] = [];
@@ -42,7 +42,7 @@ export class WorkQueue {
   addWork<T>(work: PromiseProvider<T>): Promise<T> {
     const workItem: WorkItem<T> = {
       work: work,
-      deferred: new Deferred()
+      deferred: new Deferred(),
     };
     this.workTodo.push(workItem);
     if (!this.currentWork) {
@@ -55,17 +55,18 @@ export class WorkQueue {
     const nextWorkItem = this.workTodo.pop();
     if (nextWorkItem) {
       this.currentWork = nextWorkItem.work();
-      this.currentWork.then((result) => {
-        nextWorkItem.deferred.resolve(result);
-        this.currentWork = undefined;
-        this.doRemainingWork();
-      }, (error) => {
-        nextWorkItem.deferred.reject(error);
-        this.currentWork = undefined;
-        this.doRemainingWork();
-      });
+      this.currentWork.then(
+        (result) => {
+          nextWorkItem.deferred.resolve(result);
+          this.currentWork = undefined;
+          this.doRemainingWork();
+        },
+        (error) => {
+          nextWorkItem.deferred.reject(error);
+          this.currentWork = undefined;
+          this.doRemainingWork();
+        },
+      );
     }
   }
-
 }
-

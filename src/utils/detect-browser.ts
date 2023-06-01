@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const UNKNOWN_BROWSER = {name: 'unknown', version: '0'};
+const UNKNOWN_BROWSER = { name: 'unknown', version: '0' };
 
 const BROWSER_AND_USER_AGENT_PATTERNS: [string, RegExp][] = [
   ['edge', /Edge\/([0-9\._]+)/],
@@ -34,7 +34,7 @@ const BROWSER_AND_USER_AGENT_PATTERNS: [string, RegExp][] = [
   ['bb10', /BB10;\sTouch.*Version\/([0-9\.]+)/],
   ['android', /Android\s([0-9\.]+)/],
   ['ios', /Version\/([0-9\._]+).*Mobile.*Safari.*/],
-  ['safari', /Version\/([0-9\._]+).*Safari/]
+  ['safari', /Version\/([0-9\._]+).*Safari/],
 ];
 
 export interface DetectedBrowser {
@@ -56,19 +56,23 @@ function parseUserAgent(userAgentString: string): DetectedBrowser | undefined {
     return undefined;
   }
 
-  return BROWSER_AND_USER_AGENT_PATTERNS.map(([browserName, regexp]) => {
-    const match = regexp.exec(userAgentString);
-    let version = match && match[1].split(/[._]/).slice(0, 3) as any;
+  return (
+    BROWSER_AND_USER_AGENT_PATTERNS.map(([browserName, regexp]) => {
+      const match = regexp.exec(userAgentString);
+      let version = match && (match[1].split(/[._]/).slice(0, 3) as any);
 
-    if (version && version.length < 3) {
-      version = version.concat(version.length == 1 ? [0, 0] : [0]);
-    }
+      if (version && version.length < 3) {
+        version = version.concat(version.length == 1 ? [0, 0] : [0]);
+      }
 
-    return match && {
-      name: browserName,
-      version: version.join('.')
-    };
-  }).filter(Boolean)[0] || undefined;
+      return (
+        match && {
+          name: browserName,
+          version: version.join('.'),
+        }
+      );
+    }).filter(Boolean)[0] || undefined
+  );
 }
 
 export const browser = detectBrowser();

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import {AbstractRichtextEditorAdapter} from './AbstractRichtextEditorAdapter';
-import {getElementFromAdapterConf, AdapterConf} from './AdapterInterface';
-import {DocumentSelection} from '@acrolinx/sidebar-interface';
-import {getSelectionHtmlRanges} from '../utils/check-selection';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { getElementFromAdapterConf, AdapterConf } from './AdapterInterface';
+import { DocumentSelection } from '@acrolinx/sidebar-interface';
+import { getSelectionHtmlRanges } from '../utils/check-selection';
 
 export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
   element: HTMLElement;
@@ -36,11 +36,10 @@ export class ContentEditableAdapter extends AbstractRichtextEditorAdapter {
   }
 
   protected getSelection(): DocumentSelection {
-    return {ranges: getSelectionHtmlRanges(this.getEditorElement())};
+    return { ranges: getSelectionHtmlRanges(this.getEditorElement()) };
   }
 
   getEditorDocument(): Document {
     return this.element.ownerDocument;
   }
 }
-
