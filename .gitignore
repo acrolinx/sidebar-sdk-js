@@ -16,3 +16,6 @@ tmp
 /docs/pluginDoc
 
 coverage
+
+# Eclipse
+.project
