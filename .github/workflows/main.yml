@@ -75,7 +75,7 @@ jobs:
           token: ${{ secrets.NPM_ACCESS_TOKEN }}
       
       - name: Push tag
-        uses: anothrNick/github-tag-action@1.36.0
+        uses: anothrNick/github-tag-action@1.67.0
         if: github.ref == 'refs/heads/main' && steps.publish.outcome == 'success' && steps.publish.outputs.type != 'none'
         env:
           CUSTOM_TAG: v${{ steps.publish.outputs.version }}
