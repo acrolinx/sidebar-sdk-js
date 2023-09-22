@@ -55,14 +55,14 @@ jobs:
           # npm version patch -m "Release version %s" -f 
           
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dist
           path: |
             dist/**/*
       
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: code-coverage-report
           path: tmp/reports/coverage/**/cobertura-coverage.xml
