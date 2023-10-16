@@ -32,7 +32,7 @@
     "tslib": "^2.5.2"
   },
   "devDependencies": {
-    "@acrolinx/sidebar-interface": "^15.3.0",
+    "@acrolinx/sidebar-interface": "^15.3.1",
     "@ckeditor/ckeditor5-build-inline": "^37.1.0",
     "@ckeditor/ckeditor5-core": "^37.1.0",
     "@ckeditor/ckeditor5-source-editing": "^37.1.0",
