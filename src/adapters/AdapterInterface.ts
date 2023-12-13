@@ -27,6 +27,7 @@ import {
 
 export interface CommonAdapterConf {
   scrollOffsetY?: number;
+  disableFakeInputTrigger?: boolean;
 }
 
 export interface HasEditorID extends CommonAdapterConf {

@@ -46,15 +46,36 @@ export function isIFrame(el: Element): el is HTMLIFrameElement {
   return el.nodeName === 'IFRAME';
 }
 
-export function fakeInputEvent(el: Element) {
-  let customEvent: Event;
-  if (typeof CustomEvent === 'function') {
-    customEvent = new CustomEvent('input');
-  } else {
-    customEvent = document.createEvent('CustomEvent');
-    customEvent.initEvent('input', true, true);
+export function fakeInputEvent(node: Node | undefined | null, inputType = 'input') {
+  if (!node) {
+    console.warn('Unable to trigger input event. Node is null.');
+    return;
   }
-  el.dispatchEvent(customEvent);
+
+  const textNode = Array.from(node.childNodes).find((n) => n.nodeName === '#text' && n.textContent !== '');
+  if (!textNode) {
+    console.warn('No textnode with content found.', node.childNodes);
+    return;
+  }
+
+  const staticRange: StaticRange = new StaticRange({
+    startContainer: textNode,
+    startOffset: 0,
+    endContainer: textNode,
+    endOffset: 1,
+  });
+
+  //TODO: pass real data
+  const eventOptions: InputEventInit = {
+    inputType: 'insertText',
+    data: 'x',
+    bubbles: true,
+    cancelable: false,
+    targetRanges: [staticRange],
+  };
+
+  textNode.dispatchEvent(new InputEvent(inputType, eventOptions));
+  document.body.dispatchEvent(new MouseEvent('mouseup', { bubbles: !0, cancelable: !0 }));
 }
 
 export function parseUrl(href: string) {
