@@ -79,7 +79,7 @@ export interface CommonAdapterInterface {
   registerCheckCall(checkInfo: Check): void;
   registerCheckResult(checkResult: SuccessfulCheckResult): void;
   getAutobindWrapperAttributes?(): AutobindWrapperAttributes;
-  onInitFinished?(result: InitResult):  void;
+  onInitFinished?(result: InitResult): void;
 }
 
 export interface AdapterInterface extends CommonAdapterInterface {
