@@ -58,17 +58,17 @@ export function fakeInputEvent(node: Node | undefined | null, inputType = 'input
     return;
   }
 
+  const textNodeContent = textNode.textContent || '';
   const staticRange: StaticRange = new StaticRange({
     startContainer: textNode,
     startOffset: 0,
     endContainer: textNode,
-    endOffset: 1,
+    endOffset: textNodeContent.length,
   });
 
-  //TODO: pass real data
   const eventOptions: InputEventInit = {
     inputType: 'insertText',
-    data: 'x',
+    data: textNodeContent,
     bubbles: true,
     cancelable: false,
     targetRanges: [staticRange],
