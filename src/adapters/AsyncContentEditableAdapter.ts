@@ -65,11 +65,10 @@ export class AsyncContentEditableAdapter extends AbstractRichtextEditorAdapter i
     const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
     const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
     this.replaceAlignedMatches(alignedMatches);
-
+    fakeInputEvent(this.getEditorElement());
     // Replacement will remove the selection, so we need to restore it again.
     await this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
     this.scrollToCurrentSelection();
-    fakeInputEvent(this.getEditorElement());
   }
 
   async selectText(begin: number, length: number, textMapping: TextMapping): Promise<void> {

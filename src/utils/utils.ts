@@ -52,7 +52,7 @@ export function fakeInputEvent(node: Node | undefined | null, inputType = 'input
     return;
   }
 
-  const textNode = Array.from(node.childNodes).find((n) => n.nodeName === '#text' && n.textContent !== '');
+  const textNode = findTextNode(node);
   if (!textNode) {
     console.warn('No textnode with content found.', node.childNodes);
     return;
@@ -75,7 +75,23 @@ export function fakeInputEvent(node: Node | undefined | null, inputType = 'input
   };
 
   textNode.dispatchEvent(new InputEvent(inputType, eventOptions));
-  document.body.dispatchEvent(new MouseEvent('mouseup', { bubbles: !0, cancelable: !0 }));
+}
+
+function findTextNode(node: Node): Node | null {
+  const textNode = Array.from(node.childNodes).find((n) => n.nodeName === '#text' && n.textContent !== '');
+
+  if (textNode) {
+    return textNode;
+  } else {
+    for (const childNode of Array.from(node.childNodes)) {
+      const recursiveTextNode = findTextNode(childNode);
+      if (recursiveTextNode) {
+        return recursiveTextNode;
+      }
+    }
+    console.warn('No text node with content found.', node.childNodes);
+    return null;
+  }
 }
 
 export function parseUrl(href: string) {

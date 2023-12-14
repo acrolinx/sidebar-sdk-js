@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import _ from 'lodash';
 import { act } from 'react-dom/test-utils';
-import ReactDOM from "react-dom";
+import ReactDOM from 'react-dom';
 import React from 'react';
 import App from './adapter-test-setups/draftjs-editor/draftApp';
 import { assert } from 'chai';
@@ -29,17 +28,17 @@ import { waitMs } from '../../src/utils/utils';
 // The tests only cover selection as replacement is crrently not implemented the way it should
 // be in state based editors.
 describe('state-based-editors-async-adapters', function () {
-
-  let rootContainer: Element
+  let rootContainer: Element;
+  let editable: Element;
   const dummyCheckId = 'dummyCheckId';
   let adapter: AsyncContentEditableAdapter;
   beforeEach(() => {
-    rootContainer = document.createElement("div");
+    rootContainer = document.createElement('div');
     document.body.appendChild(rootContainer);
     act(() => {
       ReactDOM.render(<App />, rootContainer);
     });
-    const editable = document.querySelector('[contenteditable=true]');
+    editable = document.querySelector('[contenteditable=true]') as Element;
     adapter = new AsyncContentEditableAdapter({ element: editable as HTMLElement });
   });
 
@@ -51,10 +50,10 @@ describe('state-based-editors-async-adapters', function () {
     adapter.registerCheckResult({
       checkedPart: {
         checkId: dummyCheckId,
-        range: [0, text.length]
-      }
+        range: [0, text.length],
+      },
     });
-  }
+  };
 
   it('check content', async () => {
     const content = adapter.getContent();
@@ -69,14 +68,14 @@ describe('state-based-editors-async-adapters', function () {
       const selected = 'test';
       await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected, ''));
       await waitMs(0);
-      assert.equal(document.getElementById('selection')?.innerText, selected);
+      assert.equal(window.getSelection()?.toString(), selected);
     } else {
       assert('Extraction failed');
     }
   });
 
   it('select ranges sequentially', async () => {
-    let extractionResult = await adapter.extractContentForCheck({});
+    const extractionResult = await adapter.extractContentForCheck({});
     if (isSuccessfulContentExtractionResult(extractionResult)) {
       assert.isTrue(extractionResult.content.includes('test'));
       registerCheckResult(extractionResult.content);
@@ -84,22 +83,41 @@ describe('state-based-editors-async-adapters', function () {
       const selected = 'test';
       await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected, ''));
       await waitMs(0);
-      assert.equal(document.getElementById('selection')?.innerText, selected);
+      assert.equal(window.getSelection()?.toString(), selected);
 
       const selected2 = 'This';
       await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected2, ''));
       await waitMs(0);
-      assert.equal(document.getElementById('selection')?.innerText, selected2);
+      assert.equal(window.getSelection()?.toString(), selected2);
 
       const selected3 = 'conteent';
       await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected3, ''));
       await waitMs(0);
-      assert.equal(document.getElementById('selection')?.innerText, selected3);
+      assert.equal(window.getSelection()?.toString(), selected3);
+    } else {
+      assert('Extraction of content failed');
     }
-    else {
-      assert('Extraction of content failed')
+  });
+
+  it('replace ranges', async () => {
+    let inputEventCount = 0;
+    editable.addEventListener('input', () => inputEventCount++);
+    const extractionResult = await adapter.extractContentForCheck({});
+    if (isSuccessfulContentExtractionResult(extractionResult)) {
+      assert.isTrue(extractionResult.content.includes('test'));
+      registerCheckResult(extractionResult.content);
+      const selected = 'test';
+      const replacement = 'test2';
+      await adapter.replaceRanges(
+        dummyCheckId,
+        getMatchesWithReplacement(extractionResult.content, selected, replacement),
+      );
+      await waitMs(0);
+      const selection = window.getSelection()?.toString();
+      assert.equal(selection, replacement);
+      assert.equal(inputEventCount, 1);
+    } else {
+      assert('Replacement failed');
     }
   });
 });
-
-
