@@ -29,7 +29,7 @@ import { AlignedMatch } from '../utils/alignment';
 import { getCompleteFlagLength, isDangerousToReplace } from '../utils/match';
 import { scrollIntoView } from '../utils/scrolling';
 import { lookupMatches } from '../lookup/diff-based';
-import { assertElementIsDisplayed, fakeInputEvent } from '../utils/utils';
+import { assertElementIsDisplayed, simulateInputEvent } from '../utils/utils';
 import { getAutobindWrapperAttributes } from '../utils/adapter-utils';
 
 export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement;
@@ -152,7 +152,7 @@ export class InputAdapter implements AdapterInterface {
     const startOfSelection = alignedMatches[0].range[0];
     const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
     (this.element as HTMLTextAreaElement).setSelectionRange(startOfSelection, startOfSelection + replacement.length);
-    fakeInputEvent(this.element);
+    simulateInputEvent(this.element);
   }
 
   getAutobindWrapperAttributes(): AutobindWrapperAttributes {

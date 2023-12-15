@@ -18,7 +18,7 @@ import { getElementFromAdapterConf, AdapterConf, AsyncAdapterInterface } from '.
 import { DocumentSelection, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { getSelectionHtmlRanges } from '../utils/check-selection';
 import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
-import { assertElementIsDisplayed, fakeInputEvent } from '../utils/utils';
+import { assertElementIsDisplayed, simulateInputEvent } from '../utils/utils';
 import { TextDomMapping } from '../utils/text-dom-mapping';
 
 type TextMapping = TextDomMapping;
@@ -65,7 +65,7 @@ export class AsyncContentEditableAdapter extends AbstractRichtextEditorAdapter i
     const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
     const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
     this.replaceAlignedMatches(alignedMatches);
-    fakeInputEvent(this.getEditorElement());
+    simulateInputEvent(this.getEditorElement());
     // Replacement will remove the selection, so we need to restore it again.
     await this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
     this.scrollToCurrentSelection();
