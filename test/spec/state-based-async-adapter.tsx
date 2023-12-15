@@ -100,6 +100,8 @@ describe('state-based-editors-async-adapters', function () {
   });
 
   it('replace ranges', async () => {
+    let beforeInputEventCount = 0;
+    editable.addEventListener('beforeinput', () => beforeInputEventCount++);
     let inputEventCount = 0;
     editable.addEventListener('input', () => inputEventCount++);
     const extractionResult = await adapter.extractContentForCheck({});
@@ -115,6 +117,7 @@ describe('state-based-editors-async-adapters', function () {
       await waitMs(0);
       const selection = window.getSelection()?.toString();
       assert.equal(selection, replacement);
+      assert.equal(beforeInputEventCount, 1);
       assert.equal(inputEventCount, 1);
     } else {
       assert('Replacement failed');
