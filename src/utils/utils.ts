@@ -46,12 +46,8 @@ export function isIFrame(el: Element): el is HTMLIFrameElement {
   return el.nodeName === 'IFRAME';
 }
 
-export function fakeInputEvent(node: Node | undefined | null, inputType = 'input') {
-  if (!node) {
-    console.warn('Unable to trigger input event. Node is null.');
-    return;
-  }
-
+export function fakeInputEvent(node: Node, inputType = 'input') {
+  console.info('Simulating input event for type: ' + inputType);
   const textNode = findTextNode(node);
   if (!textNode) {
     console.warn('No textnode with content found.', node.childNodes);
