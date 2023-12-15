@@ -148,9 +148,9 @@ export class InputAdapter implements AdapterInterface {
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
     const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
     this.scrollAndSelect(alignedMatches);
-    simulateInputEvent(this.element, 'beforeinput');
+    this.config.disableInputEventSimulation || simulateInputEvent(this.element, 'beforeinput');
     this.replaceAlignedMatches(alignedMatches);
-    simulateInputEvent(this.element, 'input');
+    this.config.disableInputEventSimulation || simulateInputEvent(this.element, 'input');
     const startOfSelection = alignedMatches[0].range[0];
     const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
     (this.element as HTMLTextAreaElement).setSelectionRange(startOfSelection, startOfSelection + replacement.length);
