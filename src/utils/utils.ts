@@ -46,8 +46,8 @@ export function isIFrame(el: Element): el is HTMLIFrameElement {
   return el.nodeName === 'IFRAME';
 }
 
-export function simulateInputEvent(node: Node, inputType = 'input') {
-  console.info('Simulating input event for type: ' + inputType);
+export function simulateInputEvent(node: Node, eventType = 'input') {
+  console.info('Simulating input event for type: ' + eventType);
   const textNode = findTextNode(node);
   if (!textNode) {
     console.warn('No textnode with content found.', node.childNodes);
@@ -70,7 +70,7 @@ export function simulateInputEvent(node: Node, inputType = 'input') {
     targetRanges: [staticRange],
   };
 
-  textNode.dispatchEvent(new InputEvent(inputType, eventOptions));
+  textNode.dispatchEvent(new InputEvent(eventType, eventOptions));
 }
 
 function findTextNode(node: Node): Node | null {
