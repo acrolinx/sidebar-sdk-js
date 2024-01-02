@@ -31,3 +31,4 @@ import './spec/message-adapter';
 import './spec/text-extraction';
 import './spec/sidebar-loader';
 import './spec/cke5adapter-adapters';
+import './spec/state-based-async-adapter';

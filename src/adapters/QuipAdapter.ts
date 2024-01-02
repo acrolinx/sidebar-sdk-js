@@ -92,24 +92,12 @@ export class QuipAdapter extends AbstractRichtextEditorAdapter {
         break;
       case QuipSectionType.paragraph:
         console.log('Found paragraph');
-        setCursorToElementStart(htmlElement);
-        // Trigger save
-        document.execCommand('InsertHTML', false, '');
         break;
       case QuipSectionType.none:
         console.log('Unknown quipSectionType');
         break;
     }
   }
-}
-
-function setCursorToElementStart(htmlElement: HTMLElement) {
-  const s = window.getSelection()!;
-  const r = document.createRange();
-  r.setStart(htmlElement, 0);
-  r.setEnd(htmlElement, 0);
-  s.removeAllRanges();
-  s.addRange(r);
 }
 
 enum QuipSectionType {

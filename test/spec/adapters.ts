@@ -202,6 +202,17 @@ describe('adapter test', function () {
         });
       }
 
+      if (adapterSpec instanceof ContentEditableTestSetup) {
+        it('beforeinput and input events should be trigerred', function (done) {
+          givenAText('wordOne wordTwo wordThree', (text) => {
+            adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+            assert.isTrue(adapterSpec.beforeInputEventWasTriggered);
+            assert.isTrue(adapterSpec.inputEventWasTriggered);
+            done();
+          });
+        });
+      }
+
       it('Replace words in reverse order', function (done) {
         givenAText('wordOne wordTwo wordThree', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
