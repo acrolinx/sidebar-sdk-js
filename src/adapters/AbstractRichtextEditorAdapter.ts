@@ -23,7 +23,7 @@ import { isChrome } from '../utils/detect-browser';
 import { getCompleteFlagLength } from '../utils/match';
 import { scrollIntoView, scrollIntoViewCenteredWithFallback } from '../utils/scrolling';
 import { extractTextDomMapping, getEndDomPos, TextDomMapping } from '../utils/text-dom-mapping';
-import { assertElementIsDisplayed, fakeInputEvent, removeNode } from '../utils/utils';
+import { assertElementIsDisplayed, simulateInputEvent, removeNode } from '../utils/utils';
 import {
   AdapterConf,
   AdapterInterface,
@@ -224,12 +224,16 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     assertElementIsDisplayed(this.getEditorElement());
     const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
     const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
+
+    // Capturing parent node is necessary, replacement makes the textnode orphan.
+    const parentNode = this.getEditorDocument().getSelection()?.focusNode?.parentNode;
+    this.config.disableInputEventSimulation || (parentNode && simulateInputEvent(parentNode, 'beforeinput'));
     this.replaceAlignedMatches(alignedMatches);
+    this.config.disableInputEventSimulation || (parentNode && simulateInputEvent(parentNode, 'input'));
 
     // Replacement will remove the selection, so we need to restore it again.
     this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
     this.scrollToCurrentSelection();
-    fakeInputEvent(this.getEditorElement());
   }
 
   protected getTextDomMapping() {
