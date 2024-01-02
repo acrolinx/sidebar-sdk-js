@@ -169,6 +169,10 @@ class InternalAcrolinxSidebarPlugin implements InternalAcrolinxSidebarPluginInte
     } else if (initFinishedResult.error) {
       window.alert(initFinishedResult.error.message);
     }
+
+    if (this.adapter && this.adapter.onInitFinished) {
+      this.adapter.onInitFinished(initFinishedResult);
+    }
   }
 
   requestGlobalCheck(options: RequestGlobalCheckOptions = { selection: false, batchCheck: false }) {
