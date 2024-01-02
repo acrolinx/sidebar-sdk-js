@@ -5,7 +5,7 @@
 
 This is a library for integrating the [Acrolinx](https://www.acrolinx.com/) Sidebar into a web application.
 
-See: [Getting Started with Custom Integrations](https://docs.acrolinx.com/customintegrations)
+See: [Build With Acrolinx](https://support.acrolinx.com/hc/en-us/categories/10209837818770-Build-With-Acrolinx)
 
 ## Live Demo
 
@@ -20,7 +20,7 @@ See: [Getting Started with Custom Integrations](https://docs.acrolinx.com/custom
 The Acrolinx Sidebar is designed to show up beside the window where you edit your content.
 You use it for checking, reviewing, and correcting your content.
 To get an impression what the Sidebar looks like in existing integrations, have a look at
-[Get Started With the Sidebar](https://docs.acrolinx.com/coreplatform/latest/en/the-sidebar/get-started-with-the-sidebar).
+[Sidebar Quick Start](https://support.acrolinx.com/hc/en-us/articles/10252588984594-Sidebar-Quick-Start).
 
 ## Prerequisites
 
@@ -34,7 +34,7 @@ Acrolinx offers different other SDKs, and examples for developing integrations.
 
 Before you start developing your own integration, you might benefit from looking into:
 
-* [Getting Started with Custom Integrations](https://docs.acrolinx.com/customintegrations),
+* [Build With Acrolinx](https://support.acrolinx.com/hc/en-us/categories/10209837818770-Build-With-Acrolinx),
 * the [Guidance for the Development of Acrolinx Integrations](https://github.com/acrolinx/acrolinx-coding-guidance),
 * the [Acrolinx SDKs](https://github.com/acrolinx?q=sdk), and
 * the [Acrolinx Demo Projects](https://github.com/acrolinx?q=demo).

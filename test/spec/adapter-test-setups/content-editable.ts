@@ -23,6 +23,7 @@ export class ContentEditableTestSetup implements AdapterTestSetup {
   inputFormat = 'HTML';
   editorElement = `<div id="editorId" style="height: ${EDITOR_HEIGHT}px; overflow-x: scroll; position: relative; font-size: 10px">initial text</div>`;
   inputEventWasTriggered?: boolean;
+  beforeInputEventWasTriggered = false;
 
   init() {
     return Promise.resolve(new ContentEditableAdapter({ editorId: 'editorId' }));
@@ -33,6 +34,9 @@ export class ContentEditableTestSetup implements AdapterTestSetup {
       .html(html)
       .on('input', () => {
         this.inputEventWasTriggered = true;
+      })
+      .on('beforeinput', () => {
+        this.beforeInputEventWasTriggered = true;
       });
     done();
   }

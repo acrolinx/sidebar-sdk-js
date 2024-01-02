@@ -25,6 +25,7 @@ export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
 
   constructor(conf: HasEditorID) {
     super(conf);
+    this.config.disableInputEventSimulation = true;
     this.editorId = conf.editorId;
   }
 
