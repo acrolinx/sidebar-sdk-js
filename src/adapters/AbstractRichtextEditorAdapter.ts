@@ -202,18 +202,64 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
       if (rangeLength > 1) {
         const tail = this.createRange(match.range[0] + 1, rangeLength - 1, textDomMapping);
         const head = this.createRange(match.range[0], 1, textDomMapping);
+        const completeRange = this.createRange(match.range[0], rangeLength - 1, textDomMapping);
+
+        const { startOffset, endOffset } = completeRange;
+        console.log(`Input Event Range: ${startOffset} ${endOffset}`);
+
+        simulateInputEvent({
+          node: completeRange.startContainer,
+          eventType: 'beforeinput',
+          replacement: match.originalMatch.replacement,
+          startOffset,
+          endOffset: endOffset + 1,
+          disableSimulation: this.config.disableInputEventSimulation,
+        });
+
         tail.deleteContents();
         head.deleteContents();
         head.insertNode(doc.createTextNode(match.originalMatch.replacement));
 
+        simulateInputEvent({
+          node: completeRange.startContainer,
+          eventType: 'input',
+          replacement: match.originalMatch.replacement,
+          startOffset,
+          endOffset: endOffset + 1,
+          disableSimulation: this.config.disableInputEventSimulation,
+        });
+
         removeEmptyTextNodesIfNeeded(tail);
+        removeEmptyTextNodesIfNeeded(completeRange);
         if (tail.startContainer !== head.startContainer || tail.endContainer !== head.endContainer) {
           removeEmptyTextNodesIfNeeded(head);
         }
       } else {
         const range = this.createRange(match.range[0], rangeLength, textDomMapping);
+
+        const { startOffset, endOffset } = range;
+        console.log(`Input Event Range: ${startOffset} ${endOffset}`);
+
+        simulateInputEvent({
+          node: range.startContainer,
+          eventType: 'beforeinput',
+          replacement: match.originalMatch.replacement,
+          startOffset,
+          endOffset,
+          disableSimulation: this.config.disableInputEventSimulation,
+        });
+
         range.deleteContents();
         range.insertNode(doc.createTextNode(match.originalMatch.replacement));
+
+        simulateInputEvent({
+          node: range.startContainer,
+          eventType: 'input',
+          replacement: match.originalMatch.replacement,
+          startOffset,
+          endOffset,
+          disableSimulation: this.config.disableInputEventSimulation,
+        });
 
         removeEmptyTextNodesIfNeeded(range);
       }
@@ -226,10 +272,10 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
 
     // Capturing parent node is necessary, replacement makes the textnode orphan.
-    const parentNode = this.getEditorDocument().getSelection()?.focusNode?.parentNode;
-    this.config.disableInputEventSimulation || (parentNode && simulateInputEvent(parentNode, 'beforeinput'));
+    //const parentNode = this.getEditorDocument().getSelection()?.focusNode?.parentNode;
+    //this.config.disableInputEventSimulation || (parentNode && simulateInputEvent(parentNode, 'beforeinput'));
     this.replaceAlignedMatches(alignedMatches);
-    this.config.disableInputEventSimulation || (parentNode && simulateInputEvent(parentNode, 'input'));
+    //this.config.disableInputEventSimulation || (parentNode && simulateInputEvent(parentNode, 'input'));
 
     // Replacement will remove the selection, so we need to restore it again.
     this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
