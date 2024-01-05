@@ -19,7 +19,7 @@ import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 
 import * as _ from 'lodash';
 import { isChrome } from '../../src/utils/detect-browser';
-import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused } from '../utils/test-utils';
+import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused, waitMs } from '../utils/test-utils';
 import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
 import { AdapterTestSetup } from './adapter-test-setups/adapter-test-setup';
 import { CKEditor5InlineTestSetup } from './adapter-test-setups/ck5-editor-inline';
@@ -155,9 +155,11 @@ describe('CKEditor5 adapter test', function () {
         });
       });
 
-      it.skip('Replace words in order', function (done) {
-        givenAText('wordOne wordTwo wordThree', (text) => {
+      it('Replace words in order', function (done) {
+        givenAText('wordOne wordTwo wordThree', async (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+          assertEditorText('wordOne wordTwoReplacement wordThree');
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
           assertEditorText('wordOne wordTwoReplacement wordThreeReplacement');
           done();
@@ -182,35 +184,38 @@ describe('CKEditor5 adapter test', function () {
         });
       });
 
-      it.skip('Replace the same word with word in between two times with different replacements', function (done) {
-        givenAText('wordOne wordSame blubb wordSame wordThree', (text) => {
+      it('Replace the same word with word in between two times with different replacements', function (done) {
+        givenAText('wordOne wordSame blubb wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement2');
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
           assertEditorText('wordOne wordSameReplacement1 blubb wordSameReplacement2 wordThree');
           done();
         });
       });
 
-      it.skip('Replace the same word two times with different replacements', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', (text) => {
+      it('Replace the same word two times with different replacements', function (done) {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
 
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
           assertEditorText('wordOne wordSame1 wordSame2 wordThree');
           done();
         });
       });
 
-      it.skip('Replace the same word two times with different replacements, where the first replacement is kinda long', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', (text) => {
+      it('Replace the same word two times with different replacements, where the first replacement is kinda long', function (done) {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSamelonglonglonglong1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
 
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
           assertEditorText('wordOne wordSamelonglonglonglong1 wordSame2 wordThree');
           done();
@@ -218,10 +223,11 @@ describe('CKEditor5 adapter test', function () {
       });
 
       it('Replace the same word two times with different replacements in reverse oder', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', (text) => {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
           assertEditorText('wordOne wordSame1 wordSame2 wordThree');
           done();
@@ -310,11 +316,14 @@ describe('CKEditor5 adapter test', function () {
         });
       });
 
-      it.skip('Replace single chars', function (done) {
-        givenAText('y x f z u', (text) => {
+      it('Replace single chars', function (done) {
+        givenAText('y x f z u', async (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'f', 'bb'));
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'z', 'cc'));
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'u', 'dd'));
           assertEditorText('y aa bb cc dd');
           done();
@@ -360,11 +369,12 @@ describe('CKEditor5 adapter test', function () {
         });
       });
 
-      it.skip('Replace with and after strange chars', function (done) {
-        givenAText('wordOne wordTwo wordThree wordFour', (text) => {
+      it('Replace with and after strange chars', function (done) {
+        givenAText('wordOne wordTwo wordThree wordFour', async (text) => {
           const strangeChars = '[]()/&%$§"!\'*+~öäü:,;-<>|^°´`òê€@ß?={}µコンピュータ';
 
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', strangeChars));
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'c'));
           // TODO: Depending on the document type, we should test for correct escaping.
           assertEditorText(`wordOne ${strangeChars} c wordFour`);
@@ -432,8 +442,8 @@ describe('CKEditor5 adapter test', function () {
         });
       }
 
-      it.skip('Replace same word in correct order', function (done) {
-        givenAText('before wordSame wordSame wordSame wordSame wordSame after', (text) => {
+      it('Replace same word in correct order', function (done) {
+        givenAText('before wordSame wordSame wordSame wordSame wordSame after', async (text) => {
           // The diff approach can not always handle ["a", "b", "c", "d", "e"] correctly.
           const replacements = ['replacement1', 'replacement2', 'replacement3', 'replacement4', 'replacement5'];
 
@@ -442,9 +452,13 @@ describe('CKEditor5 adapter test', function () {
           }
 
           replace(0);
+          await waitMs(10);
           replace(4);
+          await waitMs(10);
           replace(2);
+          await waitMs(10);
           replace(3);
+          await waitMs(10);
           replace(1);
 
           assertEditorText(`before ${replacements.join(' ')} after`);
@@ -477,9 +491,10 @@ describe('CKEditor5 adapter test', function () {
 
       if (adapterSpec.inputFormat === 'HTML') {
         it.skip('Remove complete text content', function (done) {
-          givenAText('<p>a</p>', () => {
+          givenAText('<p>a</p>', async () => {
             const matchesWithReplacement: MatchWithReplacement[] = [{ content: 'a', range: [3, 4], replacement: '' }];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+            waitMs(10);
             done();
           });
         });
