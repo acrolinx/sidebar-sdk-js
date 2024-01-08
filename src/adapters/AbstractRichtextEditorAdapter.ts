@@ -218,7 +218,9 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
 
         tail.deleteContents();
         head.deleteContents();
-        head.insertNode(doc.createTextNode(match.originalMatch.replacement));
+        if (match.originalMatch.replacement.length !== 0) {
+          head.insertNode(doc.createTextNode(match.originalMatch.replacement));
+        }
 
         simulateInputEvent({
           node: completeRange.startContainer,
@@ -250,7 +252,9 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
         });
 
         range.deleteContents();
-        range.insertNode(doc.createTextNode(match.originalMatch.replacement));
+        if (match.originalMatch.replacement.length !== 0) {
+          range.insertNode(doc.createTextNode(match.originalMatch.replacement));
+        }
 
         simulateInputEvent({
           node: range.startContainer,
