@@ -202,7 +202,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
       if (rangeLength > 1) {
         const tail = this.createRange(match.range[0] + 1, rangeLength - 1, textDomMapping);
         const head = this.createRange(match.range[0], 1, textDomMapping);
-        const completeRange = this.createRange(match.range[0], rangeLength - 1, textDomMapping);
+        const completeRange = this.createRange(match.range[0], rangeLength, textDomMapping);
 
         const { startOffset, endOffset } = completeRange;
         console.log(`Input Event Range: ${startOffset} ${endOffset}`);
@@ -212,7 +212,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
           eventType: 'beforeinput',
           replacement: match.originalMatch.replacement,
           startOffset,
-          endOffset: endOffset + 1,
+          endOffset: endOffset,
           disableSimulation: this.config.disableInputEventSimulation,
         });
 
@@ -227,7 +227,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
           eventType: 'input',
           replacement: match.originalMatch.replacement,
           startOffset,
-          endOffset: endOffset + 1,
+          endOffset: endOffset,
           disableSimulation: this.config.disableInputEventSimulation,
         });
 
