@@ -275,11 +275,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
     const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
 
-    // Capturing parent node is necessary, replacement makes the textnode orphan.
-    //const parentNode = this.getEditorDocument().getSelection()?.focusNode?.parentNode;
-    //this.config.disableInputEventSimulation || (parentNode && simulateInputEvent(parentNode, 'beforeinput'));
     this.replaceAlignedMatches(alignedMatches);
-    //this.config.disableInputEventSimulation || (parentNode && simulateInputEvent(parentNode, 'input'));
 
     // Replacement will remove the selection, so we need to restore it again.
     this.selectText(alignedMatches[0].range[0], replacement.length, this.getTextDomMapping());
