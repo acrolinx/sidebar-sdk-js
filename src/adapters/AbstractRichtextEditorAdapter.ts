@@ -212,7 +212,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
           eventType: 'beforeinput',
           replacement: match.originalMatch.replacement,
           startOffset,
-          endOffset: endOffset,
+          endOffset,
           disableSimulation: this.config.disableInputEventSimulation,
         });
 
@@ -227,7 +227,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
           eventType: 'input',
           replacement: match.originalMatch.replacement,
           startOffset,
-          endOffset: endOffset,
+          endOffset,
           disableSimulation: this.config.disableInputEventSimulation,
         });
 
