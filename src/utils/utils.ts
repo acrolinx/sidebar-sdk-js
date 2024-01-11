@@ -58,10 +58,8 @@ export type SimulateInputEventProps = {
 export function simulateInputEvent(props: SimulateInputEventProps) {
   const { node, eventType, startOffset, endOffset, replacement, disableSimulation } = props;
   if (disableSimulation) {
-    console.log('Input Event simulation is disabled for adapter');
     return;
   }
-  console.log('Simulating input event for type:', props);
   const staticRange: StaticRange = new StaticRange({
     startContainer: node,
     startOffset,
