@@ -19,19 +19,17 @@ import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 
 import * as _ from 'lodash';
 import { isChrome } from '../../src/utils/detect-browser';
-import { waitMs } from '../utils/test-utils';
-import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused } from '../utils/test-utils';
+import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused, waitMs } from '../utils/test-utils';
 import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
 import { AdapterTestSetup } from './adapter-test-setups/adapter-test-setup';
 import { CKEditor5InlineTestSetup } from './adapter-test-setups/ck5-editor-inline';
 
 const assert = chai.assert;
 
-describe.skip('CKEditor5 adapter test', function () {
+describe('CKEditor5 adapter test', function () {
   const NON_BREAKING_SPACE = '\u00a0';
 
   let adapter: AdapterInterface;
-  const DELAY_IN_MS = 50;
 
   const dummyCheckId = 'dummyCheckId';
 
@@ -143,15 +141,8 @@ describe.skip('CKEditor5 adapter test', function () {
       it("Don't change surrounding words when replacing", function (done) {
         givenAText('wordOne wordTwo wordThree', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordTwoReplacement wordThree');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordTwoReplacement wordThree');
+          done();
         });
       });
 
@@ -159,31 +150,19 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('wordOne wordTwo wordThree', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordTwoReplacement wordThreeReplacement');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordTwoReplacement wordThreeReplacement');
+          done();
         });
       });
 
       it('Replace words in order', function (done) {
-        givenAText('wordOne wordTwo wordThree', (text) => {
+        givenAText('wordOne wordTwo wordThree', async (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+          assertEditorText('wordOne wordTwoReplacement wordThree');
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordTwoReplacement wordThreeReplacement');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordTwoReplacement wordThreeReplacement');
+          done();
         });
       });
 
@@ -191,15 +170,8 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('wordOne wordSame wordSame wordThree', (text) => {
           const matchWithReplacement = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement');
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement[1]]);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordSame wordSameReplacement wordThree');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordSame wordSameReplacement wordThree');
+          done();
         });
       });
 
@@ -207,87 +179,58 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('wordOne wordSame wordSame wordThree', (text) => {
           const matchWithReplacement = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement');
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement[0]]);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordSameReplacement wordSame wordThree');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordSameReplacement wordSame wordThree');
+          done();
         });
       });
 
       it('Replace the same word with word in between two times with different replacements', function (done) {
-        givenAText('wordOne wordSame blubb wordSame wordThree', (text) => {
+        givenAText('wordOne wordSame blubb wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement2');
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordSameReplacement1 blubb wordSameReplacement2 wordThree');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordSameReplacement1 blubb wordSameReplacement2 wordThree');
+          done();
         });
       });
 
       it('Replace the same word two times with different replacements', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', (text) => {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
+
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordSame1 wordSame2 wordThree');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordSame1 wordSame2 wordThree');
+          done();
         });
       });
 
       it('Replace the same word two times with different replacements, where the first replacement is kinda long', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', (text) => {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSamelonglonglonglong1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
+
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordSamelonglonglonglong1 wordSame2 wordThree');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordSamelonglonglonglong1 wordSame2 wordThree');
+          done();
         });
       });
 
       it('Replace the same word two times with different replacements in reverse oder', function (done) {
-        givenAText('wordOne wordSame wordSame wordThree', (text) => {
+        givenAText('wordOne wordSame wordSame wordThree', async (text) => {
           const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
           const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordSame1 wordSame2 wordThree');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordSame1 wordSame2 wordThree');
+          done();
         });
       });
 
@@ -295,14 +238,7 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('wordOne, wordTwo', (text) => {
           const matchWithReplacement = getMatchesWithReplacement(text, ',', '');
           adapter.replaceRanges(dummyCheckId, matchWithReplacement);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordTwo');
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordTwo');
           done();
         });
       });
@@ -311,15 +247,8 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('wordOne wordTwo', (text) => {
           const matchWithReplacement = getMatchesWithReplacement(text, ' ', '');
           adapter.replaceRanges(dummyCheckId, matchWithReplacement);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOnewordTwo');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOnewordTwo');
+          done();
         });
       });
 
@@ -334,15 +263,8 @@ describe.skip('CKEditor5 adapter test', function () {
           };
 
           adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('word0 ab word3');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('word0 ab word3');
+          done();
         });
       });
 
@@ -357,94 +279,54 @@ describe.skip('CKEditor5 adapter test', function () {
           };
 
           adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('word0 ab word3');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('word0 ab word3');
+          done();
         });
       });
 
       it('Replace first and only char', function (done) {
         givenAText('x', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('aa');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('aa');
+          done();
         });
       });
 
       it('Replace first and only word', function (done) {
         givenAText('xyz', async (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('aa');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('aa');
+          done();
         });
       });
 
       it('Replace first char', function (done) {
         givenAText('x after', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('aa after');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('aa after');
+          done();
         });
       });
 
       it('Replace first word', function (done) {
         givenAText('xyz after', (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('aa after');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('aa after');
+          done();
         });
       });
 
       it('Replace single chars', function (done) {
-        givenAText('y x f z u', (text) => {
+        givenAText('y x f z u', async (text) => {
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'f', 'bb'));
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'z', 'cc'));
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'u', 'dd'));
-
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('y aa bb cc dd');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('y aa bb cc dd');
+          done();
         });
       });
 
@@ -452,16 +334,8 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('InsideAllWord', (text) => {
           const matchWithReplacement = getMatchesWithReplacement(text, 'All', '12345');
           adapter.replaceRanges(dummyCheckId, matchWithReplacement);
-
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('Inside12345Word');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('Inside12345Word');
+          done();
         });
       });
 
@@ -469,16 +343,8 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('wordOne wordTwo', (text) => {
           const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'wordTw');
           adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne wordTw');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne wordTw');
+          done();
         });
       });
 
@@ -486,15 +352,8 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('wordOne wordTwo', (text) => {
           const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'beer');
           adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('wordOne beer');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('wordOne beer');
+          done();
         });
       });
 
@@ -505,35 +364,21 @@ describe.skip('CKEditor5 adapter test', function () {
             getMatchesWithReplacement(text, 'wordThree', 'c')[0],
           ];
           adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText('a wordTwo c wordFour');
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText('a wordTwo c wordFour');
+          done();
         });
       });
 
       it('Replace with and after strange chars', function (done) {
-        givenAText('wordOne wordTwo wordThree wordFour', (text) => {
+        givenAText('wordOne wordTwo wordThree wordFour', async (text) => {
           const strangeChars = '[]()/&%$§"!\'*+~öäü:,;-<>|^°´`òê€@ß?={}µコンピュータ';
+
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', strangeChars));
+          await waitMs(10);
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'c'));
           // TODO: Depending on the document type, we should test for correct escaping.
-
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText(`wordOne ${strangeChars} c wordFour`);
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText(`wordOne ${strangeChars} c wordFour`);
+          done();
         });
       });
 
@@ -541,16 +386,8 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('wordOne wordTwo wordThree', (text) => {
           const entities = '&uuml;';
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', entities));
-
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText(`wordOne ${entities} wordThree`);
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText(`wordOne ${entities} wordThree`);
+          done();
         });
       });
 
@@ -558,16 +395,8 @@ describe.skip('CKEditor5 adapter test', function () {
         givenAText('wordOne wordTwo wordThree', (text) => {
           const replacement = '<tagish>';
           adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', replacement));
-
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText(`wordOne ${replacement} wordThree`);
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText(`wordOne ${replacement} wordThree`);
+          done();
         });
       });
 
@@ -578,16 +407,8 @@ describe.skip('CKEditor5 adapter test', function () {
           matchesWithReplacement[0].content = 'D&D';
           adapter.selectRanges(dummyCheckId, matchesWithReplacement);
           adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText(`wordOne ${replacement} wordThree`);
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText(`wordOne ${replacement} wordThree`);
+          done();
         });
       });
 
@@ -598,15 +419,8 @@ describe.skip('CKEditor5 adapter test', function () {
             const matchesWithReplacement = getMatchesWithReplacement(html, 'Southh', replacement);
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            waitMs(DELAY_IN_MS)
-              .then(() => {
-                assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
-                done();
-              })
-              .catch(() => {
-                assert.fail('Unable to synchronize with replacement event');
-                done();
-              });
+            assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
+            done();
           });
         });
 
@@ -622,21 +436,14 @@ describe.skip('CKEditor5 adapter test', function () {
             ] as MatchWithReplacement[];
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            waitMs(DELAY_IN_MS)
-              .then(() => {
-                assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
-                done();
-              })
-              .catch(() => {
-                assert.fail('Unable to synchronize with replacement event');
-                done();
-              });
+            assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
+            done();
           });
         });
       }
 
       it('Replace same word in correct order', function (done) {
-        givenAText('before wordSame wordSame wordSame wordSame wordSame after', (text) => {
+        givenAText('before wordSame wordSame wordSame wordSame wordSame after', async (text) => {
           // The diff approach can not always handle ["a", "b", "c", "d", "e"] correctly.
           const replacements = ['replacement1', 'replacement2', 'replacement3', 'replacement4', 'replacement5'];
 
@@ -645,20 +452,17 @@ describe.skip('CKEditor5 adapter test', function () {
           }
 
           replace(0);
+          await waitMs(10);
           replace(4);
+          await waitMs(10);
           replace(2);
+          await waitMs(10);
           replace(3);
+          await waitMs(10);
           replace(1);
 
-          waitMs(DELAY_IN_MS)
-            .then(() => {
-              assertEditorText(`before ${replacements.join(' ')} after`);
-              done();
-            })
-            .catch(() => {
-              assert.fail('Unable to synchronize with replacement event');
-              done();
-            });
+          assertEditorText(`before ${replacements.join(' ')} after`);
+          done();
         });
       });
 
@@ -686,19 +490,12 @@ describe.skip('CKEditor5 adapter test', function () {
       });
 
       if (adapterSpec.inputFormat === 'HTML') {
-        it('Remove complete text content', function (done) {
-          givenAText('<p>a</p>', () => {
+        it.skip('Remove complete text content', function (done) {
+          givenAText('<p>a</p>', async () => {
             const matchesWithReplacement: MatchWithReplacement[] = [{ content: 'a', range: [3, 4], replacement: '' }];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-
-            waitMs(DELAY_IN_MS)
-              .then(() => {
-                done();
-              })
-              .catch(() => {
-                assert.fail('Unable to synchronize with replacement event');
-                done();
-              });
+            waitMs(10);
+            done();
           });
         });
 
@@ -710,16 +507,8 @@ describe.skip('CKEditor5 adapter test', function () {
               { content: '?', range: [9, 10], replacement: '' },
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-
-            waitMs(DELAY_IN_MS)
-              .then(() => {
-                assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
-                done();
-              })
-              .catch(() => {
-                assert.fail('Unable to synchronize with replacement event');
-                done();
-              });
+            assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
+            done();
           });
         });
       }
@@ -739,15 +528,7 @@ describe.skip('CKEditor5 adapter test', function () {
           const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo', 'replacement');
           setEditorContent('wordOne wordXTwo wordThree', () => {
             assert.throws(() => adapter.replaceRanges(dummyCheckId, matchesWithReplacement));
-
-            waitMs(DELAY_IN_MS)
-              .then(() => {
-                done();
-              })
-              .catch(() => {
-                assert.fail('Unable to synchronize with replacement event');
-                done();
-              });
+            done();
           });
         });
       });
@@ -782,16 +563,8 @@ describe.skip('CKEditor5 adapter test', function () {
           const completeNewContent = 'change begin selection end';
           givenATextWithoutCheckResult(completeNewContent, (_initialExtractedContent) => {
             adapter.replaceRanges(dummyCheckId, matchesWithReplacementOfFirstCheck);
-
-            waitMs(DELAY_IN_MS)
-              .then(() => {
-                assertEditorText('change begin replacement end');
-                done();
-              })
-              .catch(() => {
-                assert.fail('Unable to synchronize with replacement event');
-                done();
-              });
+            assertEditorText('change begin replacement end');
+            done();
           });
         });
       });

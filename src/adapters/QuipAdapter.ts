@@ -86,6 +86,7 @@ export class QuipAdapter extends AbstractRichtextEditorAdapter {
 
         // Replace selection in a way that is recognized by Quip.
         document.execCommand('InsertHTML', false, cellTextFromDom);
+        cell.innerText = cellTextFromDom;
 
         // Close cell editor.
         simulateKeyboardEvent(cellEditor, 'keydown', 'Enter', 13);

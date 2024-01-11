@@ -46,48 +46,36 @@ export function isIFrame(el: Element): el is HTMLIFrameElement {
   return el.nodeName === 'IFRAME';
 }
 
-export function simulateInputEvent(node: Node, eventType = 'input') {
-  console.info('Simulating input event for type: ' + eventType);
-  const textNode = findTextNode(node);
-  if (!textNode) {
-    console.warn('No textnode with content found.', node.childNodes);
+export type SimulateInputEventProps = {
+  node: Node;
+  eventType: string;
+  startOffset: number;
+  endOffset: number;
+  replacement: string;
+  disableSimulation?: boolean;
+};
+
+export function simulateInputEvent(props: SimulateInputEventProps) {
+  const { node, eventType, startOffset, endOffset, replacement, disableSimulation } = props;
+  if (disableSimulation) {
     return;
   }
-
-  const textNodeContent = textNode.textContent || '';
   const staticRange: StaticRange = new StaticRange({
-    startContainer: textNode,
-    startOffset: 0,
-    endContainer: textNode,
-    endOffset: textNodeContent.length,
+    startContainer: node,
+    startOffset,
+    endContainer: node,
+    endOffset,
   });
 
   const eventOptions: InputEventInit = {
     inputType: 'insertText',
-    data: textNodeContent,
+    data: replacement,
     bubbles: true,
     cancelable: false,
     targetRanges: [staticRange],
   };
 
-  textNode.dispatchEvent(new InputEvent(eventType, eventOptions));
-}
-
-function findTextNode(node: Node): Node | null {
-  const textNode = Array.from(node.childNodes).find((n) => n.nodeName === '#text' && n.textContent !== '');
-
-  if (textNode) {
-    return textNode;
-  } else {
-    for (const childNode of Array.from(node.childNodes)) {
-      const recursiveTextNode = findTextNode(childNode);
-      if (recursiveTextNode) {
-        return recursiveTextNode;
-      }
-    }
-    console.warn('No text node with content found.', node.childNodes);
-    return null;
-  }
+  node.dispatchEvent(new InputEvent(eventType, eventOptions));
 }
 
 export function parseUrl(href: string) {

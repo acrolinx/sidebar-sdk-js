@@ -192,7 +192,7 @@ describe('adapter test', function () {
         });
       });
 
-      if (adapterSpec instanceof ContentEditableTestSetup || adapterSpec instanceof InputAdapterTestSetup) {
+      if (adapterSpec instanceof ContentEditableTestSetup) {
         it('Replacements should trigger an input event', function (done) {
           givenAText('wordOne wordTwo wordThree', (text) => {
             adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));

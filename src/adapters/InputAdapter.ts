@@ -29,7 +29,7 @@ import { AlignedMatch } from '../utils/alignment';
 import { getCompleteFlagLength, isDangerousToReplace } from '../utils/match';
 import { scrollIntoView } from '../utils/scrolling';
 import { lookupMatches } from '../lookup/diff-based';
-import { assertElementIsDisplayed, simulateInputEvent } from '../utils/utils';
+import { assertElementIsDisplayed } from '../utils/utils';
 import { getAutobindWrapperAttributes } from '../utils/adapter-utils';
 
 export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement;
@@ -148,9 +148,7 @@ export class InputAdapter implements AdapterInterface {
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]) {
     const alignedMatches = this.selectMatches(checkId, matchesWithReplacement);
     this.scrollAndSelect(alignedMatches);
-    this.config.disableInputEventSimulation || simulateInputEvent(this.element, 'beforeinput');
     this.replaceAlignedMatches(alignedMatches);
-    this.config.disableInputEventSimulation || simulateInputEvent(this.element, 'input');
     const startOfSelection = alignedMatches[0].range[0];
     const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
     (this.element as HTMLTextAreaElement).setSelectionRange(startOfSelection, startOfSelection + replacement.length);
