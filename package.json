@@ -48,7 +48,7 @@
     "@typescript-eslint/parser": "^5.62.0",
     "browserify": "^17.0.0",
     "browserify-istanbul": "3.0.1",
-    "chai": "4.3.7",
+    "chai": "5.0.0",
     "ckeditor": "^4.12.1",
     "codemirror": "^5.65.16",
     "codemirror6": "npm:codemirror@^6.0.1",
