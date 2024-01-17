@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Check, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
+import { Check, InitResult, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { WorkQueue } from '../utils/work-queue';
 import {
   AsyncAdapterInterface,
@@ -68,5 +68,11 @@ export class SynchronizeAsyncAdapter implements AsyncAdapterInterface {
     return this.workQueue.addWork(() => {
       return this.adapter.replaceRanges(checkId, matchesWithReplacement);
     });
+  }
+
+  onInitFinished(result: InitResult): void {
+    if (this.adapter.onInitFinished) {
+      this.adapter.onInitFinished(result);
+    }
   }
 }
