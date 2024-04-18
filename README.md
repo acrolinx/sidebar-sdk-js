@@ -71,11 +71,11 @@ If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sd
 ### Deprecation
 > :warning: **If you’re dependent on Sidebar v14**: Please note it's getting deprecated.
 
-You don't have to worry on changes in integration. There are only two things you need to change.
-1. You need to update to the latest SDK version. 
-2. [Optional] if you’re using initialization ```minimumSidebarVersion=14.x.x``` config then remove it.
+You don't have to worry on changes in integration. There are only two things that you need to change.
+1. You need to update to the latest SDK [version](https://www.npmjs.com/package/@acrolinx/sidebar-sdk). 
+2. [Optional] If you’re using the initialization ```minimumSidebarVersion=14.x.x``` config then remove it.
 
-Refer Code:[]
+Refer Acrolinx JS [sample](https://github.com/acrolinx/acrolinx-sidebar-demo/tree/main/samples/boilerplate)
 
 ## References
 
