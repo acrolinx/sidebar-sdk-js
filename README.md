@@ -1,6 +1,6 @@
 # Acrolinx Sidebar SDK JS
 
-[![CI Sidebar SDK JS](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml/badge.svg)](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml)
+[![Continuous integration Sidebar SDK JS](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml/badge.svg)](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=acrolinx_sidebar-sdk-js&metric=alert_status)](https://sonarcloud.io/dashboard?id=acrolinx_sidebar-sdk-js)
 
 This is a library for integrating the [Acrolinx](https://www.acrolinx.com/) Sidebar into a web application.
@@ -68,6 +68,15 @@ The SDK provides [adapters](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/
 If you need to support other editors, sometimes the `ContentEditableAdapter` works without any changes.
 If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/adapters_adapterinterface.html).
 
+### Deprecation
+> :warning: **If you’re dependent on Sidebar v14**: Please note it's getting deprecated.
+
+You don't have to worry on changes in integration. There are only two things you need to change.
+1. You need to update to the latest SDK version. 
+2. [Optional] if you’re using initialization ```minimumSidebarVersion=14.x.x``` config then remove it.
+
+Refer Code:[]
+
 ## References
 
 * The [Sidebar DEMO JS](https://github.com/acrolinx/acrolinx-sidebar-demo) is built based on this SDK.
@@ -79,7 +88,7 @@ If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sd
 * Run `npm i`
 * Run `npm run build` to run all tests and build distribution
 
-## Serve for Development (Load local SDK in Browser)
+## Serve for Development
 
 * Run 'npm run webpack-dev-server'
 * Include '<script src="http://0.0.0.0:8081/dist/acrolinx-sidebar-sdk.js"></script>' into your project.
