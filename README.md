@@ -69,17 +69,17 @@ If you need to support other editors, sometimes the `ContentEditableAdapter` wor
 If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/adapters_adapterinterface.html).
 
 ### Deprecation
-> :warning: **If you’re dependent on Sidebar v14**: Please note it's getting deprecated.
+> :warning: **Sidebar v14 is getting deprecated**
 
-You don't have to worry on changes in integration. There are only two things that you need to change.
-1. You need to update to the latest SDK [version](https://www.npmjs.com/package/@acrolinx/sidebar-sdk). 
-2. [Optional] If you’re using the initialization ```minimumSidebarVersion=14.x.x``` config then remove it.
+The process to update your existing integration is straightforward and involves the following steps:
+1. Update to the Latest SDK Version: Please ensure that you’ve updated to the latest SDK version. The most recent version can be found on our NPM package page [here](https://www.npmjs.com/package/@acrolinx/sidebar-sdk).
+2. Remove the Initialization Config (Optional): If your current implementation includes the initialization config `minimumSidebarVersion=14.x.x`, we recommend removing this configuration.
 
-Refer Acrolinx JS [sample](https://github.com/acrolinx/acrolinx-sidebar-demo/tree/main/samples/boilerplate)
 
 ## References
 
 * The [Sidebar DEMO JS](https://github.com/acrolinx/acrolinx-sidebar-demo) is built based on this SDK.
+  * Boilerplate [sample](https://github.com/acrolinx/acrolinx-sidebar-demo/tree/main/samples/boilerplate)
 * The Sidebar SDKs are based on the [Acrolinx Sidebar Interface](https://acrolinx.github.io/sidebar-interface/).
 
 ## Running This Project
