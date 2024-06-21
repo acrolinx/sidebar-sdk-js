@@ -12,3 +12,4 @@ updates:
       interval: "daily"
     reviewers:
       - /acrolinx/integrationdevs-web
+    versioning-strategy: increase
