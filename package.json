@@ -71,7 +71,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "shx": "^0.3.4",
-    "tinymce": "^7.0.1",
+    "tinymce": "^7.2.0",
     "ts-loader": "^9.5.1",
     "ts-mockito": "^2.6.1",
     "typedoc": "^0.25.6",
