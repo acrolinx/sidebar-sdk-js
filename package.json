@@ -86,7 +86,6 @@
     "buildDoc": "typedoc --out ./docs/pluginDoc/ src/",
     "build": "npm run tsc && npm run lint && npm run webpack && npm run test && npm run dist",
     "build-no-test": "npm run tsc && npm run lint && npm run webpack && npm run dist",
-    "jenkins": "npm run build",
     "dist": "shx cp -r tmp/compiled/src/* dist && node tools/inject-version.js && npm run minify",
     "minify": "uglifyjs dist/acrolinx-sidebar-sdk.js -o dist/acrolinx-sidebar-sdk.min.js",
     "test": "npm run testKarmaChromeHeadless",
