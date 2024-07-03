@@ -69,11 +69,9 @@ export interface AcrolinxSidebarIntegration {
 }
 
 declare global {
-  /* tslint:disable:no-unused-variable */
   const acrolinx: {
     plugins: AcrolinxSidebarIntegration;
   };
-  /* tslint:enable */
 }
 
 const augmentedWindow = window as any;
