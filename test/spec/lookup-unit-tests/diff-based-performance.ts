@@ -16,7 +16,6 @@
 
 import { createOffsetMappingArray } from '../../../src/lookup/diff-based';
 import { diff_match_patch } from 'diff-match-patch';
-const assert = chai.assert;
 
 function generateText(length: number) {
   const chars = '      abcdefghijcmnopqrstuvwxyz';
@@ -48,6 +47,6 @@ describe('lookup/diff-based-performance', function () {
     createOffsetMappingArray(diffs);
 
     const neededTimeMs = Date.now() - startTime;
-    assert.isTrue(neededTimeMs < 20000);
+    chai.assert.isTrue(neededTimeMs < 20000);
   });
 });

@@ -303,7 +303,7 @@ describe('multi plugin', function () {
         waitForCheck(() => {
           const expectedBegin = '<!DOCTYPE html>\n<root>';
           assert.equal(lastDocumentContent.substr(0, expectedBegin.length), expectedBegin);
-          assert.isTrue(_.endsWith(lastDocumentContent, '</root>'));
+          chai.assert.isTrue(_.endsWith(lastDocumentContent, '</root>'));
           done();
         });
       }

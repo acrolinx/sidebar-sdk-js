@@ -38,7 +38,7 @@ class MockedAdapter implements AdapterInterface {
 
   selectRanges(_checkId: string, matches: Match[]): void {
     console.log('selectedMatches', matches);
-    assert.ok(this.content.length > 0, 'Adapter should not be called when it had no content while checking');
+    chai.assert.ok(this.content.length > 0, 'Adapter should not be called when it had no content while checking');
     this.selectRangesCount += 1;
     this.lastSelectedRanges = matches;
   }

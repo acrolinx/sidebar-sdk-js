@@ -10,11 +10,6 @@ on:
   schedule:
     - cron: "0 2 * * *" # Everyday at 2:00AM
   workflow_dispatch:
-    inputs:
-      reason:
-        description: "Trigger Comment (Optional)"
-        required: false
-        default: "Manual Workflow Run"
 
 jobs:
   build:
@@ -25,11 +20,12 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           registry-url: 'https://registry.npmjs.org'
-      
+
       - name: Setup SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         with:
@@ -39,30 +35,33 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
-      - name: Setup and Audit Source Code    
+      - name: Setup and Audit Source Code
         run: |
           npm ci
-          npm audit --production --audit-level=moderate   
-          
+          npm audit --production --audit-level=moderate
+
       - name: Check for suitable licenses
         run: |
          export v=`node -p "require('./package.json').version"`
          export n=`node -p "require('./package.json').name"`
          npx license-checker --production --onlyAllow 'BSD;CC-PDDC;CC-BY-3.0;CC-BY-1.0;CC-BY-2.0;CC-BY-4.0;CC0-1.0;Apache;Artistic;MIT;MPL;ISC;Unlicense' --excludePackages "$n@$v$LICENSE_EXCLUDED_PACKAGES" --excludePrivatePackages
+
       - run: npm ci
+
       - run: npm run lint
+
       - run: |
-          npm run build 
+          npm run build
           npm run buildDoc
           # npm version patch -m "Release version %s" -f 
-          
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist
           path: |
             dist/**/*
-      
+
       - name: Archive code coverage results
         uses: actions/upload-artifact@v4
         with:
@@ -75,18 +74,16 @@ jobs:
         if: github.ref == 'refs/heads/main'
         with:
           token: ${{ secrets.NPM_ACCESS_TOKEN }}
-      
+
       - name: Push tag
         uses: anothrNick/github-tag-action@v1
         if: github.ref == 'refs/heads/main' && steps.publish.outputs.type
         env:
           CUSTOM_TAG: v${{ steps.publish.outputs.version }}
-      
+
       - name: Publish github pages 🚀
         if: github.ref == 'refs/heads/main' && steps.publish.outputs.type
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: docs
-          
-          

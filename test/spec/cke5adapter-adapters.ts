@@ -69,7 +69,7 @@ describe('CKEditor5 adapter test', function () {
 
         await adapterSpec.remove();
 
-        assert.isFalse(containsUnwantedEmptyTextNodes, 'The editorElement should not contain empty text nodes');
+        chai.assert.isFalse(containsUnwantedEmptyTextNodes, 'The editorElement should not contain empty text nodes');
       });
 
       const setEditorContent = adapterSpec.setEditorContent.bind(adapterSpec);

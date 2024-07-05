@@ -54,13 +54,13 @@ describe('AsyncMultiEditorAdapter', () => {
   it('should synchronize selections over multiple children', async () => {
     const promise = amea.selectRanges(DUMMY_CHECK_ID, overlappingMatches);
     // nothing selected yet
-    assert.isUndefined(childAdapter1.selection);
-    assert.isUndefined(childAdapter2.selection);
+    chai.assert.isUndefined(childAdapter1.selection);
+    chai.assert.isUndefined(childAdapter2.selection);
 
     await waitMs(DELAY_IN_MS);
     // selection in first child applied
     assert.deepEqual(childAdapter1.selection!.ranges, [[7, 11]]);
-    assert.isUndefined(childAdapter2.selection);
+    chai.assert.isUndefined(childAdapter2.selection);
 
     await waitMs(DELAY_IN_MS);
     // all selections applied
