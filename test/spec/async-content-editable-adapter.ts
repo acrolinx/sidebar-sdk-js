@@ -175,7 +175,7 @@ describe('async adapter', function () {
       $('#ContentEditableAdapter').html('Modified');
 
       injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-      assert.isUndefined(invalidatedRanges);
+      chai.assert.isUndefined(invalidatedRanges);
 
       await waitMs(DELAY_IN_MS);
 
@@ -193,7 +193,7 @@ describe('async adapter', function () {
       $('#ContentEditableAdapter').html('Modified');
 
       injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-      assert.isUndefined(invalidatedRanges);
+      chai.assert.isUndefined(invalidatedRanges);
 
       await waitMs(DELAY_IN_MS);
 
@@ -211,7 +211,7 @@ describe('async adapter', function () {
       $('#ContentEditableAdapter').html('Modified');
 
       injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-      assert.isUndefined(invalidatedRanges);
+      chai.assert.isUndefined(invalidatedRanges);
 
       await waitMs(DELAY_IN_MS);
 

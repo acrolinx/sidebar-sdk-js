@@ -71,7 +71,7 @@ describe('async storage', () => {
     storage
       .get(testKey)
       .then((restoredValue) => {
-        assert.isNull(restoredValue);
+        chai.assert.isNull(restoredValue);
         done();
       })
       .catch(done);
@@ -103,13 +103,13 @@ describe('floating sidebar', function () {
       const sidebarElement = document.getElementById(SIDEBAR_ID);
       if (floatingSidebar && sidebarElement) {
         floatingSidebar.remove();
-        assert.isNull(document.getElementById(SIDEBAR_ID));
+        chai.assert.isNull(document.getElementById(SIDEBAR_ID));
       }
     });
 
     it('init floating sidebar', (done) => {
       floatingSidebar = initFloatingSidebar({ asyncStorage });
-      assert.isTrue(document.getElementById(SIDEBAR_ID) instanceof Element);
+      chai.assert.isTrue(document.getElementById(SIDEBAR_ID) instanceof Element);
       setTimeout(() => {
         done();
       }, 10);
@@ -141,7 +141,7 @@ describe('floating sidebar', function () {
         const { top, left, height } = sidebarElement.getBoundingClientRect();
         assert.equal(top, DEFAULT_POS.top);
         assert.equal(left, DEFAULT_POS.left);
-        assert.ok(height > 0);
+        chai.assert.ok(height > 0);
         done();
       }, 10);
     });
@@ -153,7 +153,7 @@ describe('floating sidebar', function () {
         floatingSidebar.toggleVisibility();
         assert.equal(sidebarElement!.getBoundingClientRect().width, 0);
         floatingSidebar.toggleVisibility();
-        assert.ok(sidebarElement!.getBoundingClientRect().width > 0);
+        chai.assert.ok(sidebarElement!.getBoundingClientRect().width > 0);
         done();
       }, 10);
     });

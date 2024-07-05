@@ -389,7 +389,7 @@ describe('getEditableElements performance for a big shadow dom', () => {
       const nodes = getEditableElements(container);
       assert.equal(nodes.length, 0);
     });
-    assert.isTrue(benchmarkResult.timeMsPerRun < 500);
+    chai.assert.isTrue(benchmarkResult.timeMsPerRun < 500);
     // console.log(benchmarkResult.timeMsPerRun);
   });
 });

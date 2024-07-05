@@ -110,7 +110,7 @@ describe('adapter test', function () {
 
         adapterSpec.remove();
 
-        assert.isFalse(containsUnwantedEmptyTextNodes, 'The editorElement should not contain empty text nodes');
+        chai.assert.isFalse(containsUnwantedEmptyTextNodes, 'The editorElement should not contain empty text nodes');
       });
 
       const setEditorContent = adapterSpec.setEditorContent.bind(adapterSpec);
@@ -196,7 +196,7 @@ describe('adapter test', function () {
         it('Replacements should trigger an input event', function (done) {
           givenAText('wordOne wordTwo wordThree', (text) => {
             adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-            assert.isTrue(adapterSpec.inputEventWasTriggered);
+            chai.assert.isTrue(adapterSpec.inputEventWasTriggered);
             done();
           });
         });
@@ -206,8 +206,8 @@ describe('adapter test', function () {
         it('beforeinput and input events should be trigerred', function (done) {
           givenAText('wordOne wordTwo wordThree', (text) => {
             adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-            assert.isTrue(adapterSpec.beforeInputEventWasTriggered);
-            assert.isTrue(adapterSpec.inputEventWasTriggered);
+            chai.assert.isTrue(adapterSpec.beforeInputEventWasTriggered);
+            chai.assert.isTrue(adapterSpec.inputEventWasTriggered);
             done();
           });
         });
@@ -743,7 +743,7 @@ describe('adapter test', function () {
             const result = adapter.extractContentForCheck({
               checkSelection: false,
             }) as SuccessfulContentExtractionResult;
-            assert.isUndefined(result.selection);
+            chai.assert.isUndefined(result.selection);
             done();
           });
         });

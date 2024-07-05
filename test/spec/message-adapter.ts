@@ -99,7 +99,7 @@ describe('message-adapter', function () {
       verify(mockedAcrolinxPlugin.requestInit(notNull())).once();
       const [sidebarProxy] = capture(mockedAcrolinxPlugin.requestInit).first();
 
-      assert.isTrue('init' in sidebarProxy!);
+      chai.assert.isTrue('init' in sidebarProxy!);
     });
   });
 

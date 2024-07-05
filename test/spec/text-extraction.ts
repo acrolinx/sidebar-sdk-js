@@ -159,7 +159,7 @@ describe('text-extraction', () => {
       }
       const durationNew = Date.now() - startTimeNew;
 
-      assert.ok(durationNew < durationOld);
+      chai.assert.ok(durationNew < durationOld);
     });
   });
 });

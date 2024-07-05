@@ -49,11 +49,11 @@ describeIf(isChrome(), 'empty text node chrome bug', () => {
         createTextNode(' '),
         createTextNode('3'),
       ]);
-      assert.isOk(containsEmptyTextNodes(testContainer));
+      chai.assert.isOk(containsEmptyTextNodes(testContainer));
 
       removeEmptyTextNodes(createRange(testContainer.childNodes[0], testContainer.childNodes[3]));
 
-      assert.isFalse(containsEmptyTextNodes(testContainer));
+      chai.assert.isFalse(containsEmptyTextNodes(testContainer));
       assert.equal(testContainer.innerHTML, '0 3');
     });
 
@@ -75,11 +75,11 @@ describeIf(isChrome(), 'empty text node chrome bug', () => {
         createTextNode('2'),
         createTextNode(''),
       ]);
-      assert.isOk(containsEmptyTextNodes(testContainer));
+      chai.assert.isOk(containsEmptyTextNodes(testContainer));
 
       removeEmptyTextNodes(createRange(testContainer, testContainer));
 
-      assert.isFalse(containsEmptyTextNodes(testContainer));
+      chai.assert.isFalse(containsEmptyTextNodes(testContainer));
       assert.equal(testContainer.innerHTML, '0<div>1.0 1.2</div>2');
     });
   });
@@ -118,9 +118,9 @@ describe('chrome bug affects only chrome', () => {
 
     // Normally both divs should render in same way and have the same width.
     if (isChrome() && !isProbablyFixedInChrome) {
-      assert.isFalse(divWithBugWidth === divWithoutBugWidth);
+      chai.assert.isFalse(divWithBugWidth === divWithoutBugWidth);
     } else {
-      assert.isTrue(divWithBugWidth === divWithoutBugWidth);
+      chai.assert.isTrue(divWithBugWidth === divWithoutBugWidth);
     }
   });
 });
