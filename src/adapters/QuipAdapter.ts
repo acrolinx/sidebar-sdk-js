@@ -63,7 +63,6 @@ export class QuipAdapter extends AbstractRichtextEditorAdapter {
     switch (quipSectionType) {
       case QuipSectionType.cell:
         console.log('Found cell');
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         const cell = htmlElement.closest('.' + SPREADSHEET_CELL_CLASS)! as HTMLElement;
         const cellTextFromDom = cell.innerText;
 
@@ -81,7 +80,6 @@ export class QuipAdapter extends AbstractRichtextEditorAdapter {
         }
 
         // Select all text of cell editor.
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         selection!.selectAllChildren(cellEditor);
 
         // Replace selection in a way that is recognized by Quip.

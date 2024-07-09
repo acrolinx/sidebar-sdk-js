@@ -87,7 +87,7 @@ function traverseShadowRoots(doc: Document | ShadowRoot | HTMLElement): Element[
   const nodesIterator = (doc.ownerDocument || doc).createNodeIterator(doc, NodeFilter.SHOW_ELEMENT);
 
   let currentNode;
-  // eslint-disable-next-line no-cond-assign
+
   while ((currentNode = nodesIterator.nextNode())) {
     const shadowRoot = (currentNode as HTMLElement).shadowRoot;
     if (shadowRoot) {

@@ -109,7 +109,6 @@ export function rebaseRelativeUrl(url: string, sidebarBaseUrl: string): string {
   }
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export function loadSidebarIntoIFrame(
   config: AcrolinxPluginConfig,
   sidebarIFrameElement: HTMLIFrameElement,

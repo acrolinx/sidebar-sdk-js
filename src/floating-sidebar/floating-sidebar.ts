@@ -133,12 +133,11 @@ function addStyles() {
         transition-timing-function: ease-out;
         display: none;
       }
-      
-            
+
       #${SIDEBAR_ID}.${IS_DRAGGED_CLASS} {
         transition: none;
       }
-      
+
       #${SIDEBAR_ID} .${TITLE_BAR_CLASS} {
         position: relative;
         font-family: AcrolinxRoboto, Roboto, sans-serif;
@@ -149,7 +148,7 @@ function addStyles() {
         font-weight: normal;
         color: white;
       }
-      
+
       #${SIDEBAR_ID} .${CLOSE_ICON_CLASS} {
         position: absolute;
         cursor: pointer;
@@ -165,22 +164,22 @@ function addStyles() {
         -o-background-size: cover;
         background-size: cover;
       }
-      
+
       #${SIDEBAR_ID} #${SIDEBAR_CONTAINER_ID},
       #${SIDEBAR_ID} #acrolinxDragOverlay {
-        position: absolute; 
+        position: absolute;
         top: 30px;
         left: 0;
         bottom: ${FOOTER_HEIGHT}px;
         background: white;
       }
-      
+
       #${SIDEBAR_ID} #${SIDEBAR_CONTAINER_ID} iframe {
-        position: relative; 
+        position: relative;
         height: 100%;
         border: none;
       }
-      
+
       #${SIDEBAR_ID} #${SIDEBAR_DRAG_OVERLAY_ID} {
         position: absolute;
         top: 20px;
@@ -190,7 +189,7 @@ function addStyles() {
         background: transparent;
         z-index: ${Z_INDEX + 100};
       }
-       
+
       #${SIDEBAR_GLASS_PANE_ID} {
         position: fixed;
         width: 100%;
@@ -203,7 +202,7 @@ function addStyles() {
         opacity: 0.6;
         z-index: ${Z_INDEX - 100};
       }
-      
+
       #${SIDEBAR_ID} .${FOOTER} {
         position: absolute;
         bottom: 0;
@@ -212,7 +211,7 @@ function addStyles() {
         height: ${FOOTER_HEIGHT}px;
         border-top: 1px solid #dadada;
       }
-      
+
       #${SIDEBAR_ID} .${RESIZE_ICON_CLASS} {
         position: absolute;
         right: 3px;
@@ -230,12 +229,11 @@ function addStyles() {
         -o-background-size: cover;
         background-size: cover;
       }
-      
+
       #${SIDEBAR_ID}.${IS_RESIZING_CLASS},
       #${SIDEBAR_GLASS_PANE_ID}.${IS_RESIZING_CLASS} {
         cursor: ns-resize !important;
       }
-      
     `;
   head.appendChild(styleTag);
 }

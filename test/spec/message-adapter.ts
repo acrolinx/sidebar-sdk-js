@@ -37,13 +37,13 @@ describe('message-adapter', function () {
        <script>
             var checkGlobalArgs;
             var acrolinxPlugin;
-            
+
             window.acrolinxSidebar = {
               checkGlobal: function(content, opts) {
                 checkGlobalArgs = [content, opts];
               }
             };
-            
+
             // The timeout is needed to give test setup time to inject the createPluginMessageAdapter function.
             setTimeout(function() {
                acrolinxPlugin = createPluginMessageAdapter(window);
@@ -80,14 +80,12 @@ describe('message-adapter', function () {
     it('does not forward messages from other iFrames', async () => {
       setIFrameContent(evilIFrameElement, requestGlobalCheckMessage);
       await waitMs(0);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       verify(mockedAcrolinxPlugin.requestGlobalCheck(anything())).never();
     });
 
     it('does not forward messages from current windows', async () => {
       window.postMessage(requestGlobalCheckMessage, '*');
       await waitMs(0);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       verify(mockedAcrolinxPlugin.requestGlobalCheck(anything())).never();
     });
 
@@ -95,7 +93,6 @@ describe('message-adapter', function () {
       setIFrameContent(sidebarIFrameElement, { command: 'requestInit', args: [] });
       await waitMs(0);
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       verify(mockedAcrolinxPlugin.requestInit(notNull())).once();
       const [sidebarProxy] = capture(mockedAcrolinxPlugin.requestInit).first();
 
@@ -110,7 +107,6 @@ describe('message-adapter', function () {
       setIFrameContent(sidebarIFrameElement, { command: 'requestInit', args: [] });
       await waitMs(0);
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       verify(mockedAcrolinxPlugin.requestInit(notNull())).once();
       sidebarProxy = capture(mockedAcrolinxPlugin.requestInit).first()[0]!;
     });

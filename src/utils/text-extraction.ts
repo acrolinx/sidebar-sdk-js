@@ -32,7 +32,7 @@ export const AUTO_SELF_CLOSING_LINE_TAGS = toSet(['BR']);
 
 function getTagReplacement(completeTag: string): string {
   const [slash1 = '', tagName = '', slash2 = ''] = (/^<(\/?)(\w+)/i.exec(completeTag.toUpperCase()) || []).slice(1);
-  // eslint-disable-next-line sonarjs/no-collapsible-if
+
   if (tagName) {
     if (AUTO_SELF_CLOSING_LINE_TAGS[tagName] || (NEW_LINE_TAGS[tagName] && (slash1 || slash2))) {
       return '\n';

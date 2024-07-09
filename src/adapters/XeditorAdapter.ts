@@ -257,7 +257,6 @@ export class XeditorAdapter implements AdapterInterface {
     const ignoreSpaceAfter = this.editor.getVersion().major >= 6;
 
     // use inner function for recursion to share the result
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const scope = this;
     function getContentForCheckInner(elementInner: any, resultParent: any) {
       // check for removed
@@ -278,7 +277,7 @@ export class XeditorAdapter implements AdapterInterface {
           // add text to result
           let textValue = scope.editor.document.getTextNodeValue(child);
           textValue = Ext.ux.xeditor.Util.trimPlaceHolderChar(scope.editor, textValue);
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
           const textNode = document.createTextNode(textValue);
           resultParent.appendChild(textNode);
         } else if (scope.editor.configObj.isElementType(childType)) {

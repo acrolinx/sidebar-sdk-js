@@ -31,7 +31,7 @@ export function getMatchesWithReplacement(
   const matches: MatchWithReplacement[] = [];
   let offsetStart: number;
   let offsetEnd = 0;
-  // eslint-disable-next-line no-constant-condition
+
   while (true) {
     offsetStart = completeString.indexOf(partialString, offsetEnd);
 
@@ -64,7 +64,6 @@ export function assertDeepEqual<T>(val: T, expected: T) {
 export function containsEmptyTextNodes(node: Node) {
   const nodeIterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT);
   let currentNode: Node | null;
-  // eslint-disable-next-line no-cond-assign
   while ((currentNode = nodeIterator.nextNode())) {
     if (currentNode.textContent === '') {
       return true;
@@ -97,10 +96,8 @@ export function createRange(startNode: Node, endNode: Node) {
 
 export function describeIf(condition: boolean | string | undefined, testName: string, f: () => void) {
   if (condition) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     describe(testName, f as any);
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     describe.skip(testName, f as any);
   }
 }
