@@ -81,7 +81,6 @@ describe('adapter test', function () {
     (a) => _.isEmpty(testedAdapterNames) || _.includes(testedAdapterNames, a.name),
   );
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   testedAdapters.forEach((adapterSpec) => {
     const adapterName = adapterSpec.name;
     describe('adapter ' + adapterName, function (this: any) {
@@ -105,7 +104,6 @@ describe('adapter test', function () {
         const containsUnwantedEmptyTextNodes =
           isChrome() &&
           adapter instanceof AbstractRichtextEditorAdapter &&
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           containsEmptyTextNodes((adapter as any).getEditorElement());
 
         adapterSpec.remove();

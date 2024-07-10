@@ -29,7 +29,7 @@ for consulting and getting your integration certified.
 This sample works with a test license on an internal Acrolinx URL.
 This license is only meant for demonstration and developing purposes.
 Once you finished your integration, you'll have to get a license for your integration from Acrolinx.
-  
+
 Acrolinx offers different other SDKs, and examples for developing integrations.
 
 Before you start developing your own integration, you might benefit from looking into:

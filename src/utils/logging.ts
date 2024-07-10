@@ -18,7 +18,6 @@ let isEnabled = false;
 
 export function log(message: any, ...args: any[]) {
   if (isEnabled) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     console.log(message, ...args);
   }
 }

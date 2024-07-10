@@ -64,7 +64,7 @@ function createStartTag(wrapper: WrapperConf, id?: string) {
   if (id) {
     _.assign(allAttributes, { id });
   }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
   const allAttributesString = _.map(allAttributes, (value, key) => ` ${key}="${_.escape(value)}"`).join('');
   return `<${wrapper.tagName}${allAttributesString}>`;
 }
@@ -153,7 +153,6 @@ export class MultiEditorAdapter implements AdapterInterface {
     this.adapters = [];
   }
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   extractContentForCheck(opts: ExtractContentForCheckOpts): Promise<ContentExtractionResult> {
     if (this.config.beforeCheck) {
       this.config.beforeCheck(this);
@@ -212,7 +211,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     const map: { [id: string]: RemappedMatches<T> } = {};
     for (const match of matches) {
       const registeredAdapter = this.getAdapterForMatch(match);
-      // eslint-disable-next-line no-prototype-builtins
+
       if (!map.hasOwnProperty(registeredAdapter.id)) {
         map[registeredAdapter.id] = { matches: [], adapter: registeredAdapter.adapter };
       }

@@ -303,7 +303,7 @@ export function removeEmptyTextNodes(range: Range) {
   const nodeIterator = document.createNodeIterator(range.commonAncestorContainer);
   let currentNode: Node | null;
   let afterStartNode = false;
-  // eslint-disable-next-line no-cond-assign
+
   while ((currentNode = nodeIterator.nextNode())) {
     if (currentNode === range.startContainer) {
       afterStartNode = true;
