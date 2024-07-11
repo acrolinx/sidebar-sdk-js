@@ -20,7 +20,6 @@ import ReactDOM from "react-dom";
 import React from 'react';
 import App from './adapter-test-setups/draftjs-editor/draftApp';
 import { bindAdaptersForCurrentPage } from '../../src/autobind/autobind';
-import { assert } from 'chai';
 
 describe('asyncAutobind DraftJS', function () {
 
@@ -40,11 +39,11 @@ describe('asyncAutobind DraftJS', function () {
     });
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 1);
+    chai.assert.equal(adapters.length, 1);
 
     const adaptersContent = adapters.map(a => a.getContent!({}));
     // TODO: A way to change state of editor for tests.
-    assert.isTrue(adaptersContent[0].includes('This is test conteent.'));
+    chai.assert.isTrue(adaptersContent[0].includes('This is test conteent.'));
   });
 
 });

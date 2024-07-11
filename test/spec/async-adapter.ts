@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-const assert = chai.assert;
 import _ from 'lodash';
 import { ContentEditableAdapter } from '../../src';
 import {
@@ -151,7 +150,7 @@ describe('async adapter', function () {
     });
 
     it('request check', async () => {
-      assert.equal(lastDocumentContent, INITIAL_DOCUMENT_CONTENT);
+      chai.assert.equal(lastDocumentContent, INITIAL_DOCUMENT_CONTENT);
     });
 
     it('selectRanges', async () => {
@@ -160,7 +159,7 @@ describe('async adapter', function () {
       injectedPlugin.selectRanges(DUMMY_CHECK_ID, getMatchesWithReplacement(lastDocumentContent, selectedText, ''));
       await waitMs(DELAY_IN_MS);
 
-      assert.equal(document.getSelection()!.toString(), selectedText);
+      chai.assert.equal(document.getSelection()!.toString(), selectedText);
     });
 
     it('replaceRanges', async () => {
@@ -170,7 +169,7 @@ describe('async adapter', function () {
       injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
       await waitMs(DELAY_IN_MS);
 
-      assert.equal(document.getSelection()!.toString(), replacement);
+      chai.assert.equal(document.getSelection()!.toString(), replacement);
     });
 
     it('trying to select modified ranges invalidated them', async () => {
@@ -183,7 +182,7 @@ describe('async adapter', function () {
 
       await waitMs(DELAY_IN_MS);
 
-      assert.deepEqual(invalidatedRanges, [
+      chai.assert.deepEqual(invalidatedRanges, [
         {
           checkId: DUMMY_CHECK_ID,
           range: contentEditableAdapterMatch[0].range,
@@ -201,7 +200,7 @@ describe('async adapter', function () {
 
       await waitMs(DELAY_IN_MS);
 
-      assert.deepEqual(invalidatedRanges, [
+      chai.assert.deepEqual(invalidatedRanges, [
         {
           checkId: DUMMY_CHECK_ID,
           range: contentEditableAdapterMatch[0].range,
@@ -219,7 +218,7 @@ describe('async adapter', function () {
 
       await waitMs(DELAY_IN_MS);
 
-      assert.deepEqual(invalidatedRanges, [
+      chai.assert.deepEqual(invalidatedRanges, [
         {
           checkId: DUMMY_CHECK_ID,
           range: contentEditableAdapterMatch[0].range,
@@ -235,16 +234,16 @@ describe('async adapter', function () {
       injectedPlugin.replaceRanges(DUMMY_CHECK_ID, word2Matches);
       injectedPlugin.replaceRanges(DUMMY_CHECK_ID, word3Matches);
 
-      assert.equal(document.getSelection()!.toString(), '');
+      chai.assert.equal(document.getSelection()!.toString(), '');
 
       await waitMs(DELAY_IN_MS);
-      assert.equal(document.getSelection()!.toString(), 'word3');
+      chai.assert.equal(document.getSelection()!.toString(), 'word3');
 
       await waitMs(DELAY_IN_MS);
-      assert.equal(document.getSelection()!.toString(), 'word2X');
+      chai.assert.equal(document.getSelection()!.toString(), 'word2X');
 
       await waitMs(DELAY_IN_MS);
-      assert.equal(document.getSelection()!.toString(), 'word3X');
+      chai.assert.equal(document.getSelection()!.toString(), 'word3X');
     });
   });
 });

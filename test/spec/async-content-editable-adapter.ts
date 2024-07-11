@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-const assert = chai.assert;
 import {
   AcrolinxPlugin,
   AcrolinxSidebar,
@@ -147,7 +146,7 @@ describe('async adapter', function () {
     });
 
     it('request check', async () => {
-      assert.equal(lastDocumentContent, INITIAL_DOCUMENT_CONTENT);
+      chai.assert.equal(lastDocumentContent, INITIAL_DOCUMENT_CONTENT);
     });
 
     it('selectRanges', async () => {
@@ -156,7 +155,7 @@ describe('async adapter', function () {
       injectedPlugin.selectRanges(DUMMY_CHECK_ID, getMatchesWithReplacement(lastDocumentContent, selectedText, ''));
       await waitMs(DELAY_IN_MS);
 
-      assert.equal(document.getSelection()!.toString(), selectedText);
+      chai.assert.equal(document.getSelection()!.toString(), selectedText);
     });
 
     it('replaceRanges', async () => {
@@ -166,7 +165,7 @@ describe('async adapter', function () {
       injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
       await waitMs(DELAY_IN_MS);
 
-      assert.equal(document.getSelection()!.toString(), replacement);
+      chai.assert.equal(document.getSelection()!.toString(), replacement);
     });
 
     it('trying to select modified ranges invalidated them', async () => {
@@ -179,7 +178,7 @@ describe('async adapter', function () {
 
       await waitMs(DELAY_IN_MS);
 
-      assert.deepEqual(invalidatedRanges, [
+      chai.assert.deepEqual(invalidatedRanges, [
         {
           checkId: DUMMY_CHECK_ID,
           range: contentEditableAdapterMatch[0].range,
@@ -197,7 +196,7 @@ describe('async adapter', function () {
 
       await waitMs(DELAY_IN_MS);
 
-      assert.deepEqual(invalidatedRanges, [
+      chai.assert.deepEqual(invalidatedRanges, [
         {
           checkId: DUMMY_CHECK_ID,
           range: contentEditableAdapterMatch[0].range,
@@ -215,7 +214,7 @@ describe('async adapter', function () {
 
       await waitMs(DELAY_IN_MS);
 
-      assert.deepEqual(invalidatedRanges, [
+      chai.assert.deepEqual(invalidatedRanges, [
         {
           checkId: DUMMY_CHECK_ID,
           range: contentEditableAdapterMatch[0].range,

@@ -25,8 +25,6 @@ import {
 } from '../../src/autobind/autobind';
 import { benchmark } from '../utils/test-utils';
 
-const assert = chai.assert;
-
 describe('autobind', function () {
   const containerDivId = 'autoBindTest';
 
@@ -59,15 +57,15 @@ describe('autobind', function () {
       .html(`<input id="inputInIFrame" type="text" value="input in iframe content" />`);
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 6);
+    chai.assert.equal(adapters.length, 6);
 
     const adaptersContent = adapters.map((a) => a.getContent!({}));
-    assert.equal(adaptersContent[0], 'input 1 content');
-    assert.equal(adaptersContent[1], 'contentEditable content');
-    assert.equal(adaptersContent[2], 'textarea content');
-    assert.equal(adaptersContent[3], 'input 2 content');
-    assert.equal(adaptersContent[4], 'input 3 content');
-    assert.equal(adaptersContent[5], 'input in iframe content');
+    chai.assert.equal(adaptersContent[0], 'input 1 content');
+    chai.assert.equal(adaptersContent[1], 'contentEditable content');
+    chai.assert.equal(adaptersContent[2], 'textarea content');
+    chai.assert.equal(adaptersContent[3], 'input 2 content');
+    chai.assert.equal(adaptersContent[4], 'input 3 content');
+    chai.assert.equal(adaptersContent[5], 'input in iframe content');
   });
 
   // This test depends on an available internet.
@@ -83,11 +81,11 @@ describe('autobind', function () {
 
     const onLoadedOnce = _.once(() => {
       const adapters = bindAdaptersForCurrentPage();
-      assert.equal(adapters.length, 2);
+      chai.assert.equal(adapters.length, 2);
 
       const adaptersContent = adapters.map((a) => a.getContent!({}));
-      assert.equal(adaptersContent[0], 'input 1 content');
-      assert.equal(adaptersContent[1], 'input 2 content');
+      chai.assert.equal(adaptersContent[0], 'input 1 content');
+      chai.assert.equal(adaptersContent[1], 'input 2 content');
       done();
     });
 
@@ -102,7 +100,7 @@ describe('autobind', function () {
       `);
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 0);
+    chai.assert.equal(adapters.length, 0);
   });
 
   it('bind shadow root fields', () => {
@@ -119,7 +117,7 @@ describe('autobind', function () {
       `);
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 1);
+    chai.assert.equal(adapters.length, 1);
   });
 
   it('bind nested shadow root fields', () => {
@@ -147,7 +145,7 @@ describe('autobind', function () {
       `);
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 3);
+    chai.assert.equal(adapters.length, 3);
   });
 
   it('dont bind closed shadow root fields', () => {
@@ -164,7 +162,7 @@ describe('autobind', function () {
       `);
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 0);
+    chai.assert.equal(adapters.length, 0);
   });
 
   it('dont bind fields that are probably comboboxes', () => {
@@ -175,7 +173,7 @@ describe('autobind', function () {
       `);
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 0);
+    chai.assert.equal(adapters.length, 0);
   });
 
   it('bind input field that looks a bit like a combobox but is not really', () => {
@@ -185,7 +183,7 @@ describe('autobind', function () {
       `);
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 1);
+    chai.assert.equal(adapters.length, 1);
   });
 
   it('dont bind probable search fields', () => {
@@ -196,7 +194,7 @@ describe('autobind', function () {
       `);
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 0);
+    chai.assert.equal(adapters.length, 0);
   });
 
   it('dont bind probable username fields', () => {
@@ -208,7 +206,7 @@ describe('autobind', function () {
       `);
 
     const adapters = bindAdaptersForCurrentPage();
-    assert.equal(adapters.length, 0);
+    chai.assert.equal(adapters.length, 0);
   });
 
   describe('AutoBindAdapter', () => {
@@ -226,7 +224,7 @@ describe('autobind', function () {
             done(result.error);
             return;
           }
-          assert.equal(
+          chai.assert.equal(
             result.content,
             '<div original-id="inputId" original-class="inputClass" original-name="inputName" original-source="input" id="acrolinx_integration0">text</div>' +
               '<div original-id="divId" original-class="divClass" original-source="div" id="acrolinx_integration1">html</div>',
@@ -238,10 +236,10 @@ describe('autobind', function () {
 
     it('returns format of inner MultiEditor ', () => {
       const autobindAdapterAuto = new AutoBindAdapter({ aggregateFormat: 'AUTO' });
-      assert.equal(autobindAdapterAuto.getFormat(), 'AUTO');
+      chai.assert.equal(autobindAdapterAuto.getFormat(), 'AUTO');
 
       const autobindAdapterHtml = new AutoBindAdapter({ aggregateFormat: 'HTML' });
-      assert.equal(autobindAdapterHtml.getFormat(), 'HTML');
+      chai.assert.equal(autobindAdapterHtml.getFormat(), 'HTML');
     });
   });
 
@@ -260,7 +258,7 @@ describe('autobind', function () {
             done(result.error);
             return;
           }
-          assert.equal(
+          chai.assert.equal(
             result.content,
             '<div original-id="inputId" original-class="inputClass" original-name="inputName" original-source="input" id="acrolinx_integration0">text</div>' +
               '<div original-id="divId" original-class="divClass" original-source="div" id="acrolinx_integration1">html</div>',
@@ -272,10 +270,10 @@ describe('autobind', function () {
 
     it('returns format of inner MultiEditor ', () => {
       const autobindAdapterAuto = new AsyncAutoBindAdapter({ aggregateFormat: 'AUTO' });
-      assert.equal(autobindAdapterAuto.getFormat(), 'AUTO');
+      chai.assert.equal(autobindAdapterAuto.getFormat(), 'AUTO');
 
       const autobindAdapterHtml = new AsyncAutoBindAdapter({ aggregateFormat: 'HTML' });
-      assert.equal(autobindAdapterHtml.getFormat(), 'HTML');
+      chai.assert.equal(autobindAdapterHtml.getFormat(), 'HTML');
     });
   });
 });
@@ -320,7 +318,7 @@ describe('getEditableElements performance with no shadow dom', () => {
 
   it('test-test: big tree is big', () => {
     const numberOfNodes = bigTree.querySelectorAll('*').length;
-    assert.equal(numberOfNodes, 168420);
+    chai.assert.equal(numberOfNodes, 168420);
   });
 
   it('getEditableElements is faster than slow on a big tree', function () {
@@ -328,12 +326,12 @@ describe('getEditableElements performance with no shadow dom', () => {
 
     const benchmarkResultSlow = benchmark(10, () => {
       const nodes = getEditableElementsSlow(bigTree);
-      assert.equal(nodes.length, 0);
+      chai.assert.equal(nodes.length, 0);
     });
 
     const benchmarkResult = benchmark(10, () => {
       const nodes = getEditableElements(bigTree);
-      assert.equal(nodes.length, 0);
+      chai.assert.equal(nodes.length, 0);
     });
 
     const speedUp = benchmarkResultSlow.timeMsPerRun / benchmarkResult.timeMsPerRun;
@@ -346,7 +344,7 @@ describe('getEditableElements performance with no shadow dom', () => {
     // And on github actions the speedup is about 1.1
     // const isMac = navigator.appVersion.indexOf('Mac') >= 0;
     // Speedup on GH Actions is always flaky, depends on VM
-    assert.isAbove(speedUp, 1.0);
+    chai.assert.isAbove(speedUp, 1.0);
   });
 });
 
@@ -387,7 +385,7 @@ describe('getEditableElements performance for a big shadow dom', () => {
     this.timeout(1000);
     const benchmarkResult = benchmark(2, () => {
       const nodes = getEditableElements(container);
-      assert.equal(nodes.length, 0);
+      chai.assert.equal(nodes.length, 0);
     });
     chai.assert.isTrue(benchmarkResult.timeMsPerRun < 500);
     // console.log(benchmarkResult.timeMsPerRun);

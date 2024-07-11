@@ -24,8 +24,6 @@ import {
 import { Check, CheckResult, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { assertDeepEqual, getMatchesWithReplacement } from '../utils/test-utils';
 
-const assert = chai.assert;
-
 class MockedAdapter implements AdapterInterface {
   selectRangesCount = 0;
   lastSelectedRanges!: Match[];
@@ -69,9 +67,9 @@ describe('multi-editor-adapter', () => {
       // Check the first time when adapter 1 has some content
       extractionResult1 = (await multiAdapter.extractContentForCheck({})) as SuccessfulContentExtractionResult;
       if (!isSuccessfulContentExtractionResult(extractionResult1)) {
-        return assert.ok(false, 'Extraction should have no error');
+        return chai.assert.ok(false, 'Extraction should have no error');
       }
-      assert.equal(
+      chai.assert.equal(
         extractionResult1.content,
         `<div id="acrolinx_integration0">Content1</div><div id="acrolinx_integration1">${adapter2Content}</div>`,
       );
@@ -86,17 +84,17 @@ describe('multi-editor-adapter', () => {
       adapter1.content = '';
       extractionResult2 = (await multiAdapter.extractContentForCheck({})) as SuccessfulContentExtractionResult;
       if (!isSuccessfulContentExtractionResult(extractionResult2)) {
-        return assert.ok(false, 'Extraction should have no error');
+        return chai.assert.ok(false, 'Extraction should have no error');
       }
 
       expectedWrappedContent2 = `<div id="acrolinx_integration0"></div><div id="acrolinx_integration1">${adapter2Content}</div>`;
-      assert.equal(extractionResult2.content, expectedWrappedContent2);
+      chai.assert.equal(extractionResult2.content, expectedWrappedContent2);
     });
 
     it('maps correctly based on first extraction, if second check check has not finished', async () => {
       multiAdapter.selectRanges('dummyCheckId', getMatchesWithReplacement(extractionResult1.content, adapter2Content));
 
-      assert.equal(adapter2.selectRangesCount, 1, 'selectRanges of adapter2 should be called once');
+      chai.assert.equal(adapter2.selectRangesCount, 1, 'selectRanges of adapter2 should be called once');
       assertDeepEqual(adapter2.lastSelectedRanges[0].content, adapter2Content);
       assertDeepEqual(adapter2.lastSelectedRanges[0].range, [0, adapter2Content.length]);
     });
@@ -111,7 +109,7 @@ describe('multi-editor-adapter', () => {
 
       multiAdapter.selectRanges('dummyCheckId', getMatchesWithReplacement(expectedWrappedContent2, adapter2Content));
 
-      assert.equal(adapter2.selectRangesCount, 1, 'selectRanges of adapter2 should be called once');
+      chai.assert.equal(adapter2.selectRangesCount, 1, 'selectRanges of adapter2 should be called once');
       assertDeepEqual(adapter2.lastSelectedRanges[0].content, adapter2Content);
       assertDeepEqual(adapter2.lastSelectedRanges[0].range, [0, adapter2Content.length]);
     });
@@ -119,10 +117,10 @@ describe('multi-editor-adapter', () => {
 
   it('getFormat returns config.aggregateFormat', () => {
     const multiAdapter = new MultiEditorAdapter({ aggregateFormat: 'AUTO' });
-    assert.equal(multiAdapter.getFormat(), 'AUTO');
+    chai.assert.equal(multiAdapter.getFormat(), 'AUTO');
   });
 
   it('getFormat returns HTML as default', () => {
-    assert.equal(new MultiEditorAdapter().getFormat(), 'HTML');
+    chai.assert.equal(new MultiEditorAdapter().getFormat(), 'HTML');
   });
 });

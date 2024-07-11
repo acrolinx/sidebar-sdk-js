@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-const assert = chai.assert;
-
 import {
   initFloatingSidebar,
   SIDEBAR_ID,
@@ -126,8 +124,8 @@ describe('floating sidebar', function () {
       setTimeout(() => {
         const sidebarElement = document.getElementById(SIDEBAR_ID) as HTMLElement;
         const { top, left } = sidebarElement.getBoundingClientRect();
-        assert.equal(top, oldPos.top);
-        assert.equal(left, oldPos.left);
+        chai.assert.equal(top, oldPos.top);
+        chai.assert.equal(left, oldPos.left);
         // Can not check height easily (without a lot of mocking), because it depends on window size.
         done();
       }, 1500);
@@ -139,8 +137,8 @@ describe('floating sidebar', function () {
       setTimeout(() => {
         const sidebarElement = document.getElementById(SIDEBAR_ID) as HTMLElement;
         const { top, left, height } = sidebarElement.getBoundingClientRect();
-        assert.equal(top, DEFAULT_POS.top);
-        assert.equal(left, DEFAULT_POS.left);
+        chai.assert.equal(top, DEFAULT_POS.top);
+        chai.assert.equal(left, DEFAULT_POS.left);
         chai.assert.ok(height > 0);
         done();
       }, 10);
@@ -151,7 +149,7 @@ describe('floating sidebar', function () {
       const sidebarElement = document.getElementById(SIDEBAR_ID);
       setTimeout(() => {
         floatingSidebar.toggleVisibility();
-        assert.equal(sidebarElement!.getBoundingClientRect().width, 0);
+        chai.assert.equal(sidebarElement!.getBoundingClientRect().width, 0);
         floatingSidebar.toggleVisibility();
         chai.assert.ok(sidebarElement!.getBoundingClientRect().width > 0);
         done();

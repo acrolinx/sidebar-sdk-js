@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-const assert = chai.assert;
 import {
   AcrolinxPlugin,
   AcrolinxSidebar,
@@ -165,7 +164,7 @@ describe('multi plugin', function () {
 
     it('request check', (done) => {
       waitForCheck(() => {
-        assert.equal(
+        chai.assert.equal(
           lastDocumentContent,
           '<div id="acrolinx_integration0">Initial text of ContentEditableAdapter.</div>' +
             '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>',
@@ -180,7 +179,7 @@ describe('multi plugin', function () {
         const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, selectedText, '');
 
         injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.equal(document.getSelection()!.toString(), selectedText);
+        chai.assert.equal(document.getSelection()!.toString(), selectedText);
         done();
       });
     });
@@ -192,7 +191,7 @@ describe('multi plugin', function () {
 
         injectedPlugin.selectRanges(DUMMY_CHECK_ID, inputAdapterMatch);
         const textArea = document.getElementById('InputAdapter') as HTMLTextAreaElement;
-        assert.equal(textArea.value.slice(textArea.selectionStart, textArea.selectionEnd), selectedText);
+        chai.assert.equal(textArea.value.slice(textArea.selectionStart, textArea.selectionEnd), selectedText);
         done();
       });
     });
@@ -203,7 +202,7 @@ describe('multi plugin', function () {
         const replacement = 'ContentEditableAdapterReplacement';
         const contentEditableAdapterMatch = getMatchesWithReplacement(lastDocumentContent, textToReplace, replacement);
         injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.equal(document.getSelection()!.toString(), replacement);
+        chai.assert.equal(document.getSelection()!.toString(), replacement);
         done();
       });
     });
@@ -215,7 +214,7 @@ describe('multi plugin', function () {
         console.log(contentEditableAdapterMatch);
         $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
         injectedPlugin.selectRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.deepEqual(invalidatedRanges, [
+        chai.assert.deepEqual(invalidatedRanges, [
           {
             checkId: DUMMY_CHECK_ID,
             range: contentEditableAdapterMatch[0].range,
@@ -232,7 +231,7 @@ describe('multi plugin', function () {
         console.log(contentEditableAdapterMatch);
         $('#ContentEditableAdapter').html('Initial text of ContentEditableXAdapter.');
         injectedPlugin.replaceRanges(DUMMY_CHECK_ID, contentEditableAdapterMatch);
-        assert.deepEqual(invalidatedRanges, [
+        chai.assert.deepEqual(invalidatedRanges, [
           {
             checkId: DUMMY_CHECK_ID,
             range: contentEditableAdapterMatch[0].range,
@@ -250,7 +249,7 @@ describe('multi plugin', function () {
       initMultiPlugin(done, {
         config: {
           onSidebarWindowLoaded: (sidebarWindow: Window) => {
-            assert.equal(sidebarWindow, getIFrameWindow());
+            chai.assert.equal(sidebarWindow, getIFrameWindow());
             (sidebarWindow as any).injectedStuff = injectedStuff;
           },
         },
@@ -258,7 +257,7 @@ describe('multi plugin', function () {
     });
 
     it('onSidebarWindowLoaded was called on sidebar window', () => {
-      assert.equal(getIFrameWindow().injectedStuff, injectedStuff);
+      chai.assert.equal(getIFrameWindow().injectedStuff, injectedStuff);
     });
   });
 
@@ -277,7 +276,7 @@ describe('multi plugin', function () {
 
       function onInitDone() {
         waitForCheck(() => {
-          assert.equal(
+          chai.assert.equal(
             lastDocumentContent,
             '<h1 class="class" data-boolean="false" data-more="&quot;&lt;tag&gt;&quot;" id="acrolinx_integration0">Initial text of ContentEditableAdapter.</h1>' +
               '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>',
@@ -302,7 +301,7 @@ describe('multi plugin', function () {
       function onInitDone() {
         waitForCheck(() => {
           const expectedBegin = '<!DOCTYPE html>\n<root>';
-          assert.equal(lastDocumentContent.substr(0, expectedBegin.length), expectedBegin);
+          chai.assert.equal(lastDocumentContent.substr(0, expectedBegin.length), expectedBegin);
           chai.assert.isTrue(_.endsWith(lastDocumentContent, '</root>'));
           done();
         });
@@ -323,7 +322,7 @@ describe('multi plugin', function () {
 
       function onInitDone() {
         waitForCheck(() => {
-          assert.equal(lastDocumentContent, '<div id="acrolinx_integration0">&lt;Initial text of InputAdapter.</div>');
+          chai.assert.equal(lastDocumentContent, '<div id="acrolinx_integration0">&lt;Initial text of InputAdapter.</div>');
           done();
         });
       }
@@ -337,7 +336,7 @@ describe('multi plugin', function () {
 
       function onInitDone() {
         setTimeout(() => {
-          assert.equal(newConfig.readOnlySuggestions, true);
+          chai.assert.equal(newConfig.readOnlySuggestions, true);
           done();
         }, 1);
       }
@@ -349,7 +348,7 @@ describe('multi plugin', function () {
       function onInitDone() {
         setTimeout(() => {
           acrolinxPlugin.configure({ readOnlySuggestions: true });
-          assert.equal(newConfig.readOnlySuggestions, true);
+          chai.assert.equal(newConfig.readOnlySuggestions, true);
           done();
         }, 1);
       }
@@ -361,7 +360,7 @@ describe('multi plugin', function () {
       initMultiPlugin(_.noop, {
         config: {
           onInitFinished: (initFinishedResult: InitResult) => {
-            assert.deepEqual(initFinishedResult, {});
+            chai.assert.deepEqual(initFinishedResult, {});
             afterCheckCallback = () => {
               done();
             };

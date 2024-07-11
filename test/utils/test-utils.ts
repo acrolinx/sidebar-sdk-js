@@ -17,8 +17,6 @@
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import * as _ from 'lodash';
 
-const assert = chai.assert;
-
 export function getDummySidebarPath() {
   return _.startsWith(location.pathname, '/test/') ? '/test/dummy-sidebar/' : '/base/test/dummy-sidebar/';
 }
@@ -55,9 +53,9 @@ export function getMatchesWithReplacement(
  */
 export function assertDeepEqual<T>(val: T, expected: T) {
   try {
-    assert.deepEqual(val, expected);
+    chai.assert.deepEqual(val, expected);
   } catch (e) {
-    assert.equal(JSON.stringify(val), JSON.stringify(expected));
+    chai.assert.equal(JSON.stringify(val), JSON.stringify(expected));
   }
 }
 

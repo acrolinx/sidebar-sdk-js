@@ -19,7 +19,6 @@ import { assertDeepEqual } from '../utils/test-utils';
 import { escapeHtmlCharacters } from '../../src/utils/escaping';
 import { findNewIndex } from '../../src/utils/alignment';
 import * as jsc from 'jsverify';
-const assert = chai.assert;
 
 const JS_VERIFY_OPTS = {
   tests: 1000,
@@ -53,14 +52,14 @@ describe('escapeHtmlCharacters', function () {
 
   it('empty text', () => {
     const result = escapeHtmlCharacters('');
-    assert.equal(result.escapedText, '');
+    chai.assert.equal(result.escapedText, '');
     assertDeepEqual(result.backwardAlignment, []);
   });
 
   it('text without html characters', () => {
     const text = 'text';
     const result = escapeHtmlCharacters(text);
-    assert.equal(result.escapedText, text);
+    chai.assert.equal(result.escapedText, text);
     assertDeepEqual(result.backwardAlignment, []);
   });
 
@@ -69,7 +68,7 @@ describe('escapeHtmlCharacters', function () {
     const result = escapeHtmlCharacters(text);
 
     const escapedText = '012&lt;456';
-    assert.equal(result.escapedText, escapedText);
+    chai.assert.equal(result.escapedText, escapedText);
 
     assertDeepEqual(result.backwardAlignment, [{ oldPosition: escapedText.indexOf('4'), diffOffset: -3 }]);
   });
@@ -79,7 +78,7 @@ describe('escapeHtmlCharacters', function () {
     const result = escapeHtmlCharacters(text);
 
     const escapedText = '012&lt;4&amp;67';
-    assert.equal(result.escapedText, escapedText);
+    chai.assert.equal(result.escapedText, escapedText);
 
     assertDeepEqual(result.backwardAlignment, [
       { oldPosition: escapedText.indexOf('4'), diffOffset: -3 },
@@ -104,7 +103,7 @@ describe('escapeHtmlCharacters', function () {
 
     it('wild html characters', () => {
       const wild = '&!<!>!"!\'!`!';
-      assert.equal('&amp;!&lt;!&gt;!&quot;!&#39;!&#96;!', escapeHtmlCharacters(wild).escapedText);
+      chai.assert.equal('&amp;!&lt;!&gt;!&quot;!&#39;!&#96;!', escapeHtmlCharacters(wild).escapedText);
       assertBackwardMappingIsCorrect(wild);
     });
 

@@ -24,8 +24,6 @@ import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/a
 import { AdapterTestSetup } from './adapter-test-setups/adapter-test-setup';
 import { CKEditor5InlineTestSetup } from './adapter-test-setups/ck5-editor-inline';
 
-const assert = chai.assert;
-
 describe('CKEditor5 adapter test', function () {
   const NON_BREAKING_SPACE = '\u00a0';
 
@@ -54,7 +52,7 @@ describe('CKEditor5 adapter test', function () {
             done();
           })
           .catch((res) => {
-            assert.fail('Before each hook failed. ' + res);
+            chai.assert.fail('Before each hook failed. ' + res);
             done();
           });
       });
@@ -75,12 +73,12 @@ describe('CKEditor5 adapter test', function () {
       function assertEditorText(expectedText: string) {
         const editorContent = (adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult).content;
         if (adapterSpec.inputFormat === 'TEXT') {
-          assert.equal(editorContent, expectedText);
+          chai.assert.equal(editorContent, expectedText);
         } else {
           const actualText = $('<div>' + editorContent + '</div>')
             .text()
             .replace('\n', '');
-          assert.equal(actualText, expectedText);
+            chai.assert.equal(actualText, expectedText);
         }
       }
 
@@ -505,7 +503,7 @@ describe('CKEditor5 adapter test', function () {
               { content: '?', range: [9, 10], replacement: '' },
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
+            chai.assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
             done();
           });
         });
@@ -515,7 +513,7 @@ describe('CKEditor5 adapter test', function () {
         givenAText('wordOne wordTwo wordThree', (html) => {
           const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
           setEditorContent('wordOne wordXTwo wordThree', () => {
-            assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
+            chai.assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
             done();
           });
         });
@@ -525,7 +523,7 @@ describe('CKEditor5 adapter test', function () {
         givenAText('wordOne wordTwo wordThree', (html) => {
           const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo', 'replacement');
           setEditorContent('wordOne wordXTwo wordThree', () => {
-            assert.throws(() => adapter.replaceRanges(dummyCheckId, matchesWithReplacement));
+            chai.assert.throws(() => adapter.replaceRanges(dummyCheckId, matchesWithReplacement));
             done();
           });
         });
@@ -537,7 +535,7 @@ describe('CKEditor5 adapter test', function () {
           givenAText(completeContent, (initialExtractedContent) => {
             const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'selection');
             adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(adapterSpec.getSelectedText(), 'selection');
+            chai.assert.equal(adapterSpec.getSelectedText(), 'selection');
             done();
           });
         });

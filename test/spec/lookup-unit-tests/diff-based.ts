@@ -17,7 +17,6 @@
 import { createOffsetMappingArray, lookupMatches } from '../../../src/lookup/diff-based';
 import { diff_match_patch } from 'diff-match-patch';
 import { getMatchesWithReplacement } from '../../utils/test-utils';
-const assert = chai.assert;
 
 describe('lookup/diff-based', function () {
   it('createOffsetMappingArray', function () {
@@ -34,7 +33,7 @@ describe('lookup/diff-based', function () {
       { oldPosition: 5, diffOffset: 2 },
     ];
 
-    assert.deepEqual(offsetMapping, expected);
+    chai.assert.deepEqual(offsetMapping, expected);
   });
 
   it('lookupMatches returns empty array for empty input array', function () {
@@ -44,6 +43,6 @@ describe('lookup/diff-based', function () {
   it('return empty array if content at match has changed', function () {
     const text = 'errorr';
     const alignedMatches = lookupMatches(text, 'error', getMatchesWithReplacement(text, 'errorr'));
-    assert.deepEqual(alignedMatches, []);
+    chai.assert.deepEqual(alignedMatches, []);
   });
 });

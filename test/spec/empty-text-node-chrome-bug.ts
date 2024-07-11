@@ -26,8 +26,6 @@ import {
   describeIf,
 } from '../utils/test-utils';
 
-const assert = chai.assert;
-
 // https://bugs.chromium.org/p/chromium/issues/detail?id=811630
 describeIf(isChrome(), 'empty text node chrome bug', () => {
   let testContainer: HTMLElement;
@@ -54,7 +52,7 @@ describeIf(isChrome(), 'empty text node chrome bug', () => {
       removeEmptyTextNodes(createRange(testContainer.childNodes[0], testContainer.childNodes[3]));
 
       chai.assert.isFalse(containsEmptyTextNodes(testContainer));
-      assert.equal(testContainer.innerHTML, '0 3');
+      chai.assert.equal(testContainer.innerHTML, '0 3');
     });
 
     it('removes empty child nodes recursively', () => {
@@ -80,7 +78,7 @@ describeIf(isChrome(), 'empty text node chrome bug', () => {
       removeEmptyTextNodes(createRange(testContainer, testContainer));
 
       chai.assert.isFalse(containsEmptyTextNodes(testContainer));
-      assert.equal(testContainer.innerHTML, '0<div>1.0 1.2</div>2');
+      chai.assert.equal(testContainer.innerHTML, '0<div>1.0 1.2</div>2');
     });
   });
 });
@@ -114,7 +112,7 @@ describe('chrome bug affects only chrome', () => {
     const divWithBugWidth = testContainer.getBoundingClientRect().width;
 
     // Both divs should have the same content.
-    assert.equal(divWithBugHtml, divWithoutBugHtml);
+    chai.assert.equal(divWithBugHtml, divWithoutBugHtml);
 
     // Normally both divs should render in same way and have the same width.
     if (isChrome() && !isProbablyFixedInChrome) {

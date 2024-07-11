@@ -21,8 +21,6 @@ import { getMatchesWithReplacement, waitMs } from '../utils/test-utils';
 import { FakeAdapter } from './fake/FakeAdapter';
 import { SlowMotionAsyncWrapper } from './fake/SlowMotionAsyncAdapter';
 
-const assert = chai.assert;
-
 const DELAY_IN_MS = 10;
 const DUMMY_CHECK_ID = 'dummyCheckId';
 
@@ -59,13 +57,13 @@ describe('AsyncMultiEditorAdapter', () => {
 
     await waitMs(DELAY_IN_MS);
     // selection in first child applied
-    assert.deepEqual(childAdapter1.selection!.ranges, [[7, 11]]);
+    chai.assert.deepEqual(childAdapter1.selection!.ranges, [[7, 11]]);
     chai.assert.isUndefined(childAdapter2.selection);
 
     await waitMs(DELAY_IN_MS);
     // all selections applied
-    assert.deepEqual(childAdapter1.selection!.ranges, [[7, 11]]);
-    assert.deepEqual(childAdapter2.selection!.ranges, [[0, 6]]);
+    chai.assert.deepEqual(childAdapter1.selection!.ranges, [[7, 11]]);
+    chai.assert.deepEqual(childAdapter2.selection!.ranges, [[0, 6]]);
 
     await promise;
   });
@@ -73,18 +71,18 @@ describe('AsyncMultiEditorAdapter', () => {
   it('should synchronize replacements over multiple children', async () => {
     const promise = amea.replaceRanges(DUMMY_CHECK_ID, overlappingMatches);
     // nothing replaces yet
-    assert.equal(childAdapter1.content, 'start1 end1');
-    assert.equal(childAdapter2.content, 'start2 end2');
+    chai.assert.equal(childAdapter1.content, 'start1 end1');
+    chai.assert.equal(childAdapter2.content, 'start2 end2');
 
     await waitMs(DELAY_IN_MS);
     // replacements in first child done
-    assert.equal(childAdapter1.content, 'start1 end1X');
-    assert.equal(childAdapter2.content, 'start2 end2');
+    chai.assert.equal(childAdapter1.content, 'start1 end1X');
+    chai.assert.equal(childAdapter2.content, 'start2 end2');
 
     await waitMs(DELAY_IN_MS);
     // all replacements done
-    assert.equal(childAdapter1.content, 'start1 end1X');
-    assert.equal(childAdapter2.content, 'start2X end2');
+    chai.assert.equal(childAdapter1.content, 'start1 end1X');
+    chai.assert.equal(childAdapter2.content, 'start2X end2');
 
     await promise;
   });

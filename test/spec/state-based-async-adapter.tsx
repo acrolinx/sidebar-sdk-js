@@ -18,7 +18,6 @@ import { act } from 'react-dom/test-utils';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import App from './adapter-test-setups/draftjs-editor/draftApp';
-import { assert } from 'chai';
 import { getMatchesWithReplacement } from '../utils/test-utils';
 import { AsyncContentEditableAdapter } from '../../src/adapters/AsyncContentEditableAdapter';
 import { isSuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
@@ -57,45 +56,45 @@ describe('state-based-editors-async-adapters', function () {
 
   it('check content', async () => {
     const content = adapter.getContent();
-    assert.isTrue(content.includes('test'));
+    chai.assert.isTrue(content.includes('test'));
   });
 
   it('select ranges', async () => {
     const extractionResult = await adapter.extractContentForCheck({});
     if (isSuccessfulContentExtractionResult(extractionResult)) {
-      assert.isTrue(extractionResult.content.includes('test'));
+      chai.assert.isTrue(extractionResult.content.includes('test'));
       registerCheckResult(extractionResult.content);
       const selected = 'test';
       await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected, ''));
       await waitMs(0);
-      assert.equal(window.getSelection()?.toString(), selected);
+      chai.assert.equal(window.getSelection()?.toString(), selected);
     } else {
-      assert('Extraction failed');
+      chai.assert.fail('Extraction failed');
     }
   });
 
   it('select ranges sequentially', async () => {
     const extractionResult = await adapter.extractContentForCheck({});
     if (isSuccessfulContentExtractionResult(extractionResult)) {
-      assert.isTrue(extractionResult.content.includes('test'));
+      chai.assert.isTrue(extractionResult.content.includes('test'));
       registerCheckResult(extractionResult.content);
 
       const selected = 'test';
       await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected, ''));
       await waitMs(0);
-      assert.equal(window.getSelection()?.toString(), selected);
+      chai.assert.equal(window.getSelection()?.toString(), selected);
 
       const selected2 = 'This';
       await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected2, ''));
       await waitMs(0);
-      assert.equal(window.getSelection()?.toString(), selected2);
+      chai.assert.equal(window.getSelection()?.toString(), selected2);
 
       const selected3 = 'conteent';
       await adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(extractionResult.content, selected3, ''));
       await waitMs(0);
-      assert.equal(window.getSelection()?.toString(), selected3);
+      chai.assert.equal(window.getSelection()?.toString(), selected3);
     } else {
-      assert('Extraction of content failed');
+      chai.assert.fail('Extraction of content failed');
     }
   });
 
@@ -106,7 +105,7 @@ describe('state-based-editors-async-adapters', function () {
     editable.addEventListener('input', () => inputEventCount++);
     const extractionResult = await adapter.extractContentForCheck({});
     if (isSuccessfulContentExtractionResult(extractionResult)) {
-      assert.isTrue(extractionResult.content.includes('test'));
+      chai.assert.isTrue(extractionResult.content.includes('test'));
       registerCheckResult(extractionResult.content);
       const selected = 'test';
       const replacement = 'test2';
@@ -116,11 +115,11 @@ describe('state-based-editors-async-adapters', function () {
       );
       await waitMs(0);
       const selection = window.getSelection()?.toString();
-      assert.equal(selection, replacement);
-      assert.equal(beforeInputEventCount, 1);
-      assert.equal(inputEventCount, 1);
+      chai.assert.equal(selection, replacement);
+      chai.assert.equal(beforeInputEventCount, 1);
+      chai.assert.equal(inputEventCount, 1);
     } else {
-      assert('Replacement failed');
+      chai.assert.fail('Replacement failed');
     }
   });
 });

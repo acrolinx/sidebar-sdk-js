@@ -39,8 +39,6 @@ import { QuillContentEditableTestSetup } from './adapter-test-setups/quill';
 import { TinyMCETestSetup } from './adapter-test-setups/tinymce';
 import { CodeMirror6TestSetup } from './adapter-test-setups/codemirror6';
 
-const assert = chai.assert;
-
 describe('adapter test', function () {
   const NON_BREAKING_SPACE = '\u00a0';
 
@@ -95,7 +93,7 @@ describe('adapter test', function () {
             done();
           })
           .catch((res) => {
-            assert.fail('Before each hook failed. ' + res);
+            chai.assert.fail('Before each hook failed. ' + res);
             done();
           });
       });
@@ -115,18 +113,18 @@ describe('adapter test', function () {
 
       function assertEditorRawContent(expectedContent: string) {
         const editorContent = (adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult).content;
-        assert.equal(editorContent, expectedContent);
+        chai.assert.equal(editorContent, expectedContent);
       }
 
       function assertEditorText(expectedText: string) {
         const editorContent = (adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult).content;
         if (adapterSpec.inputFormat === 'TEXT') {
-          assert.equal(editorContent, expectedText);
+          chai.assert.equal(editorContent, expectedText);
         } else {
           const actualText = $('<div>' + editorContent + '</div>')
             .text()
             .replace('\n', '');
-          assert.equal(actualText, expectedText);
+            chai.assert.equal(actualText, expectedText);
         }
       }
 
@@ -635,7 +633,7 @@ describe('adapter test', function () {
                 { content: '?', range: [7, 8], replacement: '' },
               ];
               adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-              assert.equal(normalizeResultHtml(adapter.getContent!({})), '<p>a b?</p><p>c</p>');
+              chai.assert.equal(normalizeResultHtml(adapter.getContent!({})), '<p>a b?</p><p>c</p>');
               done();
             });
           });
@@ -648,7 +646,7 @@ describe('adapter test', function () {
                 { content: '?', range: [9, 10], replacement: '' },
               ];
               adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-              assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
+              chai.assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
               done();
             });
           });
@@ -662,7 +660,7 @@ describe('adapter test', function () {
               { content: '.', range: [24, 25], replacement: '' },
             ];
             adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-            assert.equal(normalizeResultHtml(adapter.getContent!({})), '<p><strong>a b.</strong></p>');
+            chai.assert.equal(normalizeResultHtml(adapter.getContent!({})), '<p><strong>a b.</strong></p>');
             done();
           });
         });
@@ -672,7 +670,7 @@ describe('adapter test', function () {
         givenAText('wordOne wordTwo wordThree', (html) => {
           const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
           setEditorContent('wordOne wordXTwo wordThree', () => {
-            assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
+            chai.assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
             done();
           });
         });
@@ -682,7 +680,7 @@ describe('adapter test', function () {
         givenAText('wordOne wordTwo wordThree', (html) => {
           const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo', 'replacement');
           setEditorContent('wordOne wordXTwo wordThree', () => {
-            assert.throws(() => adapter.replaceRanges(dummyCheckId, matchesWithReplacement));
+            chai.assert.throws(() => adapter.replaceRanges(dummyCheckId, matchesWithReplacement));
             done();
           });
         });
@@ -694,7 +692,7 @@ describe('adapter test', function () {
           givenAText(completeContent, (html) => {
             const matchesWithReplacement = getMatchesWithReplacement(html, 'wordOne');
             $('#editorId').remove();
-            assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
+            chai.assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
             done();
           });
         });
@@ -704,7 +702,7 @@ describe('adapter test', function () {
           givenAText(completeContent, (html) => {
             const matchesWithReplacement = getMatchesWithReplacement(html, 'wordTwo');
             $('#editorId').hide();
-            assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
+            chai.assert.throws(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement));
             done();
           });
         });
@@ -728,7 +726,7 @@ describe('adapter test', function () {
               checkSelection: true,
             }) as SuccessfulContentExtractionResult;
             const selectedRanges = result.selection!.ranges;
-            assert.equal(selectedRanges.length, 1, 'One range is selected for checking');
+            chai.assert.equal(selectedRanges.length, 1, 'One range is selected for checking');
             assertDeepEqual(selectedRanges[0], matchesWithReplacement[0].range);
             done();
           });
@@ -765,14 +763,14 @@ describe('adapter test', function () {
           // TODO: Investigate why we need replaceRanges instead of selectRanges in IE11 (TinyMCEAdapter.scrollToCurrentSelection ?)
           // in order to select.
           adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-          assert.equal(adapterSpec.getSelectedText(), SELECTED_TEXT);
+          chai.assert.equal(adapterSpec.getSelectedText(), SELECTED_TEXT);
 
           // If we now extract content for checkSelection, the selection should be what we have set before.
           const result = adapter.extractContentForCheck({ checkSelection: true }) as SuccessfulContentExtractionResult;
           const selectedRanges = result.selection!.ranges;
-          assert.equal(selectedRanges.length, 1, 'One range is selected for checking');
+          chai.assert.equal(selectedRanges.length, 1, 'One range is selected for checking');
           assertDeepEqual(selectedRanges[0], matchesWithReplacement[0].range);
-          assert.equal(result.content.slice(selectedRanges[0][0], selectedRanges[0][1]), SELECTED_TEXT);
+          chai.assert.equal(result.content.slice(selectedRanges[0][0], selectedRanges[0][1]), SELECTED_TEXT);
         });
       }
 
@@ -805,7 +803,7 @@ describe('adapter test', function () {
             // We wait because some editors (Quill) modify the document/selection after they recognize changes.
             // If we would not wait everything would seems fine, but it reality it would be broken.
             setTimeout(() => {
-              assert.equal(adapterSpec.getSelectedText(), 'selection');
+              chai.assert.equal(adapterSpec.getSelectedText(), 'selection');
               done();
             }, 100);
           });
@@ -823,14 +821,14 @@ describe('adapter test', function () {
             // We wait because some editors (Quill) modify the document/selection after they recognize changes.
             // If we would not wait everything would seems fine, but it reality it would be broken.
             setTimeout(() => {
-              assert.equal(adapterSpec.getSelectedText(), 'middle');
+              chai.assert.equal(adapterSpec.getSelectedText(), 'middle');
               const relativeTop = jQuery('p:contains("middle")').position().top;
               console.warn(relativeTop);
 
               if (isScrollIntoViewCenteredAvailable()) {
-                assert.approximately(relativeTop, EDITOR_HEIGHT / 2, 30, 'position should be vertically centered');
+                chai.assert.approximately(relativeTop, EDITOR_HEIGHT / 2, 30, 'position should be vertically centered');
               } else {
-                assert.approximately(relativeTop, 10, 10, 'position should be at top');
+                chai.assert.approximately(relativeTop, 10, 10, 'position should be at top');
               }
               done();
             }, 100);
@@ -857,7 +855,7 @@ describe('adapter test', function () {
           givenATextWithoutCheckResult(completeNewContent, (_initialExtractedContent) => {
             adapter.selectRanges(dummyCheckId, matchesWithReplacementOfFirstCheck);
             const selectedText = adapterSpec.getSelectedText();
-            assert.equal(selectedText, 'selection');
+            chai.assert.equal(selectedText, 'selection');
             done();
           });
         });

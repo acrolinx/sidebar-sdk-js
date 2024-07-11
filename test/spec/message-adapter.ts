@@ -20,8 +20,6 @@ import { InternalAcrolinxSidebarPluginInterface } from '../../src/acrolinx-plugi
 import { connectAcrolinxPluginToMessages, createPluginMessageAdapter } from '../../src/message-adapter/message-adapter';
 import { addIFrame, removeEl, waitMs } from '../utils/test-utils';
 
-const assert = chai.assert;
-
 describe('message-adapter', function () {
   const mockedAcrolinxPlugin = mock<InternalAcrolinxSidebarPluginInterface>();
   const acrolinxPlugin = instance(mockedAcrolinxPlugin);
@@ -113,11 +111,11 @@ describe('message-adapter', function () {
 
     it('sidebar should receive messages', async () => {
       const check = sidebarProxy.checkGlobal('text', {});
-      assert.isString(check.checkId);
+      chai.assert.isString(check.checkId);
       await waitMs(1);
 
       const checkGlobalArgs = (sidebarIFrameElement.contentWindow as any).checkGlobalArgs;
-      assert.deepEqual(checkGlobalArgs, ['text', {}]);
+      chai.assert.deepEqual(checkGlobalArgs, ['text', {}]);
     });
   });
 });
