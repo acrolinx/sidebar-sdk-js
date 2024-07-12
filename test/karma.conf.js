@@ -60,8 +60,8 @@ module.exports = function (config) {
     files: [
       'node_modules/quill/dist/quill.snow.css',
       'node_modules/jquery/dist/jquery.js',
-      'node_modules/ckeditor/ckeditor.js',
-      {pattern: 'node_modules/ckeditor/**/*', included: false},
+      'node_modules/ckeditor4/ckeditor.js',
+      {pattern: 'node_modules/ckeditor4/**/*', included: false},
       'node_modules/tinymce/tinymce.js',
       {pattern: 'node_modules/tinymce/**/*', included: false},
       {pattern: 'test/dummy-sidebar/**/*', included: false},
