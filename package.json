@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@acrolinx/sidebar-interface": "^15.4.2",
-    "@ckeditor/ckeditor5-build-inline": "^40.2.0",
+    "@ckeditor/ckeditor5-build-inline": "^42.0.1",
     "@ckeditor/ckeditor5-core": "^40.2.0",
     "@ckeditor/ckeditor5-source-editing": "^40.2.0",
     "@types/chai": "^4.3.11",
