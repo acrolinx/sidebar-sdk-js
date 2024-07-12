@@ -15,6 +15,9 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "@acrolinx/sidebar-startpage": "^3.4.1",
     "@types/ckeditor": "^4.9.10",
