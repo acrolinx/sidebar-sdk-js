@@ -96,7 +96,6 @@
     "testKarmaChrome": "karma start test/karma.conf.js --browsers Chrome",
     "testKarmaChromeHeadless": "karma start test/karma.conf.js --browsers ChromeHeadless",
     "testKarmaBs": "karma start test/karma.conf.js --browsers bs_edge_win,bs_chrome_win,bs_firefox_win,bs_safari_macos",
-    "testKarmaBsJenkins": "karma start test/karma.conf.js --browsers bs_edge_win,bs_chrome_win,bs_firefox_win",
     "tsc": "tsc",
     "tscWatch": "tsc -w",
     "lint": "eslint .",
