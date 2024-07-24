@@ -56,7 +56,7 @@
     "eslint": "^9.7.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-sonarjs": "^1.0.3",
+    "eslint-plugin-sonarjs": "^1.0.4",
     "istanbul": "^0.4.5",
     "jquery": "^3.7.1",
     "jsverify": "^0.8.4",
