@@ -60,7 +60,7 @@
     "istanbul": "^0.4.5",
     "jquery": "^3.7.1",
     "jsverify": "^0.8.4",
-    "karma": "^6.4.2",
+    "karma": "^6.4.4",
     "karma-browserify": "^8.1.0",
     "karma-browserstack-launcher": "^1.6.0",
     "karma-chai": "^0.1.0",
