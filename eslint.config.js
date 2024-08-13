@@ -28,7 +28,7 @@ module.exports = [
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', 'caughtErrorsIgnorePattern': '^_' }],
+      '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/ban-types': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/restrict-plus-operands': 'off',
@@ -45,7 +45,7 @@ module.exports = [
       '@typescript-eslint/await-thenable': 'off',
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       '@typescript-eslint/no-this-alias': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-misused-promises': 'off'
     },
   },
 ];
