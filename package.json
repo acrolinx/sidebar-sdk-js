@@ -43,7 +43,7 @@
     "@types/quill": "^2.0.14",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^8.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^8.8.1",
     "browserify": "^17.0.1",
     "browserify-istanbul": "^3.0.1",
