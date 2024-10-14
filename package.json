@@ -42,7 +42,7 @@
     "@types/mocha": "^10.0.9",
     "@types/quill": "^2.0.14",
     "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.2.18",
+    "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.5.0",
     "@typescript-eslint/parser": "^8.8.1",
     "browserify": "^17.0.1",
