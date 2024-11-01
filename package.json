@@ -28,7 +28,7 @@
     "entities": "^5.0.0",
     "es6-promise": "^4.2.8",
     "lodash": "^4.17.21",
-    "tslib": "^2.8.0"
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@acrolinx/sidebar-interface": "^15.4.3",
