@@ -29,7 +29,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Setup SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@v3
+        uses: sonarsource/sonarcloud-github-action@v4
         with:
           args: -Dsonar.organization=acrolinx
         env:
