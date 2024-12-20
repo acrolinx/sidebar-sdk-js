@@ -19,7 +19,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@acrolinx/sidebar-startpage": "^4.0.1-beta.3",
+    "@acrolinx/sidebar-startpage": "^4.0.1",
     "@types/ckeditor": "^4.9.10",
     "@types/codemirror": "^0.0.106",
     "@types/diff-match-patch": "^1.0.36",
