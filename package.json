@@ -53,7 +53,7 @@
     "codemirror6": "npm:codemirror@^6.0.1",
     "draft-js": "^0.11.7",
     "dts-bundle": "^0.7.3",
-    "eslint": "^9.17.0",
+    "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "eslint-plugin-sonarjs": "^3.0.1",
