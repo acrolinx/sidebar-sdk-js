@@ -77,7 +77,7 @@
     "tinymce": "^7.6.1",
     "ts-loader": "^9.5.2",
     "ts-mockito": "^2.6.1",
-    "typedoc": "^0.27.6",
+    "typedoc": "^0.27.7",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.23.0",
     "uglify-js": "^3.19.3",
