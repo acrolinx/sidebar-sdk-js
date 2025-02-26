@@ -1,6 +1,6 @@
 # Acrolinx Sidebar SDK JS
 
-[![Continuous Integration Sidebar SDK JS](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml/badge.svg)](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/main.yml)
+[![Continuous Integration Sidebar SDK JS](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/build.yml/badge.svg)](https://github.com/acrolinx/sidebar-sdk-js/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=acrolinx_sidebar-sdk-js&metric=alert_status)](https://sonarcloud.io/dashboard?id=acrolinx_sidebar-sdk-js)
 
 This is a library for integrating the [Acrolinx](https://www.acrolinx.com/) Sidebar into a web application.
