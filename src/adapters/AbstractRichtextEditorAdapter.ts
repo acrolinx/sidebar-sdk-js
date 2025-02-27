@@ -204,13 +204,13 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
         const head = this.createRange(match.range[0], 1, textDomMapping);
         const completeRange = this.createRange(match.range[0], rangeLength, textDomMapping);
 
-        const { startOffset, endOffset } = completeRange;
         simulateInputEvent({
-          node: completeRange.startContainer,
+          startNode: completeRange.startContainer,
+          endNode: completeRange.endContainer,
           eventType: 'beforeinput',
           replacement: match.originalMatch.replacement,
-          startOffset,
-          endOffset,
+          startOffset: completeRange.startOffset,
+          endOffset: completeRange.endOffset,
           disableSimulation: this.config.disableInputEventSimulation,
         });
 
@@ -221,11 +221,12 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
         }
 
         simulateInputEvent({
-          node: completeRange.startContainer,
+          startNode: completeRange.startContainer,
+          endNode: completeRange.endContainer,
           eventType: 'input',
           replacement: match.originalMatch.replacement,
-          startOffset,
-          endOffset,
+          startOffset: completeRange.startOffset,
+          endOffset: completeRange.endOffset,
           disableSimulation: this.config.disableInputEventSimulation,
         });
 
@@ -236,13 +237,13 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
       } else {
         const range = this.createRange(match.range[0], rangeLength, textDomMapping);
 
-        const { startOffset, endOffset } = range;
         simulateInputEvent({
-          node: range.startContainer,
+          startNode: range.startContainer,
+          endNode: range.endContainer,
           eventType: 'beforeinput',
           replacement: match.originalMatch.replacement,
-          startOffset,
-          endOffset,
+          startOffset: range.startOffset,
+          endOffset: range.endOffset,
           disableSimulation: this.config.disableInputEventSimulation,
         });
 
@@ -252,11 +253,12 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
         }
 
         simulateInputEvent({
-          node: range.startContainer,
+          startNode: range.startContainer,
+          endNode: range.endContainer,
           eventType: 'input',
           replacement: match.originalMatch.replacement,
-          startOffset,
-          endOffset,
+          startOffset: range.startOffset,
+          endOffset: range.endOffset,
           disableSimulation: this.config.disableInputEventSimulation,
         });
 

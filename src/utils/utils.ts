@@ -47,7 +47,8 @@ export function isIFrame(el: Element): el is HTMLIFrameElement {
 }
 
 export type SimulateInputEventProps = {
-  node: Node;
+  startNode: Node;
+  endNode: Node;
   eventType: string;
   startOffset: number;
   endOffset: number;
@@ -56,14 +57,14 @@ export type SimulateInputEventProps = {
 };
 
 export function simulateInputEvent(props: SimulateInputEventProps) {
-  const { node, eventType, startOffset, endOffset, replacement, disableSimulation } = props;
+  const { startNode: startNode, endNode: endNode, eventType, startOffset, endOffset, replacement, disableSimulation } = props;
   if (disableSimulation) {
     return;
   }
   const staticRange: StaticRange = new StaticRange({
-    startContainer: node,
+    startContainer: startNode,
     startOffset,
-    endContainer: node,
+    endContainer: endNode,
     endOffset,
   });
 
@@ -75,7 +76,7 @@ export function simulateInputEvent(props: SimulateInputEventProps) {
     targetRanges: [staticRange],
   };
 
-  node.dispatchEvent(new InputEvent(eventType, eventOptions));
+  startNode.dispatchEvent(new InputEvent(eventType, eventOptions));
 }
 
 export function parseUrl(href: string) {
