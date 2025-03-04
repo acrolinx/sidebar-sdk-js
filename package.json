@@ -79,7 +79,7 @@
     "ts-mockito": "^2.6.1",
     "typedoc": "^0.27.9",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.25.0",
+    "typescript-eslint": "^8.26.0",
     "uglify-js": "^3.19.3",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1",
