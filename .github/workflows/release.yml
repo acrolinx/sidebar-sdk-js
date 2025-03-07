@@ -25,12 +25,6 @@ jobs:
           npm run build
           npm run buildDoc
 
-      - name: Archive artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/**/*
-
       - name: Publish to NPM
         id: publish
         uses: JS-DevTools/npm-publish@v3
