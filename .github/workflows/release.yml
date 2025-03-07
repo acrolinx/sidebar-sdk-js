@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Run build
+        run: |
+          npm ci
+          npm run build
+          npm run buildDoc
+
+      - name: Publish to NPM
+        id: publish
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_ACCESS_TOKEN }}
+
+      - name: Push tag
+        uses: anothrNick/github-tag-action@v1
+        if: steps.publish.outputs.type
+        env:
+          CUSTOM_TAG: v${{ steps.publish.outputs.version }}
+
+      - name: Publish GitHub pages
+        if: steps.publish.outputs.type
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: docs

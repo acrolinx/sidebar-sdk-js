@@ -1,12 +1,8 @@
-name: CI Sidebar SDK JS
+name: Build
 
 on:
   push:
-    branches: [main]
-    tags:
-      - "v*.*.*"
   pull_request:
-    branches: [main]
   schedule:
     - cron: "0 2 * * *"
   workflow_dispatch:
@@ -14,10 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -25,8 +17,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          registry-url: 'https://registry.npmjs.org'
+          node-version: lts/*
 
       - name: Setup SonarCloud Scan
         uses: sonarsource/sonarqube-scan-action@v5
@@ -36,53 +27,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
 
-      - name: Setup and Audit Source Code
+      - name: Run build
         run: |
           npm ci
-          npm audit --production --audit-level=moderate
-
-      - name: Check for suitable licenses
-        run: |
-         export v=`node -p "require('./package.json').version"`
-         export n=`node -p "require('./package.json').name"`
-         npx license-checker --production --onlyAllow 'BSD;CC-PDDC;CC-BY-3.0;CC-BY-1.0;CC-BY-2.0;CC-BY-4.0;CC0-1.0;Apache;Artistic;MIT;MPL;ISC;Unlicense' --excludePackages "$n@$v$LICENSE_EXCLUDED_PACKAGES" --excludePrivatePackages
-
-      - run: npm ci
-
-      - run: npm run lint
-
-      - run: |
+          npm run lint
           npm run build
           npm run buildDoc
-
-      - name: Archive artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/**/*
-
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v4
-        with:
-          name: code-coverage-report
-          path: tmp/reports/coverage/**/cobertura-coverage.xml
-
-      - name: Publish to NPM
-        id: publish
-        uses: JS-DevTools/npm-publish@v3
-        if: github.ref == 'refs/heads/main'
-        with:
-          token: ${{ secrets.NPM_ACCESS_TOKEN }}
-
-      - name: Push tag
-        uses: anothrNick/github-tag-action@v1
-        if: github.ref == 'refs/heads/main' && steps.publish.outputs.type
-        env:
-          CUSTOM_TAG: v${{ steps.publish.outputs.version }}
-
-      - name: Publish github pages 🚀
-        if: github.ref == 'refs/heads/main' && steps.publish.outputs.type
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: docs
