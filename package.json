@@ -16,7 +16,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
     "@acrolinx/sidebar-startpage": "^4.0.2",
