@@ -1,22 +1,24 @@
-# WebStorm settings
-.idea
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-bower_components
 node_modules
+dist
+dist-ssr
+*.local
 
-npm-debug.log
-
-.tscache
-
-tmp
-.private
-
-**/.baseDir.ts
-/dist/
-/docs/pluginDoc
-
-coverage
-
-# Eclipse
-.project
-.settings
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

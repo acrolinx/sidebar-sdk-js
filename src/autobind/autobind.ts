@@ -1,25 +1,9 @@
-/*
- * Copyright 2016-present Acrolinx GmbH
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import _ from 'lodash';
-import { AdapterConf, AdapterInterface, CommonAdapterConf } from '../adapters/AdapterInterface';
-import { AsyncContentEditableAdapter, isStateBasedEditor } from '../adapters/AsyncContentEditableAdapter';
-import { ContentEditableAdapter } from '../adapters/ContentEditableAdapter';
-import { InputAdapter } from '../adapters/InputAdapter';
-import { isQuip, QuipAdapter } from '../adapters/QuipAdapter';
+import { AdapterConf, AdapterInterface, CommonAdapterConf } from '../adapters/adapter-interface';
+import { AsyncContentEditableAdapter, isStateBasedEditor } from '../adapters/async-content-editable-adapter';
+import { ContentEditableAdapter } from '../adapters/content-editable-adapter';
+import { InputAdapter } from '../adapters/input-adapter';
+import { isQuip, QuipAdapter } from '../adapters/quip-adapter';
 import { assign, isIFrame } from '../utils/utils';
 
 // Exported only for testing
@@ -71,6 +55,7 @@ function traverseIFrames(el: Element): Element[] {
   if (isIFrame(el)) {
     try {
       return el.contentDocument ? getEditableElements(el.contentDocument) : [];
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       // Caused by same origin policy problems.
       return [];
@@ -100,13 +85,16 @@ function traverseShadowRoots(doc: Document | ShadowRoot | HTMLElement): Element[
 
 // Exported mainly for testing
 export function getEditableElements(doc: Document | ShadowRoot | HTMLElement = document): Element[] {
-  return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
+  const temp = doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR);
+  const value = _(temp)
     .union(traverseShadowRoots(doc))
     .flatMap(traverseIFrames)
     .reject(
       (el) => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el) || isProbablyUndesiredField(el),
     )
     .value();
+
+  return value;
 }
 
 export interface AutobindConfig extends CommonAdapterConf {
