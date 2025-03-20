@@ -1,21 +1,6 @@
-/*
- * Copyright 2016-present Acrolinx GmbH
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import * as _ from 'lodash';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function logTime(text: string, f: Function) {
   const startTime = Date.now();
   const result = f();
@@ -23,23 +8,12 @@ export function logTime(text: string, f: Function) {
   return result;
 }
 
-export function fetch(url: string, callback: (s: string) => void) {
-  const request = new XMLHttpRequest();
-  request.open('GET', url, true);
-
-  request.onload = function () {
-    if (request.status >= 200 && request.status < 400) {
-      callback(request.responseText);
-    } else {
-      throw new Error(`Error while loading ${url}.`);
-    }
-  };
-
-  request.onerror = function () {
-    throw new Error(`Error while loading ${url}.`);
-  };
-
-  request.send();
+export async function internalFetch(url: string): Promise<string> {
+  const response = await fetch(url);
+  if (response.status >= 200 && response.status < 400) {
+    return response.text();
+  }
+  throw new Error(`Error while loading ${url}.`);
 }
 
 export function isIFrame(el: Element): el is HTMLIFrameElement {
@@ -57,7 +31,15 @@ export type SimulateInputEventProps = {
 };
 
 export function simulateInputEvent(props: SimulateInputEventProps) {
-  const { startNode: startNode, endNode: endNode, eventType, startOffset, endOffset, replacement, disableSimulation } = props;
+  const {
+    startNode: startNode,
+    endNode: endNode,
+    eventType,
+    startOffset,
+    endOffset,
+    replacement,
+    disableSimulation,
+  } = props;
   if (disableSimulation) {
     return;
   }
@@ -84,6 +66,7 @@ export function parseUrl(href: string) {
   aElement.href = href;
   if (aElement.host === '') {
     // IE workaround.
+    // eslint-disable-next-line no-self-assign
     aElement.href = aElement.href;
   }
   const { protocol, host, hostname, port, pathname, hash } = aElement;
@@ -103,6 +86,7 @@ export function assign<T, U>(obj: T, update: U): T & U {
   return _.assign({}, obj, update) as T & U;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function deepFreeze(o: any) {
   Object.freeze(o);
 

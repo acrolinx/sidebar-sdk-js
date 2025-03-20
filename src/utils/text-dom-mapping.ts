@@ -1,19 +1,3 @@
-/*
- * Copyright 2016-present Acrolinx GmbH
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import * as _ from 'lodash';
 import { toSet, deepFreezed } from './utils';
 import { NEW_LINE_TAGS } from './text-extraction';
@@ -60,7 +44,7 @@ export function extractTextDomMapping(node: Node): TextDomMapping {
   return concatTextMappings(
     _.map(node.childNodes, (child: Node) => {
       switch (child.nodeType) {
-        case Node.ELEMENT_NODE:
+        case Node.ELEMENT_NODE: {
           const nodeName = child.nodeName;
           if (IGNORED_NODE_NAMES[nodeName]) {
             return EMPTY_TEXT_DOM_MAPPING;
@@ -77,7 +61,8 @@ export function extractTextDomMapping(node: Node): TextDomMapping {
             };
           }
           return childMappings;
-        case Node.TEXT_NODE:
+        }
+        case Node.TEXT_NODE: {
           const textContent = child.textContent;
           if (textContent) {
             return textMapping(
@@ -87,6 +72,7 @@ export function extractTextDomMapping(node: Node): TextDomMapping {
           } else {
             return EMPTY_TEXT_DOM_MAPPING;
           }
+        }
         default:
           return EMPTY_TEXT_DOM_MAPPING;
       }
