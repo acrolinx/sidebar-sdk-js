@@ -1,19 +1,3 @@
-/*
- * Copyright 2016-present Acrolinx GmbH
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 function getRootElement(doc: Document): HTMLElement {
   return doc.documentElement || doc.body.parentNode || doc.body;
 }
@@ -83,6 +67,7 @@ export function scrollIntoViewCenteredIfPossible(targetEl: HTMLElement): boolean
     // Try if scrollIntoViewOptions are supported.
     targetEl.scrollIntoView({ block: 'center' });
     return true;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     // According to https://stackoverflow.com/questions/46919627/is-it-possible-to-test-for-scrollintoview-browser-compatibility
     // it might still fail in strange browsers like "WaterFox".
