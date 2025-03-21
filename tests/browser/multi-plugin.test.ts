@@ -256,7 +256,7 @@ describe('multi plugin', () => {
         },
       });
 
-      waitForCheck(() => {
+      await waitForCheck(() => {
         expect(lastDocumentContent).toBe(
           '<h1 class="class" data-boolean="false" data-more="&quot;&lt;tag&gt;&quot;" id="acrolinx_integration0">Initial text of ContentEditableAdapter.</h1>' +
             '<div id="acrolinx_integration1">&lt;Initial text of InputAdapter.</div>',
@@ -276,7 +276,7 @@ describe('multi plugin', () => {
         },
       });
 
-      waitForCheck(() => {
+      await waitForCheck(() => {
         const expectedBegin = '<!DOCTYPE html>\n<root>';
         expect(lastDocumentContent.substr(0, expectedBegin.length)).toBe(expectedBegin);
         expect(_.endsWith(lastDocumentContent, '</root>')).toBe(true);
@@ -295,7 +295,7 @@ describe('multi plugin', () => {
         },
       });
 
-      waitForCheck(() => {
+      await waitForCheck(() => {
         expect(lastDocumentContent).toBe('<div id="acrolinx_integration0">&lt;Initial text of InputAdapter.</div>');
       });
     });
