@@ -2,6 +2,7 @@ import { defineWorkspace } from 'vitest/config';
 
 export default defineWorkspace([
   {
+    extends: './vitest.config.ts',
     test: {
       include: ['tests/unit/**/*.{test,spec}.ts', 'tests/**/*.unit.{test,spec}.ts'],
       name: 'unit',
@@ -10,6 +11,7 @@ export default defineWorkspace([
     },
   },
   {
+    extends: './vitest.config.ts',
     test: {
       include: ['tests/browser/**/*.{test,spec}.ts', 'tests/**/*.browser.{test,spec}.ts'],
       name: 'browser',
