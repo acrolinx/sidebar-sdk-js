@@ -9,6 +9,7 @@ export default defineConfig({
       entry: './src/acrolinx-plugin.ts',
       name: 'acrolinx-sidebar-sdk',
       fileName: 'acrolinx-sidebar-sdk',
+      formats: ['es', 'cjs', 'umd'],
     },
   },
   test: {
