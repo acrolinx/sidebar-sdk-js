@@ -94,14 +94,14 @@ describe('autobind', () => {
           executed = true;
           const adapters = bindAdaptersForCurrentPage();
           expect(adapters.length).toBe(2);
-    
+
           const adaptersContent = adapters.map((a) => a.getContent!({}));
           expect(adaptersContent[0]).toEqual('input 1 content');
           expect(adaptersContent[1]).toEqual('input 2 content');
           resolve();
         }
       };
-    
+
       if (iframe) {
         iframe.dispatchEvent(loadEvent);
         onLoadedOnce();
@@ -315,7 +315,7 @@ describe('getEditableElements performance with no shadow dom', () => {
 
   function traverseShadowRootSlow(doc: Document | ShadowRoot | HTMLElement): Element[] {
     return Array.from(doc.querySelectorAll('*')).flatMap((el) =>
-      el.shadowRoot ? getEditableElementsSlow(el.shadowRoot) : []
+      el.shadowRoot ? getEditableElementsSlow(el.shadowRoot) : [],
     );
   }
 

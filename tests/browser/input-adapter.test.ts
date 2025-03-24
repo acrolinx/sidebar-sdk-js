@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { expect, describe, beforeEach, afterEach, it } from 'vitest';
 import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/adapter-interface';
-import {
-  assertEditorText,
-  givenAText,
-  givenATextWithoutCheckResult,
-  htmlStringToElements,
-} from './utils/util';
+import { assertEditorText, givenAText, givenATextWithoutCheckResult, htmlStringToElements } from './utils/util';
 import { isChrome } from '../../src/utils/detect-browser';
 import { AbstractRichtextEditorAdapter } from '../../src/adapters/abstract-rich-text-editor-adapter';
 import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused } from './utils/test-utils';
