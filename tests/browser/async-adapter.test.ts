@@ -10,7 +10,6 @@ import {
   Check,
   CheckedDocumentRange,
 } from '@acrolinx/sidebar-interface';
-import _ from 'lodash';
 import { describe, afterEach, beforeEach, it, assert, expect } from 'vitest';
 import { ContentEditableAdapter } from '../../src/adapters/content-editable-adapter';
 import { getDummySidebarPath, getMatchesWithReplacement, waitMs } from './utils/test-utils';
@@ -114,7 +113,7 @@ describe('async adapter', function () {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {},
 
-      showMessage: _.noop,
+      showMessage: () => {},
     };
   }
 

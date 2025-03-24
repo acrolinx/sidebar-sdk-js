@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { describe, expect, it } from 'vitest';
 import { findNewIndex } from '../../src/utils/alignment';
 import { escapeHtmlCharacters } from '../../src/utils/escaping';
@@ -103,16 +102,6 @@ describe('escapeHtmlCharacters', function () {
         fc.property(fc.string(), (text: string) => {
           const textWithNeedles = text.replace(/(.)/g, '$1!');
           return assertBackwardMappingIsCorrect(textWithNeedles);
-        }),
-        FAST_CHECK_OPTS,
-      );
-    });
-
-    // TODO lodash escape not identical for "`"
-    it.skip('escapedText is identical result of _.escape', () => {
-      fc.assert(
-        fc.property(fc.string(), (text: string) => {
-          return _.escape(text) === escapeHtmlCharacters(text).escapedText;
         }),
         FAST_CHECK_OPTS,
       );

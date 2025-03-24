@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { describe, beforeEach, afterEach, it, expect, beforeAll } from 'vitest';
 import { hasError, SuccessfulContentExtractionResult } from '../../src/adapters/adapter-interface';
 import { AutoBindAdapter } from '../../src/adapters/autobind-adapter';
@@ -89,16 +88,20 @@ describe('autobind', () => {
     const loadEvent = new Event('load');
 
     await new Promise<void>((resolve) => {
-      const onLoadedOnce = _.once(() => {
-        const adapters = bindAdaptersForCurrentPage();
-        expect(adapters.length).toBe(2);
-
-        const adaptersContent = adapters.map((a) => a.getContent!({}));
-        expect(adaptersContent[0]).toEqual('input 1 content');
-        expect(adaptersContent[1]).toEqual('input 2 content');
-        resolve();
-      });
-
+      let executed = false;
+      const onLoadedOnce = () => {
+        if (!executed) {
+          executed = true;
+          const adapters = bindAdaptersForCurrentPage();
+          expect(adapters.length).toBe(2);
+    
+          const adaptersContent = adapters.map((a) => a.getContent!({}));
+          expect(adaptersContent[0]).toEqual('input 1 content');
+          expect(adaptersContent[1]).toEqual('input 2 content');
+          resolve();
+        }
+      };
+    
       if (iframe) {
         iframe.dispatchEvent(loadEvent);
         onLoadedOnce();
@@ -311,11 +314,15 @@ describe('getEditableElements performance with no shadow dom', () => {
   }
 
   function traverseShadowRootSlow(doc: Document | ShadowRoot | HTMLElement): Element[] {
-    return _.flatMap(doc.querySelectorAll('*'), (el) => (el.shadowRoot ? getEditableElementsSlow(el.shadowRoot) : []));
+    return Array.from(doc.querySelectorAll('*')).flatMap((el) =>
+      el.shadowRoot ? getEditableElementsSlow(el.shadowRoot) : []
+    );
   }
 
   function getEditableElementsSlow(doc: Document | ShadowRoot | HTMLElement = document): Element[] {
-    return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR)).union(traverseShadowRootSlow(doc)).value();
+    const elements = Array.from(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR));
+    const shadowRootElements = traverseShadowRootSlow(doc);
+    return [...new Set([...elements, ...shadowRootElements])];
   }
 
   it('test-test: big tree is big', () => {
