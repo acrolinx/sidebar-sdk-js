@@ -288,15 +288,13 @@ describe('Input Adapter', () => {
     });
   });
 
-  if (adapterSpec.inputFormat === 'TEXT') {
-    it('Replace text inside tags', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne <part1 part2 part3/> wordThree', (text) => {
-        const replacement = 'replacement';
-        adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'part3', replacement));
-        assertEditorText(adapterSpec, adapter, `wordOne <part1 part2 ${replacement}/> wordThree`);
-      });
+  it('Replace text inside tags', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne <part1 part2 part3/> wordThree', (text) => {
+      const replacement = 'replacement';
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'part3', replacement));
+      assertEditorText(adapterSpec, adapter, `wordOne <part1 part2 ${replacement}/> wordThree`);
     });
-  }
+  });
 
   it('Replace word containing entity', () => {
     if (adapterSpec.inputFormat === 'HTML') {
