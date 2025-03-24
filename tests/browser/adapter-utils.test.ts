@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { getAutobindWrapperAttributes } from '../../src/utils/adapter-utils';
 
@@ -62,9 +61,7 @@ describe('escapeHtmlCharacters', () => {
 });
 
 function createElementWithAttributes(tag: string, attributes: { [key: string]: string }) {
-  const element = document.createElement(tag, {});
-  _.forEach(attributes, (value, key) => {
-    element.setAttribute(key, value);
-  });
+  const element = document.createElement(tag);
+  Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
   return element;
 }

@@ -2,7 +2,6 @@ import { Check, DocumentSelection, Match, MatchWithReplacement } from '@acrolinx
 import { lookupMatches } from '../../../src/lookup/diff-based';
 import { AlignedMatch } from '../../../src/utils/alignment';
 import { getCompleteFlagLength } from '../../../src/utils/match';
-import _ from 'lodash';
 import {
   AdapterInterface,
   ExtractContentForCheckOpts,
@@ -50,7 +49,7 @@ export class FakeAdapter implements AdapterInterface {
   selectMatches<T extends Match>(_checkId: string, matches: T[]): AlignedMatch<T>[] {
     const alignedMatches = lookupMatches(this.lastContentChecked!, this.content, matches, 'TEXT');
 
-    if (_.isEmpty(alignedMatches)) {
+    if (alignedMatches.length === 0) {
       throw Error('Selected flagged content is modified.');
     }
 
@@ -59,7 +58,7 @@ export class FakeAdapter implements AdapterInterface {
   }
 
   replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
-    const reversedMatches = _.clone(matches).reverse();
+    const reversedMatches = structuredClone(matches).reverse();
     let text = this.content;
     for (const match of reversedMatches) {
       text = text.slice(0, match.range[0]) + match.originalMatch.replacement + text.slice(match.range[1]);

@@ -11,7 +11,6 @@ import {
   CheckedDocumentRange,
   InitResult,
 } from '@acrolinx/sidebar-interface';
-import _, { assign } from 'lodash';
 import { describe, afterEach, beforeEach, it, expect } from 'vitest';
 import { AcrolinxPluginConfig } from '../../src/acrolinx-plugin-config';
 import * as acrolinxPluginModule from '../../src/acrolinx-plugin';
@@ -42,7 +41,7 @@ describe('multi plugin', () => {
   let acrolinxPlugin: acrolinxPluginModule.AcrolinxPlugin;
 
   afterEach(() => {
-    acrolinxPlugin.dispose(_.noop);
+    acrolinxPlugin.dispose(() => {});
     const element = document.getElementById('multiPluginTest');
     if (element) {
       element.remove();
@@ -77,12 +76,12 @@ describe('multi plugin', () => {
 
     body.appendChild(multiPluginTest);
 
-    const conf = assign(
+    const conf = Object.assign(
       {
         sidebarUrl: getDummySidebarPath(),
         sidebarContainerId: 'sidebarContainer',
       },
-      config,
+      config
     );
 
     acrolinxPlugin = new acrolinxPluginModule.AcrolinxPlugin(conf);
@@ -129,7 +128,7 @@ describe('multi plugin', () => {
 
       onVisibleRangesChanged(_checkedDocumentRanges: CheckedDocumentRange[]) {},
 
-      showMessage: _.noop,
+      showMessage: () => {},
     };
   };
 
@@ -279,7 +278,7 @@ describe('multi plugin', () => {
       await waitForCheck(() => {
         const expectedBegin = '<!DOCTYPE html>\n<root>';
         expect(lastDocumentContent.substr(0, expectedBegin.length)).toBe(expectedBegin);
-        expect(_.endsWith(lastDocumentContent, '</root>')).toBe(true);
+        expect(lastDocumentContent.endsWith('</root>')).toBe(true);
       });
     });
   });
