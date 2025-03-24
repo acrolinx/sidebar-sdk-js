@@ -73,23 +73,19 @@ describe('Content Editable Adapter', () => {
     });
   });
 
-  if (adapterSpec instanceof ContentEditableTestSetup) {
-    it('Replacements should trigger an input event', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
-        adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-        expect(adapterSpec.inputEventWasTriggered).toBeTruthy();
-      });
+  it('Replacements should trigger an input event', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+      expect(adapterSpec.inputEventWasTriggered).toBeTruthy();
     });
-  }
+  });
 
-  if (adapterSpec instanceof ContentEditableTestSetup) {
-    it('beforeinput and input events should be trigerred', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
-        adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-        expect(adapterSpec.beforeInputEventWasTriggered).toBeTruthy();
-      });
+  it('beforeinput and input events should be trigerred', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+      expect(adapterSpec.beforeInputEventWasTriggered).toBeTruthy();
     });
-  }
+  });
 
   it('Replace words in reverse order', () => {
     givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
@@ -313,64 +309,42 @@ describe('Content Editable Adapter', () => {
     });
   });
 
-  if (adapterSpec.inputFormat === 'TEXT') {
-    it('Replace text inside tags', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne <part1 part2 part3/> wordThree', (text) => {
-        const replacement = 'replacement';
-        adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'part3', replacement));
-        assertEditorText(adapterSpec, adapter, `wordOne <part1 part2 ${replacement}/> wordThree`);
-      });
-    });
-  }
-
   it('Replace word containing entity', () => {
-    if (adapterSpec.inputFormat === 'HTML') {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne D&amp;D wordThree', (html) => {
-        const replacement = 'Dungeons and Dragons';
-        const matchesWithReplacement = getMatchesWithReplacement(html, 'D&amp;D', replacement);
-        matchesWithReplacement[0].content = 'D&D';
-        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-        assertEditorText(adapterSpec, adapter, `wordOne ${replacement} wordThree`);
-      });
-    } else {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne D&amp;D wordThree', (text) => {
-        const replacement = 'Dungeons and Dragons';
-        const matchesWithReplacement = getMatchesWithReplacement(text, 'D&amp;D', replacement);
-        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-        assertEditorText(adapterSpec, adapter, `wordOne ${replacement} wordThree`);
-      });
-    }
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne D&amp;D wordThree', (html) => {
+      const replacement = 'Dungeons and Dragons';
+      const matchesWithReplacement = getMatchesWithReplacement(html, 'D&amp;D', replacement);
+      matchesWithReplacement[0].content = 'D&D';
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      assertEditorText(adapterSpec, adapter, `wordOne ${replacement} wordThree`);
+    });
   });
 
-  if (adapterSpec.inputFormat === 'HTML') {
-    it('Replace word before entity &nbsp;', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'Southh&nbsp;is warm.', (html) => {
-        const replacement = 'South';
-        const matchesWithReplacement = getMatchesWithReplacement(html, 'Southh', replacement);
-        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-        assertEditorText(adapterSpec, adapter, `${replacement}${NON_BREAKING_SPACE}is warm.`);
-      });
+  it('Replace word before entity &nbsp;', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'Southh&nbsp;is warm.', (html) => {
+      const replacement = 'South';
+      const matchesWithReplacement = getMatchesWithReplacement(html, 'Southh', replacement);
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      assertEditorText(adapterSpec, adapter, `${replacement}${NON_BREAKING_SPACE}is warm.`);
     });
+  });
 
-    it('Replace words containing entity &nbsp;', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'South&nbsp;is warm&nbsp;.', (html) => {
-        const replacement = 'South';
-        // Some editors wrap the html inside e.g. <p>
-        const offset = html.indexOf('South');
-        const matchesWithReplacement = [
-          { content: 'warm', range: [14 + offset, 18 + offset], replacement: 'warm.' },
-          { content: NON_BREAKING_SPACE, range: [18 + offset, 24 + offset], replacement: '' },
-          { content: '.', range: [24 + offset, 25 + offset], replacement: '' },
-        ] as MatchWithReplacement[];
-        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-        assertEditorText(adapterSpec, adapter, `${replacement}${NON_BREAKING_SPACE}is warm.`);
-      });
+  it('Replace words containing entity &nbsp;', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'South&nbsp;is warm&nbsp;.', (html) => {
+      const replacement = 'South';
+      // Some editors wrap the html inside e.g. <p>
+      const offset = html.indexOf('South');
+      const matchesWithReplacement = [
+        { content: 'warm', range: [14 + offset, 18 + offset], replacement: 'warm.' },
+        { content: NON_BREAKING_SPACE, range: [18 + offset, 24 + offset], replacement: '' },
+        { content: '.', range: [24 + offset, 25 + offset], replacement: '' },
+      ] as MatchWithReplacement[];
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      assertEditorText(adapterSpec, adapter, `${replacement}${NON_BREAKING_SPACE}is warm.`);
     });
-  }
+  });
 
   it('Replace same word in correct order', () => {
     givenAText(
@@ -419,40 +393,38 @@ describe('Content Editable Adapter', () => {
     });
   });
 
-  if (adapterSpec.inputFormat === 'HTML') {
-    it('Remove complete text content', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, '<p>a</p>', () => {
-        const matchesWithReplacement: MatchWithReplacement[] = [{ content: 'a', range: [3, 4], replacement: '' }];
-        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-        const normalizedResultHtml = normalizeResultHtml(adapter.getContent!({}));
-        assert.equal(normalizedResultHtml, '<p></p>');
-      });
+  it('Remove complete text content', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, '<p>a</p>', () => {
+      const matchesWithReplacement: MatchWithReplacement[] = [{ content: 'a', range: [3, 4], replacement: '' }];
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      const normalizedResultHtml = normalizeResultHtml(adapter.getContent!({}));
+      assert.equal(normalizedResultHtml, '<p></p>');
     });
+  });
 
-    it('Missing space within divs', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, '<div>a b ?</div><div>c</div>', () => {
-        const matchesWithReplacement: MatchWithReplacement[] = [
-          { content: 'b', range: [7, 8], replacement: 'b?' },
-          { content: ' ', range: [8, 9], replacement: '' },
-          { content: '?', range: [9, 10], replacement: '' },
-        ];
-        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-        assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
-      });
+  it('Missing space within divs', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, '<div>a b ?</div><div>c</div>', () => {
+      const matchesWithReplacement: MatchWithReplacement[] = [
+        { content: 'b', range: [7, 8], replacement: 'b?' },
+        { content: ' ', range: [8, 9], replacement: '' },
+        { content: '?', range: [9, 10], replacement: '' },
+      ];
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
     });
+  });
 
-    it('Replace partially tagged text', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, '<p><strong>a b</strong> .</p>', () => {
-        const matchesWithReplacement: MatchWithReplacement[] = [
-          { content: 'b', range: [13, 14], replacement: 'b.' },
-          { content: ' ', range: [23, 24], replacement: '' },
-          { content: '.', range: [24, 25], replacement: '' },
-        ];
-        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-        expect(normalizeResultHtml(adapter.getContent!({}))).toEqual('<p><strong>a b.</strong></p>');
-      });
+  it('Replace partially tagged text', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, '<p><strong>a b</strong> .</p>', () => {
+      const matchesWithReplacement: MatchWithReplacement[] = [
+        { content: 'b', range: [13, 14], replacement: 'b.' },
+        { content: ' ', range: [23, 24], replacement: '' },
+        { content: '.', range: [24, 25], replacement: '' },
+      ];
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      expect(normalizeResultHtml(adapter.getContent!({}))).toEqual('<p><strong>a b.</strong></p>');
     });
-  }
+  });
 
   it('SelectRanges throws exception if matched document part has changed', () => {
     givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (html) => {
