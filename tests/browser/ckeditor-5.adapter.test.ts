@@ -35,14 +35,11 @@ describe('CKEditor5 adapter test', () => {
     const assertEditorText = (expectedText: string) => {
       console.log(expectedText);
       const editorContent = (adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult).content;
-      if (adapterSpec.inputFormat === 'TEXT') {
-        expect(editorContent).toEqual(expectedText);
-      } else {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = editorContent;
-        const actualText = tempDiv.textContent!.replace('\n', '');
-        expect(actualText).toEqual(expectedText);
-      }
+
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = editorContent;
+      const actualText = tempDiv.textContent!.replace('\n', '');
+      expect(actualText).toEqual(expectedText);
     };
 
     function registerCheckResult(text: string) {
@@ -354,33 +351,31 @@ describe('CKEditor5 adapter test', () => {
       });
     });
 
-    if (adapterSpec.inputFormat === 'HTML') {
-      it('Replace word before entity &nbsp;', () => {
-        givenAText('Southh&nbsp;is warm.', (html) => {
-          const replacement = 'South';
-          const matchesWithReplacement = getMatchesWithReplacement(html, 'Southh', replacement);
-          adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-          assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
-        });
+    it('Replace word before entity &nbsp;', () => {
+      givenAText('Southh&nbsp;is warm.', (html) => {
+        const replacement = 'South';
+        const matchesWithReplacement = getMatchesWithReplacement(html, 'Southh', replacement);
+        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+        assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
       });
+    });
 
-      it('Replace words containing entity &nbsp;', () => {
-        givenAText('South&nbsp;is warm&nbsp;.', (html) => {
-          const replacement = 'South';
-          // Some editors wrap the html inside e.g. <p>
-          const offset = html.indexOf('South');
-          const matchesWithReplacement = [
-            { content: 'warm', range: [14 + offset, 18 + offset], replacement: 'warm.' },
-            { content: NON_BREAKING_SPACE, range: [18 + offset, 24 + offset], replacement: '' },
-            { content: '.', range: [24 + offset, 25 + offset], replacement: '' },
-          ] as MatchWithReplacement[];
-          adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-          assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
-        });
+    it('Replace words containing entity &nbsp;', () => {
+      givenAText('South&nbsp;is warm&nbsp;.', (html) => {
+        const replacement = 'South';
+        // Some editors wrap the html inside e.g. <p>
+        const offset = html.indexOf('South');
+        const matchesWithReplacement = [
+          { content: 'warm', range: [14 + offset, 18 + offset], replacement: 'warm.' },
+          { content: NON_BREAKING_SPACE, range: [18 + offset, 24 + offset], replacement: '' },
+          { content: '.', range: [24 + offset, 25 + offset], replacement: '' },
+        ] as MatchWithReplacement[];
+        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+        assertEditorText(`${replacement}${NON_BREAKING_SPACE}is warm.`);
       });
-    }
+    });
 
     it('Replace same word in correct order', async () => {
       await givenATextAsync('before wordSame wordSame wordSame wordSame wordSame after', async (text) => {
@@ -427,27 +422,25 @@ describe('CKEditor5 adapter test', () => {
       });
     });
 
-    if (adapterSpec.inputFormat === 'HTML') {
-      it.skip('Remove complete text content', async () => {
-        await givenATextAsync('<p>a</p>', async () => {
-          const matchesWithReplacement: MatchWithReplacement[] = [{ content: 'a', range: [3, 4], replacement: '' }];
-          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-          waitMs(10);
-        });
+    it.skip('Remove complete text content', async () => {
+      await givenATextAsync('<p>a</p>', async () => {
+        const matchesWithReplacement: MatchWithReplacement[] = [{ content: 'a', range: [3, 4], replacement: '' }];
+        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+        waitMs(10);
       });
+    });
 
-      it.skip('Missing space within divs', () => {
-        givenAText('<div>a b ?</div><div>c</div>', () => {
-          const matchesWithReplacement: MatchWithReplacement[] = [
-            { content: 'b', range: [7, 8], replacement: 'b?' },
-            { content: ' ', range: [8, 9], replacement: '' },
-            { content: '?', range: [9, 10], replacement: '' },
-          ];
-          adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-          assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
-        });
+    it.skip('Missing space within divs', () => {
+      givenAText('<div>a b ?</div><div>c</div>', () => {
+        const matchesWithReplacement: MatchWithReplacement[] = [
+          { content: 'b', range: [7, 8], replacement: 'b?' },
+          { content: ' ', range: [8, 9], replacement: '' },
+          { content: '?', range: [9, 10], replacement: '' },
+        ];
+        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+        assert.equal(normalizeResultHtml(adapter.getContent!({})), '<div>a b?</div><div>c</div>');
       });
-    }
+    });
 
     it('SelectRanges throws exception if matched document part has changed', () => {
       givenAText('wordOne wordTwo wordThree', (html) => {
