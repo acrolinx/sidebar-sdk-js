@@ -81,7 +81,7 @@ describe('multi plugin', () => {
         sidebarUrl: getDummySidebarPath(),
         sidebarContainerId: 'sidebarContainer',
       },
-      config
+      config,
     );
 
     acrolinxPlugin = new acrolinxPluginModule.AcrolinxPlugin(conf);
