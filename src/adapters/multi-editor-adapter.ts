@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { escapeHtmlCharacters, EscapeHtmlCharactersResult } from '../utils/escaping';
 import {
   AdapterInterface,
@@ -11,6 +10,7 @@ import {
 } from './adapter-interface';
 import { Check, DocumentRange, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { findNewIndex } from '../utils/alignment';
+import _ from 'lodash';
 
 export interface RemappedMatches<T extends Match> {
   matches: T[];
@@ -45,12 +45,15 @@ export interface CheckedRegisteredAdapter extends RegisteredAdapter {
 }
 
 function createStartTag(wrapper: WrapperConf, id?: string) {
-  const allAttributes = _.clone(wrapper.attributes);
+  const allAttributes = structuredClone(wrapper.attributes);
   if (id) {
-    _.assign(allAttributes, { id });
+    Object.assign(allAttributes, { id });
   }
 
-  const allAttributesString = _.map(allAttributes, (value, key) => ` ${key}="${_.escape(value)}"`).join('');
+  const allAttributesString = Object.entries(allAttributes)
+    .map(([key, value]) => ` ${key}="${_.escape(value)}"`)
+    .join('');
+
   return `<${wrapper.tagName}${allAttributesString}>`;
 }
 
@@ -77,7 +80,7 @@ export interface MultiEditorAdapterConfig {
 
 function wrapperConfWithDefaults(opts: WrapperConfOptions, defaultTagName = 'div') {
   const tagName = opts.tagName || defaultTagName;
-  if (_.includes(tagName, ' ')) {
+  if (tagName.includes(' ')) {
     console.info(`tagName "${tagName}" contains whitespaces which may lead to unexpected results.`);
   }
   return { tagName, attributes: opts.attributes || {} };
@@ -207,7 +210,7 @@ export class MultiEditorAdapter implements AdapterInterface {
         match.range[0] - checkedRangeStart,
         match.range[1] - checkedRangeStart,
       ];
-      const remappedMatch = _.clone(match);
+      const remappedMatch = structuredClone(match);
       remappedMatch.range = registeredAdapter.escapeResult
         ? mapBackRangeOfEscapedText(registeredAdapter.escapeResult, rangeInsideWrapper)
         : rangeInsideWrapper;
@@ -220,7 +223,7 @@ export class MultiEditorAdapter implements AdapterInterface {
     if (!this.adaptersOfLastSuccessfulCheck) {
       throw new Error('Expected previous successful check.');
     }
-    return _.find(this.adaptersOfLastSuccessfulCheck, (adapter: RegisteredAdapter) => {
+    return this.adaptersOfLastSuccessfulCheck.find((adapter: RegisteredAdapter) => {
       const checkedRange = adapter.checkedRange;
       return !!checkedRange && match.range[0] >= checkedRange[0] && match.range[1] <= checkedRange[1];
     }) as CheckedRegisteredAdapter;
