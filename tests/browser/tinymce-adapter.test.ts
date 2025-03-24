@@ -17,13 +17,10 @@ import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocuse
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 
 import { TinyMCETestSetup } from './adapter-setups/tinymce-adapter-test-setup';
+import { dummyCheckId, NON_BREAKING_SPACE } from './adapter-setups/constants';
 
 describe('TinyMCE Adapter', () => {
-  const NON_BREAKING_SPACE = '\u00a0';
   let adapter: AdapterInterface;
-
-  const dummyCheckId = 'dummyCheckId';
-
   const adapterSpec = new TinyMCETestSetup();
 
   beforeEach(async () => {

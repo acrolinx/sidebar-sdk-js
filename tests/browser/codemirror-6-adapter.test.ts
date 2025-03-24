@@ -16,13 +16,10 @@ import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocuse
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 
 import { CodeMirror6TestSetup } from './adapter-setups/codemirror-6-test-setup';
+import { dummyCheckId, NON_BREAKING_SPACE } from './adapter-setups/constants';
 
 describe('CodeMirror 6 Adapter', () => {
-  const NON_BREAKING_SPACE = '\u00a0';
   let adapter: AdapterInterface;
-
-  const dummyCheckId = 'dummyCheckId';
-
   const adapterSpec = new CodeMirror6TestSetup({
     mode: 'text/html',
     name: 'CodeMirrorAdapterHTML',
@@ -307,24 +304,14 @@ describe('CodeMirror 6 Adapter', () => {
   }
 
   it('Replace word containing entity', () => {
-    if (adapterSpec.inputFormat === 'HTML') {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne D&amp;D wordThree', (html) => {
-        const replacement = 'Dungeons and Dragons';
-        const matchesWithReplacement = getMatchesWithReplacement(html, 'D&amp;D', replacement);
-        matchesWithReplacement[0].content = 'D&D';
-        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-        assertEditorText(adapterSpec, adapter, `wordOne ${replacement} wordThree`);
-      });
-    } else {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne D&amp;D wordThree', (text) => {
-        const replacement = 'Dungeons and Dragons';
-        const matchesWithReplacement = getMatchesWithReplacement(text, 'D&amp;D', replacement);
-        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
-        assertEditorText(adapterSpec, adapter, `wordOne ${replacement} wordThree`);
-      });
-    }
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne D&amp;D wordThree', (html) => {
+      const replacement = 'Dungeons and Dragons';
+      const matchesWithReplacement = getMatchesWithReplacement(html, 'D&amp;D', replacement);
+      matchesWithReplacement[0].content = 'D&D';
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      assertEditorText(adapterSpec, adapter, `wordOne ${replacement} wordThree`);
+    });
   });
 
   it('Escape entities in replacement if codemirror is in html mode', () => {

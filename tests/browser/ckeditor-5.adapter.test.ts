@@ -6,14 +6,10 @@ import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocuse
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { CKEditor5InlineTestSetup } from './adapter-setups/ckeditor-5-inline-test-setup';
 import { htmlStringToElements } from './utils/util';
+import { dummyCheckId, NON_BREAKING_SPACE } from './adapter-setups/constants';
 
 describe('CKEditor5 adapter test', () => {
-  const NON_BREAKING_SPACE = '\u00a0';
-
   let adapter: AdapterInterface;
-
-  const dummyCheckId = 'dummyCheckId';
-
   const adapterSpec = new CKEditor5InlineTestSetup();
 
   describe('CKEditor 5 Adapter Tests', () => {
