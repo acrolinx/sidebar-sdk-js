@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { expect, describe, beforeEach, afterEach, it, assert } from 'vitest';
+import { expect, describe, beforeEach, afterEach, it } from 'vitest';
 import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/adapter-interface';
-import _ from 'lodash';
 import {
   assertEditorText,
   givenAText,
   givenATextWithoutCheckResult,
   htmlStringToElements,
-  normalizeResultHtml,
 } from './utils/util';
 import { isChrome } from '../../src/utils/detect-browser';
 import { AbstractRichtextEditorAdapter } from '../../src/adapters/abstract-rich-text-editor-adapter';
 import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused } from './utils/test-utils';
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { InputAdapterTestSetup } from './adapter-setups/input-adapter-test-setup';
-import { dummyCheckId, NON_BREAKING_SPACE } from './adapter-setups/constants';
+import { dummyCheckId } from './adapter-setups/constants';
 
 describe('Input Adapter', () => {
   let adapter: AdapterInterface;

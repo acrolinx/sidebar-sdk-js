@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { expect, describe, beforeEach, afterEach, it, assert } from 'vitest';
 import { AdapterInterface } from '../../src/adapters/adapter-interface';
-import _ from 'lodash';
 import {
   assertEditorRawContent,
   assertEditorText,

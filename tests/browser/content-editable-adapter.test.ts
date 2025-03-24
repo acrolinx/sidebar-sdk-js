@@ -2,7 +2,6 @@
 import { expect, describe, beforeEach, afterEach, it, assert } from 'vitest';
 import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/adapter-interface';
 import { ContentEditableTestSetup } from './adapter-setups/content-editable-setup';
-import _ from 'lodash';
 import {
   assertEditorRawContent,
   assertEditorText,
@@ -514,7 +513,7 @@ describe('Content Editable Adapter', () => {
   });
 
   testIf(isWindowFocused(), 'selectRanges in quill centers in good browsers', () => {
-    const dummyLines = _.repeat('<p>dummy line</p>', 100);
+    const dummyLines = '<p>dummy line</p>'.repeat(100);
     const completeContent = dummyLines + '<p>middle</p>' + dummyLines;
     givenAText(adapter, adapterSpec, dummyCheckId, completeContent, (initialExtractedContent) => {
       const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'middle');
