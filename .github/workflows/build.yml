@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: "0 2 * * *"
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
@@ -36,4 +36,3 @@ jobs:
           npm run lint
           npm run build
           npm run coverage
-          
