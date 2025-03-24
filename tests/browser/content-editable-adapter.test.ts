@@ -22,12 +22,10 @@ import {
   testIfWindowIsFocused,
 } from './utils/test-utils';
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
-import { EDITOR_HEIGHT } from './adapter-setups/constants';
+import { dummyCheckId, EDITOR_HEIGHT, NON_BREAKING_SPACE } from './adapter-setups/constants';
 
 describe('Content Editable Adapter', () => {
-  const NON_BREAKING_SPACE = '\u00a0';
   let adapter: AdapterInterface;
-  const dummyCheckId = 'dummyCheckId';
   const adapterSpec = new ContentEditableTestSetup();
 
   beforeEach(async () => {
