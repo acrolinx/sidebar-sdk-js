@@ -1,5 +1,4 @@
 import { SidebarConfiguration, Message } from '@acrolinx/sidebar-interface';
-import _ from 'lodash';
 import { AcrolinxPluginConfig } from './acrolinx-plugin-config';
 import { AdapterInterface, AsyncAdapterInterface, isAsyncAdapterInterface } from './adapters/adapter-interface';
 import { InternalAcrolinxSidebarPlugin, initInternalAcrolinxSidebarPlugin } from './internal-acrolinx-plugin';
@@ -25,7 +24,7 @@ export class AcrolinxPlugin {
   }
 
   configure(conf: SidebarConfiguration) {
-    this.config = _.assign(this.config, conf);
+    this.config = { ...this.config, ...conf };
     // TODO: Move the this whole method into the internal plugin?
     if (this.internalPlugin && this.internalPlugin.acrolinxSidebar) {
       this.internalPlugin.configureSidebar(this.config);

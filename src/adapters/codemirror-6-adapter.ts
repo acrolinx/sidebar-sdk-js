@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { Check, DocumentSelection, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { lookupMatches } from '../lookup/diff-based';
 import { AlignedMatch } from '../utils/alignment';
@@ -10,6 +9,7 @@ import {
   SuccessfulCheckResult,
 } from './adapter-interface';
 import { EditorView } from '@codemirror/view';
+import _ from 'lodash';
 
 export type CodeMirror6AdapterConf = {
   editor: EditorView;
@@ -75,7 +75,7 @@ export class CodeMirror6Adapter implements AdapterInterface {
 
   private lookupMatchesOrThrow<T extends Match>(matches: T[]): AlignedMatch<T>[] {
     const alignedMatches = lookupMatches(this.lastContentChecked!, this.getContent(), matches, 'TEXT');
-    if (_.isEmpty(alignedMatches)) {
+    if (alignedMatches.length === 0) {
       throw Error('Selected flagged content is modified.');
     }
     return alignedMatches;
@@ -91,20 +91,23 @@ export class CodeMirror6Adapter implements AdapterInterface {
     const escapeFunction = this.getEscapeFunction();
 
     let replacementLength = 0;
-    _.forEachRight(alignedMatches, (match) => {
-      if (!isDangerousToReplace(this.lastContentChecked!, match.originalMatch)) {
-        const escapedReplacement = escapeFunction(match.originalMatch.replacement);
-        this.config.editor.dispatch({
-          changes: {
-            from: match.range[0],
-            to: match.range[1],
-            insert: escapedReplacement,
-          },
-        });
+    alignedMatches
+      .slice()
+      .reverse()
+      .forEach((match) => {
+        if (!isDangerousToReplace(this.lastContentChecked!, match.originalMatch)) {
+          const escapedReplacement = escapeFunction(match.originalMatch.replacement);
+          this.config.editor.dispatch({
+            changes: {
+              from: match.range[0],
+              to: match.range[1],
+              insert: escapedReplacement,
+            },
+          });
 
-        replacementLength += escapedReplacement.length;
-      }
-    });
+          replacementLength += escapedReplacement.length;
+        }
+      });
 
     this.selectRangeAndScroll([alignedMatches[0].range[0], alignedMatches[0].range[0] + replacementLength]);
   }
