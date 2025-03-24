@@ -7,7 +7,7 @@ export default defineWorkspace([
       include: ['tests/unit/**/*.{test,spec}.ts', 'tests/**/*.unit.{test,spec}.ts'],
       name: 'unit',
       environment: 'node',
-      setupFiles: './tests/unit/setup-tests.ts'
+      setupFiles: './tests/unit/setup-tests.ts',
     },
   },
   {
@@ -19,7 +19,7 @@ export default defineWorkspace([
       browser: {
         enabled: true,
         provider: 'playwright',
-        instances: [{ browser: 'chromium' }/*, {browser: 'firefox'}, {browser: 'webkit'}*/],
+        instances: [{ browser: 'chromium' } /*, {browser: 'firefox'}, {browser: 'webkit'}*/],
       },
     },
   },

@@ -34,10 +34,10 @@ Acrolinx offers different other SDKs, and examples for developing integrations.
 
 Before you start developing your own integration, you might benefit from looking into:
 
-* [Build With Acrolinx](https://support.acrolinx.com/hc/en-us/categories/10209837818770-Build-With-Acrolinx),
-* the [Guidance for the Development of Acrolinx Integrations](https://github.com/acrolinx/acrolinx-coding-guidance),
-* the [Acrolinx SDKs](https://github.com/acrolinx?q=sdk), and
-* the [Acrolinx Demo Projects](https://github.com/acrolinx?q=demo).
+- [Build With Acrolinx](https://support.acrolinx.com/hc/en-us/categories/10209837818770-Build-With-Acrolinx),
+- the [Guidance for the Development of Acrolinx Integrations](https://github.com/acrolinx/acrolinx-coding-guidance),
+- the [Acrolinx SDKs](https://github.com/acrolinx?q=sdk), and
+- the [Acrolinx Demo Projects](https://github.com/acrolinx?q=demo).
 
 ## Getting Started
 
@@ -57,43 +57,43 @@ npm install @acrolinx/sidebar-sdk
 
 The SDK provides [adapters](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/interfaces/AdapterInterface.html) for:
 
-* `contentEditable` `div`-elements,
-* `input` text elements,
-* CodeMirror,
-* CKEditor,
-* Xeditor,
-* TinyMCE, and a
-* `MultiEditorAdapter` that can be used to combine different adapters as one document.
+- `contentEditable` `div`-elements,
+- `input` text elements,
+- CodeMirror,
+- CKEditor,
+- Xeditor,
+- TinyMCE, and a
+- `MultiEditorAdapter` that can be used to combine different adapters as one document.
 
 If you need to support other editors, sometimes the `ContentEditableAdapter` works without any changes.
 If not, implement the [`AdapterInterface`](https://acrolinx.github.io/sidebar-sdk-js/pluginDoc/modules/adapters_adapterinterface.html).
 
 ### Deprecation
+
 > :warning: **Sidebar v14 is getting deprecated**
 
 The process to update your existing integration is straightforward and involves the following steps:
+
 1. Update to the Latest SDK Version: Please ensure that you’ve updated to the latest SDK version. The most recent version can be found on our NPM package page [here](https://www.npmjs.com/package/@acrolinx/sidebar-sdk).
 2. Remove the Initialization Config (Optional): If your current implementation includes the initialization config `minimumSidebarVersion=14.x.x`, we recommend removing this configuration.
 
-
 ## References
 
-* The [Sidebar DEMO JS](https://github.com/acrolinx/acrolinx-sidebar-demo) is built based on this SDK.
-  * Boilerplate [sample](https://github.com/acrolinx/acrolinx-sidebar-demo/tree/main/samples/boilerplate)
-* The Sidebar SDKs are based on the [Acrolinx Sidebar Interface](https://acrolinx.github.io/sidebar-interface/).
+- The [Sidebar DEMO JS](https://github.com/acrolinx/acrolinx-sidebar-demo) is built based on this SDK.
+  - Boilerplate [sample](https://github.com/acrolinx/acrolinx-sidebar-demo/tree/main/samples/boilerplate)
+- The Sidebar SDKs are based on the [Acrolinx Sidebar Interface](https://acrolinx.github.io/sidebar-interface/).
 
 ## Running This Project
 
-* Make sure you have a Chrome or chromium version later than 72.0.0. This is needed to execute the tests successfully.
-* Run `npm i`
-* Run `npm run build` to run all tests and build distribution
+- Make sure you have a Chrome or chromium version later than 72.0.0. This is needed to execute the tests successfully.
+- Run `npm i`
+- Run `npm run build` to run all tests and build distribution
 
 ## Serve for Development
 
-* Run 'npm run webpack-dev-server'
-* Include '<script src="http://0.0.0.0:8081/dist/acrolinx-sidebar-sdk.js"></script>' into your project.
-* Check the output of the above npm task and correct the host port if needed.
-
+- Run 'npm run webpack-dev-server'
+- Include '<script src="http://0.0.0.0:8081/dist/acrolinx-sidebar-sdk.js"></script>' into your project.
+- Check the output of the above npm task and correct the host port if needed.
 
 ## License
 
