@@ -1,5 +1,4 @@
 import { Check, DocumentSelection, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
-import * as _ from 'lodash';
 import {
   AdapterConf,
   AdapterInterface,
@@ -15,6 +14,7 @@ import { scrollIntoView } from '../utils/scrolling';
 import { lookupMatches } from '../lookup/diff-based';
 import { assertElementIsDisplayed } from '../utils/utils';
 import { getAutobindWrapperAttributes } from '../utils/adapter-utils';
+import _ from 'lodash';
 
 export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement;
 
@@ -59,8 +59,8 @@ export class InputAdapter implements AdapterInterface {
     const selectionStart = this.element.selectionStart;
     const selectionEnd = this.element.selectionEnd;
     if (
-      _.isNumber(selectionStart) &&
-      _.isNumber(selectionEnd) &&
+      typeof selectionStart === 'number' &&
+      typeof selectionEnd === 'number' &&
       selectionStart < selectionEnd &&
       this.getContent().slice(selectionStart, selectionEnd).trim() !== ''
     ) {
@@ -111,7 +111,7 @@ export class InputAdapter implements AdapterInterface {
     assertElementIsDisplayed(this.element);
     const alignedMatches = lookupMatches(this.lastContentChecked!, this.getCurrentText(), matches, 'TEXT');
 
-    if (_.isEmpty(alignedMatches)) {
+    if (alignedMatches.length === 0) {
       throw Error('Selected flagged content is modified.');
     }
 
@@ -120,7 +120,7 @@ export class InputAdapter implements AdapterInterface {
   }
 
   replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
-    const reversedMatches = _.clone(matches).reverse();
+    const reversedMatches = structuredClone(matches).reverse();
     const el = this.element;
     let text = el.value;
     for (const match of reversedMatches) {

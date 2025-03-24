@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { Check, DocumentSelection, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { lookupMatches } from '../lookup/diff-based';
 import { getAutobindWrapperAttributes } from '../utils/adapter-utils';
@@ -119,7 +118,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     const textMapping: TextMapping = this.getTextDomMapping();
     const alignedMatches: AlignedMatch<T>[] = lookupMatches(this.lastContentChecked!, textMapping.text, matches);
 
-    if (_.isEmpty(alignedMatches)) {
+    if (alignedMatches.length === 0) {
       throw new Error('Selected flagged content is modified.');
     }
 
@@ -181,7 +180,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
 
   protected replaceAlignedMatches(matches: AlignedMatch<MatchWithReplacement>[]) {
     const doc = this.getEditorDocument();
-    const reversedMatches = _.clone(matches).reverse();
+    const reversedMatches = structuredClone(matches).reverse();
     for (const match of reversedMatches) {
       const textDomMapping = this.getTextDomMapping();
       const rangeLength = match.range[1] - match.range[0];
