@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { expect, describe, beforeEach, afterEach, it, assert } from 'vitest';
 import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/adapter-interface';
-import { ContentEditableTestSetup } from './adapter-setups/content-editable-setup';
 import _ from 'lodash';
 import {
-  assertEditorRawContent,
   assertEditorText,
   givenAText,
   givenATextWithoutCheckResult,
@@ -13,22 +11,15 @@ import {
 } from './utils/util';
 import { isChrome } from '../../src/utils/detect-browser';
 import { AbstractRichtextEditorAdapter } from '../../src/adapters/abstract-rich-text-editor-adapter';
-import {
-  containsEmptyTextNodes,
-  getMatchesWithReplacement,
-  isScrollIntoViewCenteredAvailable,
-  isWindowFocused,
-  testIf,
-  testIfWindowIsFocused,
-} from './utils/test-utils';
+import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused } from './utils/test-utils';
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
-import { EDITOR_HEIGHT } from './adapter-setups/constants';
+import { InputAdapterTestSetup } from './adapter-setups/input-adapter-test-setup';
 
-describe('Content Editable Adapter', () => {
+describe('Input Adapter', () => {
   const NON_BREAKING_SPACE = '\u00a0';
   let adapter: AdapterInterface;
   const dummyCheckId = 'dummyCheckId';
-  const adapterSpec = new ContentEditableTestSetup();
+  const adapterSpec = new InputAdapterTestSetup();
 
   beforeEach(async () => {
     const body = document.getElementsByTagName('body')[0];
@@ -74,24 +65,6 @@ describe('Content Editable Adapter', () => {
       assertEditorText(adapterSpec, adapter, 'wordOne wordTwoReplacement wordThree');
     });
   });
-
-  if (adapterSpec instanceof ContentEditableTestSetup) {
-    it('Replacements should trigger an input event', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
-        adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-        expect(adapterSpec.inputEventWasTriggered).toBeTruthy();
-      });
-    });
-  }
-
-  if (adapterSpec instanceof ContentEditableTestSetup) {
-    it('beforeinput and input events should be trigerred', () => {
-      givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
-        adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
-        expect(adapterSpec.beforeInputEventWasTriggered).toBeTruthy();
-      });
-    });
-  }
 
   it('Replace words in reverse order', () => {
     givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
@@ -346,6 +319,36 @@ describe('Content Editable Adapter', () => {
     }
   });
 
+  it('Replace word containing entity in case of markdown', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne D&amp;D wordThree', (text) => {
+      const replacement = 'Dungeons and Dragons';
+      const matchesWithReplacement = getMatchesWithReplacement(text, 'D&amp;D', replacement);
+
+      // In case of markdown, the server might replace the entities of matches with the corresponding char
+      // but we must still find it.
+      matchesWithReplacement[0].content = 'Dungeons & Dragons';
+
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      assertEditorText(adapterSpec, adapter, `wordOne ${replacement} wordThree`);
+    });
+  });
+
+  it("Don't replace markup/markdown", () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'see  ![Acrolinx]', () => {
+      const matchesWithReplacement: MatchWithReplacement[] = [
+        { content: 'see', range: [0, 3], replacement: 'see Acrolinx' },
+        { content: ' ', range: [3, 4], replacement: '' },
+        { content: ' ', range: [4, 5], replacement: '' },
+        { content: ' ', range: [5, 7], replacement: '' },
+        { content: 'Acrolinx', range: [7, 15], replacement: '' },
+      ];
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      // Actually we would like to get "see ![Acrolinx]" but this would need a better server response.
+      assertEditorText(adapterSpec, adapter, 'see Acrolinx![]');
+    });
+  });
+
   if (adapterSpec.inputFormat === 'HTML') {
     it('Replace word before entity &nbsp;', () => {
       givenAText(adapter, adapterSpec, dummyCheckId, 'Southh&nbsp;is warm.', (html) => {
@@ -506,6 +509,7 @@ describe('Content Editable Adapter', () => {
       expect(selectedRanges[0]).toEqual(matchesWithReplacement[0].range);
     });
   });
+
   it('Does not return check selection if not requested', () => {
     const completeContent = 'begin selection end';
     givenAText(adapter, adapterSpec, dummyCheckId, completeContent, (html) => {
@@ -515,17 +519,6 @@ describe('Content Editable Adapter', () => {
         checkSelection: false,
       }) as SuccessfulContentExtractionResult;
       expect(result.selection).toBeUndefined();
-    });
-  });
-
-  // This test cares for a bug that caused an additional "span" tag
-  // in IE 11
-  it('selectRanges should not change the document', () => {
-    const completeContent = 'begin selection end';
-    givenAText(adapter, adapterSpec, dummyCheckId, completeContent, (initialExtractedContent) => {
-      const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'selection');
-      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-      assertEditorRawContent(adapter, initialExtractedContent);
     });
   });
 
@@ -540,32 +533,6 @@ describe('Content Editable Adapter', () => {
         // We wait because some editors (Quill) modify the document/selection after they recognize changes.
         // If we would not wait everything would seems fine, but it reality it would be broken.
       });
-    });
-  });
-
-  testIf(isWindowFocused(), 'selectRanges in quill centers in good browsers', () => {
-    const dummyLines = _.repeat('<p>dummy line</p>', 100);
-    const completeContent = dummyLines + '<p>middle</p>' + dummyLines;
-    givenAText(adapter, adapterSpec, dummyCheckId, completeContent, (initialExtractedContent) => {
-      const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'middle');
-      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
-      expect(adapterSpec.getSelectedText()).toEqual('middle');
-      const paragraphs = document.querySelectorAll('p');
-      let relativeTop = 0;
-      for (const paragraph of paragraphs) {
-        if (paragraph.textContent!.includes('middle')) {
-          const rect = paragraph.getBoundingClientRect();
-          relativeTop = rect.top + window.scrollY;
-          break;
-        }
-      }
-      //const relativeTop = jQuery('p:contains("middle")').position().top;
-      console.warn(relativeTop);
-      if (isScrollIntoViewCenteredAvailable()) {
-        assert.approximately(relativeTop, EDITOR_HEIGHT / 2, 30, 'position should be vertically centered');
-      } else {
-        assert.approximately(relativeTop, 10, 10, 'position should be at top');
-      }
     });
   });
 
