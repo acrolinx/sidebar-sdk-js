@@ -24,6 +24,7 @@ jobs:
           npm ci
           npm run lint
           npm run build
+          npm run build-doc
 
       - name: Publish to NPM
         id: publish
