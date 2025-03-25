@@ -249,7 +249,7 @@ describe('multi plugin', () => {
           tagName: 'h1',
           attributes: {
             class: 'class',
-            'data-boolean': false,
+            'data-boolean': 'false',
             'data-more': '"<tag>"',
           },
         },

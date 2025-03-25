@@ -28,7 +28,6 @@
     "@codemirror/view": "^6.36.4",
     "@eslint/js": "^9.22.0",
     "@types/diff-match-patch": "^1.0.36",
-    "@types/lodash": "^4.17.16",
     "@types/quill": "^2.0.14",
     "@types/tinymce": "^4.6.9",
     "@vitest/browser": "^3.0.9",
@@ -49,6 +48,6 @@
     "@acrolinx/sidebar-startpage": "^4.0.2",
     "diff-match-patch": "^1.0.5",
     "entities": "^6.0.0",
-    "lodash": "^4.17.21"
+    "html-entities": "^2.5.3"
   }
 }
