@@ -10,7 +10,7 @@ export default defineConfig({
       entry: './src/index.ts',
       name: 'index',
       fileName: 'index',
-      formats: ['es', 'cjs', 'umd'],
+      formats: ['es'],
     },
   },
   test: {
