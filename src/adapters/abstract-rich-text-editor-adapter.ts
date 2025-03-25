@@ -106,7 +106,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     scrollIntoView(el, this.config.scrollOffsetY);
   }
 
-  selectRanges(checkId: string, matches: Match[]): void | Promise<void> {
+  selectRanges(checkId: string, matches: Match[]): void {
     assertElementIsDisplayed(this.getEditorElement());
     this.selectMatches(checkId, matches);
     if (this.isQuillEditor() || this.isCkEditor5()) {
@@ -268,7 +268,7 @@ export abstract class AbstractRichtextEditorAdapter implements AdapterInterface 
     }
   }
 
-  replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void | Promise<void> {
+  replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void {
     assertElementIsDisplayed(this.getEditorElement());
     const [alignedMatches] = this.selectMatches(checkId, matchesWithReplacement);
     const replacement = alignedMatches.map((m) => m.originalMatch.replacement).join('');
