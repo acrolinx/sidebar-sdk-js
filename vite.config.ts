@@ -21,5 +21,7 @@ export default defineConfig({
   define: {
     SDK_VERSION: JSON.stringify(packageJson.version),
   },
-  plugins: [dts()]
+  plugins: [dts({
+    exclude: ['tests']
+  })]
 });
