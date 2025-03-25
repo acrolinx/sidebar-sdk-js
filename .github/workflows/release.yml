@@ -22,8 +22,8 @@ jobs:
       - name: Run build
         run: |
           npm ci
+          npm run lint
           npm run build
-          npm run buildDoc
 
       - name: Publish to NPM
         id: publish
@@ -36,10 +36,3 @@ jobs:
         if: steps.publish.outputs.type
         env:
           CUSTOM_TAG: v${{ steps.publish.outputs.version }}
-
-      - name: Publish GitHub pages
-        if: steps.publish.outputs.type
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: docs
