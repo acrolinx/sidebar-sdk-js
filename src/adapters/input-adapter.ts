@@ -12,9 +12,8 @@ import { AlignedMatch } from '../utils/alignment';
 import { getCompleteFlagLength, isDangerousToReplace } from '../utils/match';
 import { scrollIntoView } from '../utils/scrolling';
 import { lookupMatches } from '../lookup/diff-based';
-import { assertElementIsDisplayed } from '../utils/utils';
+import { assertElementIsDisplayed, deepCloneWithHTMLElement } from '../utils/utils';
 import { getAutobindWrapperAttributes } from '../utils/adapter-utils';
-import _ from 'lodash';
 
 export type ValidInputElement = HTMLInputElement | HTMLTextAreaElement;
 
@@ -32,7 +31,7 @@ export class InputAdapter implements AdapterInterface {
 
   constructor(conf: InputAdapterConf) {
     this.element = getElementFromAdapterConf(conf) as ValidInputElement;
-    this.config = _.cloneDeep(conf);
+    this.config = deepCloneWithHTMLElement(conf);
   }
 
   getContent() {

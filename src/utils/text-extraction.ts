@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { toSet } from './utils';
 import { OffSetAlign } from './alignment';
 import * as entities from 'entities';
@@ -31,9 +30,7 @@ export function extractText(s: string): [string, OffSetAlign[]] {
   const offsetMapping: OffSetAlign[] = [];
   let currentDiffOffset = 0;
   const resultText = s.replace(regExp, (tagOrEntity, _p1, _p2, offset) => {
-    const rep = _.startsWith(tagOrEntity, '&')
-      ? entities.decodeHTMLStrict(tagOrEntity)
-      : getTagReplacement(tagOrEntity);
+    const rep = tagOrEntity.startsWith('&') ? entities.decodeHTMLStrict(tagOrEntity) : getTagReplacement(tagOrEntity);
     currentDiffOffset -= tagOrEntity.length - rep.length;
     offsetMapping.push({
       oldPosition: offset + tagOrEntity.length,

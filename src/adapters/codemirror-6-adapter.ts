@@ -9,7 +9,7 @@ import {
   SuccessfulCheckResult,
 } from './adapter-interface';
 import { EditorView } from '@codemirror/view';
-import _ from 'lodash';
+import { encode } from 'html-entities';
 
 export type CodeMirror6AdapterConf = {
   editor: EditorView;
@@ -118,9 +118,9 @@ export class CodeMirror6Adapter implements AdapterInterface {
     switch (format) {
       case 'XML':
       case 'HTML':
-        return _.escape;
+        return encode;
       default:
-        return _.identity;
+        return (value) => value;
     }
   }
 

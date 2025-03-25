@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function logTime(text: string, f: Function) {
   const startTime = Date.now();
@@ -79,11 +77,11 @@ export function isFromSameOrigin(url: string) {
 }
 
 export function toSet(keys: string[]) {
-  return Object.freeze(_.zipObject(keys, keys.map(_.constant(true))) as { [key: string]: boolean });
+  return Object.freeze(Object.fromEntries(keys.map((key) => [key, true])) as { [key: string]: boolean });
 }
 
 export function assign<T, U>(obj: T, update: U): T & U {
-  return _.assign({}, obj, update) as T & U;
+  return Object.assign({}, obj, update) as T & U;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,7 +105,7 @@ function deepFreeze(o: any) {
 }
 
 export function deepFreezed<T>(o: T): T {
-  const oClone = _.cloneDeep(o);
+  const oClone = structuredClone(o);
   deepFreeze(oClone);
   return oClone;
 }
@@ -153,4 +151,31 @@ export class Deferred<T> {
 
 export function waitMs(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function deepCloneWithHTMLElement<T>(obj: T): T {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+
+  if (obj instanceof HTMLElement) {
+    return obj.cloneNode(true) as T;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(deepCloneWithHTMLElement) as T;
+  }
+
+  try {
+    return structuredClone(obj) as T;
+  } catch (e: unknown) {
+    console.log('Object cannot be structured clone.', e);
+    const clonedObj: Record<string, unknown> = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        clonedObj[key] = deepCloneWithHTMLElement((obj as Record<string, unknown>)[key]);
+      }
+    }
+    return clonedObj as T;
+  }
 }

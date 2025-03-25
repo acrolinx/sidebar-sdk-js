@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { assign, removeNode } from '../utils/utils';
 import { AsyncStorage } from './async-storage';
 
@@ -235,7 +234,7 @@ function createTemplate(): string {
 
 function createDiv(attributes: { [attribute: string]: string }): HTMLElement {
   const el = document.createElement('div');
-  _.assign(el, attributes);
+  Object.assign(el, attributes);
   return el;
 }
 

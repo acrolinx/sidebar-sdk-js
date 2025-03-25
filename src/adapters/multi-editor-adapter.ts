@@ -10,7 +10,7 @@ import {
 } from './adapter-interface';
 import { Check, DocumentRange, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { findNewIndex } from '../utils/alignment';
-import _ from 'lodash';
+import { encode } from 'html-entities';
 
 export interface RemappedMatches<T extends Match> {
   matches: T[];
@@ -51,7 +51,7 @@ function createStartTag(wrapper: WrapperConf, id?: string) {
   }
 
   const allAttributesString = Object.entries(allAttributes)
-    .map(([key, value]) => ` ${key}="${_.escape(value)}"`)
+    .map(([key, value]) => ` ${key}="${encode(value)}"`)
     .join('');
 
   return `<${wrapper.tagName}${allAttributesString}>`;

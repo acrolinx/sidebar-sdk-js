@@ -1,5 +1,4 @@
 import { AcrolinxPlugin, AcrolinxSidebar } from '@acrolinx/sidebar-interface';
-import _ from 'lodash';
 import { InternalAcrolinxSidebarPluginInterface } from '../internal-acrolinx-plugin';
 
 // Functions are not cloneable and don't work with postMessage.
@@ -41,13 +40,13 @@ export function connectAcrolinxPluginToMessages(
   sidebarWindowIframe: HTMLIFrameElement,
 ) {
   const sidebar: AcrolinxSidebar = {
-    init: _.noop,
-    configure: _.noop,
+    init: () => {},
+    configure: () => {},
     checkGlobal: () => ({ checkId: 'dummyCheckId' }),
-    onGlobalCheckRejected: _.noop,
-    invalidateRanges: _.noop,
-    onVisibleRangesChanged: _.noop,
-    showMessage: _.noop,
+    onGlobalCheckRejected: () => {},
+    invalidateRanges: () => {},
+    onVisibleRangesChanged: () => {},
+    showMessage: () => {},
   };
 
   injectPostCommandAsMessage(() => sidebarWindowIframe.contentWindow!, sidebar);
@@ -90,15 +89,15 @@ export function createPluginMessageAdapter(win = window): AcrolinxPlugin {
   win.addEventListener('message', receiveMessage, false);
 
   const acrolinxSidebarPlugin: AcrolinxPlugin = {
-    requestInit: _.noop,
-    onInitFinished: _.noop,
-    requestGlobalCheck: _.noop,
-    onCheckResult: _.noop,
-    selectRanges: _.noop,
-    replaceRanges: _.noop,
-    openWindow: _.noop,
-    openLogFile: _.noop,
-    log: _.noop,
+    requestInit: () => {},
+    onInitFinished: () => {},
+    requestGlobalCheck: () => {},
+    onCheckResult: () => {},
+    selectRanges: () => {},
+    replaceRanges: () => {},
+    openWindow: () => {},
+    openLogFile: () => {},
+    log: () => {},
   };
 
   injectPostCommandAsMessage(() => win.parent, acrolinxSidebarPlugin);
