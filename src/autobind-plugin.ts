@@ -16,6 +16,7 @@
 
 import { AcrolinxPlugin } from './acrolinx-plugin';
 import { AcrolinxPluginConfig } from './acrolinx-plugin-config';
+import { AsyncAutoBindAdapter } from './adapters/async-autobind-adapter';
 import { AutoBindAdapter } from './adapters/autobind-adapter';
 import { MultiEditorAdapterConfig } from './adapters/multi-editor-adapter';
 import { AutobindConfig } from './autobind/autobind';
@@ -38,6 +39,21 @@ export async function autoBindFloatingSidebar(basicConf: AutoBindFloatingSidebar
 
   const acrolinxPlugin = new AcrolinxPlugin(conf);
   acrolinxPlugin.registerAdapter(new AutoBindAdapter(conf));
+  await acrolinxPlugin.init();
+
+  return floatingSidebar;
+}
+
+export async function autoBindFloatingSidebarAsync(basicConf: AutoBindFloatingSidebarConfig): Promise<FloatingSidebar> {
+  const conf = assign(basicConf, {
+    sidebarContainerId: SIDEBAR_CONTAINER_ID,
+    asyncStorage: basicConf.asyncStorage || new AsyncLocalStorage(),
+  });
+
+  const floatingSidebar = initFloatingSidebar(conf);
+
+  const acrolinxPlugin = new AcrolinxPlugin(conf);
+  acrolinxPlugin.registerAdapter(new AsyncAutoBindAdapter(conf));
   await acrolinxPlugin.init();
 
   return floatingSidebar;

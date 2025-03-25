@@ -7,9 +7,9 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   build: {
     lib: {
-      entry: './src/acrolinx-plugin.ts',
-      name: 'acrolinx-sidebar-sdk',
-      fileName: 'acrolinx-sidebar-sdk',
+      entry: './src/index.ts',
+      name: 'index',
+      fileName: 'index',
       formats: ['es', 'cjs', 'umd'],
     },
   },
@@ -24,6 +24,7 @@ export default defineConfig({
   plugins: [
     dts({
       exclude: ['tests'],
+      rollupTypes: true,
     }),
   ],
 });
