@@ -16,11 +16,8 @@
 
 import { CKEditorAdapter } from '../../../src/adapters/ckeditor-4-adapter';
 import { AdapterTestSetup } from './adapter-setup';
-import '../../../node_modules/ckeditor4/ckeditor.js';
-import editor = CKEDITOR.editor;
-import { waitMs } from '../utils/test-utils.js';
 
-export function getCkEditorInstance(id: string): editor {
+export function getCkEditorInstance(id: string): CKEDITOR.editor {
   return CKEDITOR.instances[id]!;
 }
 
@@ -29,16 +26,38 @@ export class CKEditor4TestSetup implements AdapterTestSetup {
   inputFormat = 'HTML';
   editorElement = '<textarea name="editorId" id="editorId" rows="10" cols="40">initial text</textarea>';
 
-  setEditorContent(html: string) {
-    getCkEditorInstance('editorId').setData(html);
+  async setEditorContent(html: string): Promise<void> {
+    return new Promise<void>((resolve) => {
+      getCkEditorInstance('editorId').setData(html, {
+        callback: () => {
+          resolve();
+        },
+      });
+    });
   }
 
   async init() {
-    const adapter = new CKEditorAdapter({ editorId: 'editorId' });
-    CKEDITOR.disableAutoInline = true;
-    CKEDITOR.replace('editorId', { customConfig: '' });
-    await waitMs(10);
-    return adapter;
+    // Load CKEditor from CDN dynamically.
+    const script = document.createElement('script');
+    script.src = '/node_modules/ckeditor4/ckeditor.js';
+    document.head.appendChild(script);
+
+    return new Promise<CKEditorAdapter>((resolve) => {
+      script.onload = async () => {
+        const adapter = new CKEditorAdapter({ editorId: 'editorId' });
+        CKEDITOR.editorConfig = function (config) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (config as any).versionCheck = false;
+        };
+        CKEDITOR.disableAutoInline = true;
+        CKEDITOR.replace('editorId', {
+          versionCheck: false,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+        await this.waitForEditor();
+        resolve(adapter);
+      };
+    });
   }
 
   remove() {
@@ -48,6 +67,24 @@ export class CKEditor4TestSetup implements AdapterTestSetup {
       editor.remove();
     }
   }
+
+  waitForEditor = async (): Promise<CKEDITOR.editor> => {
+    return new Promise((resolve) => {
+      const editor = CKEDITOR.instances.editorId;
+      if (editor && editor.status === 'ready') {
+        resolve(editor);
+      } else {
+        const interval = setInterval(() => {
+          const checkEditor = CKEDITOR.instances.editorId;
+          console.log('ckeditor 4', checkEditor, checkEditor.status);
+          if (checkEditor && checkEditor.status === 'ready') {
+            clearInterval(interval);
+            resolve(checkEditor);
+          }
+        }, 100);
+      }
+    });
+  };
 
   getSelectedText(): string {
     return getCkEditorInstance('editorId').getSelection().getSelectedText();

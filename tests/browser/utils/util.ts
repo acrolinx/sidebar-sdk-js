@@ -67,6 +67,22 @@ export const givenAText = (
   callback(contentExtractionResult.content);
 };
 
+export const givenATextAync = async (
+  adapter: AdapterInterface,
+  adapterSpec: AdapterTestSetup,
+  dummyCheckId: string,
+  text: string,
+  callback: (initialExtractedContent: string) => void,
+) => {
+  await adapterSpec.setEditorContent(text);
+
+  console.log('callback called');
+  adapter.registerCheckCall({ checkId: dummyCheckId });
+  const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
+  registerCheckResult(adapter, text, dummyCheckId);
+  callback(contentExtractionResult.content);
+};
+
 export const givenATextWithoutCheckResult = (
   adapter: AdapterInterface,
   adapterSpec: AdapterTestSetup,
@@ -75,6 +91,19 @@ export const givenATextWithoutCheckResult = (
   callback: (initialExtractedContent: string) => void,
 ) => {
   adapterSpec.setEditorContent(text);
+  adapter.registerCheckCall({ checkId: dummyCheckId });
+  const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
+  callback(contentExtractionResult.content);
+};
+
+export const givenATextWithoutCheckResultAsync = async (
+  adapter: AdapterInterface,
+  adapterSpec: AdapterTestSetup,
+  text: string,
+  dummyCheckId: string,
+  callback: (initialExtractedContent: string) => void,
+) => {
+  await adapterSpec.setEditorContent(text);
   adapter.registerCheckCall({ checkId: dummyCheckId });
   const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
   callback(contentExtractionResult.content);
