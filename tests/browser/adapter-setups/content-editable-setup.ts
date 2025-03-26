@@ -30,7 +30,6 @@ export class ContentEditableTestSetup implements AdapterTestSetup {
   }
 
   setEditorContent(html: string) {
-    console.log('callback called');
     const editor = document.getElementById('editorId');
     console.log('editor', editor);
     if (editor) {

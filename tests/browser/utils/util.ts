@@ -60,7 +60,6 @@ export const givenAText = (
 ) => {
   adapterSpec.setEditorContent(text);
 
-  console.log('callback called');
   adapter.registerCheckCall({ checkId: dummyCheckId });
   const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
   registerCheckResult(adapter, text, dummyCheckId);
@@ -75,8 +74,6 @@ export const givenATextAync = async (
   callback: (initialExtractedContent: string) => void,
 ) => {
   await adapterSpec.setEditorContent(text);
-
-  console.log('callback called');
   adapter.registerCheckCall({ checkId: dummyCheckId });
   const contentExtractionResult = adapter.extractContentForCheck({}) as SuccessfulContentExtractionResult;
   registerCheckResult(adapter, text, dummyCheckId);
