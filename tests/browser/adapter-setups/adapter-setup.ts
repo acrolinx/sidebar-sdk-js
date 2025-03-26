@@ -22,7 +22,7 @@ export interface AdapterTestSetup {
   name: string;
   editorElement: string;
   inputFormat: string;
-  setEditorContent: (text: string) => void;
+  setEditorContent: (text: string) => void | Promise<void>;
   init: () => Promise<AdapterInterface>;
   remove: () => void | Promise<void>;
   getSelectedText(): string;
