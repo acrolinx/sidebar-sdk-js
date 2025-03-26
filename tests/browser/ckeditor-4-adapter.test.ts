@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /*
  * Copyright 2015-present Acrolinx GmbH
  *
