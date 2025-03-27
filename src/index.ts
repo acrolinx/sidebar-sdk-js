@@ -25,6 +25,7 @@ export { ContentEditableAdapter } from './adapters/content-editable-adapter';
 export { AsyncContentEditableAdapter as StateBasedContentEditableAdapter } from './adapters/async-content-editable-adapter';
 export { AbstractRichtextEditorAdapter } from './adapters/abstract-rich-text-editor-adapter';
 export { CKEditor5Adapter } from './adapters/ckeditor-5-adapter';
+export { CKEditorAdapter } from './adapters/ckeditor-4-adapter';
 export { TinyMCEAdapter } from './adapters/tinymce-adapter';
 export { AutoBindAdapter } from './adapters/autobind-adapter';
 export { AsyncAutoBindAdapter } from './adapters/async-autobind-adapter';
@@ -36,6 +37,7 @@ export { getSelectionHtmlRanges } from './utils/check-selection';
 export { lookupMatches } from './lookup/diff-based';
 export { extractTextDomMapping } from './utils/text-dom-mapping';
 export { CodeMirror6Adapter } from './adapters/codemirror-6-adapter';
+export { CodeMirrorAdapter } from './adapters/codemirror-5-adapter';
 export { initFloatingSidebar } from './floating-sidebar/floating-sidebar';
 export { AsyncLocalStorage } from './floating-sidebar/async-storage';
 export { XeditorAdapter } from './adapters/x-editor-adapter';
@@ -47,6 +49,7 @@ import { ContentEditableAdapter } from './adapters/content-editable-adapter';
 import { AsyncContentEditableAdapter } from './adapters/async-content-editable-adapter';
 import { AbstractRichtextEditorAdapter } from './adapters/abstract-rich-text-editor-adapter';
 import { CKEditor5Adapter } from './adapters/ckeditor-5-adapter';
+import { CKEditorAdapter } from './adapters/ckeditor-4-adapter';
 import { TinyMCEAdapter } from './adapters/tinymce-adapter';
 import { AutoBindAdapter } from './adapters/autobind-adapter';
 import { AsyncAutoBindAdapter } from './adapters/async-autobind-adapter';
@@ -58,6 +61,7 @@ import { getSelectionHtmlRanges } from './utils/check-selection';
 import { lookupMatches } from './lookup/diff-based';
 import { extractTextDomMapping } from './utils/text-dom-mapping';
 import { CodeMirror6Adapter } from './adapters/codemirror-6-adapter';
+import { CodeMirrorAdapter } from './adapters/codemirror-5-adapter';
 import { initFloatingSidebar } from './floating-sidebar/floating-sidebar';
 import { AsyncLocalStorage } from './floating-sidebar/async-storage';
 import { XeditorAdapter } from './adapters/x-editor-adapter';
@@ -76,7 +80,9 @@ export interface AcrolinxSidebarIntegration {
     AutoBindAdapter: typeof AutoBindAdapter;
     AsyncAutoBindAdapter: typeof AsyncAutoBindAdapter;
     CKEditor5Adapter: typeof CKEditor5Adapter;
+    CKEditorAdapter: typeof CKEditorAdapter;
     CodeMirror6Adapter: typeof CodeMirror6Adapter;
+    CodeMirrorAdapter: typeof CodeMirrorAdapter;
     ContentEditableAdapter: typeof ContentEditableAdapter;
     AsyncContentEditableAdapter: typeof AsyncContentEditableAdapter;
     InputAdapter: typeof InputAdapter;
@@ -115,7 +121,9 @@ const exported: AcrolinxSidebarIntegration = {
     AutoBindAdapter: AutoBindAdapter,
     AsyncAutoBindAdapter: AsyncAutoBindAdapter,
     CKEditor5Adapter: CKEditor5Adapter,
+    CKEditorAdapter: CKEditorAdapter,
     CodeMirror6Adapter: CodeMirror6Adapter,
+    CodeMirrorAdapter: CodeMirrorAdapter,
     ContentEditableAdapter: ContentEditableAdapter,
     AsyncContentEditableAdapter: AsyncContentEditableAdapter,
     InputAdapter: InputAdapter,
