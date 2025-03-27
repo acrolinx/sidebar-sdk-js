@@ -18,7 +18,7 @@ import { Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { AbstractRichtextEditorAdapter } from './abstract-rich-text-editor-adapter';
 import { HasEditorID, ContentExtractionResult } from './adapter-interface';
 
-export class CKEditorAdapter extends AbstractRichtextEditorAdapter {
+export class CKEditor4Adapter extends AbstractRichtextEditorAdapter {
   editorId: string;
 
   constructor(conf: HasEditorID) {

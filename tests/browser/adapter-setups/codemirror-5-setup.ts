@@ -15,7 +15,7 @@
  */
 
 import CodeMirror, { EditorFromTextArea } from 'codemirror';
-import { CodeMirrorAdapter } from '../../../src/adapters/codemirror-5-adapter';
+import { CodeMirror5Adapter } from '../../../src/adapters/codemirror-5-adapter';
 import { AdapterTestSetup } from './adapter-setup';
 
 export interface CodeMirrorTestSetupOpts {
@@ -43,7 +43,7 @@ export class CodeMirror5TestSetup implements AdapterTestSetup {
       mode: this.mode,
     });
     this.editor = editor;
-    return Promise.resolve(new CodeMirrorAdapter({ editor: editor }));
+    return Promise.resolve(new CodeMirror5Adapter({ editor: editor }));
   }
 
   setEditorContent(content: string) {
