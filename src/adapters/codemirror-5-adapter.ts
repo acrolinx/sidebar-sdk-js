@@ -47,7 +47,7 @@ export type CodeMirrorAdapterConf = {
   format?: string; // See CheckOptions.inputFormat
 };
 
-export class CodeMirrorAdapter implements AdapterInterface {
+export class CodeMirror5Adapter implements AdapterInterface {
   private config!: CodeMirrorAdapterConf;
   private currentContentChecking?: string;
   private lastContentChecked?: string;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CKEditorAdapter } from '../../../src/adapters/ckeditor-4-adapter';
+import { CKEditor4Adapter } from '../../../src/adapters/ckeditor-4-adapter';
 import { AdapterTestSetup } from './adapter-setup';
 
 export function getCkEditorInstance(id: string): CKEDITOR.editor {
@@ -42,9 +42,9 @@ export class CKEditor4TestSetup implements AdapterTestSetup {
     script.src = '/node_modules/ckeditor4/ckeditor.js';
     document.head.appendChild(script);
 
-    return new Promise<CKEditorAdapter>((resolve) => {
+    return new Promise<CKEditor4Adapter>((resolve) => {
       script.onload = async () => {
-        const adapter = new CKEditorAdapter({ editorId: 'editorId' });
+        const adapter = new CKEditor4Adapter({ editorId: 'editorId' });
         CKEDITOR.editorConfig = function (config) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (config as any).versionCheck = false;
