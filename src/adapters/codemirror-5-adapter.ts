@@ -26,7 +26,7 @@ import {
   ExtractContentForCheckOpts,
   SuccessfulCheckResult,
 } from './adapter-interface';
-import { encode } from 'html-entities';
+import { encode } from 'entities';
 
 const FORMAT_BY_MIME_TYPE: { [mime: string]: string } = {
   'text/html': 'HTML',

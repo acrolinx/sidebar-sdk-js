@@ -26,7 +26,7 @@ import {
 } from './adapter-interface';
 import { Check, DocumentRange, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { findNewIndex } from '../utils/alignment';
-import { encode } from 'html-entities';
+import { encode } from 'entities';
 
 export interface RemappedMatches<T extends Match> {
   matches: T[];

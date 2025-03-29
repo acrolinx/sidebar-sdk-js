@@ -61,7 +61,6 @@
     "@acrolinx/sidebar-interface": "^15.4.3",
     "@acrolinx/sidebar-startpage": "^4.0.2",
     "diff-match-patch": "^1.0.5",
-    "entities": "^6.0.0",
-    "html-entities": "^2.5.5"
+    "entities": "^6.0.0"
   }
 }
