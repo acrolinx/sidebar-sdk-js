@@ -25,7 +25,7 @@ import {
   SuccessfulCheckResult,
 } from './adapter-interface';
 import { EditorView } from '@codemirror/view';
-import { encode } from 'html-entities';
+import { encode } from 'entities';
 
 export type CodeMirror6AdapterConf = {
   editor: EditorView;
