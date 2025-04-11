@@ -54,7 +54,7 @@
     "draft-js": "^0.11.7",
     "dts-bundle": "^0.7.3",
     "eslint": "^9.24.0",
-    "eslint-config-prettier": "^10.1.1",
+    "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
     "eslint-plugin-sonarjs": "^3.0.2",
     "istanbul": "^0.4.5",
