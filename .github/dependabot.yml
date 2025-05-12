@@ -4,12 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    reviewers:
-      - /acrolinx/integrationdevs-web
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
-    reviewers:
-      - /acrolinx/integrationdevs-web
     versioning-strategy: increase
