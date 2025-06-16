@@ -89,9 +89,9 @@ The process to update your existing integration is straightforward and involves 
 - Run `npm i`
 - Run `npm run build` to run all tests and build distribution
 
-## Serve for Development
+## Serve Tests for Development
 
-- Run 'npm run webpack-dev-server'
+- Run 'npm run test'
 - Include '<script src="http://0.0.0.0:8081/dist/acrolinx-sidebar-sdk.js"></script>' into your project.
 - Check the output of the above npm task and correct the host port if needed.
 
