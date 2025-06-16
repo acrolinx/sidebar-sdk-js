@@ -126,7 +126,7 @@ export class InputAdapter implements AdapterInterface {
     assertElementIsDisplayed(this.element);
     const alignedMatches = lookupMatches(this.lastContentChecked!, this.getCurrentText(), matches, 'TEXT');
 
-    if (alignedMatches.length === 0) {
+    if (!alignedMatches || alignedMatches.length === 0) {
       throw Error('Selected flagged content is modified.');
     }
 
