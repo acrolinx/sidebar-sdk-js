@@ -27,11 +27,7 @@ import {
 } from './utils/util';
 import { isChrome } from '../../src/utils/detect-browser';
 import { AbstractRichtextEditorAdapter } from '../../src/adapters/abstract-rich-text-editor-adapter';
-import {
-  containsEmptyTextNodes,
-  getMatchesWithReplacement,
-  testIfWindowIsFocused,
-} from './utils/test-utils';
+import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused } from './utils/test-utils';
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { dummyCheckId, NON_BREAKING_SPACE } from './adapter-setups/constants';
 import { CodeMirror5TestSetup } from './adapter-setups/codemirror-5-setup';

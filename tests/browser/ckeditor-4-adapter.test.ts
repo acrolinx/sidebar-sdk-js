@@ -16,11 +16,7 @@
 
 import { expect, describe, beforeEach, afterEach, it } from 'vitest';
 import { AdapterInterface } from '../../src/adapters/adapter-interface';
-import {
-  assertEditorText,
-  givenATextAync,
-  htmlStringToElements,
-} from './utils/util';
+import { assertEditorText, givenATextAync, htmlStringToElements } from './utils/util';
 import { isChrome } from '../../src/utils/detect-browser';
 import { AbstractRichtextEditorAdapter } from '../../src/adapters/abstract-rich-text-editor-adapter';
 import { containsEmptyTextNodes, getMatchesWithReplacement } from './utils/test-utils';

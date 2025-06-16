@@ -91,7 +91,7 @@ export class CodeMirror6Adapter implements AdapterInterface {
 
   private lookupMatchesOrThrow<T extends Match>(matches: T[]): AlignedMatch<T>[] {
     const alignedMatches = lookupMatches(this.lastContentChecked!, this.getContent(), matches, 'TEXT');
-    if (alignedMatches.length === 0) {
+    if (!alignedMatches || alignedMatches.length === 0) {
       throw Error('Selected flagged content is modified.');
     }
     return alignedMatches;
