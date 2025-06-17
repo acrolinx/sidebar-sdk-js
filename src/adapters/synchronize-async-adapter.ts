@@ -24,6 +24,11 @@ import {
   SuccessfulCheckResult,
 } from './adapter-interface';
 
+/**
+ * This wrapper around an AsyncAdapterInterface synchronizes all calls to selectRanges and replaceRanges.
+ * Thereby it prevents concurrency issues, that could arise from concurrent calls to these methods in some
+ * adapters.
+ */
 export class SynchronizeAsyncAdapter implements AsyncAdapterInterface {
   public readonly isAsync = true;
   public readonly requiresSynchronization = false;
