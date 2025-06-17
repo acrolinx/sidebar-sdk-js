@@ -44,7 +44,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.32.0",
-    "@typescript-eslint/parser": "^8.34.0",
+    "@typescript-eslint/parser": "^8.34.1",
     "browserify": "^17.0.1",
     "browserify-istanbul": "^3.0.1",
     "chai": "^4.5.0",
