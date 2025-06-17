@@ -92,8 +92,7 @@ The process to update your existing integration is straightforward and involves 
 ## Serve Tests for Development
 
 - Run 'npm run test'
-- Include '<script src="http://0.0.0.0:8081/dist/acrolinx-sidebar-sdk.js"></script>' into your project.
-- Check the output of the above npm task and correct the host port if needed.
+- Browser with ViTest running will open 
 
 ## License
 
