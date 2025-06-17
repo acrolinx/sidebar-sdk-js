@@ -65,7 +65,7 @@ export class FakeAdapter implements AdapterInterface {
   selectMatches<T extends Match>(_checkId: string, matches: T[]): AlignedMatch<T>[] {
     const alignedMatches = lookupMatches(this.lastContentChecked!, this.content, matches, 'TEXT');
 
-    if (alignedMatches.length === 0) {
+    if (!alignedMatches || alignedMatches.length === 0) {
       throw Error('Selected flagged content is modified.');
     }
 
