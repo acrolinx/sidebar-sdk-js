@@ -43,7 +43,7 @@
     "@vitest/browser": "^3.2.3",
     "@vitest/coverage-istanbul": "^3.2.3",
     "ckeditor4": "4.22.1",
-    "codemirror": "5.65.19",
+    "codemirror": "6.0.2",
     "eslint": "^9.29.0",
     "fast-check": "^4.1.1",
     "playwright": "^1.53.0",
