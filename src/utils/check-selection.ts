@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash';
-
 function getRangesOfCurrentSelection(doc: Document): Range[] {
   const selection = doc.getSelection();
 
@@ -56,7 +54,7 @@ function getNodePath(ancestor: HTMLElement, node: Node): number[] {
     if (!parent) {
       break;
     }
-    const index = _.indexOf(parent.childNodes, currentNode);
+    const index = Array.prototype.indexOf.call(parent.childNodes, currentNode);
     if (index === -1) {
       break;
     }
@@ -139,8 +137,8 @@ export function getSelectionHtmlRanges(
   getElementHtml: ElementHtmlGetter = getInnerHtml,
 ): [number, number][] {
   const ranges = getNonEmptySelectedRangesInsideOf(editorElement);
-  // We could optimize this mapping of individual ranges by implementing a function
-  // which maps all ranges at once, but this would probably increase code complexity just
-  // to speed up the rare corner case of multiple ranges in a selection.
-  return _.compact(ranges.map((range) => mapDomRangeToHtmlRange(editorElement, range, getElementHtml)));
+
+  return ranges
+    .map((range) => mapDomRangeToHtmlRange(editorElement, range, getElementHtml))
+    .filter((result): result is [number, number] => Boolean(result));
 }

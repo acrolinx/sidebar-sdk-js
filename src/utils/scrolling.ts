@@ -83,6 +83,7 @@ export function scrollIntoViewCenteredIfPossible(targetEl: HTMLElement): boolean
     // Try if scrollIntoViewOptions are supported.
     targetEl.scrollIntoView({ block: 'center' });
     return true;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     // According to https://stackoverflow.com/questions/46919627/is-it-possible-to-test-for-scrollintoview-browser-compatibility
     // it might still fail in strange browsers like "WaterFox".

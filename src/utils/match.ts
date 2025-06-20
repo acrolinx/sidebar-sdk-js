@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-'use strict';
-
 import { AlignedMatch } from './alignment';
 import { Match } from '@acrolinx/sidebar-interface';
 

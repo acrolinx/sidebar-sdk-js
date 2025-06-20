@@ -1,41 +1,24 @@
 {
   "compilerOptions": {
-    "jsx": "react",
-    "target": "es5",
-    "lib": [
-      "es5",
-      "es2015.promise",
-      "es2015.collection",
-      "es2015.proxy",
-      "es2015.core",
-      "dom",
-      "es2016.array.include"
-    ],
-    "importHelpers": true,
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
     "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedParameters": true,
     "noUnusedLocals": true,
-    "outDir": "tmp/compiled",
-    "rootDir": ".",
-    "sourceMap": true,
-    "declaration": true,
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "tmp"
-  ],
-  "typedocOptions": {
-    "theme": "default",
-    "readme": "none",
-    "excludePrivate": true,
-    "excludeProtected": true,
-    "excludeExternals": true,
-    "out": "./docs/pluginDoc/",
-  }
+  "include": ["src", "tests"]
 }

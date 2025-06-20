@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import 'es6-promise/auto';
-
 export interface AsyncStorage {
   get<T>(key: string): Promise<T | null>;
   set<T>(key: string, value: T): Promise<void>;
@@ -29,6 +27,7 @@ export class AsyncLocalStorage implements AsyncStorage {
   }
 
   set<T>(key: string, value: T) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     return new Promise<undefined>((resolve: Function) => {
       saveToLocalStorage(key, value);
       resolve(undefined);

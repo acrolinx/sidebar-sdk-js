@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash';
-
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function logTime(text: string, f: Function) {
   const startTime = Date.now();
   const result = f();
@@ -23,23 +22,12 @@ export function logTime(text: string, f: Function) {
   return result;
 }
 
-export function fetch(url: string, callback: (s: string) => void) {
-  const request = new XMLHttpRequest();
-  request.open('GET', url, true);
-
-  request.onload = function () {
-    if (request.status >= 200 && request.status < 400) {
-      callback(request.responseText);
-    } else {
-      throw new Error(`Error while loading ${url}.`);
-    }
-  };
-
-  request.onerror = function () {
-    throw new Error(`Error while loading ${url}.`);
-  };
-
-  request.send();
+export async function internalFetch(url: string): Promise<string> {
+  const response = await fetch(url);
+  if (response.status >= 200 && response.status < 400) {
+    return response.text();
+  }
+  throw new Error(`Error while loading ${url}.`);
 }
 
 export function isIFrame(el: Element): el is HTMLIFrameElement {
@@ -57,7 +45,15 @@ export type SimulateInputEventProps = {
 };
 
 export function simulateInputEvent(props: SimulateInputEventProps) {
-  const { startNode: startNode, endNode: endNode, eventType, startOffset, endOffset, replacement, disableSimulation } = props;
+  const {
+    startNode: startNode,
+    endNode: endNode,
+    eventType,
+    startOffset,
+    endOffset,
+    replacement,
+    disableSimulation,
+  } = props;
   if (disableSimulation) {
     return;
   }
@@ -84,6 +80,7 @@ export function parseUrl(href: string) {
   aElement.href = href;
   if (aElement.host === '') {
     // IE workaround.
+    // eslint-disable-next-line no-self-assign
     aElement.href = aElement.href;
   }
   const { protocol, host, hostname, port, pathname, hash } = aElement;
@@ -96,13 +93,14 @@ export function isFromSameOrigin(url: string) {
 }
 
 export function toSet(keys: string[]) {
-  return Object.freeze(_.zipObject(keys, keys.map(_.constant(true))) as { [key: string]: boolean });
+  return Object.freeze(Object.fromEntries(keys.map((key) => [key, true])) as { [key: string]: boolean });
 }
 
 export function assign<T, U>(obj: T, update: U): T & U {
-  return _.assign({}, obj, update) as T & U;
+  return Object.assign({}, obj, update) as T & U;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function deepFreeze(o: any) {
   Object.freeze(o);
 
@@ -123,7 +121,7 @@ function deepFreeze(o: any) {
 }
 
 export function deepFreezed<T>(o: T): T {
-  const oClone = _.cloneDeep(o);
+  const oClone = structuredClone(o);
   deepFreeze(oClone);
   return oClone;
 }
@@ -169,4 +167,31 @@ export class Deferred<T> {
 
 export function waitMs(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function deepCloneWithHTMLElement<T>(obj: T): T {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+
+  if (obj instanceof HTMLElement) {
+    return obj.cloneNode(true) as T;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(deepCloneWithHTMLElement) as T;
+  }
+
+  try {
+    return structuredClone(obj) as T;
+  } catch (e: unknown) {
+    console.log('Object cannot be structured clone.', e);
+    const clonedObj: Record<string, unknown> = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        clonedObj[key] = deepCloneWithHTMLElement((obj as Record<string, unknown>)[key]);
+      }
+    }
+    return clonedObj as T;
+  }
 }

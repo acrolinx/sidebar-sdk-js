@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash';
-import { AutobindWrapperAttributes } from '../adapters/AdapterInterface';
+import { AutobindWrapperAttributes } from '../adapters/adapter-interface';
 import { isDisplayed } from '../utils/utils';
 
 export function getAutobindWrapperAttributes(element: Element): AutobindWrapperAttributes {
@@ -27,9 +26,9 @@ export function getAutobindWrapperAttributes(element: Element): AutobindWrapperA
     'original-display': isDisplayed(element) ? '' : 'hidden',
   };
 
-  for (const attributeName of element.getAttributeNames().filter((it) => _.startsWith(it, 'aria-'))) {
+  for (const attributeName of element.getAttributeNames().filter((it) => it.startsWith('aria-'))) {
     attributes['original-' + attributeName] = element.getAttribute(attributeName)!;
   }
 
-  return _.omitBy(attributes, _.isEmpty) as AutobindWrapperAttributes;
+  return Object.fromEntries(Object.entries(attributes).filter(([, value]) => value)) as AutobindWrapperAttributes;
 }

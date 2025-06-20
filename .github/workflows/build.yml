@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: "0 2 * * *"
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 jobs:
@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: lts/*
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
       - name: Setup SonarCloud Scan
         uses: sonarsource/sonarqube-scan-action@v5
         with:
@@ -32,4 +35,5 @@ jobs:
           npm ci
           npm run lint
           npm run build
-          npm run buildDoc
+          npm run build-doc
+          npm run coverage

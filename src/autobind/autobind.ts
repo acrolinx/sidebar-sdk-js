@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import _ from 'lodash';
-import { AdapterConf, AdapterInterface, CommonAdapterConf } from '../adapters/AdapterInterface';
-import { AsyncContentEditableAdapter, isStateBasedEditor } from '../adapters/AsyncContentEditableAdapter';
-import { ContentEditableAdapter } from '../adapters/ContentEditableAdapter';
-import { InputAdapter } from '../adapters/InputAdapter';
-import { isQuip, QuipAdapter } from '../adapters/QuipAdapter';
+import { AdapterConf, AdapterInterface, CommonAdapterConf } from '../adapters/adapter-interface';
+import { AsyncContentEditableAdapter, isStateBasedEditor } from '../adapters/async-content-editable-adapter';
+import { ContentEditableAdapter } from '../adapters/content-editable-adapter';
+import { InputAdapter } from '../adapters/input-adapter';
+import { isQuip, QuipAdapter } from '../adapters/quip-adapter';
 import { assign, isIFrame } from '../utils/utils';
 
 // Exported only for testing
@@ -58,7 +57,8 @@ function isProbablySearchField(el: Element) {
   if (el.getAttribute('role') === 'search') {
     return true;
   }
-  return _.includes(PROBABLE_SEARCH_FIELD_NAMES, el.getAttribute('name')) && isAutoCompleteOff(el);
+  const name = el.getAttribute('name');
+  return name && PROBABLE_SEARCH_FIELD_NAMES.includes(name) && isAutoCompleteOff(el);
 }
 
 const UNDESIRED_FIELD_NAMES = ['username', 'login', 'user[login]', 'authenticity_token'];
@@ -71,6 +71,7 @@ function traverseIFrames(el: Element): Element[] {
   if (isIFrame(el)) {
     try {
       return el.contentDocument ? getEditableElements(el.contentDocument) : [];
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       // Caused by same origin policy problems.
       return [];
@@ -100,13 +101,14 @@ function traverseShadowRoots(doc: Document | ShadowRoot | HTMLElement): Element[
 
 // Exported mainly for testing
 export function getEditableElements(doc: Document | ShadowRoot | HTMLElement = document): Element[] {
-  return _(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR))
-    .union(traverseShadowRoots(doc))
-    .flatMap(traverseIFrames)
-    .reject(
-      (el) => isReadOnly(el) || isProbablyCombobox(el) || isProbablySearchField(el) || isProbablyUndesiredField(el),
-    )
-    .value();
+  const temp = Array.from(doc.querySelectorAll(EDITABLE_ELEMENTS_SELECTOR));
+  const shadowRootElements = traverseShadowRoots(doc);
+  const combined = [...temp, ...shadowRootElements];
+  const iframedElements = combined.flatMap(traverseIFrames);
+  const filteredElements = iframedElements.filter(
+    (el) => !isReadOnly(el) && !isProbablyCombobox(el) && !isProbablySearchField(el) && !isProbablyUndesiredField(el),
+  );
+  return filteredElements;
 }
 
 export interface AutobindConfig extends CommonAdapterConf {

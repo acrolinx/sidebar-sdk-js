@@ -1,14 +1,7 @@
 {
-  "singleQuote": true,
+  "semi": true,
   "trailingComma": "all",
-  "overrides": [
-    {
-      "files": ["*.ts", "*.mts"],
-      "options": {
-        "parser": "typescript"
-      }
-    }
-  ],
+  "singleQuote": true,
   "printWidth": 120,
   "tabWidth": 2,
   "endOfLine": "lf"

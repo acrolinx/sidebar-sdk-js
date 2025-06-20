@@ -22,24 +22,19 @@ jobs:
       - name: Run build
         run: |
           npm ci
+          npm run lint
           npm run build
-          npm run buildDoc
+          npm run build-doc
 
       - name: Publish to NPM
         id: publish
         uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_ACCESS_TOKEN }}
+          tag: dev
 
       - name: Push tag
         uses: anothrNick/github-tag-action@v1
         if: steps.publish.outputs.type
         env:
           CUSTOM_TAG: v${{ steps.publish.outputs.version }}
-
-      - name: Publish GitHub pages
-        if: steps.publish.outputs.type
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: docs

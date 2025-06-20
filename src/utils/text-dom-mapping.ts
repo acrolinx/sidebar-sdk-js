@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash';
 import { toSet, deepFreezed } from './utils';
 import { NEW_LINE_TAGS } from './text-extraction';
 
@@ -43,7 +42,7 @@ export function textMapping(text: string, domPositions: DomPosition[]): TextDomM
 export function concatTextMappings(textMappings: TextDomMapping[]): TextDomMapping {
   return {
     text: textMappings.map((tm) => tm.text).join(''),
-    domPositions: _.flatten(textMappings.map((tm) => tm.domPositions)),
+    domPositions: textMappings.flatMap((tm) => tm.domPositions),
   };
 }
 
@@ -58,16 +57,16 @@ const IGNORED_NODE_NAMES = toSet(['SCRIPT', 'STYLE']);
 
 export function extractTextDomMapping(node: Node): TextDomMapping {
   return concatTextMappings(
-    _.map(node.childNodes, (child: Node) => {
+    Array.from(node.childNodes).map((child: Node) => {
       switch (child.nodeType) {
-        case Node.ELEMENT_NODE:
+        case Node.ELEMENT_NODE: {
           const nodeName = child.nodeName;
           if (IGNORED_NODE_NAMES[nodeName]) {
             return EMPTY_TEXT_DOM_MAPPING;
           }
           const childMappings = extractTextDomMapping(<HTMLElement>child);
           if (NEW_LINE_TAGS[nodeName]) {
-            const lastChildDomPos = _.last(childMappings.domPositions);
+            const lastChildDomPos = childMappings.domPositions[childMappings.domPositions.length - 1];
             return {
               text: childMappings.text + '\n',
               domPositions: childMappings.domPositions.concat({
@@ -77,16 +76,18 @@ export function extractTextDomMapping(node: Node): TextDomMapping {
             };
           }
           return childMappings;
-        case Node.TEXT_NODE:
+        }
+        case Node.TEXT_NODE: {
           const textContent = child.textContent;
           if (textContent) {
             return textMapping(
               textContent,
-              _.times(textContent.length, (i: number) => domPosition(child, i)),
+              Array.from({ length: textContent.length }, (_, i) => domPosition(child, i)),
             );
           } else {
             return EMPTY_TEXT_DOM_MAPPING;
           }
+        }
         default:
           return EMPTY_TEXT_DOM_MAPPING;
       }

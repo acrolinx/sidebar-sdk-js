@@ -36,7 +36,9 @@ interface WorkItem<T> {
 }
 
 export class WorkQueue {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private workTodo = new Fifo<WorkItem<any>>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private currentWork?: PromiseLike<any>;
 
   addWork<T>(work: PromiseProvider<T>): Promise<T> {

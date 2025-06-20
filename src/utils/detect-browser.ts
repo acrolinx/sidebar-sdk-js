@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /*
  * Copyright 2018-present Acrolinx GmbH
  *
@@ -59,6 +60,7 @@ function parseUserAgent(userAgentString: string): DetectedBrowser | undefined {
   return (
     BROWSER_AND_USER_AGENT_PATTERNS.map(([browserName, regexp]) => {
       const match = regexp.exec(userAgentString);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let version = match && (match[1].split(/[._]/).slice(0, 3) as any);
 
       if (version && version.length < 3) {

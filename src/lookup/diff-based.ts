@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash';
 import { Match } from '@acrolinx/sidebar-interface';
 import { OffSetAlign, findNewIndex, AlignedMatch } from '../utils/alignment';
 import { extractText } from '../utils/text-extraction';
@@ -74,7 +73,7 @@ export function lookupMatches<T extends Match>(
   matches: T[],
   inputFormat: InputFormat = 'HTML',
 ): AlignedMatch<T>[] {
-  if (_.isEmpty(matches)) {
+  if (matches.length === 0) {
     return [];
   }
 
@@ -98,11 +97,8 @@ export function lookupMatches<T extends Match>(
 
   const containsModifiedMatches =
     inputFormat === 'HTML'
-      ? _.some(alignedMatches, (m) => rangeContent(currentDocument, m) !== m.originalMatch.content)
-      : _.some(
-          alignedMatches,
-          (m) => rangeContent(currentDocument, m) !== rangeContent(checkedDocument, m.originalMatch),
-        );
+      ? alignedMatches.some((m) => rangeContent(currentDocument, m) !== m.originalMatch.content)
+      : alignedMatches.some((m) => rangeContent(currentDocument, m) !== rangeContent(checkedDocument, m.originalMatch));
 
   log('cleanedCheckedDocument', cleanedCheckedDocument);
   log(

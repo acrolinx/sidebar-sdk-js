@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-import * as utils from './utils';
-import { AcrolinxPluginConfig } from '../acrolinx-plugin';
 import { ACROLINX_STARTPAGE_INLINED_HTML } from '@acrolinx/sidebar-startpage';
+import { internalFetch, isFromSameOrigin } from './utils';
+import { AcrolinxPluginConfig } from '../acrolinx-plugin-config';
 
 export class SidebarURLInvalidError extends Error {
   public details: string;
 
-  constructor(public message: string, public configuredSidebarURL: string, public htmlLoaded: string) {
+  constructor(
+    public message: string,
+    public configuredSidebarURL: string,
+    public htmlLoaded: string,
+  ) {
     super(message);
     this.configuredSidebarURL = configuredSidebarURL;
     this.htmlLoaded = htmlLoaded;
@@ -56,36 +60,35 @@ function createCompleteSidebarUrl(sidebarBaseUrl: string) {
  *
  * TODO: Is this function currently used in any of our clients?
  */
-export function loadSidebarCode(sidebarBaseUrl: string) {
+export async function loadSidebarCode(sidebarBaseUrl: string) {
   const completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
-  utils.fetch(completeSidebarUrl, (sidebarHtml) => {
-    if (sidebarHtml.indexOf('<meta name="sidebar-version"') < 0) {
-      try {
-        throw new SidebarURLInvalidError(
-          'It looks like the sidebar URL was configured wrongly.',
-          sidebarBaseUrl,
-          sidebarHtml,
-        );
-      } catch (error) {
-        console.log(error);
-        return;
-      }
+  const sidebarHtml = await internalFetch(completeSidebarUrl);
+  if (sidebarHtml.indexOf('<meta name="sidebar-version"') < 0) {
+    try {
+      throw new SidebarURLInvalidError(
+        'It looks like the sidebar URL was configured wrongly.',
+        sidebarBaseUrl,
+        sidebarHtml,
+      );
+    } catch (error) {
+      console.log(error);
+      return;
     }
+  }
 
-    const withoutComments = sidebarHtml.replace(/<!--[\s\S]*?-->/g, '');
-    const head = document.querySelector('head')!;
+  const withoutComments = sidebarHtml.replace(/<!--[\s\S]*?-->/g, '');
+  const head = document.querySelector('head')!;
 
-    const makeRelativeUrlsAbsolutToSidebar = (url: string) => rebaseRelativeUrl(url, sidebarBaseUrl);
+  const makeRelativeUrlsAbsolutToSidebar = (url: string) => rebaseRelativeUrl(url, sidebarBaseUrl);
 
-    const css = grepAttributeValues(withoutComments, 'href').map(makeRelativeUrlsAbsolutToSidebar);
-    css.forEach((ref) => {
-      head.appendChild(createCSSLinkElement(ref));
-    });
+  const css = grepAttributeValues(withoutComments, 'href').map(makeRelativeUrlsAbsolutToSidebar);
+  css.forEach((ref) => {
+    head.appendChild(createCSSLinkElement(ref));
+  });
 
-    const scripts = grepAttributeValues(withoutComments, 'src').map(makeRelativeUrlsAbsolutToSidebar);
-    scripts.forEach((ref) => {
-      head.appendChild(createScriptElement(ref));
-    });
+  const scripts = grepAttributeValues(withoutComments, 'src').map(makeRelativeUrlsAbsolutToSidebar);
+  scripts.forEach((ref) => {
+    head.appendChild(createScriptElement(ref));
   });
 }
 
@@ -109,7 +112,7 @@ export function rebaseRelativeUrl(url: string, sidebarBaseUrl: string): string {
   }
 }
 
-export function loadSidebarIntoIFrame(
+export async function loadSidebarIntoIFrame(
   config: AcrolinxPluginConfig,
   sidebarIFrameElement: HTMLIFrameElement,
   onSidebarLoaded: () => void,
@@ -121,33 +124,32 @@ export function loadSidebarIntoIFrame(
   }
   const sidebarBaseUrl = config.sidebarUrl;
   const completeSidebarUrl = createCompleteSidebarUrl(sidebarBaseUrl);
-  if (config.useMessageAdapter || (config.useSidebarFromSameOriginDirectly && utils.isFromSameOrigin(sidebarBaseUrl))) {
+  if (config.useMessageAdapter || (config.useSidebarFromSameOriginDirectly && isFromSameOrigin(sidebarBaseUrl))) {
     sidebarIFrameElement.addEventListener('load', onSidebarLoaded);
     sidebarIFrameElement.src = completeSidebarUrl;
   } else {
-    utils.fetch(completeSidebarUrl, (sidebarHtml) => {
-      if (sidebarHtml.indexOf('<meta name="sidebar-version"') < 0) {
-        try {
-          throw new SidebarURLInvalidError(
-            'It looks like the sidebar URL was configured wrongly. ' + 'Check developer console for more information!',
-            completeSidebarUrl,
-            sidebarHtml,
-          );
-        } catch (error) {
-          if (error instanceof Error) {
-            injectSidebarHtml(error.message, sidebarIFrameElement);
-          } else {
-            injectSidebarHtml('Unknown error loading sidebar', sidebarIFrameElement);
-          }
-          console.error(error);
-          return;
+    const sidebarHtml = await internalFetch(completeSidebarUrl);
+    if (sidebarHtml.indexOf('<meta name="sidebar-version"') < 0) {
+      try {
+        throw new SidebarURLInvalidError(
+          'It looks like the sidebar URL was configured wrongly. ' + 'Check developer console for more information!',
+          completeSidebarUrl,
+          sidebarHtml,
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          injectSidebarHtml(error.message, sidebarIFrameElement);
+        } else {
+          injectSidebarHtml('Unknown error loading sidebar', sidebarIFrameElement);
         }
+        console.error(error);
+        return;
       }
+    }
 
-      const sidebarHtmlWithAbsoluteLinks = rebaseRelativeUrls(sidebarHtml, sidebarBaseUrl);
-      injectSidebarHtml(sidebarHtmlWithAbsoluteLinks, sidebarIFrameElement);
-      onSidebarLoaded();
-    });
+    const sidebarHtmlWithAbsoluteLinks = rebaseRelativeUrls(sidebarHtml, sidebarBaseUrl);
+    injectSidebarHtml(sidebarHtmlWithAbsoluteLinks, sidebarIFrameElement);
+    onSidebarLoaded();
   }
 }
 
