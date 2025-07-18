@@ -23,11 +23,44 @@ This guide addresses the issue where the **document name is missing from the upp
 
 ## Problem Description
 
+The customer's file reference issue consists of **two distinct but related sub-issues**:
+
+### Sub-Issue 1: Missing Document Name Display
+
 **Symptom**: The Acrolinx Scorecard displays correctly with check results, but the document name field in the upper right corner is empty or missing.
 
 **Expected Behavior**: The document name should appear in the upper right corner of the scorecard, providing users with context about which document was checked.
 
 **Root Cause**: The `documentReference` field is not being provided to the Acrolinx check request, so the sidebar has no document name to display.
+
+**Impact**: Users lose context about which document was checked, making it difficult to track and manage multiple documents or return to specific content.
+
+### Sub-Issue 2: Hash Characters in File Reference Path
+
+**Symptom**: When `documentReference` defaults to `window.location.href`, the full URL with hash fragments is used as the file reference, resulting in unwieldy references like:
+```
+http://localhost:8000/#/oan/topic/amzn.gcs.id.collectionId.sourceCollection.format.sourceFormat.locale.sourceLocale.topicId.TZfGQTd2yaqcesSUlH
+```
+
+**Expected Behavior**: The file reference should be a clean, meaningful document name like:
+```
+topic-TZfGQTd2yaqcesSUlH.html
+```
+
+**Root Cause**: Hash-based routing URLs (Single Page Applications) break the default document name extraction logic, causing the entire URL to be used instead of extracting meaningful identifiers.
+
+**Impact**: 
+- **Poor User Experience**: Extremely long, technical URLs are displayed instead of user-friendly document names
+- **Reduced Usability**: Users cannot easily identify or distinguish between different documents
+- **Professional Appearance**: Technical URLs make the interface appear unpolished and confusing
+
+### Combined Impact
+
+When both sub-issues occur together:
+1. **No document name appears** (Sub-Issue 1), OR
+2. **Full technical URL appears** instead of clean document name (Sub-Issue 2)
+
+Both scenarios result in poor user experience and reduced context for content management.
 
 ## Understanding Document Reference
 
@@ -704,9 +737,36 @@ Open browser developer tools and check the network tab for the check request. Lo
 
 ## Troubleshooting Common Issues
 
-### Issue 1: Hash (#) Characters in URL Breaking Document Name Extraction
+This section provides specific troubleshooting guidance for each sub-issue identified in the Problem Description.
+
+### Issue 1: Sub-Issue 1 - Missing Document Name Display
+
+**Cause**: Both adapter-level and plugin-level document reference are undefined, causing the document name field to appear empty.
+
+**Diagnosis**: Check if `documentReference` is being provided in either location:
+- Adapter's `extractContentForCheck()` method
+- Plugin's `getDocumentReference()` function
+
+**Solution**: Implement one of Solutions 1 or 2 to provide document reference.
+
+**Quick Fix**:
+```javascript
+// Add to plugin configuration
+const config = {
+  sidebarContainerId: 'acrolinx-sidebar',
+  sidebarUrl: 'https://customer-specific.acrolinx.cloud/sidebar/',
+  checkSelection: true,
+  getDocumentReference: () => {
+    return document.title || 'document.html';
+  }
+};
+```
+
+### Issue 2: Sub-Issue 2 - Hash Characters in File Reference Path
 
 **Cause**: URLs with hash fragments (like `http://localhost:8000/#/oan/topic/...`) prevent proper document name extraction when using default `window.location.href` fallback.
+
+**Diagnosis**: Check if your application uses hash-based routing and the document reference shows the full URL instead of a clean name.
 
 **Example Problem**:
 ```
@@ -714,120 +774,40 @@ Customer URL: http://localhost:8000/#/oan/topic/amzn.gcs.id.collectionId.sourceC
 Working URL: http://localhost:3000/samples/multi-editor.html
 ```
 
-**Solution**: Extract meaningful document name from hash-based URLs:
+**Solution**: Implement Solution 4 (SPA Hash Routing) to extract meaningful document names from hash-based URLs.
 
+**Quick Fix for Customer's Specific Pattern**:
 ```javascript
-function extractDocumentNameFromHashUrl() {
+function extractAmazonDocumentName() {
   const url = window.location.href;
   
-  // Check if URL contains hash with path
-  if (url.includes('#/')) {
-    const hashPart = url.split('#/')[1];
-    
-    // Extract topicId from hash path
-    const topicIdMatch = hashPart.match(/topicId\.([^.]+)/);
+  if (url.includes('#/oan/topic/')) {
+    const hashPart = url.split('#/oan/topic/')[1];
+    const topicIdMatch = hashPart.match(/topicId\.([^./?#]+)$/);
     if (topicIdMatch) {
-      return `${topicIdMatch[1]}.html`;
-    }
-    
-    // Extract last meaningful segment
-    const segments = hashPart.split('/').filter(segment => 
-      segment && !segment.includes('.') && segment.length > 3
-    );
-    
-    if (segments.length > 0) {
-      return `${segments[segments.length - 1]}.html`;
+      return `topic-${topicIdMatch[1]}.html`;
     }
   }
   
-  // Fallback to regular path extraction
-  const pathName = window.location.pathname;
-  return pathName.split('/').pop() || 'document.html';
+  return 'amazon-document.html';
 }
 
-// Use in configuration
+// Use in plugin configuration
 const config = {
   sidebarContainerId: 'acrolinx-sidebar',
   sidebarUrl: 'https://customer-specific.acrolinx.cloud/sidebar/',
   checkSelection: true,
-  getDocumentReference: extractDocumentNameFromHashUrl
+  getDocumentReference: extractAmazonDocumentName
 };
 ```
 
-**Advanced Hash URL Parsing**:
+### Issue 3: Document Name Shows as Full URL (Related to Sub-Issue 2)
 
-```javascript
-function parseHashBasedDocumentName() {
-  const url = window.location.href;
-  console.log('Full URL:', url);
-  
-  if (url.includes('#/')) {
-    const hashPart = url.split('#/')[1];
-    console.log('Hash part:', hashPart);
-    
-    // Strategy 1: Extract topicId (most specific)
-    const topicIdMatch = hashPart.match(/topicId\.([^./?]+)/);
-    if (topicIdMatch) {
-      const topicId = topicIdMatch[1];
-      console.log('Extracted topicId:', topicId);
-      return `topic-${topicId}.html`;
-    }
-    
-    // Strategy 2: Extract from route parameters
-    const routeMatch = hashPart.match(/\/([^\/]+)\/([^\/]+)$/);
-    if (routeMatch) {
-      const [, category, identifier] = routeMatch;
-      return `${category}-${identifier}.html`;
-    }
-    
-    // Strategy 3: Use last meaningful segment
-    const segments = hashPart.split('/').filter(segment => 
-      segment && segment.length > 2 && !segment.includes('.')
-    );
-    
-    if (segments.length > 0) {
-      return `${segments[segments.length - 1]}.html`;
-    }
-  }
-  
-  // Fallback for non-hash URLs
-  const pathName = window.location.pathname;
-  const fileName = pathName.split('/').pop();
-  return fileName || 'document.html';
-}
-```
+**Cause**: No custom document reference provided, falling back to `window.location.href` which includes hash fragments.
 
-### Issue 2: Document Name Still Missing
+**Solution**: Implement any of Solutions 1-4 to provide a proper document name instead of relying on URL fallback.
 
-**Cause**: Both adapter and plugin-level document reference are undefined.
-
-**Solution**: Add debugging to verify your document name source:
-
-```javascript
-function debugDocumentName() {
-  console.log('=== Document Name Debug ===');
-  console.log('document.title:', document.title);
-  console.log('window.location.href:', window.location.href);
-  console.log('window.location.pathname:', window.location.pathname);
-  console.log('window.location.hash:', window.location.hash);
-  console.log('Custom function result:', getCurrentDocumentName());
-  
-  // Test hash URL parsing
-  if (window.location.hash) {
-    console.log('Hash-based document name:', parseHashBasedDocumentName());
-  }
-}
-
-debugDocumentName();
-```
-
-### Issue 2: Document Name Shows as URL
-
-**Cause**: No custom document reference provided, falling back to `window.location.href`.
-
-**Solution**: Implement one of the solutions above to provide a proper document name.
-
-### Issue 3: Document Name Not Updating
+### Issue 4: Document Name Not Updating
 
 **Cause**: Document reference is cached or not being re-evaluated.
 
@@ -870,40 +850,21 @@ The document name in the Acrolinx Scorecard is controlled by the `documentRefere
 
 ## Key Takeaways
 
-1. **Hash URLs Break Default Extraction**: Single Page Applications (SPAs) using hash-based routing (like `#/path/to/resource`) prevent the default `window.location.href` fallback from extracting meaningful document names.
+The customer's file reference issue consists of two distinct sub-issues that require different solutions:
 
-2. **Custom Extraction Required**: For hash-based URLs, you must implement custom document name extraction logic that parses the hash fragment to extract meaningful identifiers.
+### Sub-Issue 1: Missing Document Name Display
+1. **Always Provide Document Reference**: The `documentReference` field is essential for providing context in the Acrolinx Scorecard. Always ensure this field is populated with a meaningful document name through either the adapter's `extractContentForCheck()` method or the plugin's `getDocumentReference()` configuration function.
 
-3. **Specific Pattern Matching**: The customer's URL pattern `#/oan/topic/amzn.gcs.id...topicId.TZfGQTd2yaqcesSUlH` requires specific regex matching to extract the `topicId` value.
+2. **Impact**: When missing, users lose context about which document was checked, making it difficult to track and manage multiple documents.
 
-4. **Always Provide Document Reference**: The `documentReference` field is essential for providing context in the Acrolinx Scorecard. Always ensure this field is populated with a meaningful document name through either the adapter's `extractContentForCheck()` method or the plugin's `getDocumentReference()` configuration function.
+### Sub-Issue 2: Hash Characters in File Reference Path
+3. **Hash URLs Break Default Extraction**: Single Page Applications (SPAs) using hash-based routing (like `#/path/to/resource`) prevent the default `window.location.href` fallback from extracting meaningful document names.
 
-**Critical Fix for Hash-Based URLs**: Implement the `extractAmazonDocumentName()` function provided in Solution 4 to properly extract document names from hash-based routing URLs.
+4. **Custom Extraction Required**: For hash-based URLs, you must implement custom document name extraction logic that parses the hash fragment to extract meaningful identifiers.
 
-## Source Attribution
+5. **Specific Pattern Matching**: The customer's URL pattern `#/oan/topic/amzn.gcs.id...topicId.TZfGQTd2yaqcesSUlH` requires specific regex matching to extract the `topicId` value.
 
-This troubleshooting guide combines information from multiple sources:
+6. **Impact**: Without proper extraction, extremely long technical URLs are displayed instead of user-friendly document names, resulting in poor user experience and reduced usability.
 
-### **Official Acrolinx SDK Documentation & Codebase**
-- `documentReference` field specification in `AdapterInterface.ts`
-- `getDocumentReference()` function in `AcrolinxPluginConfig.ts`
-- Core SDK patterns and API usage
-- Adapter and plugin configuration methods
-
-### **Acrolinx Integration Experience & Analysis**
-- Hash URL parsing solutions (Solution 4)
-- Multi-document management patterns (Solution 5)
-- Best practices for document name handling
-- Debugging and troubleshooting techniques
-
-### **Customer-Specific Analysis**
-- Hash URL issue identification from UAT testing
-- Specific pattern matching for customer's URL structure
-- `extractAmazonDocumentName()` function implementation
-
-### **Supplementary Framework Patterns**
-- React component integration examples (not part of official SDK)
-- Angular service integration examples (not part of official SDK)
-- These are provided as helpful implementation guidance based on common integration scenarios
-
-**Note**: All core SDK functionality (Solutions 1-2) is based on official Acrolinx SDK specifications. Hash URL handling and framework-specific examples are supplementary patterns developed through integration experience. 
+### Combined Solution
+**Critical Fix for Hash-Based URLs**: Implement the `extractAmazonDocumentName()` function provided in Solution 4 to properly extract document names from hash-based routing URLs. This addresses both sub-issues by ensuring a meaningful document name is provided and properly extracted from hash URLs. 
