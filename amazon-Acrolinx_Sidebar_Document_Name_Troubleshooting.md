@@ -1,4 +1,4 @@
-# Acrolinx Sidebar SDK: Document Name Display Troubleshooting Guide
+# Acrolinx Sidebar SDK-JS: Document Name Display And Proper Article Path Resource Troubleshooting Guide
 
 ## Legal Notice and Usage Restrictions
 
@@ -19,7 +19,7 @@ This document and all associated materials are the intellectual property of Acro
 
 ## Overview
 
-This guide addresses the issue where the **document name is missing from the upper right corner** of the Acrolinx Scorecard. When a check is completed, the scorecard should display the document name (e.g., "multi-editor.html") in the upper right corner, but some integrations show an empty space instead.
+This guide addresses the issue where the **document name is missing from the upper right corner** of the Acrolinx Scorecard. When a check is completed, the scorecard should display the document name (e.g., "multi-editor.html") in the upper right corner, but some custom Sidebar JS SDK integrations show an empty space instead.
 
 ## Problem Description
 
@@ -31,15 +31,19 @@ This guide addresses the issue where the **document name is missing from the upp
 
 ## Understanding Document Reference
 
+**Source**: This information is based on official Acrolinx SDK documentation and codebase analysis.
+
 The document name displayed in the scorecard comes from the `documentReference` field in the check request. This field can be provided in three ways (in order of precedence):
 
-1. **Adapter-level**: Through the adapter's `extractContentForCheck()` method
-2. **Plugin-level**: Through the plugin configuration's `getDocumentReference()` function  
+1. **Adapter-level**: Through the adapter's `extractContentForCheck()` method ([AdapterInterface.ts](https://github.com/acrolinx/sidebar-sdk-js/blob/57c3d243d8c6e1360a6ad5b283bafc38dab67def/src/adapters/AdapterInterface.ts#L49))
+2. **Plugin-level**: Through the plugin configuration's `getDocumentReference()` function ([acrolinx-plugin.ts](https://github.com/acrolinx/sidebar-sdk-js/blob/57c3d243d8c6e1360a6ad5b283bafc38dab67def/src/acrolinx-plugin.ts#L60))
 3. **Default fallback**: Uses `window.location.href` if neither above is provided
 
 ## Solutions
 
 ### Solution 1: Set Document Reference in Adapter (Recommended)
+
+**Source**: Based on official Acrolinx SDK AdapterInterface specification.
 
 The most direct approach is to return the `documentReference` from your adapter's `extractContentForCheck()` method:
 
@@ -110,6 +114,8 @@ const adapter = new DynamicDocumentAdapter(editorElement, () => {
 
 ### Solution 2: Set Document Reference in Plugin Configuration
 
+**Source**: Based on official Acrolinx SDK AcrolinxPluginConfig specification.
+
 Configure the document reference at the plugin level using the `getDocumentReference` function:
 
 ```javascript
@@ -162,29 +168,6 @@ getDocumentReference: () => {
 
 ### Solution 3: CMS-Specific Implementations
 
-#### WordPress Integration
-```javascript
-getDocumentReference: () => {
-  // Get post title from WordPress
-  const postTitle = document.querySelector('.entry-title, .post-title, h1.title');
-  if (postTitle) {
-    return postTitle.textContent.trim() + '.html';
-  }
-  return 'wordpress-post.html';
-}
-```
-
-#### Drupal Integration
-```javascript
-getDocumentReference: () => {
-  // Get node title from Drupal
-  const nodeTitle = document.querySelector('.node-title, .page-title, h1.title');
-  if (nodeTitle) {
-    return nodeTitle.textContent.trim() + '.html';
-  }
-  return 'drupal-node.html';
-}
-```
 
 #### Custom CMS Integration
 ```javascript
@@ -196,6 +179,8 @@ getDocumentReference: () => {
 ```
 
 ### Solution 4: Single Page Applications (SPAs) with Hash Routing
+
+**Source**: Based on Acrolinx integration experience and UAT testing analysis of hash URL issues.
 
 For SPAs using hash-based routing (like Angular, React Router hash mode):
 
@@ -272,6 +257,8 @@ const config = {
 
 **Customer-Specific Implementation** (for the exact URL pattern shown):
 
+**Source**: Based on customer UAT testing feedback and hash URL analysis.
+
 ```javascript
 function extractAmazonDocumentName() {
   const url = window.location.href;
@@ -322,6 +309,8 @@ const config = {
 
 ### Solution 5: Multi-Document Applications
 
+**Source**: Based on Acrolinx integration experience and multi-document management patterns.
+
 For applications managing multiple documents simultaneously:
 
 ```javascript
@@ -368,7 +357,9 @@ const plugin = manager.createDocumentAdapter('doc1', 'article-1.html', editorEle
 
 ## Implementation Examples
 
-### Example 1: React Component Integration
+**Note**: The following examples demonstrate supplementary integration patterns for common frameworks. These are not part of the official Acrolinx SDK documentation but are provided as helpful implementation guidance based on integration experience.
+
+### Example 1: React Component Integration (Supplementary Pattern)
 
 ```javascript
 import React, { useEffect, useRef, useState } from 'react';
@@ -422,7 +413,7 @@ function DocumentEditor({ documentName, content }) {
 }
 ```
 
-### Example 2: Angular Service Integration
+### Example 2: Angular Service Integration (Supplementary Pattern)
 
 ```typescript
 import { Injectable } from '@angular/core';
@@ -466,7 +457,7 @@ export class AcrolinxService {
 }
 ```
 
-### Example 3: Vanilla JavaScript Implementation
+### Example 3: Vanilla JavaScript Implementation (Core SDK Pattern)
 
 ```javascript
 class DocumentNameManager {
@@ -512,6 +503,8 @@ manager.updateDocumentName('updated-article.html');
 ```
 
 ## Common Patterns and Best Practices
+
+**Source**: Based on Acrolinx integration experience and best practices recommendations.
 
 ### 1. File Extension Handling
 
@@ -885,4 +878,32 @@ The document name in the Acrolinx Scorecard is controlled by the `documentRefere
 
 4. **Always Provide Document Reference**: The `documentReference` field is essential for providing context in the Acrolinx Scorecard. Always ensure this field is populated with a meaningful document name through either the adapter's `extractContentForCheck()` method or the plugin's `getDocumentReference()` configuration function.
 
-**Critical Fix for Hash-Based URLs**: Implement the `extractAmazonDocumentName()` function provided in Solution 4 to properly extract document names from hash-based routing URLs. 
+**Critical Fix for Hash-Based URLs**: Implement the `extractAmazonDocumentName()` function provided in Solution 4 to properly extract document names from hash-based routing URLs.
+
+## Source Attribution
+
+This troubleshooting guide combines information from multiple sources:
+
+### **Official Acrolinx SDK Documentation & Codebase**
+- `documentReference` field specification in `AdapterInterface.ts`
+- `getDocumentReference()` function in `AcrolinxPluginConfig.ts`
+- Core SDK patterns and API usage
+- Adapter and plugin configuration methods
+
+### **Acrolinx Integration Experience & Analysis**
+- Hash URL parsing solutions (Solution 4)
+- Multi-document management patterns (Solution 5)
+- Best practices for document name handling
+- Debugging and troubleshooting techniques
+
+### **Customer-Specific Analysis**
+- Hash URL issue identification from UAT testing
+- Specific pattern matching for customer's URL structure
+- `extractAmazonDocumentName()` function implementation
+
+### **Supplementary Framework Patterns**
+- React component integration examples (not part of official SDK)
+- Angular service integration examples (not part of official SDK)
+- These are provided as helpful implementation guidance based on common integration scenarios
+
+**Note**: All core SDK functionality (Solutions 1-2) is based on official Acrolinx SDK specifications. Hash URL handling and framework-specific examples are supplementary patterns developed through integration experience. 
