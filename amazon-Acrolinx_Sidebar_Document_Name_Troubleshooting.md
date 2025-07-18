@@ -195,7 +195,132 @@ getDocumentReference: () => {
 }
 ```
 
-### Solution 4: Multi-Document Applications
+### Solution 4: Single Page Applications (SPAs) with Hash Routing
+
+For SPAs using hash-based routing (like Angular, React Router hash mode):
+
+```javascript
+class SPADocumentNameExtractor {
+  constructor() {
+    this.routePatterns = {
+      // Define patterns for your SPA routes
+      topic: /topicId\.([^./?]+)/,
+      article: /articleId\.([^./?]+)/,
+      document: /documentId\.([^./?]+)/,
+      // Add more patterns as needed
+    };
+  }
+
+  extractFromHash() {
+    const hash = window.location.hash;
+    if (!hash || !hash.includes('#/')) {
+      return null;
+    }
+
+    const hashPath = hash.substring(2); // Remove '#/'
+    console.log('Parsing hash path:', hashPath);
+
+    // Try each pattern
+    for (const [type, pattern] of Object.entries(this.routePatterns)) {
+      const match = hashPath.match(pattern);
+      if (match) {
+        const id = match[1];
+        console.log(`Found ${type} ID:`, id);
+        return `${type}-${id}.html`;
+      }
+    }
+
+    // Fallback: use last meaningful segment
+    const segments = hashPath.split('/').filter(segment => 
+      segment && segment.length > 2 && !segment.includes('.')
+    );
+
+    if (segments.length > 0) {
+      return `${segments[segments.length - 1]}.html`;
+    }
+
+    return 'spa-document.html';
+  }
+
+  getDocumentName() {
+    // Try hash extraction first
+    const hashName = this.extractFromHash();
+    if (hashName) {
+      return hashName;
+    }
+
+    // Fallback to title or pathname
+    if (document.title && document.title !== 'Document') {
+      return document.title.replace(/[^a-zA-Z0-9\-_.]/g, '-') + '.html';
+    }
+
+    const pathName = window.location.pathname;
+    return pathName.split('/').pop() || 'document.html';
+  }
+}
+
+// Usage for customer's specific URL pattern
+const spaExtractor = new SPADocumentNameExtractor();
+
+const config = {
+  sidebarContainerId: 'acrolinx-sidebar',
+  sidebarUrl: 'https://customer-specific.acrolinx.cloud/sidebar/',
+  checkSelection: true,
+  getDocumentReference: () => spaExtractor.getDocumentName()
+};
+```
+
+**Customer-Specific Implementation** (for the exact URL pattern shown):
+
+```javascript
+function extractAmazonDocumentName() {
+  const url = window.location.href;
+  
+  // Handle the specific Amazon URL pattern
+  // http://localhost:8000/#/oan/topic/amzn.gcs.id.collectionId.sourceCollection.format.sourceFormat.locale.sourceLocale.topicId.TZfGQTd2yaqcesSUlH
+  
+  if (url.includes('#/oan/topic/')) {
+    const hashPart = url.split('#/oan/topic/')[1];
+    
+    // Extract topicId (the last segment after the last dot)
+    const topicIdMatch = hashPart.match(/topicId\.([^./?#]+)$/);
+    if (topicIdMatch) {
+      const topicId = topicIdMatch[1];
+      return `topic-${topicId}.html`;
+    }
+    
+    // Fallback: extract any meaningful identifier
+    const segments = hashPart.split('.');
+    const lastSegment = segments[segments.length - 1];
+    if (lastSegment && lastSegment.length > 3) {
+      return `document-${lastSegment}.html`;
+    }
+  }
+  
+  // General hash routing fallback
+  if (url.includes('#/')) {
+    const hashPart = url.split('#/')[1];
+    const pathSegments = hashPart.split('/');
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    
+    if (lastSegment && lastSegment.length > 3) {
+      return `${lastSegment}.html`;
+    }
+  }
+  
+  return 'amazon-document.html';
+}
+
+// Use in plugin configuration
+const config = {
+  sidebarContainerId: 'acrolinx-sidebar',
+  sidebarUrl: 'https://customer-specific.acrolinx.cloud/sidebar/',
+  checkSelection: true,
+  getDocumentReference: extractAmazonDocumentName
+};
+```
+
+### Solution 5: Multi-Document Applications
 
 For applications managing multiple documents simultaneously:
 
@@ -511,7 +636,48 @@ adapter.registerCheckCall = function(checkInfo) {
 };
 ```
 
-### 4. Inspect Network Requests
+### 4. Debug Hash-Based URLs
+
+For SPAs with hash routing, add specific debugging:
+
+```javascript
+function debugHashBasedUrl() {
+  console.log('=== Hash URL Debug ===');
+  console.log('Full URL:', window.location.href);
+  console.log('Hash:', window.location.hash);
+  console.log('Pathname:', window.location.pathname);
+  
+  if (window.location.hash.includes('#/')) {
+    const hashPart = window.location.hash.substring(2);
+    console.log('Hash path:', hashPart);
+    
+    // Test topicId extraction
+    const topicIdMatch = hashPart.match(/topicId\.([^./?#]+)/);
+    if (topicIdMatch) {
+      console.log('Extracted topicId:', topicIdMatch[1]);
+    }
+    
+    // Test segment extraction
+    const segments = hashPart.split('/');
+    console.log('URL segments:', segments);
+    
+    // Test the customer's specific pattern
+    if (hashPart.includes('oan/topic/')) {
+      const topicPart = hashPart.split('oan/topic/')[1];
+      console.log('Topic part:', topicPart);
+      
+      const dotSegments = topicPart.split('.');
+      console.log('Dot segments:', dotSegments);
+      console.log('Last segment:', dotSegments[dotSegments.length - 1]);
+    }
+  }
+}
+
+// Run this in browser console
+debugHashBasedUrl();
+```
+
+### 5. Inspect Network Requests
 
 Open browser developer tools and check the network tab for the check request. Look for the `documentReference` field in the request payload:
 
@@ -522,6 +688,15 @@ Open browser developer tools and check the network tab for the check request. Lo
     "documentReference": "should-be-here.html"
   }
 }
+```
+
+**Expected vs Actual**:
+```javascript
+// Customer's problematic URL should produce:
+// documentReference: "topic-TZfGQTd2yaqcesSUlH.html"
+
+// Instead of:
+// documentReference: "http://localhost:8000/#/oan/topic/amzn.gcs.id.collectionId.sourceCollection.format.sourceFormat.locale.sourceLocale.topicId.TZfGQTd2yaqcesSUlH"
 ```
 
 ## Testing Checklist
@@ -536,7 +711,100 @@ Open browser developer tools and check the network tab for the check request. Lo
 
 ## Troubleshooting Common Issues
 
-### Issue 1: Document Name Still Missing
+### Issue 1: Hash (#) Characters in URL Breaking Document Name Extraction
+
+**Cause**: URLs with hash fragments (like `http://localhost:8000/#/oan/topic/...`) prevent proper document name extraction when using default `window.location.href` fallback.
+
+**Example Problem**:
+```
+Customer URL: http://localhost:8000/#/oan/topic/amzn.gcs.id.collectionId.sourceCollection.format.sourceFormat.locale.sourceLocale.topicId.TZfGQTd2yaqcesSUlH
+Working URL: http://localhost:3000/samples/multi-editor.html
+```
+
+**Solution**: Extract meaningful document name from hash-based URLs:
+
+```javascript
+function extractDocumentNameFromHashUrl() {
+  const url = window.location.href;
+  
+  // Check if URL contains hash with path
+  if (url.includes('#/')) {
+    const hashPart = url.split('#/')[1];
+    
+    // Extract topicId from hash path
+    const topicIdMatch = hashPart.match(/topicId\.([^.]+)/);
+    if (topicIdMatch) {
+      return `${topicIdMatch[1]}.html`;
+    }
+    
+    // Extract last meaningful segment
+    const segments = hashPart.split('/').filter(segment => 
+      segment && !segment.includes('.') && segment.length > 3
+    );
+    
+    if (segments.length > 0) {
+      return `${segments[segments.length - 1]}.html`;
+    }
+  }
+  
+  // Fallback to regular path extraction
+  const pathName = window.location.pathname;
+  return pathName.split('/').pop() || 'document.html';
+}
+
+// Use in configuration
+const config = {
+  sidebarContainerId: 'acrolinx-sidebar',
+  sidebarUrl: 'https://customer-specific.acrolinx.cloud/sidebar/',
+  checkSelection: true,
+  getDocumentReference: extractDocumentNameFromHashUrl
+};
+```
+
+**Advanced Hash URL Parsing**:
+
+```javascript
+function parseHashBasedDocumentName() {
+  const url = window.location.href;
+  console.log('Full URL:', url);
+  
+  if (url.includes('#/')) {
+    const hashPart = url.split('#/')[1];
+    console.log('Hash part:', hashPart);
+    
+    // Strategy 1: Extract topicId (most specific)
+    const topicIdMatch = hashPart.match(/topicId\.([^./?]+)/);
+    if (topicIdMatch) {
+      const topicId = topicIdMatch[1];
+      console.log('Extracted topicId:', topicId);
+      return `topic-${topicId}.html`;
+    }
+    
+    // Strategy 2: Extract from route parameters
+    const routeMatch = hashPart.match(/\/([^\/]+)\/([^\/]+)$/);
+    if (routeMatch) {
+      const [, category, identifier] = routeMatch;
+      return `${category}-${identifier}.html`;
+    }
+    
+    // Strategy 3: Use last meaningful segment
+    const segments = hashPart.split('/').filter(segment => 
+      segment && segment.length > 2 && !segment.includes('.')
+    );
+    
+    if (segments.length > 0) {
+      return `${segments[segments.length - 1]}.html`;
+    }
+  }
+  
+  // Fallback for non-hash URLs
+  const pathName = window.location.pathname;
+  const fileName = pathName.split('/').pop();
+  return fileName || 'document.html';
+}
+```
+
+### Issue 2: Document Name Still Missing
 
 **Cause**: Both adapter and plugin-level document reference are undefined.
 
@@ -547,7 +815,14 @@ function debugDocumentName() {
   console.log('=== Document Name Debug ===');
   console.log('document.title:', document.title);
   console.log('window.location.href:', window.location.href);
+  console.log('window.location.pathname:', window.location.pathname);
+  console.log('window.location.hash:', window.location.hash);
   console.log('Custom function result:', getCurrentDocumentName());
+  
+  // Test hash URL parsing
+  if (window.location.hash) {
+    console.log('Hash-based document name:', parseHashBasedDocumentName());
+  }
 }
 
 debugDocumentName();
@@ -600,4 +875,14 @@ getDocumentReference: () => {
 
 The document name in the Acrolinx Scorecard is controlled by the `documentReference` field in the check request. By implementing one of the solutions above, you can ensure that your integration displays meaningful document names that help users understand which document was checked.
 
-**Key Takeaway**: The `documentReference` field is essential for providing context in the Acrolinx Scorecard. Always ensure this field is populated with a meaningful document name through either the adapter's `extractContentForCheck()` method or the plugin's `getDocumentReference()` configuration function. 
+## Key Takeaways
+
+1. **Hash URLs Break Default Extraction**: Single Page Applications (SPAs) using hash-based routing (like `#/path/to/resource`) prevent the default `window.location.href` fallback from extracting meaningful document names.
+
+2. **Custom Extraction Required**: For hash-based URLs, you must implement custom document name extraction logic that parses the hash fragment to extract meaningful identifiers.
+
+3. **Specific Pattern Matching**: The customer's URL pattern `#/oan/topic/amzn.gcs.id...topicId.TZfGQTd2yaqcesSUlH` requires specific regex matching to extract the `topicId` value.
+
+4. **Always Provide Document Reference**: The `documentReference` field is essential for providing context in the Acrolinx Scorecard. Always ensure this field is populated with a meaningful document name through either the adapter's `extractContentForCheck()` method or the plugin's `getDocumentReference()` configuration function.
+
+**Critical Fix for Hash-Based URLs**: Implement the `extractAmazonDocumentName()` function provided in Solution 4 to properly extract document names from hash-based routing URLs. 
