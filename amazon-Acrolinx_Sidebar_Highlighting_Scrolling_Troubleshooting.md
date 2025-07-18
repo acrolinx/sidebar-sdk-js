@@ -1,5 +1,22 @@
 # Acrolinx Sidebar SDK: Highlighting and Scrolling Troubleshooting Guide
 
+## Legal Notice and Usage Restrictions
+
+**CONFIDENTIAL AND PROPRIETARY**
+
+This document and all associated materials are the intellectual property of Acrolinx GmbH. All rights reserved.
+
+**Usage Restrictions:**
+- This document is provided exclusively for support and use within the current project engagement
+- No part of this document may be reproduced, distributed, or transmitted in any form or by any means without prior written permission from Acrolinx GmbH
+- This material is confidential and proprietary to Acrolinx GmbH and is intended solely for the authorized recipient
+- Any unauthorized use, reproduction, or distribution is strictly prohibited
+
+**Copyright Notice:**
+© 2025 Acrolinx GmbH. All rights reserved.
+
+---
+
 ## Overview
 
 This guide addresses common issues with text highlighting and page navigation in Acrolinx Sidebar SDK integrations. When a check is completed, the sidebar should highlight flagged text and automatically scroll to bring the highlighted content into view.
@@ -197,138 +214,196 @@ adapter.selectRanges = async function(checkId, matches) {
 
 ### Custom Adapter Implementation
 
-When building a custom adapter, you must implement the `AdapterInterface` or `AsyncAdapterInterface`. Here are the critical methods for highlighting and scrolling:
+**Key Principle**: When building a custom adapter, **always use your editor's native API** for selection and scrolling. The Acrolinx SDK provides text position mapping utilities, but the actual selection and scrolling must be done through your editor's API.
+
+#### Essential Pattern for Custom Adapters
+
+Without knowing which specific editor you're integrating with, the general pattern is:
+
+```javascript
+selectRanges(checkId: string, matches: Match[]): void {
+  // 1. Map Acrolinx text positions to your editor's coordinate system
+  const editorMatches = this.mapMatchesToEditorPositions(matches);
+  
+  // 2. Use YOUR editor's native selection API
+  const firstMatch = editorMatches[0];
+  myLovelyEditor.select(firstMatch.start, firstMatch.end);
+  
+  // 3. Use YOUR editor's native scrolling API
+  myLovelyEditor.scrollToSelection();
+}
+```
+
+The key is that `myLovelyEditor.select()` and `myLovelyEditor.scrollToSelection()` must be replaced with your actual editor's API methods. Common examples:
+
+- **CodeMirror**: `editor.setSelection(from, to)` and `editor.scrollIntoView(pos)`
+- **Monaco**: `editor.setSelection(range)` and `editor.revealLine(lineNumber)`
+- **Quill**: `editor.setSelection(index, length)` and `editor.scrollIntoView()`
+- **Draft.js**: Custom selection state management and scrolling
+- **Slate**: Custom selection operations and scrolling
+
+#### Complete Implementation Example
 
 ```javascript
 import { AdapterInterface, Match, MatchWithReplacement } from '@acrolinx/sidebar-sdk';
 
 class CustomEditorAdapter implements AdapterInterface {
-  constructor(private element: HTMLElement, private config: any) {}
+  constructor(private element: HTMLElement, private myLovelyEditor: any, private config: any) {}
 
-  // Required for highlighting - select ranges in your editor
+  // Required for highlighting - CRITICAL: Use your editor's native selection API
   selectRanges(checkId: string, matches: Match[]): void {
-    // 1. Find the text positions in your editor
-    const alignedMatches = this.lookupMatches(matches);
+    if (!matches || matches.length === 0) return;
+
+    // 1. Map Acrolinx matches to your editor's text positions
+    const editorMatches = this.mapMatchesToEditorPositions(matches);
     
-    // 2. Create selection in your editor
-    this.createSelection(alignedMatches);
+    // 2. Use YOUR EDITOR'S API for selection (not DOM manipulation)
+    const firstMatch = editorMatches[0];
+    this.myLovelyEditor.select(firstMatch.start, firstMatch.end);
     
-    // 3. Scroll to the selection
-    this.scrollToSelection();
+    // 3. Use YOUR EDITOR'S API for scrolling (not generic scrollIntoView)
+    this.myLovelyEditor.scrollToSelection();
   }
 
   // Required for text replacement
   replaceRanges(checkId: string, matchesWithReplacement: MatchWithReplacement[]): void {
-    // 1. Select the ranges to replace
-    this.selectRanges(checkId, matchesWithReplacement);
+    // Apply replacements in reverse order to maintain positions
+    const sortedMatches = [...matchesWithReplacement].sort((a, b) => b.range[0] - a.range[0]);
     
-    // 2. Perform the replacement in your editor
-    this.performReplacement(matchesWithReplacement);
+    sortedMatches.forEach(match => {
+      const editorMatch = this.mapMatchToEditorPosition(match);
+      
+      // Use YOUR EDITOR'S API for text replacement
+      this.myLovelyEditor.replaceText(
+        editorMatch.start, 
+        editorMatch.end, 
+        match.replacement
+      );
+    });
     
-    // 3. Restore selection and scroll
-    this.restoreSelectionAfterReplacement(matchesWithReplacement);
+    // Scroll to show the changes
+    this.myLovelyEditor.scrollToSelection();
   }
 
-  // Critical for scrolling - implement proper scrolling logic
-  private scrollToSelection(): void {
-    const selection = this.getCurrentSelection();
-    if (!selection) return;
-
-    // Get the element containing the selection
-    const selectedElement = this.getSelectedElement(selection);
+  // Map Acrolinx positions to your editor's coordinate system
+  private mapMatchesToEditorPositions(matches: Match[]): any[] {
+    // Use SDK utilities to align text positions
+    import { lookupMatches, extractTextDomMapping } from '@acrolinx/sidebar-sdk';
     
-    // Use the SDK's scrolling utilities
-    import { scrollIntoViewCenteredWithFallback } from '@acrolinx/sidebar-sdk';
-    scrollIntoViewCenteredWithFallback(selectedElement);
+    const textMapping = extractTextDomMapping(this.element);
+    const alignedMatches = lookupMatches(
+      this.lastContentChecked, 
+      textMapping.text, 
+      matches
+    );
+    
+    return alignedMatches.map(match => ({
+      start: this.convertToEditorPosition(match.range[0]),
+      end: this.convertToEditorPosition(match.range[1]),
+      originalMatch: match.originalMatch
+    }));
   }
 
-  // Helper method to get current selection
-  private getCurrentSelection(): any {
-    // Implement based on your editor's API
-    // Example for a custom editor:
-    return this.editor.getSelection();
+  private mapMatchToEditorPosition(match: Match): any {
+    return {
+      start: this.convertToEditorPosition(match.range[0]),
+      end: this.convertToEditorPosition(match.range[1])
+    };
   }
 
-  // Helper method to get element containing selection
-  private getSelectedElement(selection: any): HTMLElement {
-    // Implement based on your editor's API
-    // Example for a custom editor:
-    const range = selection.getRange();
-    return range.startContainer.parentElement;
+  // Convert from DOM text position to your editor's position format
+  private convertToEditorPosition(domPosition: number): any {
+    // This depends entirely on your editor's API
+    // Examples for different editor types:
+    
+    // For line/column based editors:
+    // return this.myLovelyEditor.positionFromOffset(domPosition);
+    
+    // For node-based editors:
+    // return this.myLovelyEditor.getPositionFromIndex(domPosition);
+    
+    // For simple offset-based editors:
+    // return domPosition;
+    
+    // Implement based on YOUR editor's coordinate system
+    return this.myLovelyEditor.offsetToPosition(domPosition);
   }
 
   // Required interface methods
   extractContentForCheck(opts: any): any {
-    // Return content from your editor
     return {
-      content: this.editor.getContent(),
-      selection: opts.checkSelection ? this.getSelection() : undefined
+      content: this.myLovelyEditor.getContent(), // Use editor's API
+      selection: opts.checkSelection ? this.myLovelyEditor.getSelection() : undefined
     };
   }
 
   registerCheckCall(checkInfo: any): void {
-    // Store check information if needed
     this.currentCheck = checkInfo;
   }
 
   registerCheckResult(checkResult: any): void {
-    // Handle check results
     this.lastCheckResult = checkResult;
+    this.lastContentChecked = checkResult.content;
   }
 }
 ```
 
 ### Common Custom Adapter Issues
 
-#### Missing Selection Implementation
+#### 1. Using DOM Manipulation Instead of Editor API
 ```javascript
-// Problem: selectRanges not implemented or incomplete
+// Problem: Trying to manipulate DOM directly
 selectRanges(checkId: string, matches: Match[]): void {
-  // Missing implementation
+  const range = document.createRange();
+  range.setStart(textNode, startOffset);
+  range.setEnd(textNode, endOffset);
+  // This breaks editor state and doesn't work with complex editors
 }
 
-// Solution: Implement proper selection
+// Solution: Use your editor's native selection API
 selectRanges(checkId: string, matches: Match[]): void {
-  // 1. Map matches to editor positions
-  const editorMatches = this.mapMatchesToEditor(matches);
+  const editorMatches = this.mapMatchesToEditorPositions(matches);
+  const firstMatch = editorMatches[0];
   
-  // 2. Create selection in editor
-  this.editor.setSelection(editorMatches[0].start, editorMatches[0].end);
-  
-  // 3. Scroll to selection
-  this.scrollToSelection();
+  // Use YOUR editor's API - examples:
+  this.myLovelyEditor.select(firstMatch.start, firstMatch.end);        // Generic
+  this.myCodeMirror.setSelection(firstMatch.start, firstMatch.end);    // CodeMirror
+  this.myMonacoEditor.setSelection(firstMatch.range);                  // Monaco
+  this.myQuillEditor.setSelection(firstMatch.index, firstMatch.length); // Quill
 }
 ```
 
-#### Incorrect Scrolling Implementation
+#### 2. Generic Scrolling Instead of Editor-Specific Scrolling
 ```javascript
-// Problem: Using basic scrollIntoView without offset
+// Problem: Using generic scrollIntoView
 private scrollToSelection(): void {
   const element = this.getSelectedElement();
-  element.scrollIntoView(); // No offset consideration
+  element.scrollIntoView(); // Doesn't work well with complex editors
 }
 
-// Solution: Use SDK scrolling with proper offset
+// Solution: Use your editor's native scrolling
 private scrollToSelection(): void {
-  const element = this.getSelectedElement();
-  import { scrollIntoView } from '@acrolinx/sidebar-sdk';
-  scrollIntoView(element, this.config.scrollOffsetY || 0);
+  // Use YOUR editor's API - examples:
+  this.myLovelyEditor.scrollToSelection();                    // Generic
+  this.myCodeMirror.scrollIntoView(this.myCodeMirror.getCursor()); // CodeMirror
+  this.myMonacoEditor.revealLine(lineNumber);                 // Monaco
+  this.myQuillEditor.scrollIntoView();                        // Quill
 }
 ```
 
-#### Text Position Mapping Issues
+#### 3. Incorrect Position Mapping
 ```javascript
-// Problem: Incorrect text position mapping
+// Problem: Assuming direct character mapping
 private mapMatchesToEditor(matches: Match[]): any[] {
-  // Simple character count mapping (often incorrect)
+  // This often fails with complex editors
   return matches.map(match => ({
     start: match.range[0],
     end: match.range[1]
   }));
 }
 
-// Solution: Use SDK's text mapping utilities
-private mapMatchesToEditor(matches: Match[]): any[] {
+// Solution: Convert positions to your editor's coordinate system
+private mapMatchesToEditorPositions(matches: Match[]): any[] {
   import { lookupMatches, extractTextDomMapping } from '@acrolinx/sidebar-sdk';
   
   const textMapping = extractTextDomMapping(this.element);
@@ -338,32 +413,100 @@ private mapMatchesToEditor(matches: Match[]): any[] {
     matches
   );
   
-  return alignedMatches.map(match => ({
-    start: match.range[0],
-    end: match.range[1],
-    originalMatch: match.originalMatch
-  }));
+  return alignedMatches.map(match => {
+    // Convert to YOUR editor's position format
+    const start = this.convertToEditorPosition(match.range[0]);
+    const end = this.convertToEditorPosition(match.range[1]);
+    
+    return { start, end, originalMatch: match.originalMatch };
+  });
+}
+
+private convertToEditorPosition(domOffset: number): any {
+  // Examples for different editor types:
+  
+  // CodeMirror: Convert offset to {line, ch}
+  // return this.myCodeMirror.posFromIndex(domOffset);
+  
+  // Monaco: Convert offset to Position
+  // return this.myMonacoEditor.getModel().getPositionAt(domOffset);
+  
+  // Quill: Convert offset to index
+  // return this.myQuillEditor.getSelection().index + domOffset;
+  
+  // Your editor's specific conversion
+  return this.myLovelyEditor.offsetToPosition(domOffset);
+}
+```
+
+#### 4. Not Handling Editor State Changes
+```javascript
+// Problem: Not considering editor's internal state
+selectRanges(checkId: string, matches: Match[]): void {
+  // Direct selection without considering editor state
+  this.myLovelyEditor.select(start, end);
+}
+
+// Solution: Ensure editor is ready and handle state properly
+selectRanges(checkId: string, matches: Match[]): void {
+  // 1. Ensure editor is focused and ready
+  this.myLovelyEditor.focus();
+  
+  // 2. Wait for editor to be ready (if async)
+  if (this.myLovelyEditor.isReady) {
+    await this.myLovelyEditor.ready();
+  }
+  
+  // 3. Perform selection
+  const editorMatches = this.mapMatchesToEditorPositions(matches);
+  const firstMatch = editorMatches[0];
+  this.myLovelyEditor.select(firstMatch.start, firstMatch.end);
+  
+  // 4. Scroll to selection
+  this.myLovelyEditor.scrollToSelection();
 }
 ```
 
 ### Custom Adapter Best Practices
 
-#### 1. Implement Proper Error Handling
+#### 1. Always Use Your Editor's Native API
+```javascript
+// Wrong: Trying to manipulate DOM or use generic methods
+selectRanges(checkId: string, matches: Match[]): void {
+  const range = document.createRange(); // DON'T DO THIS
+  element.scrollIntoView(); // DON'T DO THIS
+}
+
+// Right: Use your editor's specific API
+selectRanges(checkId: string, matches: Match[]): void {
+  const editorMatches = this.mapMatchesToEditorPositions(matches);
+  const firstMatch = editorMatches[0];
+  
+  // Use YOUR editor's API methods
+  this.myLovelyEditor.select(firstMatch.start, firstMatch.end);
+  this.myLovelyEditor.scrollToSelection();
+}
+```
+
+#### 2. Implement Proper Error Handling
 ```javascript
 selectRanges(checkId: string, matches: Match[]): void {
   try {
-    // Your selection logic
-    this.performSelection(matches);
-    this.scrollToSelection();
+    const editorMatches = this.mapMatchesToEditorPositions(matches);
+    const firstMatch = editorMatches[0];
+    
+    // Use your editor's API with error handling
+    this.myLovelyEditor.select(firstMatch.start, firstMatch.end);
+    this.myLovelyEditor.scrollToSelection();
   } catch (error) {
     console.error('Failed to select ranges:', error);
-    // Fallback behavior
-    this.fallbackSelection(matches);
+    // Fallback: at least try to focus the editor
+    this.myLovelyEditor.focus();
   }
 }
 ```
 
-#### 2. Handle Async Operations
+#### 3. Handle Async Operations
 ```javascript
 // For editors with async operations
 class AsyncCustomAdapter implements AsyncAdapterInterface {
@@ -372,23 +515,25 @@ class AsyncCustomAdapter implements AsyncAdapterInterface {
 
   async selectRanges(checkId: string, matches: Match[]): Promise<void> {
     // Wait for editor to be ready
-    await this.editor.ready();
+    await this.myLovelyEditor.ready();
     
-    // Perform selection
-    await this.performAsyncSelection(matches);
+    // Map positions and perform selection
+    const editorMatches = this.mapMatchesToEditorPositions(matches);
+    const firstMatch = editorMatches[0];
     
-    // Scroll to selection
-    await this.scrollToSelection();
+    // Use your editor's async API
+    await this.myLovelyEditor.select(firstMatch.start, firstMatch.end);
+    await this.myLovelyEditor.scrollToSelection();
   }
 }
 ```
 
-#### 3. Test Your Custom Adapter
+#### 4. Test Your Custom Adapter
 ```javascript
-// Test selection and scrolling
+// Test selection and scrolling with your editor's API
 function testCustomAdapter(adapter: CustomEditorAdapter) {
-  // Test with simple content
-  adapter.editor.setContent('This is a test sentence.');
+  // Set content using your editor's API
+  adapter.myLovelyEditor.setContent('This is a test sentence.');
   
   // Test selection
   const testMatches = [{
@@ -399,12 +544,12 @@ function testCustomAdapter(adapter: CustomEditorAdapter) {
   
   adapter.selectRanges('test', testMatches);
   
-  // Verify selection is visible
-  const selectedText = adapter.editor.getSelectedText();
+  // Verify selection using your editor's API
+  const selectedText = adapter.myLovelyEditor.getSelectedText();
   console.log('Selected text:', selectedText);
   
   // Verify scrolling worked
-  const isVisible = adapter.isSelectionVisible();
+  const isVisible = adapter.myLovelyEditor.isSelectionVisible();
   console.log('Selection visible:', isVisible);
 }
 ```
@@ -578,11 +723,24 @@ If issues persist after following this guide:
 
 ## Key Takeaways
 
+- **Use your editor's native API** - Never manipulate DOM directly for selection/scrolling
 - **Scroll offset is critical** - Always configure `scrollOffsetY`
 - **Selection checking must be enabled** - Set `checkSelection: true`
 - **Container must be scrollable** - Use proper CSS overflow
 - **Use appropriate adapter** - Match adapter to editor type
 - **Test browser compatibility** - Modern scrolling isn't universal
 - **Monitor console errors** - SDK provides helpful error messages
+
+## Critical Principle for Custom Adapters
+
+**Without knowing which editor you're dealing with, it's impossible to provide specific selection recommendations.** The fundamental rule is:
+
+```javascript
+// In selectRanges, always use YOUR editor's API:
+myLovelyEditor.select(start, end);
+myLovelyEditor.scrollToSelection();
+```
+
+Replace `myLovelyEditor` with your actual editor instance and use its specific API methods. The Acrolinx SDK handles text position mapping, but selection and scrolling must be done through your editor's native API.
 
 Remember: The Acrolinx Sidebar SDK provides robust highlighting and scrolling functionality, but proper configuration is essential for it to work correctly with your specific editor and UI layout. 
