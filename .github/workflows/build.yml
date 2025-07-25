@@ -1,4 +1,4 @@
-name: CI Sidebar SDK JS
+name: CI Sidebar SDK JS v1.x.x
 
 on:
   push:
