@@ -2,11 +2,11 @@ name: CI Sidebar SDK JS
 
 on:
   push:
-    branches: [main]
+    branches: [version-1.x.x]
     tags:
       - "v*.*.*"
   pull_request:
-    branches: [main]
+    branches: [version-1.x.x]
   schedule:
     - cron: "0 2 * * *"
   workflow_dispatch:
@@ -70,18 +70,18 @@ jobs:
       - name: Publish to NPM
         id: publish
         uses: JS-DevTools/npm-publish@v3
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/version-1.x.x'
         with:
           token: ${{ secrets.NPM_ACCESS_TOKEN }}
 
       - name: Push tag
         uses: anothrNick/github-tag-action@v1
-        if: github.ref == 'refs/heads/main' && steps.publish.outputs.type
+        if: github.ref == 'refs/heads/version-1.x.x' && steps.publish.outputs.type
         env:
           CUSTOM_TAG: v${{ steps.publish.outputs.version }}
 
       - name: Publish github pages 🚀
-        if: github.ref == 'refs/heads/main' && steps.publish.outputs.type
+        if: github.ref == 'refs/heads/version-1.x.x' && steps.publish.outputs.type
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
