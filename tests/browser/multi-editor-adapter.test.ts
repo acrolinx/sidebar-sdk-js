@@ -22,8 +22,8 @@ import {
   ContentExtractionResult,
   SuccessfulContentExtractionResult,
   isSuccessfulContentExtractionResult,
-} from '../../src/adapters/adapter-interface';
-import { MultiEditorAdapter } from '../../src/adapters/multi-editor-adapter';
+} from '../../src/adapters/AdapterInterface';
+import { MultiEditorAdapter } from '../../src/adapters/MultiEditorAdapter';
 import { getMatchesWithReplacement } from './utils/test-utils';
 
 class MockedAdapter implements AdapterInterface {

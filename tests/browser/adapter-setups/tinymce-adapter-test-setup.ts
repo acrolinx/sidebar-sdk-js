@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { TinyMCEAdapter } from '../../../src/adapters/tinymce-adapter';
+import { TinyMCEAdapter } from '../../../src/adapters/TinyMCEAdapter';
 import { AdapterTestSetup } from './adapter-setup';
 
 /* Import TinyMCE  All imports are needed. See https://www.tiny.cloud/docs/tinymce/latest/vite-es6-npm/ */

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CodeMirror6Adapter } from '../../../src/adapters/codemirror-6-adapter';
+import { CodeMirror6Adapter } from '../../../src/adapters/CodeMirror6Adapter';
 import { AdapterTestSetup } from './adapter-setup';
 import { EditorView } from '@codemirror/view';
 

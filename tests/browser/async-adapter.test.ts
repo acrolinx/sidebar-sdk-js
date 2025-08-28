@@ -27,7 +27,7 @@ import {
   CheckedDocumentRange,
 } from '@acrolinx/sidebar-interface';
 import { describe, afterEach, beforeEach, it, assert, expect } from 'vitest';
-import { ContentEditableAdapter } from '../../src/adapters/content-editable-adapter';
+import { ContentEditableAdapter } from '../../src/adapters/ContentEditableAdapter';
 import { getDummySidebarPath, getMatchesWithReplacement, waitMs } from './utils/test-utils';
 import * as acrolinxPluginModule from '../../src/acrolinx-plugin';
 import { assign } from '../../src/utils/utils';

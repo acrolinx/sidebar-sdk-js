@@ -16,7 +16,7 @@
  */
 
 import { expect, describe, beforeEach, afterEach, it, assert } from 'vitest';
-import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/adapter-interface';
+import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
 import {
   assertEditorRawContent,
   assertEditorText,
@@ -26,7 +26,7 @@ import {
   normalizeResultHtml,
 } from './utils/util';
 import { isChrome } from '../../src/utils/detect-browser';
-import { AbstractRichtextEditorAdapter } from '../../src/adapters/abstract-rich-text-editor-adapter';
+import { AbstractRichtextEditorAdapter } from '../../src/adapters/AbstractRichtextEditorAdapter';
 import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused } from './utils/test-utils';
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 

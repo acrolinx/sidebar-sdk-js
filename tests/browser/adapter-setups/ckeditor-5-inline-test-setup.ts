@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CKEditor5Adapter } from '../../../src/adapters/ckeditor-5-adapter';
+import { CKEditor5Adapter } from '../../../src/adapters/CKEditor5Adapter';
 import { AdapterTestSetup } from './adapter-setup';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 

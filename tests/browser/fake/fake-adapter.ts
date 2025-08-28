@@ -23,7 +23,7 @@ import {
   ExtractContentForCheckOpts,
   ContentExtractionResult,
   SuccessfulCheckResult,
-} from '../../../src/adapters/adapter-interface';
+} from '../../../src/adapters/AdapterInterface';
 
 export class FakeAdapter implements AdapterInterface {
   selection?: DocumentSelection;

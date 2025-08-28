@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-present Acrolinx GmbH
+ * Copyright 2015-present Acrolinx GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,10 @@
  */
 
 import { Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
-import { AbstractRichtextEditorAdapter } from './abstract-rich-text-editor-adapter';
-import { HasEditorID, ContentExtractionResult } from './adapter-interface';
-import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { HasEditorID, ContentExtractionResult } from './AdapterInterface';
 
-export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
+export class CKEditor4Adapter extends AbstractRichtextEditorAdapter {
   editorId: string;
 
   constructor(conf: HasEditorID) {
@@ -28,20 +26,18 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
     this.editorId = conf.editorId;
   }
 
-  getEditor(): InlineEditor {
-    let editorDomElement = document.querySelector('#' + this.editorId)!;
-
-    const isInlineEditor = editorDomElement.classList.contains('ck-editor__editable');
-    if (!isInlineEditor) {
-      editorDomElement = editorDomElement.nextElementSibling!.querySelector('.ck-editor__editable')!;
-    }
-
+  getEditor(): CKEDITOR.editor {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (editorDomElement as any).ckeditorInstance as InlineEditor;
+    const ckeditor = CKEDITOR.instances[this.editorId as any];
+    if (!ckeditor) {
+      throw new Error(`Can't find ckeditor with id '${this.editorId}'`);
+    }
+    return ckeditor;
   }
 
   getEditorDocument(): Document {
-    return this.getEditorElement().ownerDocument;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return this.getEditor().document.$ as any;
   }
 
   getContent() {
@@ -49,7 +45,7 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   }
 
   extractContentForCheck(): ContentExtractionResult {
-    if (!this.isInSourceEditingMode()) {
+    if (this.isInWysiwygMode()) {
       this.currentContentChecking = this.getContent();
       return { content: this.currentContentChecking };
     } else {
@@ -58,36 +54,22 @@ export class CKEditor5Adapter extends AbstractRichtextEditorAdapter {
   }
 
   selectRanges(checkId: string, matches: Match[]) {
-    if (!this.isInSourceEditingMode()) {
+    if (this.isInWysiwygMode()) {
       super.selectRanges(checkId, matches);
     } else {
       window.alert('Action is not permitted in Source mode.');
     }
   }
 
-  getEditorElement(): HTMLElement {
-    const editableElement = this.getEditor().ui.getEditableElement();
-    if (editableElement) {
-      return editableElement;
-    }
-    throw new Error('Unable to fetch editable element');
-  }
-
   replaceRanges(checkId: string, matchesWithReplacementArg: MatchWithReplacement[]) {
-    if (!this.isInSourceEditingMode()) {
+    if (this.isInWysiwygMode()) {
       super.replaceRanges(checkId, matchesWithReplacementArg);
     } else {
       window.alert('Action is not permitted in Source mode.');
     }
   }
 
-  isInSourceEditingMode() {
-    const sourceEditingPluginId = 'SourceEditing';
-    const editor = this.getEditor();
-    if (!editor.plugins.has(sourceEditingPluginId)) {
-      return false;
-    }
-    const sep: SourceEditing = editor.plugins.get(sourceEditingPluginId);
-    return sep.isEnabled && sep.isSourceEditingMode;
+  isInWysiwygMode() {
+    return this.getEditor().mode === 'wysiwyg';
   }
 }

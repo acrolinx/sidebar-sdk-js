@@ -31,7 +31,7 @@ import {
   AsyncAdapterInterface,
   ContentExtractionResult,
   hasError,
-} from './adapters/adapter-interface';
+} from './adapters/AdapterInterface';
 import { CLIENT_COMPONENT_MAIN_FALLBACK, SIDEBAR_SDK_COMPONENT } from './constants';
 import { isPromise } from './utils/utils';
 import { connectAcrolinxPluginToMessages } from './message-adapter/message-adapter';

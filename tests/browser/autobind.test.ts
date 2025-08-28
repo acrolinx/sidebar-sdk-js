@@ -15,15 +15,15 @@
  */
 
 import { describe, beforeEach, afterEach, it, expect, beforeAll } from 'vitest';
-import { hasError, SuccessfulContentExtractionResult } from '../../src/adapters/adapter-interface';
-import { AutoBindAdapter } from '../../src/adapters/autobind-adapter';
+import { hasError, SuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
+import { AutoBindAdapter } from '../../src/adapters/AutoBindAdapter';
 import {
   bindAdaptersForCurrentPage,
   EDITABLE_ELEMENTS_SELECTOR,
   getEditableElements,
 } from '../../src/autobind/autobind';
 import { benchmark } from './utils/test-utils';
-import { AsyncAutoBindAdapter } from '../../src/adapters/async-autobind-adapter';
+import { AsyncAutoBindAdapter } from '../../src/adapters/AsyncAutoBindAdapter';
 
 describe('autobind', () => {
   const containerDivId = 'autoBindTest';

@@ -15,7 +15,7 @@
  */
 
 import { beforeEach, afterEach, describe, it, expect } from 'vitest';
-import { removeEmptyTextNodes } from '../../src/adapters/abstract-rich-text-editor-adapter';
+import { removeEmptyTextNodes } from '../../src/adapters/AbstractRichtextEditorAdapter';
 import { isChrome } from '../../src/utils/detect-browser';
 import { removeNode } from '../../src/utils/utils';
 import {

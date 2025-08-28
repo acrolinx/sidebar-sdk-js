@@ -22,7 +22,7 @@ import {
   ContentExtractionResult,
   ExtractContentForCheckOpts,
   SuccessfulCheckResult,
-} from './adapter-interface';
+} from './AdapterInterface';
 
 /**
  * This wrapper around an AsyncAdapterInterface synchronizes all calls to selectRanges and replaceRanges.

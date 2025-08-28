@@ -23,7 +23,7 @@ import {
   hasError,
   SuccessfulCheckResult,
   SuccessfulContentExtractionResult,
-} from './adapter-interface';
+} from './AdapterInterface';
 import { Check, DocumentRange, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { findNewIndex } from '../utils/alignment';
 import { encode } from 'entities';

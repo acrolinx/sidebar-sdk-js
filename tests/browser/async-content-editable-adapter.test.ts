@@ -31,7 +31,7 @@ import { getDummySidebarPath, getMatchesWithReplacement, waitMs } from './utils/
 import * as acrolinxPluginModule from '../../src/acrolinx-plugin';
 import { assign } from '../../src/utils/utils';
 import { htmlStringToElements } from './utils/util';
-import { AsyncContentEditableAdapter } from '../../src/adapters/async-content-editable-adapter';
+import { AsyncContentEditableAdapter } from '../../src/adapters/AsyncContentEditableAdapter';
 
 const DUMMY_CHECK_ID = 'dummyCheckId';
 const INITIAL_DOCUMENT_CONTENT = 'word1 word2 word3';

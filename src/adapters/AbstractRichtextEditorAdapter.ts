@@ -30,7 +30,7 @@ import {
   ContentExtractionResult,
   ExtractContentForCheckOpts,
   SuccessfulCheckResult,
-} from './adapter-interface';
+} from './AdapterInterface';
 
 type TextMapping = TextDomMapping;
 

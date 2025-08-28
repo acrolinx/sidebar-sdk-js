@@ -22,7 +22,7 @@ import {
   ContentExtractionResult,
   ExtractContentForCheckOpts,
   SuccessfulCheckResult,
-} from '../../../src/adapters/adapter-interface';
+} from '../../../src/adapters/AdapterInterface';
 import { waitMs } from '../utils/test-utils';
 
 export class SlowMotionAsyncWrapper implements AsyncAdapterInterface {

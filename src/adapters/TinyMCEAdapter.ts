@@ -17,8 +17,8 @@
 import { Editor } from 'tinymce';
 import { DocumentSelection } from '@acrolinx/sidebar-interface';
 import { getSelectionHtmlRanges } from '../utils/check-selection';
-import { AbstractRichtextEditorAdapter } from './abstract-rich-text-editor-adapter';
-import { ExtractContentForCheckOpts, HasEditorID } from './adapter-interface';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { ExtractContentForCheckOpts, HasEditorID } from './AdapterInterface';
 
 export class TinyMCEAdapter extends AbstractRichtextEditorAdapter {
   editorId: string;

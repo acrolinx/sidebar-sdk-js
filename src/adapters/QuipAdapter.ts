@@ -16,8 +16,8 @@
 
 import { DocumentSelection, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { waitMs } from '../utils/utils';
-import { AbstractRichtextEditorAdapter } from './abstract-rich-text-editor-adapter';
-import { AdapterConf, getElementFromAdapterConf } from './adapter-interface';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { AdapterConf, getElementFromAdapterConf } from './AdapterInterface';
 
 /**
  * Just a proof of concept.

@@ -23,7 +23,7 @@ import {
   ExtractContentForCheckOpts,
   getElementFromAdapterConf,
   SuccessfulCheckResult,
-} from './adapter-interface';
+} from './AdapterInterface';
 import { AlignedMatch } from '../utils/alignment';
 import { getCompleteFlagLength, isDangerousToReplace } from '../utils/match';
 import { scrollIntoView } from '../utils/scrolling';

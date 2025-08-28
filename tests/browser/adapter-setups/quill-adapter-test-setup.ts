@@ -17,7 +17,7 @@
 import Quill from 'quill';
 import { AdapterTestSetup } from './adapter-setup';
 import { EDITOR_HEIGHT } from './constants';
-import { ContentEditableAdapter } from '../../../src/adapters/content-editable-adapter';
+import { ContentEditableAdapter } from '../../../src/adapters/ContentEditableAdapter';
 
 export class QuillContentEditableTestSetup implements AdapterTestSetup {
   name = 'QuillContentEditableAdapter';

@@ -15,9 +15,9 @@
  */
 
 import { describe, beforeEach, afterEach, it, assert, expect } from 'vitest';
-import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/adapter-interface';
+import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
 import { isChrome } from '../../src/utils/detect-browser';
-import { AbstractRichtextEditorAdapter } from '../../src/adapters/abstract-rich-text-editor-adapter';
+import { AbstractRichtextEditorAdapter } from '../../src/adapters/AbstractRichtextEditorAdapter';
 import { containsEmptyTextNodes, getMatchesWithReplacement, testIfWindowIsFocused, waitMs } from './utils/test-utils';
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { CKEditor5InlineTestSetup } from './adapter-setups/ckeditor-5-inline-test-setup';

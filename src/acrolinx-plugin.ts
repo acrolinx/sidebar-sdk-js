@@ -16,9 +16,9 @@
 
 import { SidebarConfiguration, Message } from '@acrolinx/sidebar-interface';
 import { AcrolinxPluginConfig } from './acrolinx-plugin-config';
-import { AdapterInterface, AsyncAdapterInterface, isAsyncAdapterInterface } from './adapters/adapter-interface';
+import { AdapterInterface, AsyncAdapterInterface, isAsyncAdapterInterface } from './adapters/AdapterInterface';
 import { InternalAcrolinxSidebarPlugin, initInternalAcrolinxSidebarPlugin } from './internal-acrolinx-plugin';
-import { SynchronizeAsyncAdapter } from './adapters/synchronize-async-adapter';
+import { SynchronizeAsyncAdapter } from './adapters/SynchronizeAsyncAdapter';
 
 export class AcrolinxPlugin {
   private readonly initConfig: AcrolinxPluginConfig;
