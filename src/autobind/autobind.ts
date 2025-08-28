@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { AdapterConf, AdapterInterface, CommonAdapterConf } from '../adapters/adapter-interface';
-import { AsyncContentEditableAdapter, isStateBasedEditor } from '../adapters/async-content-editable-adapter';
-import { ContentEditableAdapter } from '../adapters/content-editable-adapter';
-import { InputAdapter } from '../adapters/input-adapter';
-import { isQuip, QuipAdapter } from '../adapters/quip-adapter';
+import { AdapterConf, AdapterInterface, CommonAdapterConf } from '../adapters/AdapterInterface';
+import { AsyncContentEditableAdapter, isStateBasedEditor } from '../adapters/AsyncContentEditableAdapter';
+import { ContentEditableAdapter } from '../adapters/ContentEditableAdapter';
+import { InputAdapter } from '../adapters/InputAdapter';
+import { isQuip, QuipAdapter } from '../adapters/QuipAdapter';
 import { assign, isIFrame } from '../utils/utils';
 
 // Exported only for testing

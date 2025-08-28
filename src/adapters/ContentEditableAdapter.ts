@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { AbstractRichtextEditorAdapter } from './abstract-rich-text-editor-adapter';
-import { getElementFromAdapterConf, AdapterConf } from './adapter-interface';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
+import { getElementFromAdapterConf, AdapterConf } from './AdapterInterface';
 import { DocumentSelection } from '@acrolinx/sidebar-interface';
 import { getSelectionHtmlRanges } from '../utils/check-selection';
 

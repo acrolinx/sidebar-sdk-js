@@ -22,7 +22,7 @@ import {
   ExtractContentForCheckOpts,
   ContentExtractionResult,
   SuccessfulCheckResult,
-} from './adapter-interface';
+} from './AdapterInterface';
 import { Check, MatchWithReplacement, Match } from '@acrolinx/sidebar-interface';
 import { lookupMatches } from '../lookup/diff-based';
 import { AlignedMatch } from '../utils/alignment';

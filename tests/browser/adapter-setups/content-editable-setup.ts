@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ContentEditableAdapter } from '../../../src/adapters/content-editable-adapter';
+import { ContentEditableAdapter } from '../../../src/adapters/ContentEditableAdapter';
 import { AdapterTestSetup } from './adapter-setup';
 import { EDITOR_HEIGHT } from './constants';
 

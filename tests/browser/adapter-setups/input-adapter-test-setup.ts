@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { InputAdapter } from '../../../src/adapters/input-adapter';
+import { InputAdapter } from '../../../src/adapters/InputAdapter';
 import { AdapterTestSetup } from './adapter-setup';
 
 export class InputAdapterTestSetup implements AdapterTestSetup {

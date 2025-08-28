@@ -16,9 +16,9 @@
 
 import { AcrolinxPlugin } from './acrolinx-plugin';
 import { AcrolinxPluginConfig } from './acrolinx-plugin-config';
-import { AsyncAutoBindAdapter } from './adapters/async-autobind-adapter';
-import { AutoBindAdapter } from './adapters/autobind-adapter';
-import { MultiEditorAdapterConfig } from './adapters/multi-editor-adapter';
+import { AsyncAutoBindAdapter } from './adapters/AsyncAutoBindAdapter';
+import { AutoBindAdapter } from './adapters/AutoBindAdapter';
+import { MultiEditorAdapterConfig } from './adapters/MultiEditorAdapter';
 import { AutobindConfig } from './autobind/autobind';
 import { AsyncLocalStorage, AsyncStorage } from './floating-sidebar/async-storage';
 import { FloatingSidebar, initFloatingSidebar, SIDEBAR_CONTAINER_ID } from './floating-sidebar/floating-sidebar';

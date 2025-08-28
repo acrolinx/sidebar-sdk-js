@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CKEditor4Adapter } from '../../../src/adapters/ckeditor-4-adapter';
+import { CKEditor4Adapter } from '../../../src/adapters/CKEditor4Adapter';
 import { AdapterTestSetup } from './adapter-setup';
 
 export function getCkEditorInstance(id: string): CKEDITOR.editor {

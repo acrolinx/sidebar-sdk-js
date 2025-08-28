@@ -15,8 +15,8 @@
  */
 
 import { Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
-import { AdapterInterface, AsyncAdapterInterface } from './adapter-interface';
-import { AddSingleAdapterOptions, MultiEditorAdapter } from './multi-editor-adapter';
+import { AdapterInterface, AsyncAdapterInterface } from './AdapterInterface';
+import { AddSingleAdapterOptions, MultiEditorAdapter } from './MultiEditorAdapter';
 
 export class AsyncMultiEditorAdapter extends MultiEditorAdapter implements AsyncAdapterInterface {
   readonly isAsync = true as const;

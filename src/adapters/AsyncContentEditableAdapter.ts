@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { getElementFromAdapterConf, AdapterConf, AsyncAdapterInterface } from './adapter-interface';
+import { getElementFromAdapterConf, AdapterConf, AsyncAdapterInterface } from './AdapterInterface';
 import { DocumentSelection, Match, MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { getSelectionHtmlRanges } from '../utils/check-selection';
-import { AbstractRichtextEditorAdapter } from './abstract-rich-text-editor-adapter';
+import { AbstractRichtextEditorAdapter } from './AbstractRichtextEditorAdapter';
 import { assertElementIsDisplayed } from '../utils/utils';
 import { TextDomMapping } from '../utils/text-dom-mapping';
 

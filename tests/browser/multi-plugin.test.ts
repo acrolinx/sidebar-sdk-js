@@ -30,13 +30,13 @@ import {
 import { describe, afterEach, beforeEach, it, expect } from 'vitest';
 import { AcrolinxPluginConfig } from '../../src/acrolinx-plugin-config';
 import * as acrolinxPluginModule from '../../src/acrolinx-plugin';
-import { ContentEditableAdapter } from '../../src/adapters/content-editable-adapter';
-import { InputAdapter } from '../../src/adapters/input-adapter';
+import { ContentEditableAdapter } from '../../src/adapters/ContentEditableAdapter';
+import { InputAdapter } from '../../src/adapters/InputAdapter';
 import {
   MultiEditorAdapterConfig,
   AddSingleAdapterOptions,
   MultiEditorAdapter,
-} from '../../src/adapters/multi-editor-adapter';
+} from '../../src/adapters/MultiEditorAdapter';
 import { getDummySidebarPath, getMatchesWithReplacement, waitMs } from './utils/test-utils';
 
 const DUMMY_CHECK_ID = 'dummyCheckId';

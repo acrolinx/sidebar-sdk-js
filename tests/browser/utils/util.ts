@@ -15,7 +15,7 @@
  */
 
 import { expect } from 'vitest';
-import { AdapterInterface, SuccessfulContentExtractionResult } from '../../../src/adapters/adapter-interface';
+import { AdapterInterface, SuccessfulContentExtractionResult } from '../../../src/adapters/AdapterInterface';
 import { AdapterTestSetup } from '../adapter-setups/adapter-setup';
 
 export function htmlStringToElements(htmlString: string) {

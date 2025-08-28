@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { AutobindWrapperAttributes } from '../adapters/adapter-interface';
+import { AutobindWrapperAttributes } from '../adapters/AdapterInterface';
 import { isDisplayed } from '../utils/utils';
 
 export function getAutobindWrapperAttributes(element: Element): AutobindWrapperAttributes {

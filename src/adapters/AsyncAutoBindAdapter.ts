@@ -24,9 +24,9 @@ import {
   ExtractContentForCheckOpts,
   ContentExtractionResult,
   SuccessfulCheckResult,
-} from './adapter-interface';
-import { AsyncMultiEditorAdapter } from './async-multi-editor-adapter';
-import { MultiEditorAdapterConfig } from './multi-editor-adapter';
+} from './AdapterInterface';
+import { AsyncMultiEditorAdapter } from './AsyncMultiEditorAdapter';
+import { MultiEditorAdapterConfig } from './MultiEditorAdapter';
 
 // of this adapter
 export class AsyncAutoBindAdapter implements AsyncAdapterInterface {

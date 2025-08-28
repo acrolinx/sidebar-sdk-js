@@ -15,7 +15,7 @@
  */
 
 import CodeMirror, { EditorFromTextArea } from 'codemirror';
-import { CodeMirror5Adapter } from '../../../src/adapters/codemirror-5-adapter';
+import { CodeMirror5Adapter } from '../../../src/adapters/CodeMirror5Adapter';
 import { AdapterTestSetup } from './adapter-setup';
 
 export interface CodeMirrorTestSetupOpts {

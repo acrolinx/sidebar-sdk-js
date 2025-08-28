@@ -16,11 +16,11 @@
 
 import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
 import { describe, beforeEach, it, expect, assert } from 'vitest';
-import { SuccessfulContentExtractionResult } from '../../src/adapters/adapter-interface';
+import { SuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
 import { FakeAdapter } from './fake/fake-adapter';
 import { SlowMotionAsyncWrapper } from './fake/slowmotion-async-adapter';
 import { getMatchesWithReplacement, waitMs } from './utils/test-utils';
-import { AsyncMultiEditorAdapter } from '../../src/adapters/async-multi-editor-adapter';
+import { AsyncMultiEditorAdapter } from '../../src/adapters/AsyncMultiEditorAdapter';
 
 const DELAY_IN_MS = 10;
 const DUMMY_CHECK_ID = 'dummyCheckId';
