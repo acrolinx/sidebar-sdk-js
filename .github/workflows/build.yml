@@ -23,7 +23,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Setup SonarCloud Scan
-        uses: sonarsource/sonarqube-scan-action@v5
+        uses: sonarsource/sonarqube-scan-action@v6
         with:
           args: -Dsonar.organization=acrolinx
         env:
