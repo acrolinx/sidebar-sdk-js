@@ -1,5 +1,3 @@
-/// <reference types="@vitest/browser/providers/playwright" />
-
 import { defineConfig } from 'vite';
 import packageJson from './package.json';
 import dts from 'vite-plugin-dts';
