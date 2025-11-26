@@ -31,7 +31,6 @@ jobs:
         uses: JS-DevTools/npm-publish@v4
         with:
           token: ${{ secrets.NPM_ACCESS_TOKEN }}
-          tag: dev
 
       - name: Push tag
         uses: anothrNick/github-tag-action@v1
