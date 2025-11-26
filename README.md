@@ -92,7 +92,7 @@ The process to update your existing integration is straightforward and involves 
 ## Serve Tests for Development
 
 - Run 'npm run test'
-- Browser with ViTest running will open 
+- Browser with ViTest running will open
 
 ## License
 
