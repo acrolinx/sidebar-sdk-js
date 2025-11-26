@@ -1,7 +1,7 @@
 {
   "name": "@acrolinx/sidebar-sdk",
   "private": false,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "module",
   "author": "Acrolinx",
   "url": "https://www.acrolinx.com",
@@ -10,8 +10,7 @@
     "node": ">=22"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/",
-    "tag": "dev"
+    "registry": "https://registry.npmjs.org/"
   },
   "files": [
     "dist"
