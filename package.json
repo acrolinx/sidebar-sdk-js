@@ -58,7 +58,7 @@
     "vitest": "^4.0.4"
   },
   "dependencies": {
-    "@acrolinx/sidebar-interface": "^15.4.3",
+    "@acrolinx/sidebar-interface": "^15.4.4",
     "@acrolinx/sidebar-startpage": "^4.0.4",
     "diff-match-patch": "^1.0.5",
     "entities": "^7.0.0"
