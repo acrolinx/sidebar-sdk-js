@@ -60,6 +60,6 @@
     "@acrolinx/sidebar-interface": "^15.4.3",
     "@acrolinx/sidebar-startpage": "^4.0.5",
     "diff-match-patch": "^1.0.5",
-    "entities": "^7.0.0"
+    "entities": "^7.0.1"
   }
 }
