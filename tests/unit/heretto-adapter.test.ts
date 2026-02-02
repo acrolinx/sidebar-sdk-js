@@ -30,6 +30,10 @@ describe('Heretto Domain Validation Logic', () => {
 
   function isHerettoDomain(hostname: string): boolean {
     const lowerHost = hostname.toLowerCase();
+    // Reject empty or hostnames starting with a dot (invalid format)
+    if (!lowerHost || lowerHost.startsWith('.')) {
+      return false;
+    }
     if (lowerHost === HERETTO_DOMAIN) {
       return true;
     }
@@ -112,7 +116,7 @@ describe('Heretto Domain Validation Logic', () => {
       });
 
       it('should reject .heretto.com (leading dot)', () => {
-        expect(isHerettoDomain('.heretto.com')).toBe(true); // This is actually valid as a subdomain pattern
+        expect(isHerettoDomain('.heretto.com')).toBe(false);
       });
 
       it('should reject heretto.com. (trailing dot)', () => {

@@ -39,6 +39,9 @@ const HERETTO_DOMAIN = 'heretto.com';
  */
 function isHerettoDomain(hostname: string): boolean {
   const lowerHost = hostname.toLowerCase();
+  if (!lowerHost || lowerHost.startsWith('.')) {
+    return false;
+  }
   // Exact match: heretto.com
   if (lowerHost === HERETTO_DOMAIN) {
     return true;
