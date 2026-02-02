@@ -208,7 +208,7 @@ export function isHeretto(el: Element): boolean {
   }
 
   const body = ownerDocument.body;
-  if (!body || !body.classList.contains('heretto')) {
+  if (!body?.classList.contains('heretto')) {
     return false;
   }
   return true;
