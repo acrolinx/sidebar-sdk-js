@@ -214,7 +214,6 @@ describe('isHeretto function', () => {
   let iframe: HTMLIFrameElement;
 
   beforeEach(() => {
-
     // Create test container
     container = htmlStringToElements(`
       <div id="herettoDetectionTest">
