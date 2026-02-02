@@ -26,6 +26,31 @@ import { waitMs } from '../utils/utils';
 const SELECTION_SETTLE_DELAY_MS = 50;
 
 /**
+ * The Heretto domain.
+ */
+const HERETTO_DOMAIN = 'heretto.com';
+
+/**
+ * Check if the hostname is a valid Heretto domain.
+ * Matches exactly "heretto.com" or any subdomain like "app.heretto.com".
+ *
+ * @param hostname - The hostname to check
+ * @returns true if hostname is heretto.com or a subdomain of it
+ */
+function isHerettoDomain(hostname: string): boolean {
+  const lowerHost = hostname.toLowerCase();
+  // Exact match: heretto.com
+  if (lowerHost === HERETTO_DOMAIN) {
+    return true;
+  }
+  // Subdomain match: *.heretto.com (must have dot before heretto.com)
+  if (lowerHost.endsWith('.' + HERETTO_DOMAIN)) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * The specific iframe ID used by Heretto's DITA editor.
  */
 const HERETTO_EDITOR_IFRAME_ID = 'gwt-debug-PreviewViewImpl.previewFrame';
@@ -154,7 +179,8 @@ export class HerettoContentEditableAdapter extends AsyncContentEditableAdapter {
  * @returns true if element is in the Heretto DITA editor
  */
 export function isHeretto(el: Element): boolean {
-  if (!document.location.host.includes('heretto.com')) {
+  // Check if we're on heretto.com or a subdomain (e.g., app.heretto.com)
+  if (!isHerettoDomain(document.location.hostname)) {
     return false;
   }
 
