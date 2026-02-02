@@ -33,6 +33,7 @@ export type { AutoBindFloatingSidebarConfig } from './autobind-plugin';
 // ============================================================================
 export { InputAdapter } from './adapters/InputAdapter';
 export { ContentEditableAdapter } from './adapters/ContentEditableAdapter';
+export { HerettoContentEditableAdapter, isHeretto } from './adapters/HerettoContentEditableAdapter';
 export { AsyncContentEditableAdapter as StateBasedContentEditableAdapter } from './adapters/AsyncContentEditableAdapter';
 export { AbstractRichtextEditorAdapter } from './adapters/AbstractRichtextEditorAdapter';
 export { CKEditor5Adapter } from './adapters/CKEditor5Adapter';
@@ -246,6 +247,7 @@ import { AcrolinxPlugin } from './acrolinx-plugin';
 import { autoBindFloatingSidebar, autoBindFloatingSidebarAsync } from './autobind-plugin';
 import { InputAdapter } from './adapters/InputAdapter';
 import { ContentEditableAdapter } from './adapters/ContentEditableAdapter';
+import { HerettoContentEditableAdapter } from './adapters/HerettoContentEditableAdapter';
 import { AsyncContentEditableAdapter } from './adapters/AsyncContentEditableAdapter';
 import { AbstractRichtextEditorAdapter } from './adapters/AbstractRichtextEditorAdapter';
 import { CKEditor5Adapter } from './adapters/CKEditor5Adapter';
@@ -287,6 +289,7 @@ export interface AcrolinxSidebarIntegration {
     CodeMirror6Adapter: typeof CodeMirror6Adapter;
     CodeMirrorAdapter: typeof CodeMirror5Adapter;
     ContentEditableAdapter: typeof ContentEditableAdapter;
+    HerettoContentEditableAdapter: typeof HerettoContentEditableAdapter;
     AsyncContentEditableAdapter: typeof AsyncContentEditableAdapter;
     InputAdapter: typeof InputAdapter;
     MultiEditorAdapter: typeof MultiEditorAdapter;
@@ -330,6 +333,7 @@ const exported: AcrolinxSidebarIntegration = {
     CodeMirror6Adapter: CodeMirror6Adapter,
     CodeMirrorAdapter: CodeMirror5Adapter,
     ContentEditableAdapter: ContentEditableAdapter,
+    HerettoContentEditableAdapter: HerettoContentEditableAdapter,
     AsyncContentEditableAdapter: AsyncContentEditableAdapter,
     InputAdapter: InputAdapter,
     MultiEditorAdapter: MultiEditorAdapter,

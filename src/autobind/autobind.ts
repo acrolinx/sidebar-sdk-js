@@ -17,6 +17,7 @@
 import { AdapterConf, AdapterInterface, CommonAdapterConf } from '../adapters/AdapterInterface';
 import { AsyncContentEditableAdapter, isStateBasedEditor } from '../adapters/AsyncContentEditableAdapter';
 import { ContentEditableAdapter } from '../adapters/ContentEditableAdapter';
+import { HerettoContentEditableAdapter, isHeretto } from '../adapters/HerettoContentEditableAdapter';
 import { InputAdapter } from '../adapters/InputAdapter';
 import { isQuip, QuipAdapter } from '../adapters/QuipAdapter';
 import { assign, isIFrame } from '../utils/utils';
@@ -113,18 +114,23 @@ export function getEditableElements(doc: Document | ShadowRoot | HTMLElement = d
 
 export interface AutobindConfig extends CommonAdapterConf {
   enableQuipAdapter?: boolean;
+  enableHerettoAdapter?: boolean;
 }
 
 export function bindAdaptersForCurrentPage(conf: AutobindConfig = {}): AdapterInterface[] {
   return getEditableElements().map(function (editable) {
     const adapterConf = assign(conf, { element: editable }) as AdapterConf;
-    if (conf.enableQuipAdapter && isQuip(editable)) {
+    if (conf.enableHerettoAdapter && isHeretto(editable)) {
+      return new HerettoContentEditableAdapter(adapterConf);
+    } else if (conf.enableQuipAdapter && isQuip(editable)) {
       return new QuipAdapter(adapterConf);
     } else if (editable.nodeName === 'INPUT' || editable.nodeName === 'TEXTAREA') {
+      console.log('InputAdapter', editable);
       return new InputAdapter(adapterConf);
     } else if (isStateBasedEditor(editable)) {
       return new AsyncContentEditableAdapter(adapterConf);
     } else {
+      console.log('ContentEditableAdapter', editable);
       return new ContentEditableAdapter(adapterConf);
     }
   });
