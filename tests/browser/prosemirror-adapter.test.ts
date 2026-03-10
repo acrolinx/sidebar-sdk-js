@@ -1,0 +1,498 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/*
+ * Copyright 2026-present Markup AI, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { expect, describe, beforeEach, afterEach, it } from 'vitest';
+import { AdapterInterface, SuccessfulContentExtractionResult } from '../../src/adapters/AdapterInterface';
+import { assertEditorText, givenAText, givenATextWithoutCheckResult, htmlStringToElements } from './utils/util';
+import { getMatchesWithReplacement, testIfWindowIsFocused } from './utils/test-utils';
+import { MatchWithReplacement } from '@acrolinx/sidebar-interface';
+
+import { ProseMirrorTestSetup } from './adapter-setups/prosemirror-adapter-test-setup';
+import { dummyCheckId, NON_BREAKING_SPACE } from './adapter-setups/constants';
+
+describe('ProseMirror Adapter', () => {
+  let adapter: AdapterInterface;
+  const adapterSpec = new ProseMirrorTestSetup({
+    name: 'ProseMirrorAdapter',
+    inputFormat: 'TEXT',
+  });
+
+  beforeEach(async () => {
+    const body = document.getElementsByTagName('body')[0];
+    body.appendChild(htmlStringToElements(adapterSpec.editorElement));
+    adapter = await adapterSpec.init();
+  });
+
+  afterEach(async () => {
+    await adapterSpec.remove();
+  });
+
+  it('Get initial text from editor element', () => {
+    assertEditorText(adapterSpec, adapter, 'initial text');
+  });
+
+  it('Get current text from editor element', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'current text', () => {
+      assertEditorText(adapterSpec, adapter, 'current text');
+    });
+  });
+
+  it('Extract initial content from editor element', () => {
+    assertEditorText(adapterSpec, adapter, 'initial text');
+  });
+
+  it('Extract current content from editor element', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'current text', () => {
+      assertEditorText(adapterSpec, adapter, 'current text');
+    });
+  });
+
+  it("Don't change surrounding words when replacing", () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+      assertEditorText(adapterSpec, adapter, 'wordOne wordTwoReplacement wordThree');
+    });
+  });
+
+  it('Replace words in reverse order', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+      assertEditorText(adapterSpec, adapter, 'wordOne wordTwoReplacement wordThreeReplacement');
+    });
+  });
+
+  it('Replace words in order', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', 'wordTwoReplacement'));
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'wordThreeReplacement'));
+      assertEditorText(adapterSpec, adapter, 'wordOne wordTwoReplacement wordThreeReplacement');
+    });
+  });
+
+  it('Replace second of the same word', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordSame wordSame wordThree', (text) => {
+      const matchWithReplacement = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement');
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement[1]]);
+      assertEditorText(adapterSpec, adapter, 'wordOne wordSame wordSameReplacement wordThree');
+    });
+  });
+
+  it('Replace first of the same word', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordSame wordSame wordThree', (text) => {
+      const matchWithReplacement = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement');
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement[0]]);
+      assertEditorText(adapterSpec, adapter, 'wordOne wordSameReplacement wordSame wordThree');
+    });
+  });
+
+  it('Replace the same word with word in between two times with different replacements', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordSame blubb wordSame wordThree', (text) => {
+      const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement1');
+      const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSameReplacement2');
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+      assertEditorText(adapterSpec, adapter, 'wordOne wordSameReplacement1 blubb wordSameReplacement2 wordThree');
+    });
+  });
+
+  it('Replace the same word two times with different replacements', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordSame wordSame wordThree', (text) => {
+      const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
+      const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+      assertEditorText(adapterSpec, adapter, 'wordOne wordSame1 wordSame2 wordThree');
+    });
+  });
+
+  it('Replace the same word two times with different replacements, where the first replacement is kinda long', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordSame wordSame wordThree', (text) => {
+      const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSamelonglonglonglong1');
+      const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+      assertEditorText(adapterSpec, adapter, 'wordOne wordSamelonglonglonglong1 wordSame2 wordThree');
+    });
+  });
+
+  it('Replace the same word two times with different replacements in reverse order', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordSame wordSame wordThree', (text) => {
+      const matchWithReplacement1 = getMatchesWithReplacement(text, 'wordSame', 'wordSame1');
+      const matchWithReplacement2 = getMatchesWithReplacement(text, 'wordSame', 'wordSame2');
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement2[1]]);
+      adapter.replaceRanges(dummyCheckId, [matchWithReplacement1[0]]);
+      assertEditorText(adapterSpec, adapter, 'wordOne wordSame1 wordSame2 wordThree');
+    });
+  });
+
+  it('Replace single character ","', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne, wordTwo', (text) => {
+      const matchWithReplacement = getMatchesWithReplacement(text, ',', '');
+      adapter.replaceRanges(dummyCheckId, matchWithReplacement);
+      assertEditorText(adapterSpec, adapter, 'wordOne wordTwo');
+    });
+  });
+
+  it('Replace single character space', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo', (text) => {
+      const matchWithReplacement = getMatchesWithReplacement(text, ' ', '');
+      adapter.replaceRanges(dummyCheckId, matchWithReplacement);
+      assertEditorText(adapterSpec, adapter, 'wordOnewordTwo');
+    });
+  });
+
+  it('Replace continues multi range', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'word0 blub mist word3', (text) => {
+      const word1 = getMatchesWithReplacement(text, 'blub', 'a')[0];
+      const word2 = getMatchesWithReplacement(text, 'mist', 'b')[0];
+      const space = {
+        content: ' ',
+        replacement: '',
+        range: [word1.range[1], word2.range[0]] as [number, number],
+      };
+
+      adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
+      assertEditorText(adapterSpec, adapter, 'word0 ab word3');
+    });
+  });
+
+  it('Replace continues multi range with number in words', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'word0 blub1 mist2 word3', (text) => {
+      const word1 = getMatchesWithReplacement(text, 'blub1', 'a')[0];
+      const word2 = getMatchesWithReplacement(text, 'mist2', 'b')[0];
+      const space = {
+        content: ' ',
+        replacement: '',
+        range: [word1.range[1], word2.range[0]] as [number, number],
+      };
+
+      adapter.replaceRanges(dummyCheckId, [word1, space, word2]);
+      assertEditorText(adapterSpec, adapter, 'word0 ab word3');
+    });
+  });
+
+  it('Replace first and only char', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'x', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
+      assertEditorText(adapterSpec, adapter, 'aa');
+    });
+  });
+
+  it('Replace first and only word', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'xyz', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
+      assertEditorText(adapterSpec, adapter, 'aa');
+    });
+  });
+
+  it('Replace first char', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'x after', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
+      assertEditorText(adapterSpec, adapter, 'aa after');
+    });
+  });
+
+  it('Replace first word', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'xyz after', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'xyz', 'aa'));
+      assertEditorText(adapterSpec, adapter, 'aa after');
+    });
+  });
+
+  it('Replace single chars', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'y x f z u', (text) => {
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'x', 'aa'));
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'f', 'bb'));
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'z', 'cc'));
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'u', 'dd'));
+
+      assertEditorText(adapterSpec, adapter, 'y aa bb cc dd');
+    });
+  });
+
+  it('Replace inside a word', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'InsideAllWord', (text) => {
+      const matchWithReplacement = getMatchesWithReplacement(text, 'All', '12345');
+      adapter.replaceRanges(dummyCheckId, matchWithReplacement);
+
+      assertEditorText(adapterSpec, adapter, 'Inside12345Word');
+    });
+  });
+
+  it('Replace last word', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo', (text) => {
+      const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'wordTw');
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+
+      assertEditorText(adapterSpec, adapter, 'wordOne wordTw');
+    });
+  });
+
+  it('Replace last word with short word', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo', (text) => {
+      const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'beer');
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+
+      assertEditorText(adapterSpec, adapter, 'wordOne beer');
+    });
+  });
+
+  it('Replace discontinues multi range', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree wordFour', (text) => {
+      const matchesWithReplacement = [
+        getMatchesWithReplacement(text, 'wordOne', 'a')[0],
+        getMatchesWithReplacement(text, 'wordThree', 'c')[0],
+      ];
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+
+      assertEditorText(adapterSpec, adapter, 'a wordTwo c wordFour');
+    });
+  });
+
+  it('Replace with and after strange chars', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree wordFour', (text) => {
+      const strangeChars = '[]()/&%$§"!\'*+~öäü:,;-<>|^°´`òê€@ß?={}µコンピュータ';
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', strangeChars));
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordThree', 'c'));
+      assertEditorText(adapterSpec, adapter, `wordOne ${strangeChars} c wordFour`);
+    });
+  });
+
+  it('Replace with text looking like entities', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
+      const entities = '&uuml;';
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', entities));
+      assertEditorText(adapterSpec, adapter, `wordOne ${entities} wordThree`);
+    });
+  });
+
+  it('Replace with text looking like html tags', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
+      const replacement = '<tagish>';
+      adapter.replaceRanges(dummyCheckId, getMatchesWithReplacement(text, 'wordTwo', replacement));
+      assertEditorText(adapterSpec, adapter, `wordOne ${replacement} wordThree`);
+    });
+  });
+
+  it('Replace word containing ampersand', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne D&D wordThree', (text) => {
+      const replacement = 'Dungeons and Dragons';
+      const matchesWithReplacement = getMatchesWithReplacement(text, 'D&D', replacement);
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      assertEditorText(adapterSpec, adapter, `wordOne ${replacement} wordThree`);
+    });
+  });
+
+  it("Don't replace markup/markdown", () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'see  ![Acrolinx]', () => {
+      const matchesWithReplacement: MatchWithReplacement[] = [
+        { content: 'see', range: [0, 3], replacement: 'see Acrolinx' },
+        { content: ' ', range: [3, 4], replacement: '' },
+        { content: ' ', range: [4, 5], replacement: '' },
+        { content: ' ', range: [5, 7], replacement: '' },
+        { content: 'Acrolinx', range: [7, 15], replacement: '' },
+      ];
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      assertEditorText(adapterSpec, adapter, 'see Acrolinx![]');
+    });
+  });
+
+  it('Replace word before non-breaking space', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, `Southh${NON_BREAKING_SPACE}is warm.`, (text) => {
+      const replacement = 'South';
+      const matchesWithReplacement = getMatchesWithReplacement(text, 'Southh', replacement);
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      assertEditorText(adapterSpec, adapter, `${replacement}${NON_BREAKING_SPACE}is warm.`);
+    });
+  });
+
+  it('Replace words containing non-breaking space', () => {
+    givenAText(
+      adapter,
+      adapterSpec,
+      dummyCheckId,
+      `South${NON_BREAKING_SPACE}is warm${NON_BREAKING_SPACE}.`,
+      (text) => {
+        const warmStart = text.indexOf('warm');
+        const nbspAfterWarm = text.indexOf(NON_BREAKING_SPACE, warmStart + 4);
+        const matchesWithReplacement = [
+          { content: 'warm', range: [warmStart, warmStart + 4], replacement: 'warm.' },
+          { content: NON_BREAKING_SPACE, range: [nbspAfterWarm, nbspAfterWarm + 1], replacement: '' },
+          { content: '.', range: [text.length - 1, text.length], replacement: '' },
+        ] as MatchWithReplacement[];
+        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+        adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+        assertEditorText(adapterSpec, adapter, `South${NON_BREAKING_SPACE}is warm.`);
+      },
+    );
+  });
+
+  it('Replace same word in correct order', () => {
+    givenAText(
+      adapter,
+      adapterSpec,
+      dummyCheckId,
+      'before wordSame wordSame wordSame wordSame wordSame after',
+      (text) => {
+        const replacements = ['replacement1', 'replacement2', 'replacement3', 'replacement4', 'replacement5'];
+
+        function replace(i: number) {
+          adapter.replaceRanges(dummyCheckId, [getMatchesWithReplacement(text, 'wordSame', replacements[i])[i]]);
+        }
+
+        replace(0);
+        replace(4);
+        replace(2);
+        replace(3);
+        replace(1);
+
+        assertEditorText(adapterSpec, adapter, `before ${replacements.join(' ')} after`);
+      },
+    );
+  });
+
+  it('selectRanges does not change text', () => {
+    const words = ['wordOne', 'wordTwo', 'wordThree', 'wordFour'];
+    const editorText = words.join(' ');
+    givenAText(adapter, adapterSpec, dummyCheckId, editorText, (text) => {
+      words.forEach((word) => {
+        adapter.selectRanges(dummyCheckId, getMatchesWithReplacement(text, word, ''));
+      });
+
+      adapter.selectRanges(dummyCheckId, [
+        getMatchesWithReplacement(text, words[0], '')[0],
+        getMatchesWithReplacement(text, words[words.length - 1], '')[0],
+      ]);
+
+      adapter.selectRanges(dummyCheckId, [
+        getMatchesWithReplacement(text, words[1], '')[0],
+        getMatchesWithReplacement(text, words[2], '')[0],
+      ]);
+
+      assertEditorText(adapterSpec, adapter, editorText);
+    });
+  });
+
+  it('Remove complete text content', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'a', () => {
+      const matchesWithReplacement: MatchWithReplacement[] = [{ content: 'a', range: [0, 1], replacement: '' }];
+      adapter.replaceRanges(dummyCheckId, matchesWithReplacement);
+      expect(adapter.getContent!({})).toEqual('');
+    });
+  });
+
+  it('SelectRanges throws exception if matched document part has changed', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
+      const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo');
+      adapterSpec.setEditorContent('wordOne wordXTwo wordThree');
+      expect(() => adapter.selectRanges(dummyCheckId, matchesWithReplacement)).toThrowError();
+    });
+  });
+
+  it('ReplaceRanges throws exception if matched document part has changed', () => {
+    givenAText(adapter, adapterSpec, dummyCheckId, 'wordOne wordTwo wordThree', (text) => {
+      const matchesWithReplacement = getMatchesWithReplacement(text, 'wordTwo', 'replacement');
+      adapterSpec.setEditorContent('wordOne wordXTwo wordThree');
+      expect(() => adapter.replaceRanges(dummyCheckId, matchesWithReplacement)).toThrowError();
+    });
+  });
+
+  it('Return check selection if requested', () => {
+    const completeContent = 'begin selection end';
+    givenAText(adapter, adapterSpec, dummyCheckId, completeContent, (text) => {
+      const matchesWithReplacement = getMatchesWithReplacement(text, 'selection');
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+
+      const result = adapter.extractContentForCheck({
+        checkSelection: true,
+      }) as SuccessfulContentExtractionResult;
+      const selectedRanges = result.selection!.ranges;
+      expect(selectedRanges.length).toEqual(1);
+      expect(selectedRanges[0]).toEqual(matchesWithReplacement[0].range);
+    });
+  });
+
+  it('Does not return check selection if not requested', () => {
+    const completeContent = 'begin selection end';
+    givenAText(adapter, adapterSpec, dummyCheckId, completeContent, (text) => {
+      const matchesWithReplacement = getMatchesWithReplacement(text, 'selection');
+      adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+      const result = adapter.extractContentForCheck({
+        checkSelection: false,
+      }) as SuccessfulContentExtractionResult;
+      expect(result.selection).toBeUndefined();
+    });
+  });
+
+  describe('selectRanges', () => {
+    testIfWindowIsFocused('should select the correct text', () => {
+      const completeContent = 'begin selection end';
+      givenAText(adapter, adapterSpec, dummyCheckId, completeContent, (initialExtractedContent) => {
+        const matchesWithReplacement = getMatchesWithReplacement(initialExtractedContent, 'selection');
+        adapter.selectRanges(dummyCheckId, matchesWithReplacement);
+        expect(adapterSpec.getSelectedText()).toEqual('selection');
+      });
+    });
+  });
+
+  describe('previous successful check, but current check has not finished', () => {
+    let matchesWithReplacementOfFirstCheck: MatchWithReplacement[];
+    beforeEach(() => {
+      const completeContent = 'begin selection end';
+      givenAText(adapter, adapterSpec, dummyCheckId, completeContent, (initialExtractedContent) => {
+        matchesWithReplacementOfFirstCheck = getMatchesWithReplacement(
+          initialExtractedContent,
+          'selection',
+          'replacement',
+        );
+      });
+    });
+
+    testIfWindowIsFocused('selects ranges of previous check', () => {
+      const completeNewContent = 'change begin selection end';
+      givenATextWithoutCheckResult(
+        adapter,
+        adapterSpec,
+        completeNewContent,
+        dummyCheckId,
+        (_initialExtractedContent) => {
+          adapter.selectRanges(dummyCheckId, matchesWithReplacementOfFirstCheck);
+          const selectedText = adapterSpec.getSelectedText();
+          expect(selectedText).toEqual('selection');
+        },
+      );
+    });
+
+    it('replaces ranges of previous check', () => {
+      const completeNewContent = 'change begin selection end';
+      givenATextWithoutCheckResult(
+        adapter,
+        adapterSpec,
+        completeNewContent,
+        dummyCheckId,
+        (_initialExtractedContent) => {
+          adapter.replaceRanges(dummyCheckId, matchesWithReplacementOfFirstCheck);
+          assertEditorText(adapterSpec, adapter, 'change begin replacement end');
+        },
+      );
+    });
+  });
+});

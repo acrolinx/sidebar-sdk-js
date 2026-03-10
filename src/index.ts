@@ -46,6 +46,7 @@ export type { MultiEditorAdapterConfig } from './adapters/MultiEditorAdapter';
 export { AsyncMultiEditorAdapter } from './adapters/AsyncMultiEditorAdapter';
 export { CodeMirror6Adapter } from './adapters/CodeMirror6Adapter';
 export { CodeMirror5Adapter as CodeMirrorAdapter } from './adapters/CodeMirror5Adapter';
+export { ProseMirrorAdapter } from './adapters/ProseMirrorAdapter';
 export { XeditorAdapter } from './adapters/XeditorAdapter';
 export { QuipAdapter } from './adapters/QuipAdapter';
 export { SynchronizeAsyncAdapter } from './adapters/SynchronizeAsyncAdapter';
@@ -259,6 +260,7 @@ import { MultiEditorAdapter } from './adapters/MultiEditorAdapter';
 import { AsyncMultiEditorAdapter } from './adapters/AsyncMultiEditorAdapter';
 import { CodeMirror6Adapter } from './adapters/CodeMirror6Adapter';
 import { CodeMirror5Adapter } from './adapters/CodeMirror5Adapter';
+import { ProseMirrorAdapter } from './adapters/ProseMirrorAdapter';
 import { XeditorAdapter } from './adapters/XeditorAdapter';
 import { QuipAdapter } from './adapters/QuipAdapter';
 import { SynchronizeAsyncAdapter } from './adapters/SynchronizeAsyncAdapter';
@@ -288,6 +290,7 @@ export interface AcrolinxSidebarIntegration {
     CKEditorAdapter: typeof CKEditor4Adapter;
     CodeMirror6Adapter: typeof CodeMirror6Adapter;
     CodeMirrorAdapter: typeof CodeMirror5Adapter;
+    ProseMirrorAdapter: typeof ProseMirrorAdapter;
     ContentEditableAdapter: typeof ContentEditableAdapter;
     HerettoContentEditableAdapter: typeof HerettoContentEditableAdapter;
     AsyncContentEditableAdapter: typeof AsyncContentEditableAdapter;
@@ -332,6 +335,7 @@ const exported: AcrolinxSidebarIntegration = {
     CKEditorAdapter: CKEditor4Adapter,
     CodeMirror6Adapter: CodeMirror6Adapter,
     CodeMirrorAdapter: CodeMirror5Adapter,
+    ProseMirrorAdapter: ProseMirrorAdapter,
     ContentEditableAdapter: ContentEditableAdapter,
     HerettoContentEditableAdapter: HerettoContentEditableAdapter,
     AsyncContentEditableAdapter: AsyncContentEditableAdapter,
