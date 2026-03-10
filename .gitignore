@@ -24,3 +24,4 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+tests/browser/__screenshots__/
