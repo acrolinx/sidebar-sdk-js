@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-build-inline": "40.2.0",
-    "@ckeditor/ckeditor5-source-editing": "40.2.0",
+    "@ckeditor/ckeditor5-source-editing": "48.0.0",
     "@codemirror/view": "^6.41.0",
     "@eslint/js": "^10.0.1",
     "@types/ckeditor": "^4.9.10",
