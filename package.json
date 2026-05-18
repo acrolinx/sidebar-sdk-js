@@ -47,7 +47,7 @@
     "fast-check": "^4.8.0",
     "playwright": "^1.60.0",
     "prettier": "^3.8.3",
-    "prosemirror-model": "^1.25.5",
+    "prosemirror-model": "^1.25.6",
     "prosemirror-schema-basic": "^1.2.2",
     "prosemirror-state": "^1.4.3",
     "prosemirror-view": "^1.41.8",
