@@ -55,7 +55,7 @@
     "tinymce": "^8.6.0",
     "typedoc": "^0.28.19",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.60.0",
+    "typescript-eslint": "^8.60.1",
     "vite": "^8.0.16",
     "vite-plugin-dts": "^5.0.2",
     "vitest": "^4.0.4"
