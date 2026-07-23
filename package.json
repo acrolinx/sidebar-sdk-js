@@ -41,7 +41,7 @@
     "@types/tinymce": "^5.5.0",
     "@vitest/browser-playwright": "^4.1.10",
     "@vitest/coverage-istanbul": "^4.1.2",
-    "ckeditor4": "4.22.1",
+    "ckeditor4": "4.24.0",
     "codemirror": "5.65.19",
     "eslint": "^10.7.0",
     "fast-check": "^4.9.0",
